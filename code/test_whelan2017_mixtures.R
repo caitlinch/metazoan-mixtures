@@ -45,7 +45,14 @@ placozoa_clade$node.label <- NULL
 porifera_clade$node.label <- NULL
 ctenophora_clade$node.label <- NULL
 outgroup_clade$node.label <- NULL
-# Save each clade
+# Remove node values
+bilateria_clade$edge.length <- NULL
+cnidaria_clade$edge.length <- NULL
+placozoa_clade$edge.length <- NULL
+porifera_clade$edge.length <- NULL
+ctenophora_clade$edge.length <- NULL
+outgroup_clade$edge.length <- NULL
+# Save topology only of each clade
 write.tree(bilateria_clade, file = paste0(clade_tree_folder, "bilateria_clade.tre"))
 write.tree(cnidaria_clade, file = paste0(clade_tree_folder, "cnidaria_clade.tre"))
 write.tree(placozoa_clade, file = paste0(clade_tree_folder, "placozoa_clade.tre"))
