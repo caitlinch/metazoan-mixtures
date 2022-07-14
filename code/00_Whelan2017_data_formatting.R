@@ -27,8 +27,8 @@
 
 ### Caitlin's paths ###
 # Directories
-dataset_dir <- "/data/caitlin/sponge_mixtures/data_whelan2017/"
-output_dir <- "/data/caitlin/sponge_mixtures/data_whelan2017/genes/"
+dataset_dir <- "/data/caitlin/metazoan-mixtures/data_whelan2017/"
+output_dir <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
 # File names for supermatrix and gene partition file
 supermat_file <- paste0(dataset_dir, "Metazoa_Choano_RCFV_strict.phy")
 location_file <- paste0(dataset_dir, "Whelan2017_gene_partitions.txt")
