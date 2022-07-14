@@ -65,30 +65,36 @@ all_gene_names <- c()
 for (i in 1:length(locations)){
   # Get the ith gene from the list of genes
   gene_line <- locations[i]
-  # Split the line to determine the gene name
-  gene_line <- gsub(";", "", gene_line)
-  gene_line_split <- strsplit(gene_line, "=")[[1]]
-  gene_name <- gsub(" ", "", gene_line_split[1])
-  print(gene_name)
-  # Split the line to determine the gene start and end position
-  gene_range <- gsub(" ", "", gene_line_split[2])
-  gene_range_split <- strsplit(gene_range, "-")[[1]]
-  gene_start <- as.numeric(gene_range_split[[1]])
-  gene_end <- as.numeric(gene_range_split[[2]])
-  
-  # Save name and length of gene
-  gene_length <- length(gene_start:gene_end)
-  all_gene_lengths <- c(all_gene_lengths, gene_length)
-  all_gene_names <- c(all_gene_names, gene_name)
-  
-  # Subset the supermatrix to get the sites (columns) for this gene
-  # To subset matrix: matrix[row, col]
-  gene_mat <- aa_mat[, gene_start:gene_end]
-  
-  # Assemble file name for gene
-  gene_file <- paste0(output_dir, gene_name, ".fa")
-  # Write gene to file
-  write.FASTA(gene_mat, file = gene_file)
+  # Check if the line contains a charset
+  charset_check <- grepl("charset", gene_line)
+  # If it does, extract the gene from the start and stop positions inside the charset
+  if (charset_check == TRUE) {
+    # Split the line to determine the gene name
+    gene_line <- gsub(";", "", gene_line)
+    gene_line_split <- strsplit(gene_line, "=")[[1]]
+    gene_name <- gsub("charset", "", gene_line_split[1])
+    gene_name <- gsub(" ", "", gene_name)
+    print(gene_name)
+    # Split the line to determine the gene start and end position
+    gene_range <- gsub(" ", "", gene_line_split[2])
+    gene_range_split <- strsplit(gene_range, "-")[[1]]
+    gene_start <- as.numeric(gene_range_split[[1]])
+    gene_end <- as.numeric(gene_range_split[[2]])
+    
+    # Save name and length of gene
+    gene_length <- length(gene_start:gene_end)
+    all_gene_lengths <- c(all_gene_lengths, gene_length)
+    all_gene_names <- c(all_gene_names, gene_name)
+    
+    # Subset the supermatrix to get the sites (columns) for this gene
+    # To subset matrix: matrix[row, col]
+    gene_mat <- aa_mat[, gene_start:gene_end]
+
+    # Assemble file name for gene
+    gene_file <- paste0(output_dir, gene_name, ".fa")
+    # Write gene to file
+    write.FASTA(gene_mat, file = gene_file)
+  }
 }
 
 # Create dataframe with gene name and lengths
