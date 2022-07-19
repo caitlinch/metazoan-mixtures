@@ -7,8 +7,14 @@
 # gene_folder <- path to folder containing fasta files for each gene in the Whelan 2017 dataset
 # iqtree_path <- path to IQ-Tree2 executable with mixtures of trees implementation
 
-gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
-iqtree_path <- "/data/caitlin/metazoan-mixtures/iqtree-2.2.0.3.tm.3-Linux/bin/iqtree2"
+location = "local"
+if (location == "local"){
+  gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
+  iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
+} else if (location == "soma"){
+  gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
+  iqtree_path <- "/data/caitlin/metazoan-mixtures/iqtree-2.2.0.3.tm.3-Linux/bin/iqtree2"
+}
 
 
 
