@@ -8,7 +8,7 @@
 # iqtree_path <- path to IQ-Tree2 executable with mixtures of trees implementation
 # constraint_tree_dir <- folder to store constraint trees in
 
-location = "local"
+location = "soma"
 if (location == "local"){
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
   iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
