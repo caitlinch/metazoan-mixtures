@@ -29,7 +29,7 @@ if (location == "local"){
 source(paste0(main_dir, "code/func_constraint_trees.R"))
 
 # Open packages
-library(ape)
+
 
 # Create folders if necessary
 if (dir.exists(constraint_tree_dir) == FALSE){dir.create(constraint_tree_dir)}
