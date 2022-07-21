@@ -29,9 +29,10 @@ cnidaria_taxa = c("Hydra_vulgaris", "Bolocera_tuediae", "Aiptasia_pallida", "Hor
                   "Eunicella_verrucosa", "Hydra_viridissima", "Hydra_oligactis", "Physalia_physalia", "Abylopsis_tetragona",
                   "Craseo_lathetica", "Nanomia_bijuga", "Agalma_elegans", "Periphyla_periphyla")
 placozoa_taxa = c("Trichoplax_adhaerens")
-porifera_taxa = c("Cliona_varians", "Sycon_coactum", "Sycon_ciliatum", "Corticium_candelabrum", "Oscarella_carmela", "Hyalonema_populiferum",
-                  "Aphrocallistes_vastus", "Rossella_fibulata", "Sympagella_nux", "Ircinia_fasciculata", "Chondrilla_nucula", "Amphimedon_queenslandica",
-                  "Petrosia_ficiformis", "Spongilla_lacustris", "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", "Crella_elegans",
+porifera_taxa = c("Cliona_varians", "Sycon_coactum", "Sycon_ciliatum", "Corticium_candelabrum", "Oscarella_carmela", 
+                  "Hyalonema_populiferum", "Aphrocallistes_vastus", "Rossella_fibulata", "Sympagella_nux", "Ircinia_fasciculata",
+                  "Chondrilla_nucula", "Amphimedon_queenslandica", "Petrosia_ficiformis", "Spongilla_lacustris", 
+                  "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", "Crella_elegans",
                   "Kirkpatrickia_variolosa")
 ctenophora_taxa = c("Euplokamis_dunlapae", "Vallicula_sp", "Coeloplana_astericola", "Hormiphora_californica", "Hormiphora_palmata",
                     "Pleurobrachia_pileus", "Pleurobrachia_bachei", "Pleurobrachia_sp_South_Carolina_USA", "Cydippida_sp_Maryland_USA",
@@ -41,12 +42,108 @@ ctenophora_taxa = c("Euplokamis_dunlapae", "Vallicula_sp", "Coeloplana_astericol
                     "Ocyropsis_sp_Florida_USA", "Bolinopsis_infundibulum", "Mnemiopsis_leidyi", "Bolinopsis_ashleyi", 
                     "Lobata_sp_Punta_Arenas_Argentina", "Eurhamphaea_vexilligera", "Cestum_veneris", "Ctenophora_sp_Florida_USA")
 outgroup_taxa = c("Salpingoeca_pyxidium", "Monosiga_ovata", "Acanthoeca_sp", "Salpingoeca_rosetta", "Monosiga_brevicolis")
+# Break sponges into two groups to allow for paraphyly - based on Whelan et al (2017) main figure
+sponges_1_taxa = c("Sycon_coactum", "Sycon_ciliatum", "Oscarella_carmela", "Corticium_candelabrum")
+sponges_2.1_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
+sponges_2.2_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians",
+                     "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", 
+                     "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
+sponges_2_taxa = c(sponges_2.1_taxa, sponges_2.2_taxa)
 
-
+# Break sponges into groups according to classification
+# Note: Homoscleromorpha was thought to belong to the Demospongiae, but it is phylogenetically well-separated.
+#       See: Bergquist PR (1978). Sponges. London: Hutchinson. ISBN 978-0-520-03658-1.
+## Porifera topologies:
+# Borchiellini et al (2001) found Porifera paraphyletic, the Calcarea being more related to monophyletic Eumetazoa than to the 
+#     siliceous sponges (Demospongiae, Hexactinellida)
+#     QUOTE: "Hexactinellida appears to be the sister-group of a Demospongiae–Calcarea–Cnidaria–Ctenophora–Placozoa clade both in 
+#      neighbour-joining and in maximum parsimony"
+# Medina et al (2001) found Porifera paraphyletic. Either Calcarea as sister to all animals, then (Hexactinellida, Demospongiae) or
+#     vice versa (i.e. (Hexactinellida, Demospongiae) first then Calcarea) 
+#     Note: placement of Ctenophora different in their two trees (one from SSU rRNA, one from LSU rRNA)
+# Sperling et al (2007) find paraphyletic sponges. Demosponges monophyletic and sister to all other animals. Then branches off 
+#     Calcarea, then Homoscleromorpha.
+# Dohrmann et al (2008) finds monophyletic Porifera, but the clade consists of two sister clades 
+#     (Calcarea, Homoscleromorpha), (Hexactinellida, Demospongiae))
+# Sperling et al (2009) has paraphlyetic Porifera. One clade combines (Hexactinellida, Demospongiae) as sister to all animals. 
+#     Then branches off Calcarea, then Homoscleromorpha.
+# Whelan et al (2017) tree has monophyletic Porifera, but the clade consists of two sister clades 
+#     (Calcarea, Homoscleromorpha), (Hexactinellida, Demospongiae))
+# Sperling et al (2010) find paraphlyetic Porifera. Demosponges are monophyletic, and that hexactinellids are their sister group
+#     (together forming the Silicea as sister to all animals). Then branches offCalcarea, then Homoscleromorpha.
+sponges_calcarea_taxa = c("Sycon_coactum", "Sycon_ciliatum")
+sponges_homoscleromorpha_taxa = c("Oscarella_carmela", "Corticium_candelabrum")
+sponges_hexactinellida_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
+sponges_demospongiae_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians", 
+                              "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis",
+                              "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
 
 ### Step 3: Prepare tree topology hypotheses ###
 # Hypotheses:
 #   1. Ctenophora-sister
 #   2. Porifera-sister
 #   3. Porifera+Ctenophora-sister
+#   4. Paraphyletic sponges, Porifera-sister
+#   5. Paraphyletic sponges, Ctenophora-sister
+# Uninvestigated hypotheses:
+#   1. Placozoa-sister
+
+## Hypothesis 1: Ctenophora-sister
+# Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa)))
+# Construct constraint tree
+constraint_tree_1 <- paste0("((", 
+                            paste(outgroup_taxa, collapse = ", "), 
+                            "),((", 
+                            paste(ctenophora_taxa, collapse = ", "), 
+                            "),(", 
+                            paste(c(porifera_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                            ")));")
+
+## Hypothesis 2: Porifera-sister
+# Tree: (outgroup_taxa, (porifera_taxa, (ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa)))
+# Construct constraint tree
+constraint_tree_2 <- paste0("((", 
+                            paste(outgroup_taxa, collapse = ", "), 
+                            "),((", 
+                            paste(porifera_taxa, collapse = ", "), 
+                            "),(", 
+                            paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                            ")));")
+
+## Hypothesis 3: Porifera+Ctenophora-sister
+# Tree: (outgroup_taxa, ((porifera_taxa, ctenophora_taxa), (placozoa_taxa, cnidaria_taxa, bilateria_taxa)))
+# Construct constraint tree
+constraint_tree_3 <- paste0("((", 
+                            paste(outgroup_taxa, collapse = ", "), 
+                            "),((", 
+                            paste(c(porifera_taxa, ctenophora_taxa), collapse = ", "), 
+                            "),(", 
+                            paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                            ")));")
+
+## Hypothesis 4: Paraphyletic sponges, Porifera-sister
+# Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
+# Construct constraint tree
+constraint_tree_4 <- paste0("((", 
+                            paste(outgroup_taxa, collapse = ", ") ,
+                            ") ,((", 
+                            paste(sponges_1_taxa, collapse = ", "), 
+                            "), ((", 
+                            paste(sponges_2_taxa, collapse = ", "), 
+                            "), (", 
+                            paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
+                            "))));")
+
+## Hypothesis 4: Paraphyletic sponges, Ctenophora-sister
+# Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
+# Construct constraint tree
+constraint_tree_5 <- paste0("((", 
+                            paste(outgroup_taxa, collapse = ", "),
+                            ") ,((",
+                            paste(ctenophora_taxa, collapse = ", "),
+                            "), ((", 
+                            paste(sponges_1_taxa, collapse = ", "),
+                            "), (", 
+                            paste(c(sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
+                            "))));")
 
