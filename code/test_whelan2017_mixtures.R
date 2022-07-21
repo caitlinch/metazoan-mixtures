@@ -6,14 +6,17 @@
 ### Step 1: Input parameters ###
 # gene_folder <- path to folder containing fasta files for each gene in the Whelan 2017 dataset
 # iqtree_path <- path to IQ-Tree2 executable with mixtures of trees implementation
+# constraint_tree_dir <- folder to store constraint trees in
 
 location = "local"
 if (location == "local"){
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
   iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
+  constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_constraint_trees/"
 } else if (location == "soma"){
   gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
   iqtree_path <- "/data/caitlin/metazoan-mixtures/iqtree-2.2.0.3.tm.3-Linux/bin/iqtree2"
+  constraint_tree_dir <- "/data/caitlin/metazoan-mixtures/constraint_trees/"
 }
 
 
@@ -21,6 +24,13 @@ if (location == "local"){
 ### Step 2: Prepare analysis###
 # Open packages
 library(ape)
+
+# Create folders if necessary
+if (dir.exists(constraint_tree_dir) == FALSE){dir.create(constraint_tree_dir)}
+
+## For Whelan2017 data:
+# Set dataset name
+dataset = "Whelan2017"
 
 # Identify which taxa are in which clades
 bilateria_taxa = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster",
@@ -98,6 +108,9 @@ constraint_tree_1 <- paste0("((",
                             "),(", 
                             paste(c(porifera_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
+constraint_tree_1_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_1.nex")
+write(constraint_tree_1, file = constraint_tree_1_file_name)
+
 
 ## Hypothesis 2: Porifera-sister
 # Tree: (outgroup_taxa, (porifera_taxa, (ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa)))
@@ -109,6 +122,9 @@ constraint_tree_2 <- paste0("((",
                             "),(", 
                             paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
+constraint_tree_2_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_2.nex")
+write(constraint_tree_2, file = constraint_tree_2_file_name)
+
 
 ## Hypothesis 3: Porifera+Ctenophora-sister
 # Tree: (outgroup_taxa, ((porifera_taxa, ctenophora_taxa), (placozoa_taxa, cnidaria_taxa, bilateria_taxa)))
@@ -120,6 +136,8 @@ constraint_tree_3 <- paste0("((",
                             "),(", 
                             paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
+constraint_tree_3_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_3.nex")
+write(constraint_tree_3, file = constraint_tree_3_file_name)
 
 ## Hypothesis 4: Paraphyletic sponges, Porifera-sister
 # Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
@@ -133,8 +151,10 @@ constraint_tree_4 <- paste0("((",
                             "), (", 
                             paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                             "))));")
+constraint_tree_4_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_4.nex")
+write(constraint_tree_4, file = constraint_tree_4_file_name)
 
-## Hypothesis 4: Paraphyletic sponges, Ctenophora-sister
+## Hypothesis 5: Paraphyletic sponges, Ctenophora-sister
 # Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
 # Construct constraint tree
 constraint_tree_5 <- paste0("((", 
@@ -146,4 +166,6 @@ constraint_tree_5 <- paste0("((",
                             "), (", 
                             paste(c(sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                             "))));")
+constraint_tree_5_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_5.nex")
+write(constraint_tree_5, file = constraint_tree_5_file_name)
 
