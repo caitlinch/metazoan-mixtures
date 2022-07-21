@@ -108,8 +108,8 @@ constraint_tree_1 <- paste0("((",
                             "),(", 
                             paste(c(porifera_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
-constraint_tree_1_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_1.nex")
-write(constraint_tree_1, file = constraint_tree_1_file_name)
+constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "1", ".nex")
+write(constraint_tree_1, file = constraint_tree_file_name)
 
 
 ## Hypothesis 2: Porifera-sister
@@ -122,8 +122,8 @@ constraint_tree_2 <- paste0("((",
                             "),(", 
                             paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
-constraint_tree_2_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_2.nex")
-write(constraint_tree_2, file = constraint_tree_2_file_name)
+constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "2", ".nex")
+write(constraint_tree_2, file = constraint_tree_file_name)
 
 
 ## Hypothesis 3: Porifera+Ctenophora-sister
@@ -136,8 +136,8 @@ constraint_tree_3 <- paste0("((",
                             "),(", 
                             paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
-constraint_tree_3_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_3.nex")
-write(constraint_tree_3, file = constraint_tree_3_file_name)
+constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "3", ".nex")
+write(constraint_tree_3, file = constraint_tree_file_name)
 
 ## Hypothesis 4: Paraphyletic sponges, Porifera-sister
 # Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
@@ -151,8 +151,8 @@ constraint_tree_4 <- paste0("((",
                             "), (", 
                             paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                             "))));")
-constraint_tree_4_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_4.nex")
-write(constraint_tree_4, file = constraint_tree_4_file_name)
+constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "4", ".nex")
+write(constraint_tree_4, file = constraint_tree_file_name)
 
 ## Hypothesis 5: Paraphyletic sponges, Ctenophora-sister
 # Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
@@ -166,6 +166,17 @@ constraint_tree_5 <- paste0("((",
                             "), (", 
                             paste(c(sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                             "))));")
-constraint_tree_5_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_5.nex")
-write(constraint_tree_5, file = constraint_tree_5_file_name)
+constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "5", ".nex")
+write(constraint_tree_5, file = constraint_tree_file_name)
+
+# Assemble vectors of information about the constraint trees
+all_constraint_trees <- list(constraint_tree_1, constraint_tree_2, constraint_tree_3, constraint_tree_4, constraint_tree_5)
+all_constraint_tree_paths <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex")
+all_constraint_prefixes <- paste0(dataset, "_ConstraintTree", 1:5)
+
+
+
+### Step 3: Estimate trees with constraint trees ###
+
+# Assemble vectors 
 
