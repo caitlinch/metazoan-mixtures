@@ -21,3 +21,17 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   # Run IQ-Tree
   system(iqtree_call)
 }
+
+
+
+apply.one.constraint.trees <- function(index, df){
+  # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
+  
+  # Identify row
+  row <- df[index, ]
+  
+  # Feed row information into function call
+  run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
+                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model)
+  
+}

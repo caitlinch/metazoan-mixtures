@@ -4,16 +4,19 @@
 # Proof of concept for the mixture of trees method
 
 ### Step 1: Input parameters ###
+# main_dir <- path to caitlinch/metazoan-mixtures git repository
 # gene_folder <- path to folder containing fasta files for each gene in the Whelan 2017 dataset
 # iqtree_path <- path to IQ-Tree2 executable with mixtures of trees implementation
 # constraint_tree_dir <- folder to store constraint trees in
 
 location = "soma"
 if (location == "local"){
+  main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan_mixtures/"
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
   iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
   constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_constraint_trees/"
 } else if (location == "soma"){
+  main_dir <- "/data/caitlin/metazoan-mixtures/"
   gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
   iqtree_path <- "/data/caitlin/metazoan-mixtures/iqtree-2.2.0.3.tm.3-Linux/bin/iqtree2"
   constraint_tree_dir <- "/data/caitlin/metazoan-mixtures/constraint_trees/"
@@ -22,6 +25,9 @@ if (location == "local"){
 
 
 ### Step 2: Prepare analysis###
+# Source function files
+source(paste0(main_dir, "code/func_constraint_trees.R"))
+
 # Open packages
 library(ape)
 
@@ -169,14 +175,18 @@ constraint_tree_5 <- paste0("((",
 constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "5", ".nex")
 write(constraint_tree_5, file = constraint_tree_file_name)
 
-# Assemble vectors of information about the constraint trees
-all_constraint_trees <- list(constraint_tree_1, constraint_tree_2, constraint_tree_3, constraint_tree_4, constraint_tree_5)
-all_constraint_tree_paths <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex")
-all_constraint_prefixes <- paste0(dataset, "_ConstraintTree", 1:5)
+# Assemble dataframe of information about the constraint trees
+constraint_df <- data.frame(constraint_tree_id = 1:5,
+                            constraint_tree_paths = paste0(constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex"),
+                            constraint_prefixes = paste0(dataset, "_ConstraintTree", 1:5),
+                            alignment_path = gene_folder,
+                            model = NA,
+                            iqtree_path = iqtree_path,
+                            constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
+                                                 constraint_tree_4, constraint_tree_5) )
 
 
 
 ### Step 3: Estimate trees with constraint trees ###
 
-# Assemble vectors 
 
