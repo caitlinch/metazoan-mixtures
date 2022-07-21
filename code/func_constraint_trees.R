@@ -24,7 +24,7 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
 
 
 
-apply.one.constraint.trees <- function(index, df){
+apply.one.constraint.tree <- function(index, df){
   # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
   
   # Identify row

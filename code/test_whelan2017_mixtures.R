@@ -188,5 +188,6 @@ constraint_df <- data.frame(constraint_tree_id = 1:5,
 
 
 ### Step 3: Estimate trees with constraint trees ###
-
+# Estimate an ML tree in IQ-Tree for each constraint tree
+lapply(1:nrow(constraint_df), apply.one.constraint.tree, constraint_df)
 
