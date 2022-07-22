@@ -4,10 +4,11 @@
 # Proof of concept for the mixture of trees method
 
 ### Step 1: Input parameters ###
-# main_dir <- path to caitlinch/metazoan-mixtures git repository
-# gene_folder <- path to folder containing fasta files for each gene in the Whelan 2017 dataset
-# iqtree_path <- path to IQ-Tree2 executable with mixtures of trees implementation
+# main_dir            <- path to caitlinch/metazoan-mixtures git repository
+# gene_folder         <- path to folder containing fasta files for each gene in the Whelan 2017 dataset
+# iqtree_path         <- path to IQ-Tree2 executable with mixtures of trees implementation
 # constraint_tree_dir <- folder to store constraint trees in
+# num_threads         <- number of cores to use for parallel processes
 
 location = "soma"
 if (location == "local"){
@@ -15,11 +16,15 @@ if (location == "local"){
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
   iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
   constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_constraint_trees/"
+  
+  num_threads = 1
 } else if (location == "soma"){
   main_dir <- "/data/caitlin/metazoan-mixtures/"
   gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
   iqtree_path <- "/data/caitlin/metazoan-mixtures/iqtree-2.2.0.3.tm.3-Linux/bin/iqtree2"
   constraint_tree_dir <- "/data/caitlin/metazoan-mixtures/constraint_trees/"
+  
+  num_threads = 20
 }
 
 
@@ -29,7 +34,7 @@ if (location == "local"){
 source(paste0(main_dir, "code/func_constraint_trees.R"))
 
 # Open packages
-
+library(parallel)
 
 # Create folders if necessary
 if (dir.exists(constraint_tree_dir) == FALSE){dir.create(constraint_tree_dir)}
@@ -189,5 +194,5 @@ constraint_df <- data.frame(constraint_tree_id = 1:5,
 
 ### Step 3: Estimate trees with constraint trees ###
 # Estimate an ML tree in IQ-Tree for each constraint tree
-lapply(1:nrow(constraint_df), apply.one.constraint.tree, constraint_df)
+mclapply(1:nrow(constraint_df), apply.one.constraint.tree, constraint_df, mc.cores = num_threads)
 
