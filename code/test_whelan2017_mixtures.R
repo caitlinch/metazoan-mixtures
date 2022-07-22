@@ -200,6 +200,9 @@ write.csv(constraint_df, constraint_df_path, row.names = FALSE)
 
 
 ### Step 3: Estimate trees with constraint trees ###
+# Set working directory to dataset_constraint_tree_dir so IQ-Tree output is saved with the constraint trees
+setwd(dataset_constraint_tree_dir)
+
 # Estimate an ML tree in IQ-Tree for each constraint tree
 mclapply(1:nrow(constraint_df), apply.one.constraint.tree, constraint_df, mc.cores = num_threads)
 
