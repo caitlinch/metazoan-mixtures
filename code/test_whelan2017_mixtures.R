@@ -10,9 +10,9 @@
 # constraint_tree_dir <- folder to store constraint trees in
 # num_threads         <- number of cores to use for parallel processes
 
-location = "soma"
+location = "local"
 if (location == "local"){
-  main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan_mixtures/"
+  main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
   iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
   constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_constraint_trees/"
@@ -42,6 +42,10 @@ if (dir.exists(constraint_tree_dir) == FALSE){dir.create(constraint_tree_dir)}
 ## For Whelan2017 data:
 # Set dataset name
 dataset = "Whelan2017"
+
+# Create folder for each dataset inside the constraint tree folder
+dataset_constraint_tree_dir <- paste0(constraint_tree_dir, dataset, "/")
+if (dir.exists(dataset_constraint_tree_dir) == FALSE){dir.create(dataset_constraint_tree_dir)}
 
 # Identify which taxa are in which clades
 bilateria_taxa = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster",
@@ -119,7 +123,7 @@ constraint_tree_1 <- paste0("((",
                             "),(", 
                             paste(c(porifera_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
-constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "1", ".nex")
+constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", "1", ".nex")
 write(constraint_tree_1, file = constraint_tree_file_name)
 
 
@@ -133,7 +137,7 @@ constraint_tree_2 <- paste0("((",
                             "),(", 
                             paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
-constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "2", ".nex")
+constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", "2", ".nex")
 write(constraint_tree_2, file = constraint_tree_file_name)
 
 
@@ -147,7 +151,7 @@ constraint_tree_3 <- paste0("((",
                             "),(", 
                             paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                             ")));")
-constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "3", ".nex")
+constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", "3", ".nex")
 write(constraint_tree_3, file = constraint_tree_file_name)
 
 ## Hypothesis 4: Paraphyletic sponges, Porifera-sister
@@ -162,7 +166,7 @@ constraint_tree_4 <- paste0("((",
                             "), (", 
                             paste(c(ctenophora_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                             "))));")
-constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "4", ".nex")
+constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", "4", ".nex")
 write(constraint_tree_4, file = constraint_tree_file_name)
 
 ## Hypothesis 5: Paraphyletic sponges, Ctenophora-sister
@@ -177,12 +181,12 @@ constraint_tree_5 <- paste0("((",
                             "), (", 
                             paste(c(sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                             "))));")
-constraint_tree_file_name <- paste0(constraint_tree_dir, dataset, "_constraint_tree_", "5", ".nex")
+constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", "5", ".nex")
 write(constraint_tree_5, file = constraint_tree_file_name)
 
 # Assemble dataframe of information about the constraint trees
 constraint_df <- data.frame(constraint_tree_id = 1:5,
-                            constraint_tree_paths = paste0(constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex"),
+                            constraint_tree_paths = paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex"),
                             constraint_prefixes = paste0(dataset, "_ConstraintTree", 1:5),
                             alignment_path = gene_folder,
                             model = NA,
@@ -190,6 +194,9 @@ constraint_df <- data.frame(constraint_tree_id = 1:5,
                             constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
                                                  constraint_tree_4, constraint_tree_5) )
 
+# Write dataset of information about constraint trees
+constraint_df_path <- paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_parameters.csv")
+write.csv(constraint_df, constraint_df_path, row.names = FALSE)
 
 
 ### Step 3: Estimate trees with constraint trees ###
