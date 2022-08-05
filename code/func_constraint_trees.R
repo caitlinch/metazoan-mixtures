@@ -3,7 +3,7 @@
 
 # Functions for testing and applying constraint trees in iqtree2
 
-run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, iqtree_path, prefix, model = NA){
+run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, iqtree_path, model = NA, num_threads = 1, prefix = NA){
   # Function to apply IQ-Tree to a series of alignments with a constraint tree
   
   # Set model for IQ-Tree run
@@ -16,7 +16,11 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   }
   
   # Create command line for IQ-Tree2
-  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " --prefix ", prefix)
+  if (is.na(prefix) == TRUE){
+    iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads)
+  } else (is.na(prefix) == FALSE){
+    iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  " --prefix ", prefix)
+  }
   
   # Run IQ-Tree
   system(iqtree_call)
