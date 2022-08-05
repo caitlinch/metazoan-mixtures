@@ -1,0 +1,10 @@
+name: sponge-mixt
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - r=4.0
+  - r-base=4.2.1
+  - r-ape
+  - r-phangorn
+  - r-phylotools
