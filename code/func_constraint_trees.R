@@ -18,7 +18,7 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   # Create command line for IQ-Tree2
   if (is.na(prefix) == TRUE){
     iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads)
-  } else (is.na(prefix) == FALSE){
+  } else if (is.na(prefix) == FALSE){
     iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  " --prefix ", prefix)
   }
   
