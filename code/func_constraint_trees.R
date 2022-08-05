@@ -36,6 +36,6 @@ apply.one.constraint.tree <- function(index, df){
   
   # Feed row information into function call
   run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
-                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model)
-  
+                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
+                                  num_threads = row$num_threads)
 }
