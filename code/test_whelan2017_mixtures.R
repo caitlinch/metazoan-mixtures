@@ -10,7 +10,7 @@
 # constraint_tree_dir     <- folder to store constraint trees in
 # number_parallel_threads <- number of cores to use for parallel processes
 
-location = "local"
+location = "soma"
 if (location == "local"){
   main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
