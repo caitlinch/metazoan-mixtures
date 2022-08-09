@@ -207,7 +207,7 @@ if (assemble_constraint_trees == TRUE){
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex"),
                               constraint_prefixes = paste0(dataset, "_ConstraintTree", 1:5),
                               alignment_path = gene_folder,
-                              model = NA,
+                              model = "Q.insect+R8",
                               iqtree_path = iqtree_path,
                               constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
                                                    constraint_tree_4, constraint_tree_5),
@@ -355,8 +355,8 @@ if (estimate_constraint_trees == TRUE){
   # Set working directory to dataset_constraint_tree_dir so IQ-Tree output is saved with the constraint trees
   setwd(dataset_constraint_tree_dir)
   
-  # For small trees
-  estimate_trees_df <- read.csv(paste0(dataset_constraint_tree_dir, dataset, "_small_constraint_tree_parameters.csv"))
+  # For trees with all 76 taxa
+  estimate_trees_df <- read.csv(paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_parameters.csv"))
   # Estimate an ML tree in IQ-Tree for each constraint tree
   lapply(1:nrow(estimate_trees_df), apply.one.constraint.tree, estimate_trees_df)
 }
