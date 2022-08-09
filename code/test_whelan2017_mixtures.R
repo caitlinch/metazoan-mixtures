@@ -29,7 +29,7 @@ if (location == "local"){
 }
 
 assemble_constraint_trees <- FALSE
-estimate_constraint_trees <- FALSE
+estimate_constraint_trees <- TRUE
 
 
 
@@ -345,8 +345,10 @@ if (estimate_constraint_trees == TRUE){
   # Set working directory to dataset_constraint_tree_dir so IQ-Tree output is saved with the constraint trees
   setwd(dataset_constraint_tree_dir)
   
+  # For small trees
+  estimate_trees_df <- read.csv(paste0(dataset_constraint_tree_dir, dataset, "_small_constraint_tree_parameters.csv"))
   # Estimate an ML tree in IQ-Tree for each constraint tree
-  lapply(1:nrow(constraint_df), apply.one.constraint.tree, constraint_df)
+  lapply(1:nrow(estimate_trees_df), apply.one.constraint.tree, estimate_trees_df)
 }
 
 
