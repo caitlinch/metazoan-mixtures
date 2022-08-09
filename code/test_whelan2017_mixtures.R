@@ -10,7 +10,7 @@
 # constraint_tree_dir     <- folder to store constraint trees in
 # number_parallel_threads <- number of cores to use for parallel processes
 
-location = "soma"
+location = "local"
 if (location == "local"){
   main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
@@ -342,6 +342,15 @@ if (assemble_constraint_trees == TRUE){
 
 ### Step 4: Estimate trees with constraint trees ###
 if (estimate_constraint_trees == TRUE){
+  ## For Whelan2017 data:
+  # Set dataset name
+  dataset = "Whelan2017"
+  
+  # Create folder for each dataset inside the constraint tree folder
+  dataset_constraint_tree_dir <- paste0(constraint_tree_dir, dataset, "/")
+  if (dir.exists(dataset_constraint_tree_dir) == FALSE){dir.create(dataset_constraint_tree_dir)}
+  
+  
   # Set working directory to dataset_constraint_tree_dir so IQ-Tree output is saved with the constraint trees
   setwd(dataset_constraint_tree_dir)
   
