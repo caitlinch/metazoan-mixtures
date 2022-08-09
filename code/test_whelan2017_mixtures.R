@@ -299,6 +299,7 @@ if (assemble_constraint_trees == TRUE){
                               "), ((", 
                               paste(c(ctenophora_taxa), collapse = ", "),
                               "), (",
+                              
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               ")))));")
   constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_small_constraint_tree_", "4", ".nex")
@@ -367,7 +368,10 @@ if (estimate_constraint_trees == TRUE){
 all_dir_files <- list.files(constraint_tree_dir, recursive = TRUE)
 whelan2017_files <- grep("Whelan2017", all_dir_files, value = TRUE)
 constraint_tree_files <- grep(".treefile", whelan2017_files, value = TRUE)
-ctrees <- read.tree(text = unlist(lapply(paste0(constraint_tree_dir, constraint_tree_files), readLines)))
+small_constraint_trees <- grep("Small", constraint_tree_files, value = TRUE)
+ctrees <- read.tree(text = unlist(lapply(paste0(constraint_tree_dir, small_constraint_trees), readLines))) #open small constraint trees
+rooted_ctrees <- root(ctrees, c("Monosiga_ovata", "Monosiga_brevicolis"))
+
 
 
 
