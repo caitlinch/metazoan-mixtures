@@ -324,7 +324,7 @@ if (assemble_constraint_trees == TRUE){
   # Assemble dataframe of information about the constraint trees
   constraint_df <- data.frame(constraint_tree_id = 1:5,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, dataset, "_small_constraint_tree_", 1:5, ".nex"),
-                              constraint_prefixes = paste0(dataset, "_ConstraintTree", 1:5),
+                              constraint_prefixes = paste0(dataset, "_SmallConstraintTree", 1:5),
                               alignment_path = short_gene_folder,
                               model = c("Q.insect+R8", "Q.insect+R8", "Q.insect+R8", "Q.insect+R8", "Q.insect+R8"),
                               iqtree_path = iqtree_path,
