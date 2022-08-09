@@ -18,7 +18,7 @@ if (location == "local"){
   iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
   constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_constraint_trees/"
   
-  number_parallel_threads = 1
+  number_parallel_threads = "AUTO"
 } else if (location == "soma"){
   main_dir <- "/data/caitlin/metazoan-mixtures/"
   gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
