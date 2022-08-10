@@ -3,7 +3,7 @@
 
 # Proof of concept for the mixture of trees method
 
-### Step 1: Input parameters ###
+#### Step 1: Input parameters ####
 # main_dir                <- path to caitlinch/metazoan-mixtures git repository
 # gene_folder             <- path to folder containing fasta files for each gene in the Whelan 2017 dataset
 # iqtree_path             <- path to IQ-Tree2 executable with mixtures of trees implementation
@@ -30,10 +30,11 @@ if (location == "local"){
 
 assemble_constraint_trees <- FALSE
 estimate_constraint_trees <- FALSE
+apply_tree_mixtures <- TRUE
 
 
 
-### Step 2: Prepare analysis ###
+#### Step 2: Prepare analysis ####
 # Source function files
 source(paste0(main_dir, "code/func_constraint_trees.R"))
 
@@ -47,11 +48,13 @@ if (dir.exists(constraint_tree_dir) == FALSE){dir.create(constraint_tree_dir)}
 
 
 
-### Step 3: Prepare constraint trees ###
+#### Step 3: Prepare constraint trees ####
 if (assemble_constraint_trees == TRUE){
   ## For Whelan2017 data:
   # Set dataset name
   dataset = "Whelan2017"
+  # Select model of sequence evolution 
+  model = "CAT"
   
   # Create folder for each dataset inside the constraint tree folder
   dataset_constraint_tree_dir <- paste0(constraint_tree_dir, dataset, "/")
@@ -85,42 +88,14 @@ if (assemble_constraint_trees == TRUE){
                        "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", 
                        "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
   sponges_2_taxa = c(sponges_2.1_taxa, sponges_2.2_taxa)
-  
-  # Break sponges into groups according to classification
-  # Note: Homoscleromorpha was thought to belong to the Demospongiae, but it is phylogenetically well-separated.
-  #       See: Bergquist PR (1978). Sponges. London: Hutchinson. ISBN 978-0-520-03658-1.
-  ## Porifera topologies:
-  # Borchiellini et al (2001) found Porifera paraphyletic, the Calcarea being more related to monophyletic Eumetazoa than to the 
-  #     siliceous sponges (Demospongiae, Hexactinellida)
-  #     QUOTE: "Hexactinellida appears to be the sister-group of a Demospongiae–Calcarea–Cnidaria–Ctenophora–Placozoa clade both in 
-  #      neighbour-joining and in maximum parsimony"
-  # Medina et al (2001) found Porifera paraphyletic. Either Calcarea as sister to all animals, then (Hexactinellida, Demospongiae) or
-  #     vice versa (i.e. (Hexactinellida, Demospongiae) first then Calcarea) 
-  #     Note: placement of Ctenophora different in their two trees (one from SSU rRNA, one from LSU rRNA)
-  # Sperling et al (2007) find paraphyletic sponges. Demosponges monophyletic and sister to all other animals. Then branches off 
-  #     Calcarea, then Homoscleromorpha.
-  # Dohrmann et al (2008) finds monophyletic Porifera, but the clade consists of two sister clades 
-  #     (Calcarea, Homoscleromorpha), (Hexactinellida, Demospongiae))
-  # Sperling et al (2009) has paraphlyetic Porifera. One clade combines (Hexactinellida, Demospongiae) as sister to all animals. 
-  #     Then branches off Calcarea, then Homoscleromorpha.
-  # Whelan et al (2017) tree has monophyletic Porifera, but the clade consists of two sister clades 
-  #     (Calcarea, Homoscleromorpha), (Hexactinellida, Demospongiae))
-  # Sperling et al (2010) find paraphlyetic Porifera. Demosponges are monophyletic, and that hexactinellids are their sister group
-  #     (together forming the Silicea as sister to all animals). Then branches offCalcarea, then Homoscleromorpha.
+  porifera_taxa = c(sponges_1_taxa, sponges_2.1_taxa, sponges_2.2_taxa)
+
   sponges_calcarea_taxa = c("Sycon_coactum", "Sycon_ciliatum")
   sponges_homoscleromorpha_taxa = c("Oscarella_carmela", "Corticium_candelabrum")
   sponges_hexactinellida_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
   sponges_demospongiae_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians", 
                                 "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis",
                                 "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
-  # Hypotheses:
-  #   1. Ctenophora-sister
-  #   2. Porifera-sister
-  #   3. Porifera+Ctenophora-sister
-  #   4. Paraphyletic sponges, Porifera-sister
-  #   5. Paraphyletic sponges, Ctenophora-sister
-  # Uninvestigated hypotheses:
-  #   1. Placozoa-sister
   
   ## Hypothesis 1: Ctenophora-sister
   # Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, (placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
@@ -206,7 +181,7 @@ if (assemble_constraint_trees == TRUE){
   # Assemble dataframe of information about the constraint trees
   constraint_df <- data.frame(constraint_tree_id = 1:5,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_", 1:5, ".nex"),
-                              constraint_prefixes = paste0(dataset, "_ConstraintTree", 1:5),
+                              constraint_prefixes = paste0(dataset, "_", model, "_ML_H", 1:5),
                               alignment_path = gene_folder,
                               model = "CAT",
                               iqtree_path = iqtree_path,
@@ -221,7 +196,7 @@ if (assemble_constraint_trees == TRUE){
 
 
 
-### Step 4: Estimate trees with constraint trees ###
+#### Step 4: Estimate trees with constraint trees ####
 if (estimate_constraint_trees == TRUE){
   ## For Whelan2017 data:
   # Set dataset name
@@ -243,7 +218,7 @@ if (estimate_constraint_trees == TRUE){
 
 
 
-### Step 5: Compare trees
+#### Step 5: Collate trees ####
 # Set dataset
 dataset <- "Whelan2017"
 # List all files in the constraint tree directory
@@ -261,6 +236,13 @@ rooted_ctrees <- root(ctrees, c("Salpingoeca_pyxidium", "Monosiga_ovata", "Acant
 # Write constraint trees
 treemix_tree_file <- paste0(constraint_tree_dir, dataset, "_hypothesis_trees.tre")
 write.tree(rooted_ctrees, file = treemix_tree_file)
+
+
+
+#### Step 6: Apply the mixture of trees method ####
+if (apply_tree_mixtures == TRUE){
+  
+}
 
 
 
