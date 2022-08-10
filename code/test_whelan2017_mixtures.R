@@ -29,7 +29,7 @@ if (location == "local"){
 }
 
 assemble_constraint_trees <- FALSE
-estimate_constraint_trees <- TRUE
+estimate_constraint_trees <- FALSE
 
 
 
@@ -368,16 +368,20 @@ if (estimate_constraint_trees == TRUE){
 # Set dataset
 dataset <- "Whelan2017"
 # List all files in the constraint tree directory
-all_dir_files <- grep("Old", list.files(constraint_tree_dir, recursive = TRUE), value = TRUE, invert = TRUE)
+all_dir_files <- list.files(constraint_tree_dir, recursive = TRUE)
+# Remove previous attempts ("Old") or test runs ("Small")
+all_dir_files <- grep("Old", all_dir_files, value = TRUE, invert = TRUE)
+all_dir_files <- grep("Small", all_dir_files, value = TRUE, invert = TRUE)
 # Identify constraint tree files for the specified dataset
 dataset_files <- grep(dataset, all_dir_files, value = TRUE)
 constraint_tree_files <- grep(".treefile", dataset_files, value = TRUE)
 constraint_trees <- grep(".treefile", constraint_tree_files, value = TRUE)
 # Open constraint trees
 ctrees <- read.tree(text = unlist(lapply(paste0(constraint_tree_dir, constraint_trees), readLines))) 
-rooted_ctrees <- root(ctrees, c("Monosiga_ovata", "Monosiga_brevicolis"))
-
-
+rooted_ctrees <- root(ctrees, c("Salpingoeca_pyxidium", "Monosiga_ovata", "Acanthoeca_sp", "Salpingoeca_rosetta", "Monosiga_brevicolis"))
+# Write constraint trees
+treemix_tree_file <- paste0(constraint_tree_dir, dataset, "_hypothesis_trees.tre")
+write.tree(rooted_ctrees, file = treemix_tree_file)
 
 
 
