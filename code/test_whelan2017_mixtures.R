@@ -365,12 +365,16 @@ if (estimate_constraint_trees == TRUE){
 
 
 ### Step 5: Compare trees
-# Open Whelan 2017 constraint trees
-all_dir_files <- list.files(constraint_tree_dir, recursive = TRUE)
-whelan2017_files <- grep("Whelan2017", all_dir_files, value = TRUE)
-constraint_tree_files <- grep(".treefile", whelan2017_files, value = TRUE)
-small_constraint_trees <- grep("Small", constraint_tree_files, value = TRUE)
-ctrees <- read.tree(text = unlist(lapply(paste0(constraint_tree_dir, small_constraint_trees), readLines))) #open small constraint trees
+# Set dataset
+dataset <- "Whelan2017"
+# List all files in the constraint tree directory
+all_dir_files <- grep("Old", list.files(constraint_tree_dir, recursive = TRUE), value = TRUE, invert = TRUE)
+# Identify constraint tree files for the specified dataset
+dataset_files <- grep(dataset, all_dir_files, value = TRUE)
+constraint_tree_files <- grep(".treefile", dataset_files, value = TRUE)
+constraint_trees <- grep(".treefile", constraint_tree_files, value = TRUE)
+# Open constraint trees
+ctrees <- read.tree(text = unlist(lapply(paste0(constraint_tree_dir, constraint_trees), readLines))) 
 rooted_ctrees <- root(ctrees, c("Monosiga_ovata", "Monosiga_brevicolis"))
 
 
