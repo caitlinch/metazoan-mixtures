@@ -22,7 +22,7 @@ if (location == "local"){
 } else if (location == "soma"){
   main_dir <- "/data/caitlin/metazoan-mixtures/"
   gene_folder <- "/data/caitlin/metazoan-mixtures/data_whelan2017/genes/"
-  iqtree_path <- "/data/caitlin/metazoan-mixtures/iqtree-2.2.0.3.tm.3-Linux/bin/iqtree2"
+  iqtree_path <- "data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.6.mix-Linux/bin/iqtree2"
   constraint_tree_dir <- "/data/caitlin/metazoan-mixtures/constraint_trees/"
   
   number_parallel_threads = 20
@@ -241,7 +241,8 @@ write.tree(rooted_ctrees, file = treemix_tree_file)
 
 #### Step 6: Apply the mixture of trees method ####
 if (apply_tree_mixtures == TRUE){
-  
+  treemix_command <- paste0(iqtree_path, " -s ", gene_folder, " -m  'LG+TR' -te ", treemix_tree_file, " -nt 20 -pre Whelan2017_LG_5TR_1Q")
+  system(treemix_command)
 }
 
 
