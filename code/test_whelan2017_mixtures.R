@@ -10,13 +10,11 @@
 # constraint_tree_dir     <- folder to store constraint trees in
 # number_parallel_threads <- number of cores to use for parallel processes
 
-location = "soma"
+location = "local"
 if (location == "local"){
   main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
-  gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes/"
-  short_gene_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_Whelan2017/genes_short/"
-  iqtree_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Software_IQ-Tree/IQ-Tree_2.2.0.3.tm.3/iqtree-2.2.0.3.tm.3-MacOSX/bin/iqtree2"
-  constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_constraint_trees/"
+  data_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Data_processed/"
+  constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_hypothesis_trees/"
   
   number_parallel_threads = "AUTO"
 } else if (location == "soma"){
