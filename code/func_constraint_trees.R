@@ -5,7 +5,7 @@
 
 
 
-estimate.ml.iqtree <- function(iqtree2_path, alignment_file, partition_file, prefix, number_parallel_threads, number_of_bootstraps){
+estimate.ml.iqtree <- function(iqtree2, alignment_file, partition_file, prefix, number_parallel_threads, number_of_bootstraps){
   # Function to call iqtree and estimate a maximum likelihood tree using best practices
   
   # Add partition file if present
@@ -22,7 +22,7 @@ estimate.ml.iqtree <- function(iqtree2_path, alignment_file, partition_file, pre
   } 
   
   # Assemble the command line
-  iqtree_call <- paste0(iqtree2_path, " -s ", alignment_file, partition_call, " -m ", model, " -pre ", prefix, 
+  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, " -m ", model, " -pre ", prefix, 
                         " -nt ", number_parallel_threads, " -B ", number_of_bootstraps)
   # Print the iqtree2 command
   print(iqtree_call)
