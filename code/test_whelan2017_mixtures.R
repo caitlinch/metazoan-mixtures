@@ -96,7 +96,7 @@ if (estimate_ml_tree == TRUE){
     prefix <- paste0(dataset, "_ML")
     
     # Call the function to estimate an ML tree with bootstraps in IQ-Tree
-    estimate.ml.iqtree(iqtree2, alignment_file, partition_file, prefix, number_parallel_threads, number_of_bootstraps)
+    estimate.ml.iqtree(iqtree2, alignment_file, partition_file, prefix, number_parallel_threads, number_of_bootstraps = 1000)
     
   } # end for (dataset in datasets_to_run)
 } # end if (estimate_ml_tree == TRUE)
