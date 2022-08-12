@@ -24,10 +24,10 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   } 
   
   # Add prefix if present
-  if (is.NA(prefix) == TRUE){
+  if (is.na(prefix) == TRUE){
     # If prefix is NA, do nothing
     prefix_call <- ""
-  } else if (is.NA(prefix) == FALSE){
+  } else if (is.na(prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
     prefix_call <- paste0(" --prefix ", prefix, " ")
   } 
@@ -70,18 +70,18 @@ run.tree.mixture.model <- function(alignment_file, partition_file, hypothesis_tr
   # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
   
   # Add model if present
-  if (is.NA(model) == TRUE){
+  if (is.na(model) == TRUE){
     # If no model specified for IQ-Tree, use model finder (-m MFP) command
-    if (is.NA(partition_file) == TRUE){
+    if (is.na(partition_file) == TRUE){
       # If no partition file is present, use only the MFP command
       model_call = "MFP"
-    } else if (is.NA(partition_file) == FALSE){
+    } else if (is.na(partition_file) == FALSE){
       # If a partition file is present, use MFP+MERGE
       model_call = "MFP+MERGE"
     }
     # Extend the model to have the +TR command 
     model_call = paste0("'",model_call, "+TR'")
-  } else if (is.NA(model) == FALSE){
+  } else if (is.na(model) == FALSE){
     # If a model is provided, use that model
     model_call = model
     # Extend the model to have the +TR command 
@@ -89,19 +89,19 @@ run.tree.mixture.model <- function(alignment_file, partition_file, hypothesis_tr
   }
   
   # Add partition file if present
-  if (is.NA(partition_file) == TRUE){
+  if (is.na(partition_file) == TRUE){
     # If partition_file is NA, do nothing
     partition_call <- ""
-  } else if (is.NA(partition_file) == FALSE){
+  } else if (is.na(partition_file) == FALSE){
     # If prefix is NA, add prefix to command line 
     partition_call <- paste0(" -p ", partition_file, " ")
   } 
   
   # Add prefix if present
-  if (is.NA(prefix) == TRUE){
+  if (is.na(prefix) == TRUE){
     # If prefix is NA, do nothing
     prefix_call <- ""
-  } else if (is.NA(prefix) == FALSE){
+  } else if (is.na(prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
     prefix_call <- paste0(" -pre ", prefix, " ")
   }
