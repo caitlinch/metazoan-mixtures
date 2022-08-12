@@ -187,6 +187,7 @@ if (apply_tree_mixtures == TRUE){
       alignment_file <- paste0(data_dir, grep(dataset, grep("alignment", all_data, value = TRUE), value = TRUE))
       
       # Determine if the alignment is partitioned
+      dataset_list <- all_datasets[[dataset]]
       partitioned_check <- dataset_list$Partitioned
       # If the dataset is partitioned, identify the partition file
       if (partitioned_check == TRUE){
