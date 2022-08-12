@@ -76,6 +76,9 @@ if (estimate_ml_tree == TRUE){
     dataset_ml_tree_dir <- paste0(ml_tree_dir, dataset, "/")
     if (dir.exists(dataset_ml_tree_dir) == FALSE){dir.create(dataset_ml_tree_dir)}
     
+    # Set the working directory to the dataset_ml_tree_dir file (so all iqtree output is stored there)
+    setwd(dataset_ml_tree_dir)
+    
     #Extract the list of information about this dataset
     dataset_list <- all_datasets[[dataset]]
     
