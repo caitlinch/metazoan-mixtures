@@ -88,15 +88,31 @@ if (assemble_constraint_trees == TRUE){
     # Identify model
     model <- dataset_list$Models
     
-    # Set ModelFinder to run if ModelFinder or PartitionFinder were used in the original study
-    if (model == "PartitionFinder" | model == "ModelFinder"){
-      model = "MFP+MERGE -spp"
-      model_id = "ModelFinder"
+    # Get the list of all alignments
+    all_data <- list.files(data_dir)
+    # Identify the alignment for this dataset
+    alignment_file <- paste0(data_dir, grep(dataset, grep("alignment", all_data, value = TRUE), value = TRUE))
+    # Determine if the alignment is partitioned
+    partitioned_check <- dataset_list$Partitioned
+    # If the dataset is partitioned, identify the partition file
+    if (partitioned_check == TRUE){
+      partition_file <- paste0(data_dir, grep(dataset, grep("partitions", all_data, value = TRUE), value = TRUE))
+    } else {
+      partition_file = NA
     }
     
-    # Create the constraint trees and constraint tree information dataframe
-    constraint_df <- create.constraint.trees(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, porifera_taxa,
-                                             sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa)
+    # Iterate through each model to construct a list of constraint trees for each model used in the original study
+    for (m in model){
+      # Set ModelFinder to run if ModelFinder or PartitionFinder were used in the original study
+      if (model == "PartitionFinder" | model == "ModelFinder"){
+        model = "MFP+MERGE -spp"
+        model_id = "ModelFinder"
+      }
+      # Create the constraint trees and constraint tree information dataframe
+      constraint_df <- create.constraint.trees(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
+                                               porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
+                                               alignment_file, partitioned_check, partition_file) 
+    } # end for (m in model)
   } # end for (dataset in datasets_to_run)
 } # end if (assemble_constraint_trees == TRUE)
 
@@ -160,12 +176,15 @@ for (dataset in datasets){
 
 
 
-
 #### Step 6: Apply the mixture of trees method ####
 if (apply_tree_mixtures == TRUE){
-  treemix_command <- paste0(iqtree_path, " -s ", gene_folder, " -m  'LG+TR' -te ", treemix_tree_file, " -nt 20 -pre Whelan2017_LG_5TR_1Q")
-  system(treemix_command)
-}
+  for (dataset in datasets){
+    for (m in model){
+      treemix_command <- paste0(iqtree_path, " -s ", gene_folder, " -m  'LG+TR' -te ", treemix_tree_file, " -nt 20 -pre Whelan2017_LG_5TR_1Q")
+      system(treemix_command)
+    } # end for (m in model)
+  } # end for (dataset in datasets)
+} # end if (apply_tree_mixtures == TRUE)
 
 
 
