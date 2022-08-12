@@ -3,6 +3,14 @@
 
 # Functions for testing and applying constraint trees in iqtree2
 
+
+
+estimate.ml.iqtree <- function(){
+  # Function to call iqtree and estimate a maximum likelihood tree using best practices
+}
+
+
+
 run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
                                             iqtree_path = "iqtree2", prefix = NA, model = NA, num_threads = 1){
   # Function to apply IQ-Tree to a series of alignments with a constraint tree
