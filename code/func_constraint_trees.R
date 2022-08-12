@@ -66,8 +66,51 @@ run.one.constraint.dataframe <- function(csv_file){
 
 
 
-run.tree.mixture.model <- function(){
+run.tree.mixture.model <- function(alignment_file, partition_file, hypothesis_tree_file, prefix, model, number_parallel_threads, iqtree2_tree_mixtures_implementation){
   # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
+  
+  # Add model if present
+  if (is.NA(model) == TRUE){
+    # If no model specified for IQ-Tree, use model finder (-m MFP) command
+    if (is.NA(partition_file) == TRUE){
+      # If no partition file is present, use only the MFP command
+      model_call = "MFP"
+    } else if (is.NA(partition_file) == FALSE){
+      # If a partition file is present, use MFP+MERGE
+      model_call = "MFP+MERGE"
+    }
+    # Extend the model to have the +TR command 
+    model_call = paste0("'",model_call, "+TR'")
+  } else if (is.NA(model) == FALSE){
+    # If a model is provided, use that model
+    model_call = model
+    # Extend the model to have the +TR command 
+    model_call = paste0("'",model_call, "+TR'")
+  }
+  
+  # Add partition file if present
+  if (is.NA(partition_file) == TRUE){
+    # If partition_file is NA, do nothing
+    partition_call <- ""
+  } else if (is.NA(partition_file) == FALSE){
+    # If prefix is NA, add prefix to command line 
+    partition_call <- paste0(" -p ", partition_file, " ")
+  } 
+  
+  # Add prefix if present
+  if (is.NA(prefix) == TRUE){
+    # If prefix is NA, do nothing
+    prefix_call <- ""
+  } else if (is.NA(prefix) == FALSE){
+    # If prefix is NA, add prefix to command line 
+    prefix_call <- paste0(" -pre ", prefix, " ")
+  }
+  
+  # Assemble the command for the tree mixtures model
+  treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m  ", model_call, 
+                            " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+  # Call IQ-Tree2 with the command
+  system(treemix_command)
   
 }
 
@@ -75,7 +118,7 @@ run.tree.mixture.model <- function(){
 
 create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
-                                    alignment_file, partitioned_check, partition_file){
+                                    alignment_file, partitioned_check, partition_file, iqtree_path){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
   
   ## Hypothesis 1: Ctenophora-sister
