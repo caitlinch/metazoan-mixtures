@@ -10,6 +10,13 @@
 # constraint_tree_dir     <- folder to store constraint trees in
 # number_parallel_threads <- number of cores to use for parallel processes
 
+# datasets                <- List of identifiers for datasets (first author surname + year of publication)
+# datasets_to_run         <- List of dataset identifiers to run through pipeline. Can contain all datasets (if datasets_to_run = datasets), or a selected subset
+
+# assemble_constraint_trees  <- Whether to assemble the constraint trees using the taxa from each dataset (TRUE or FALSE)
+# estimate_hypothesis_trees  <- Whether to run IQ-Tree with the constraint trees to estimate an ML tree for each constraint (TRUE or FALSE)
+# apply_tree_mixtures        <- Whether to apply the mixture of trees model to the hypothesis trees (TRUE or FALSE)
+
 location = "local"
 if (location == "local"){
   main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
@@ -26,8 +33,11 @@ if (location == "local"){
   number_parallel_threads = 20
 }
 
+datasets <- c("Whelan2017")
+datasets_to_run <- datasets
+
 assemble_constraint_trees <- FALSE
-estimate_constraint_trees <- FALSE
+estimate_hypothesis_trees <- FALSE
 apply_tree_mixtures <- TRUE
 
 
@@ -162,7 +172,7 @@ if (assemble_constraint_trees == TRUE){
 
 
 #### Step 4: Estimate trees with constraint trees ####
-if (estimate_constraint_trees == TRUE){
+if (estimate_hypothesis_trees == TRUE){
   ## For Whelan2017 data:
   # Set dataset name
   dataset = "Whelan2017"
