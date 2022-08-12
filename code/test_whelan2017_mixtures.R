@@ -58,42 +58,6 @@ if (assemble_constraint_trees == TRUE){
   dataset_constraint_tree_dir <- paste0(constraint_tree_dir, dataset, "/")
   if (dir.exists(dataset_constraint_tree_dir) == FALSE){dir.create(dataset_constraint_tree_dir)}
   
-  # All taxa
-  # Identify which taxa are in which clades
-  bilateria_taxa = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster",
-                     "Daphnia_pulex")
-  cnidaria_taxa = c("Hydra_vulgaris", "Bolocera_tuediae", "Aiptasia_pallida", "Hormathia_digitata", "Nematostella_vectensis", "Acropora_digitifera",
-                    "Eunicella_verrucosa", "Hydra_viridissima", "Hydra_oligactis", "Physalia_physalia", "Abylopsis_tetragona",
-                    "Craseo_lathetica", "Nanomia_bijuga", "Agalma_elegans", "Periphyla_periphyla")
-  placozoa_taxa = c("Trichoplax_adhaerens")
-  porifera_taxa = c("Cliona_varians", "Sycon_coactum", "Sycon_ciliatum", "Corticium_candelabrum", "Oscarella_carmela", 
-                    "Hyalonema_populiferum", "Aphrocallistes_vastus", "Rossella_fibulata", "Sympagella_nux", "Ircinia_fasciculata",
-                    "Chondrilla_nucula", "Amphimedon_queenslandica", "Petrosia_ficiformis", "Spongilla_lacustris", 
-                    "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", "Crella_elegans",
-                    "Kirkpatrickia_variolosa")
-  ctenophora_taxa = c("Euplokamis_dunlapae", "Vallicula_sp", "Coeloplana_astericola", "Hormiphora_californica", "Hormiphora_palmata",
-                      "Pleurobrachia_pileus", "Pleurobrachia_bachei", "Pleurobrachia_sp_South_Carolina_USA", "Cydippida_sp_Maryland_USA",
-                      "Callianira_Antarctica", "Mertensiidae_sp_Antarctica", "Mertensiidae_sp_Washington_USA", "Cydippida_sp",
-                      "Dryodora_glandiformis", "Lobatolampea_tetragona", "Beroe_abyssicola", "Beroe_sp_Antarctica", "Beroe_ovata",
-                      "Beroe_sp_Queensland_Australia", "Beroe_forskalii", "Ocyropsis_sp_Bimini_Bahamas", "Ocyropsis_crystallina",
-                      "Ocyropsis_sp_Florida_USA", "Bolinopsis_infundibulum", "Mnemiopsis_leidyi", "Bolinopsis_ashleyi", 
-                      "Lobata_sp_Punta_Arenas_Argentina", "Eurhamphaea_vexilligera", "Cestum_veneris", "Ctenophora_sp_Florida_USA")
-  outgroup_taxa = c("Salpingoeca_pyxidium", "Monosiga_ovata", "Acanthoeca_sp", "Salpingoeca_rosetta", "Monosiga_brevicolis")
-  # Break sponges into two groups to allow for paraphyly - based on Whelan et al (2017) main figure
-  sponges_1_taxa = c("Sycon_coactum", "Sycon_ciliatum", "Oscarella_carmela", "Corticium_candelabrum")
-  sponges_2.1_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
-  sponges_2.2_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians",
-                       "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", 
-                       "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
-  sponges_2_taxa = c(sponges_2.1_taxa, sponges_2.2_taxa)
-  porifera_taxa = c(sponges_1_taxa, sponges_2.1_taxa, sponges_2.2_taxa)
-
-  sponges_calcarea_taxa = c("Sycon_coactum", "Sycon_ciliatum")
-  sponges_homoscleromorpha_taxa = c("Oscarella_carmela", "Corticium_candelabrum")
-  sponges_hexactinellida_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
-  sponges_demospongiae_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians", 
-                                "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis",
-                                "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
   
   ## Hypothesis 1: Ctenophora-sister
   # Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, (placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
