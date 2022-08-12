@@ -27,7 +27,8 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
                                                    "Mycale_phylophylla", "Latrunculia_apicalis", "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica"),
                         "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                         "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
-                        "Models" = c("PartitionFinder")
+                        "Models" = c("PartitionFinder"),
+                        "Partitioned" = TRUE
 )
 
 # Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
