@@ -14,6 +14,7 @@
 # datasets                <- List of identifiers for datasets (first author surname + year of publication)
 # datasets_to_run         <- List of dataset identifiers to run through pipeline. Can contain all datasets (if datasets_to_run = datasets), or a selected subset
 
+# estimate_ml_tree           <- Whether to run IQ-Tree to estimate an ML tree for each dataset (TRUE or FALSE)
 # assemble_constraint_trees  <- Whether to assemble the constraint trees using the taxa from each dataset (TRUE or FALSE)
 # estimate_hypothesis_trees  <- Whether to run IQ-Tree with the constraint trees to estimate an ML tree for each constraint (TRUE or FALSE)
 # apply_tree_mixtures        <- Whether to apply the mixture of trees model to the hypothesis trees (TRUE or FALSE)
@@ -22,6 +23,7 @@ location = "local"
 if (location == "local"){
   main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   data_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/02_Data_processed/"
+  ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_ml_trees/"
   constraint_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_hypothesis_trees/"
   iqtree2 <- "iqtree2"
   iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.6.mix/iqtree-2.2.0.6.mix-MacOSX/bin/iqtree2"
@@ -29,6 +31,7 @@ if (location == "local"){
 } else if (location == "soma"){
   main_dir <- "/data/caitlin/metazoan-mixtures/"
   data_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
+  ml_tree_dir <- "/data/caitlin/metazoan-mixtures/ml_trees/"
   constraint_tree_dir <- "/data/caitlin/metazoan-mixtures/constraint_trees/"
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.6.mix-Linux/bin/iqtree2"
@@ -38,6 +41,7 @@ if (location == "local"){
 datasets <- c("Whelan2017")
 datasets_to_run <- datasets
 
+estimate_ml_tree <- FALSE
 assemble_constraint_trees <- FALSE
 estimate_hypothesis_trees <- FALSE
 apply_tree_mixtures <- TRUE
@@ -65,7 +69,37 @@ if (dir.exists(constraint_tree_dir) == FALSE){dir.create(constraint_tree_dir)}
 
 
 
-#### Step 3: Prepare constraint trees ####
+#### Step 3: Estimate maximum likelihood trees with best practice ####
+if (estimate_ml_tree == TRUE){
+  for (dataset in datasets_to_run){
+    # Create folder for each dataset inside the constraint tree folder
+    dataset_ml_tree_dir <- paste0(ml_tree_dir, dataset, "/")
+    if (dir.exists(dataset_ml_tree_dir) == FALSE){dir.create(dataset_ml_tree_dir)}
+    
+    #Extract the list of information about this dataset
+    dataset_list <- all_datasets[[dataset]]
+    
+    # Get the list of all alignments
+    all_data <- list.files(data_dir)
+    # Identify the alignment for this dataset
+    alignment_file <- paste0(data_dir, grep(dataset, grep("alignment", all_data, value = TRUE), value = TRUE))
+    # Determine if the alignment is partitioned
+    partitioned_check <- dataset_list$Partitioned
+    # If the dataset is partitioned, identify the partition file
+    if (partitioned_check == TRUE){
+      partition_file <- paste0(data_dir, grep(dataset, grep("partitions", all_data, value = TRUE), value = TRUE))
+    } else {
+      partition_file = NA
+    }
+    
+    
+    
+  } # end for (dataset in datasets_to_run)
+} # end if (estimate_ml_tree == TRUE)
+
+
+
+#### Step 4: Prepare constraint trees ####
 if (assemble_constraint_trees == TRUE){
   for (dataset in datasets_to_run){
     
@@ -118,7 +152,7 @@ if (assemble_constraint_trees == TRUE){
 
 
 
-#### Step 4: Estimate trees with constraint trees ####
+#### Step 5: Estimate trees with constraint trees ####
 if (estimate_hypothesis_trees == TRUE){
   for (dataset in datasets_to_run){
     
@@ -143,7 +177,7 @@ if (estimate_hypothesis_trees == TRUE){
 
 
 
-#### Step 5: Collate trees ####
+#### Step 6: Collate trees ####
 for (dataset in datasets){
   for (m in model){
     # List all hypothesis trees
@@ -176,7 +210,7 @@ for (dataset in datasets){
 
 
 
-#### Step 6: Apply the mixture of trees method ####
+#### Step 7: Apply the mixture of trees method ####
 if (apply_tree_mixtures == TRUE){
   for (dataset in datasets){
     for (m in model){
