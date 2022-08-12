@@ -208,7 +208,8 @@ if (apply_tree_mixtures == TRUE){
       prefix <- paste0(dataset, "_", model, "_7TR_R_1Q")
       
       # Call IQ-Tree and run the mixture of trees model
-      run.tree.mixture.model(alignment_file, partition_file, hypothesis_tree_file, prefix, model, number_parallel_threads, iqtree2_tm)
+      run.tree.mixture.model(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
+                             prefix, model, number_parallel_threads, iqtree2_tm)
         
     } # end for (m in model)
   } # end for (dataset in datasets)

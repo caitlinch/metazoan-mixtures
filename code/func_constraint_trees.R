@@ -66,7 +66,8 @@ run.one.constraint.dataframe <- function(csv_file){
 
 
 
-run.tree.mixture.model <- function(alignment_file, partition_file, hypothesis_tree_file, prefix, model, number_parallel_threads, iqtree2_tree_mixtures_implementation){
+run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
+                                   prefix, model, number_parallel_threads, iqtree2_tree_mixtures_implementation){
   # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
   
   # Add model if present
@@ -106,9 +107,16 @@ run.tree.mixture.model <- function(alignment_file, partition_file, hypothesis_tr
     prefix_call <- paste0(" -pre ", prefix, " ")
   }
   
-  # Assemble the command for the tree mixtures model
-  treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m  ", model_call, 
-                            " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+  if (use.partition == FALSE){
+    # Assemble the command for the tree mixtures model
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, " -m  ", model_call, 
+                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+  } else if (use.partition == TRUE){
+    # Assemble the command for the tree mixtures model
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m  ", model_call, 
+                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+  }
+  
   # Call IQ-Tree2 with the command
   system(treemix_command)
   
