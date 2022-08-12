@@ -3,7 +3,8 @@
 
 # Functions for testing and applying constraint trees in iqtree2
 
-run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, iqtree_path, model = NA, num_threads = 1, prefix = NA){
+run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
+                                            iqtree_path = "iqtree2", prefix = NA, model = NA, num_threads = 1){
   # Function to apply IQ-Tree to a series of alignments with a constraint tree
   
   # Set model for IQ-Tree run
@@ -15,12 +16,23 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
     iq_model = model
   }
   
-  # Create command line for IQ-Tree2
-  if (is.na(prefix) == TRUE){
-    iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads)
-  } else if (is.na(prefix) == FALSE){
-    iqtree_call <- paste0(iqtree_path, " -s ", alignment_path, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  " --prefix ", prefix)
-  }
+  # Add partition file if present
+  if (partitioned_check == FALSE){
+    partition_call <- ""
+  } else if (partitioned_check == TRUE){
+    partition_call <- paste0(" -p ", partition_file, " ")
+  } 
+  
+  # Add prefix if present
+  if (is.NA(prefix) == TRUE){
+    # If prefix is NA, do nothing
+    prefix_call <- ""
+  } else if (partitioned_check == TRUE){
+    # If prefix is NA, add prefix to command line 
+    prefix_call <- paste0(" --prefix ", prefix, " ")
+  } 
+  
+  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  prefix_call)
   
   # Run IQ-Tree
   system(iqtree_call)
@@ -36,6 +48,7 @@ run.one.constraint.tree <- function(index, df){
   
   # Feed row information into function call
   run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
+                                  partitioned_check = row$partitioned_check, partition_file = row$partition_file, 
                                   iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
                                   num_threads = row$num_threads)
 }
@@ -53,8 +66,16 @@ run.one.constraint.dataframe <- function(csv_file){
 
 
 
-create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, porifera_taxa,
-                                    sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa){
+run.tree.mixture.model <- function(){
+  # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
+  
+}
+
+
+
+create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
+                                    porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
+                                    alignment_file, partitioned_check, partition_file){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
   
   ## Hypothesis 1: Ctenophora-sister
@@ -176,13 +197,15 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
   constraint_df <- data.frame(constraint_tree_id = 1:7,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", 1:7, ".nex"),
                               constraint_prefixes = paste0(dataset, "_", model, "_ML_H", 1:7),
-                              alignment_path = data_dir,
+                              alignment_path = alignment_file,
                               model = model,
                               iqtree_path = iqtree_path,
                               constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
                                                    constraint_tree_4, constraint_tree_5, constraint_tree_6,
                                                    constraint_tree_7),
-                              num_threads = number_parallel_threads)
+                              num_threads = number_parallel_threads,
+                              partitioned = partitioned_check,
+                              partition_file = partition_file)
   
   # Write dataframe of information about constraint trees
   constraint_df_path <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id, "_constraint_tree_parameters.csv")
