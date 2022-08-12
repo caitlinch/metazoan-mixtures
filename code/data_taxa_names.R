@@ -3,9 +3,6 @@
 
 # File to store the taxa names and classifications for the Metazoan datasets used for analysis
 
-# Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
-all_taxa <- list("Whelan2017" = whelan2017_taxa_list)
-
 # For Whelan et. al. (2017):
 whelan2017_taxa_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
                              "Cnidaria" = c("Hydra_vulgaris", "Bolocera_tuediae", "Aiptasia_pallida", "Hormathia_digitata", "Nematostella_vectensis", "Acropora_digitifera", 
@@ -31,3 +28,6 @@ whelan2017_taxa_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus
                              "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                              "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae")
 )
+
+# Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
+all_taxa <- list("Whelan2017" = whelan2017_taxa_list)
