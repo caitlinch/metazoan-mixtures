@@ -34,7 +34,7 @@ if (location == "local"){
   ml_tree_dir <- "/data/caitlin/metazoan-mixtures/ml_trees/"
   constraint_tree_dir <- "/data/caitlin/metazoan-mixtures/constraint_trees/"
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree2_tm <- "data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.6.mix-Linux/bin/iqtree2"
+  iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.6.mix-Linux/bin/iqtree2"
   number_parallel_threads = 20
 }
 
