@@ -113,9 +113,12 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
                               " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
   } else if (use.partition == TRUE){
     # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m  ", model_call, 
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m ", model_call, 
                               " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
   }
+  
+  # Change working directories (to store IQ-Tree output files in the right place)
+  setwd(dirname(hypothesis_tree_file))
   
   # Call IQ-Tree2 with the command
   system(treemix_command)
