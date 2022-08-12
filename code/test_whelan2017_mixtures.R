@@ -128,23 +128,36 @@ if (estimate_hypothesis_trees == TRUE){
 
 
 #### Step 5: Collate trees ####
-# Set dataset
-dataset <- "Whelan2017"
-# List all files in the constraint tree directory
-all_dir_files <- list.files(constraint_tree_dir, recursive = TRUE)
-# Remove previous attempts ("Old") or test runs ("Small")
-all_dir_files <- grep("Old", all_dir_files, value = TRUE, invert = TRUE)
-all_dir_files <- grep("Small", all_dir_files, value = TRUE, invert = TRUE)
-# Identify constraint tree files for the specified dataset
-dataset_files <- grep(dataset, all_dir_files, value = TRUE)
-constraint_tree_files <- grep(".treefile", dataset_files, value = TRUE)
-constraint_trees <- grep(".treefile", constraint_tree_files, value = TRUE)
-# Open constraint trees
-ctrees <- read.tree(text = unlist(lapply(paste0(constraint_tree_dir, constraint_trees), readLines))) 
-rooted_ctrees <- root(ctrees, c("Salpingoeca_pyxidium", "Monosiga_ovata", "Acanthoeca_sp", "Salpingoeca_rosetta", "Monosiga_brevicolis"))
-# Write constraint trees
-treemix_tree_file <- paste0(constraint_tree_dir, dataset, "_hypothesis_trees.tre")
-write.tree(rooted_ctrees, file = treemix_tree_file)
+for (dataset in datasets){
+  for (m in model){
+    # List all hypothesis trees
+    all_constraint_tree_dir_files <- list.files(constraint_tree_dir, recursive = TRUE)
+    # Remove any files with "ignore" in the name
+    all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
+    # Find all hypothesis trees for this combination of model and dataset
+    hypothesis_tree_files <- grep(".treefile", grep(dataset, grep(model, all_constraint_tree_dir_files, value = TRUE), value = TRUE), value = TRUE)
+    # Extend file path
+    if (length(hypothesis_tree_files) > 0){
+      hypothesis_tree_files <- paste0(constraint_tree_dir, hypothesis_tree_files)
+    }
+    # Read in hypothesis tree files
+    hypothesis_trees <- lapply(hypothesis_tree_files, read.tree)
+    # Convert hypothesis_trees from a list into a multiPhylo object 
+    class(hypothesis_trees) <- "multiPhylo"
+    # Output the (unrooted) hypothesis trees
+    unrooted_file <- paste0(constraint_tree_dir, dataset, "_", model, "_unrooted_hypothesis_trees.tre")
+    write.tree(hypothesis_trees, file = unrooted_file)
+    # Identify the outgroup for this dataset
+    dataset_list <- all_datasets[[dataset]]
+    outgroup <- dataset_list$Outgroup
+    # Root hypothesis trees
+    rooted_hypothesis_trees <- root(hypothesis_trees, outgroup)
+    # Output the rooted hypothesis trees
+    rooted_file <- paste0(constraint_tree_dir, dataset, "_", model, "_rooted_hypothesis_trees.tre")
+    write.tree(hypothesis_trees, file = rooted_file)
+  } # end for (m in model)
+} # end for (dataset in datasets)
+
 
 
 
