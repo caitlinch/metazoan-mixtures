@@ -42,6 +42,17 @@ run.one.constraint.tree <- function(index, df){
 
 
 
+run.one.constraint.dataframe <- function(csv_file){
+  # Quick function to take in a dataframe, and estimate hypothesis trees by feeding it row by row into the run.one.constraint.tree function
+  
+  # Open the dataframe
+  df <- read.csv(csv_file)
+  # Estimate an ML tree in IQ-Tree for each constraint tree
+  lapply(1:nrow(df), run.one.constraint.tree, df)
+}
+
+
+
 create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, porifera_taxa,
                                     sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model

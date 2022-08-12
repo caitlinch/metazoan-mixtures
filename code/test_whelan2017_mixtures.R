@@ -97,30 +97,33 @@ if (assemble_constraint_trees == TRUE){
     # Create the constraint trees and constraint tree information dataframe
     constraint_df <- create.constraint.trees(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, porifera_taxa,
                                              sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa)
-  }
-}
+  } # end for (dataset in datasets_to_run)
+} # end if (assemble_constraint_trees == TRUE)
 
 
 
 #### Step 4: Estimate trees with constraint trees ####
 if (estimate_hypothesis_trees == TRUE){
-  ## For Whelan2017 data:
-  # Set dataset name
-  dataset = "Whelan2017"
-  
-  # Create folder for each dataset inside the constraint tree folder
-  dataset_constraint_tree_dir <- paste0(constraint_tree_dir, dataset, "/")
-  if (dir.exists(dataset_constraint_tree_dir) == FALSE){dir.create(dataset_constraint_tree_dir)}
-  
-  
-  # Set working directory to dataset_constraint_tree_dir so IQ-Tree output is saved with the constraint trees
-  setwd(dataset_constraint_tree_dir)
-  
-  # For trees with all 76 taxa
-  estimate_trees_df <- read.csv(paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_parameters.csv"))
-  # Estimate an ML tree in IQ-Tree for each constraint tree
-  lapply(1:nrow(estimate_trees_df), run.one.constraint.tree, estimate_trees_df)
-}
+  for (dataset in datasets_to_run){
+    
+    # Create folder for each dataset inside the constraint tree folder (if it doesn't already exist)
+    dataset_constraint_tree_dir <- paste0(constraint_tree_dir, dataset, "/")
+    if (dir.exists(dataset_constraint_tree_dir) == FALSE){dir.create(dataset_constraint_tree_dir)}
+    
+    # Set working directory to dataset_constraint_tree_dir so IQ-Tree output is saved with the constraint trees
+    setwd(dataset_constraint_tree_dir)
+    
+    # Find a list of the constraint dataframe files
+    all_param_files <- grep(".csv",list.files(dataset_constraint_tree_dir), value = TRUE)
+    # Select the constraint tree files for this dataset
+    dataset_param_files <- grep(dataset, all_param_files, value = TRUE)
+    # Run one dataset at a time
+    if (length(dataset_param_files) > 0){
+      lapply(paste0(dataset_constraint_tree_dir, dataset_param_files), run.one.constraint.dataframe)
+    } # end if (length(dataset_param_files) > 0)
+    
+  } # end for (dataset in datasets_to_run)
+} # end if (estimate_hypothesis_trees == TRUE)
 
 
 
