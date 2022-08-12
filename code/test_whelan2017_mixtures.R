@@ -47,7 +47,7 @@ apply_tree_mixtures <- TRUE
 source(paste0(main_dir, "code/func_constraint_trees.R"))
 
 # Source clade and taxa file
-source(paste0(main_dir, "code/data_taxa_names.R"))
+source(paste0(main_dir, "code/data_dataset_info.R"))
 
 # Open packages
 library(parallel)
