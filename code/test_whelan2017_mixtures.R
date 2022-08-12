@@ -105,7 +105,7 @@ if (assemble_constraint_trees == TRUE){
     for (m in model){
       # Set ModelFinder to run if ModelFinder or PartitionFinder were used in the original study
       if (model == "PartitionFinder" | model == "ModelFinder"){
-        model = "MFP+MERGE -spp"
+        model = "MFP+MERGE"
         model_id = "ModelFinder"
       }
       # Create the constraint trees and constraint tree information dataframe
