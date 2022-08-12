@@ -5,8 +5,30 @@
 
 
 
-estimate.ml.iqtree <- function(){
+estimate.ml.iqtree <- function(iqtree2_path, alignment_file, partition_file, prefix, number_parallel_threads, number_of_bootstraps){
   # Function to call iqtree and estimate a maximum likelihood tree using best practices
+  
+  # Add partition file if present
+  if (is.na(partition_file) == TRUE){
+    # If the partition file is NA, there is no partition file for this alignment
+    partition_call <- ""
+    # Tell IQ-Tree to use ModelFinder
+    model = "MFP"
+  } else if (is.na(partition_file) == FALSE){
+    # If the partition file is not NA, add the command for a partition file to the command line for iqtree
+    partition_call <- paste0(" -p ", partition_file, " ")
+    # If there is a partition file, set the model selection to includea merging step
+    model = "MFP+MERGE"
+  } 
+  
+  # Assemble the command line
+  iqtree_call <- paste0(iqtree2_path, " -s ", alignment_file, partition_call, " -m ", model, " -pre ", prefix, 
+                        " -nt ", number_parallel_threads, " -B ", number_of_bootstraps)
+  # Print the iqtree2 command
+  print(iqtree_call)
+  
+  # Call iqtree to estimate the tree
+  system(iqtree_call)
 }
 
 
