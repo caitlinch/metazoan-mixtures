@@ -27,7 +27,7 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   if (is.NA(prefix) == TRUE){
     # If prefix is NA, do nothing
     prefix_call <- ""
-  } else if (partitioned_check == TRUE){
+  } else if (is.NA(prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
     prefix_call <- paste0(" --prefix ", prefix, " ")
   } 
