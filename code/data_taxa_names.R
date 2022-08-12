@@ -25,21 +25,6 @@ whelan2017_taxa_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus
                              "Sponges_Hexactinellida" = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus"),
                              "Sponges_Demospongiae" = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians", "Pseudospongosorites_suberitoides", 
                                                         "Mycale_phylophylla", "Latrunculia_apicalis", "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica"),
-                             "Sponges_1" = c("Sycon_coactum", "Sycon_ciliatum", "Oscarella_carmela", "Corticium_candelabrum")
+                             "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                             "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae")
 )
-
-# Break sponges into two groups to allow for paraphyly - based on Whelan et al (2017) main figure
-sponges_1_taxa = c("Sycon_coactum", "Sycon_ciliatum", "Oscarella_carmela", "Corticium_candelabrum")
-sponges_2.1_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
-sponges_2.2_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians",
-                     "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis", 
-                     "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
-sponges_2_taxa = c(sponges_2.1_taxa, sponges_2.2_taxa)
-porifera_taxa = c(sponges_1_taxa, sponges_2.1_taxa, sponges_2.2_taxa)
-
-sponges_calcarea_taxa = c("Sycon_coactum", "Sycon_ciliatum")
-sponges_homoscleromorpha_taxa = c("Oscarella_carmela", "Corticium_candelabrum")
-sponges_hexactinellida_taxa = c("Hyalonema_populiferum", "Sympagella_nux", "Rossella_fibulata", "Aphrocallistes_vastus")
-sponges_demospongiae_taxa = c("Ircinia_fasciculata", "Chondrilla_nucula", "Spongilla_lacustris", "Cliona_varians", 
-                              "Pseudospongosorites_suberitoides", "Mycale_phylophylla", "Latrunculia_apicalis",
-                              "Kirkpatrickia_variolosa", "Crella_elegans", "Petrosia_ficiformis", "Amphimedon_queenslandica")
