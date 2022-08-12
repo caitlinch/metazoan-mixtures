@@ -44,6 +44,8 @@ apply.one.constraint.tree <- function(index, df){
 
 create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, porifera_taxa,
                                     sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa){
+  # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
+  
   ## Hypothesis 1: Ctenophora-sister
   # Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, (placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
   # Construct constraint tree
