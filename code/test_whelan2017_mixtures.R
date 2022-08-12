@@ -111,7 +111,7 @@ if (assemble_constraint_trees == TRUE){
       # Create the constraint trees and constraint tree information dataframe
       constraint_df <- create.constraint.trees(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                                porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
-                                               alignment_file, partitioned_check, partition_file) 
+                                               alignment_file, partitioned_check, partition_file, iqtree2) 
     } # end for (m in model)
   } # end for (dataset in datasets_to_run)
 } # end if (assemble_constraint_trees == TRUE)
@@ -180,11 +180,42 @@ for (dataset in datasets){
 if (apply_tree_mixtures == TRUE){
   for (dataset in datasets){
     for (m in model){
-      treemix_command <- paste0(iqtree_path, " -s ", gene_folder, " -m  'LG+TR' -te ", treemix_tree_file, " -nt 20 -pre Whelan2017_LG_5TR_1Q")
-      system(treemix_command)
+      # Get the list of all alignments
+      all_data <- list.files(data_dir)
+      
+      # Identify the alignment for this dataset
+      alignment_file <- paste0(data_dir, grep(dataset, grep("alignment", all_data, value = TRUE), value = TRUE))
+      
+      # Determine if the alignment is partitioned
+      partitioned_check <- dataset_list$Partitioned
+      # If the dataset is partitioned, identify the partition file
+      if (partitioned_check == TRUE){
+        partition_file <- paste0(data_dir, grep(dataset, grep("partitions", all_data, value = TRUE), value = TRUE))
+      } else {
+        partition_file = NA
+      }
+      
+      # Get the list of all hypothesis tree files
+      all_trees <- list.files(constraint_tree_dir)
+      # Identify the hypothesis tree file for this dataset/model combination 
+      hypothesis_tree_file <- grep("_rooted", grep(dataset, grep(model, all_trees, value = TRUE), value = TRUE), value = TRUE)
+      # Construct the full file name for the hypothesis tree file
+      if (length(hypothesis_tree_file) > 0){hypothesis_tree_file <- paste0(constraint_tree_dir, hypothesis_tree_file)}
+      
+      # Construct a prefix from the dataset/model combination
+      # Prefix structure: dataset; model; # of hypothesis trees; rooted (R) or unrooted (UR); # of Q matrices
+      prefix <- paste0(dataset, "_", model, "_7TR_R_1Q")
+      
+      # Call IQ-Tree and run the mixture of trees model
+      run.tree.mixture.model(alignment_file, partition_file, hypothesis_tree_file, prefix, model, number_parallel_threads, iqtree2_tm)
+        
     } # end for (m in model)
   } # end for (dataset in datasets)
 } # end if (apply_tree_mixtures == TRUE)
+
+
+
+
 
 
 
