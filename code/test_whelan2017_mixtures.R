@@ -119,7 +119,7 @@ if (estimate_hypothesis_trees == TRUE){
   # For trees with all 76 taxa
   estimate_trees_df <- read.csv(paste0(dataset_constraint_tree_dir, dataset, "_constraint_tree_parameters.csv"))
   # Estimate an ML tree in IQ-Tree for each constraint tree
-  lapply(1:nrow(estimate_trees_df), apply.one.constraint.tree, estimate_trees_df)
+  lapply(1:nrow(estimate_trees_df), run.one.constraint.tree, estimate_trees_df)
 }
 
 
