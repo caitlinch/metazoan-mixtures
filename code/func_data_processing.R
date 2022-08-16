@@ -3,22 +3,21 @@
 
 # Functions for manipulating, processing, and preparing datasets
 
-extract.partition.model.dataframe <- function(partition_file, paper_id, output.model.chunks = FALSE){
+create.model.dataframe <- function(model_vector, output.counts = FALSE, output.model.chunks = FALSE){
   # Function to read in a partition file and return the list of models applied to the charsets
   
-  # Extract all the models used in this file
-  models <- extract.partition.models(partition_file)
-  
   # Identify how many times each model was used
-  model_t <- table(models)
+  model_t <- table(model_vector)
   model_count <- as.numeric(model_t)
   model_name <- names(model_t)
   
-  # Construct a dataframe with the model name and information
-  model_df <- data.frame(paper_id = paper_id,
-                         partition_file = basename(partition_file),
-                         model = model_name,
-                         count = model_count)
+  # Construct a dataframe with the model name (and counts if required)
+  if (output.counts == TRUE){
+    model_df <- data.frame(model = model_name,
+                           count = model_count)
+  } else if (output.counts == FALSE){
+    model_df <- data.frame(model = model_name)
+  }
   # Get the starting names from the model_df
   model_df_init_names <- names(model_df)
   
