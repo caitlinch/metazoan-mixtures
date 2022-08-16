@@ -3,23 +3,11 @@
 
 # Functions for manipulating, processing, and preparing datasets
 
-extract.partition.models <- function(partition_file, paper_id, output.model.chunks = FALSE){
+extract.partition.model.dataframe <- function(partition_file, paper_id, output.model.chunks = FALSE){
   # Function to read in a partition file and return the list of models applied to the charsets
   
-  # Open the partition file
-  p <- readLines(partition_file)
-  # Find the "charpartition" section (this lists the model for each defined charset)
-  start_ind <- grep("charpartition", p, ignore.case = T)
-  # Find the end of the charpartition section (find the line containing "end" that is after the start of the charpartition section)
-  end_ind <- grep("end", p, ignore.case = T)[which(grep("end", p, ignore.case = T) > start_ind)]
-  # Extract all lines in the charpartition section
-  charpartition_lines <- p[start_ind:end_ind]
-  
-  # Identify all lines containing a colon (":") - these will specify a model for a charset
-  model_lines <- grep(":", charpartition_lines, value = T)
-  # Split the lines at the colon and select the first section of each line
-  models <- unlist(lapply(model_lines, 
-                          function(l){gsub(" ", "", strsplit(l, ":")[[1]][[1]])} ))
+  # Extract all the models used in this file
+  models <- extract.partition.models(partition_file)
   
   # Identify how many times each model was used
   model_t <- table(models)
@@ -58,6 +46,30 @@ extract.partition.models <- function(partition_file, paper_id, output.model.chun
   
   # Return model dataframe
   return(model_df)
+}
+
+
+
+extract.partition.models <- function(partition_file){
+  # Function to read in a partition file and return the list of models applied to the charsets
+  
+  # Open the partition file
+  p <- readLines(partition_file)
+  # Find the "charpartition" section (this lists the model for each defined charset)
+  start_ind <- grep("charpartition", p, ignore.case = T)
+  # Find the end of the charpartition section (find the line containing "end" that is after the start of the charpartition section)
+  end_ind <- grep("end", p, ignore.case = T)[which(grep("end", p, ignore.case = T) > start_ind)]
+  # Extract all lines in the charpartition section
+  charpartition_lines <- p[start_ind:end_ind]
+  
+  # Identify all lines containing a colon (":") - these will specify a model for a charset
+  model_lines <- grep(":", charpartition_lines, value = T)
+  # Split the lines at the colon and select the first section of each line
+  models <- unlist(lapply(model_lines, 
+                          function(l){gsub(" ", "", strsplit(l, ":")[[1]][[1]])} ))
+  
+  # Return the list of models (one model per charset)
+  return(models)
 }
 
 
