@@ -48,7 +48,7 @@ extract.partition.models <- function(partition_file, paper_id){
   model_df$plus_i <- grepl("\\+I\\+", model_name)
   model_df$plus_g <- grepl("\\+G", model_name)
   # Return model dataframe
-  return(model_dataframe)
+  return(model_df)
 }
 
 
