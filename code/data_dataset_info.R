@@ -43,10 +43,10 @@ redmond_models <- c("C30", "C40", "C50", "C60", "EHO+G", "EX_EHO+G", "EX2+G", "E
                     "LG+C30", "LG+C40", "LG+C50", "LG+C60", "LG+CF4", "LG+F+G4", "LG+F+I+G4", "LG+G4", "LG+I+G4", "LG4M", 
                     "mtZOA+F+G4", "mtZOA+G4", "mtZOA+I+G4", "PMB+G4", "rtREV+G4", "rtREV+I+G4", "UL2+G", "UL3+G", 
                     "WAG+C20", "WAG+C30", "WAG+C40", "WAG+C50", "WAG+C60", "WAG+G4", "WAG+I+G4")
-spreadsheet_models <- c("ModelFinder", "Full partition", "RTRev+G+F", "GTR+G4", "WAG", "WAG+F",
-                        "WAG+CAT", "WAG+C60", "WAG+C50", "WAG+C40", "WAG+C30", "WAG+C20", "WAG+C10",
-                        "LG", "LG+F", "LG+G", "LG+C60", "LG+C50", "LG+C40", "LG+C30", "LG+C20", "LG+C10",
-                        "C20+LG+FO+R4", "C60+LG+FO+R4", "C60+LG+G+F", "PROTGAMMALGF", "PMSF LG+G", 
+spreadsheet_models <- c("ModelFinder", "Full partition", "RTRev+G+F", "GTR+G4", 
+                        "WAG", "WAG+F", "WAG+CAT+G4", "WAG+C60", "WAG+C50", "WAG+C40", "WAG+C30", "WAG+C20", "WAG+C10",
+                        "LG", "LG+F", "LG+G", "LG+G4+F", "LG+C60", "LG+C50", "LG+C40", "LG+C30", "LG+C20", "LG+C10",
+                        "C20+LG+FO+R4", "C60+LG+FO+R4", "C60+LG+G+F", "LG+PMSF+G", 
                         "Poisson+G", "JTT", "JTT+C60", "JTT+C50", "JTT+C40", "JT+C30", "JTT+C20", "JTT+C10",
                         "EX2+G", "EX3+G", "EX_EHO+G", "C60", "C50", "C40", "C30", "C20", "C10", 
                         "UL3+G", "UL2+G", "mtZOA+G4", "LG4M")
