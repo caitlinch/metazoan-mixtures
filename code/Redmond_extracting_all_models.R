@@ -24,7 +24,8 @@ sponge_files <- grep("REA|WEA15|WEA17", all_files, value = T)
 sponge_partition_files <- grep("partition", sponge_files, value = T)
 # Remove recoded analyses
 sponge_partition_files <- grep("RL1|RL2", sponge_partition_files, value = T, invert = T)
-# Extract dataframe of models from all files
-sponge_partition_model_list <- lapply(sponge_partition_files, extract.partition.models, "Redmond2021")
-
+# Extract models from all partition files
+sponge_partition_model_list <- lapply(sponge_partition_files, extract.partition.models)
+# Combine list of partition model dataframes into a single dataframe
+models <- sort(unique(unlist(sponge_partition_model_list)))
 
