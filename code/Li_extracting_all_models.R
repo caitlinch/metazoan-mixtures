@@ -18,8 +18,9 @@ all_files <- list.files(supp_dir, recursive = TRUE, full.names = TRUE)
 files_of_interest <- c(grep("Supplementary_Table_1.csv", all_files, value = TRUE),
                        grep("Supplementary_Table_2.csv", all_files, value = TRUE),
                        grep("Supplementary_Table_5.csv", all_files, value = TRUE))
-# Look at each table in turn
-# Supplementary Table 2
+
+## Look at each table in turn
+# Supplementary Table 1
 st1 <- read.csv(files_of_interest[[2]])
 # Reduce to only AA models (no recoding)
 st1 <- st1[st1$recoding == "aa", ]
@@ -40,9 +41,14 @@ st1_models_1 <- paste0(st1_f$model_rate_matrix, "+", st1_f$model_site_rate_heter
 st1_models_2  <- paste0(st1_no.f$model_equilibrium, "+", st1_no.f$model_rate_matrix, "+", st1_no.f$model_site_rate_hetero)
 # Combine models
 st1_models <- c(st1_models_1, st1_models_2)
-# Remove any duplicate pluses from models
-st1_models <- gsub("\\+\\+", "+", st1_models)
 # Remove any pluses from the models
+st1_models <- unlist(lapply(st1_models, remove.extra.pluses))
+# Reduce to only the unique models
+st1_models <- sort(unique(st1_models))
 
+# Supplementary Table 2
 st2 <- read.csv(files_of_interest[[3]])
+
+
+
 st5 <- read.csv(files_of_interest[[4]])
