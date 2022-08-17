@@ -57,15 +57,6 @@ st2_models <- st2$model
 # Reduce to only the unique models
 st2_models <- unique(st2_models)
 
-## Supplementary Table 5
-#     Summary statistics of CAT substitutional categories inferred from different matrices 
-#     (Table is manually curated from Tracer result for each PhyloBayes analysis).
-st5 <- read.csv(files_of_interest[[4]])
-# Extract list of models 
-st5_models <- st5$model
-# Reduce to only the unique models
-st5_models <- unique(st5_models)
-
 # Combine and collate into single vector
 li_models <- sort(unique(c(st1_models, st2_models, st5_models)))
 
