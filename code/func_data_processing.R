@@ -110,6 +110,9 @@ remove.extra.pluses <- function(m){
   # Paste the model back together using a plus sign
   new_m <- paste(m_split, collapse = "+")
   
-  return(new_m)
+  if (new_m != ""){
+    # Do not return new_m if it is empty ("")
+    return(new_m)
+  }
 }
 
