@@ -16,8 +16,7 @@ source(paste0(main_dir, "code/func_data_processing.R"))
 all_files <- list.files(supp_dir, recursive = TRUE, full.names = TRUE)
 # Extract files that contain information about models
 files_of_interest <- c(grep("Supplementary_Table_1.csv", all_files, value = TRUE),
-                       grep("Supplementary_Table_2.csv", all_files, value = TRUE),
-                       grep("Supplementary_Table_5.csv", all_files, value = TRUE))
+                       grep("Supplementary_Table_2.csv", all_files, value = TRUE))
 
 ### Extract the list of models from each relevant supplementary table:
 ## Supplementary Table 1
@@ -58,5 +57,5 @@ st2_models <- st2$model
 st2_models <- unique(st2_models)
 
 # Combine and collate into single vector
-li_models <- sort(unique(c(st1_models, st2_models, st5_models)))
+li_models <- sort(unique(c(st1_models, st2_models)))
 
