@@ -46,13 +46,18 @@ redmond_models <- c("C30", "C40", "C50", "C60", "EHO+G", "EX_EHO+G", "EX2+G", "E
 li_models <- c("CAT+F81", "CAT+GTR", "CAT+GTR+G", "CAT+Poisson", "CAT+Poisson+G", 
                "Estimated+GTR", "Estimated+GTR+G", "GTR+CAT", "GTR20", "LG+C60", "LG+G+F", "Poisson+C60", 
                "WAG", "WAG+C60", "WAG+CAT+F", "WAG+F", "WAG+G+F")
-spreadsheet_models <- c("ModelFinder", "Full partition", "RTRev+G+F", "GTR+G4", 
+spreadsheet_models <- c("ModelFinder", "RTRev+G+F", "GTR+G4", 
                         "WAG", "WAG+F", "WAG+CAT+G4", "WAG+C60", "WAG+C50", "WAG+C40", "WAG+C30", "WAG+C20", "WAG+C10",
                         "LG", "LG+F", "LG+G", "LG+G4+F", "LG+C60", "LG+C50", "LG+C40", "LG+C30", "LG+C20", "LG+C10",
                         "C20+LG+FO+R4", "C60+LG+FO+R4", "C60+LG+G+F", "LG+PMSF+G", 
                         "Poisson+G", "Poisson+CAT", "Poisson+CAT+G", "JTT", "JTT+C60", "JTT+C50", "JTT+C40", "JTT+C30", "JTT+C20", "JTT+C10",
                         "EX2+G", "EX3+G", "EX_EHO+G", "C60", "C50", "C40", "C30", "C20", "C10", 
                         "UL3+G", "UL2+G", "mtZOA+G4", "LG4M")
-all_models <- sort(unique(c(redmond_models, spreadsheet_models)))
+# Collate all models
+all_models <- c(redmond_models, li_models, spreadsheet_models)
+# Take all models and alphabetize matrix order
+all_models <- unlist(lapply(all_models, sort.model.chunks))
+# Sort and identify unique models
+all_models <- sort(unique(all_models))
 
 
