@@ -95,3 +95,21 @@ get.model.chunk <- function(model, number){
 }
 
 
+
+remove.extra.pluses <- function(m){
+  # Quick function to remove any extra pluses in a model of sequence evolution
+  
+  # Change any double plusses ("++") into a single plus ("+)
+  m <- gsub("\\+\\+", "+", m)
+  
+  # Remove any pluses at the start or the end of the model
+  # Split the model at the plus sign
+  m_split <- strsplit(m, "\\+")[[1]]
+  # Remove any empty objects (i.e. "")
+  m_split <- m_split[m_split != ""]
+  # Paste the model back together using a plus sign
+  new_m <- paste(m_split, collapse = "+")
+  
+  return(new_m)
+}
+
