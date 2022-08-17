@@ -19,8 +19,10 @@ files_of_interest <- c(grep("Supplementary_Table_1.csv", all_files, value = TRUE
                        grep("Supplementary_Table_2.csv", all_files, value = TRUE),
                        grep("Supplementary_Table_5.csv", all_files, value = TRUE))
 
-## Look at each table in turn
-# Supplementary Table 1
+### Extract the list of models from each relevant supplementary table:
+## Supplementary Table 1
+#     Summary of a total of 164 phylogenomic analyses were transcribed from the literature
+#     (Table is converted from analyses_published in Rdata).
 st1 <- read.csv(files_of_interest[[2]])
 # Reduce to only AA models (no recoding)
 st1 <- st1[st1$recoding == "aa", ]
@@ -46,12 +48,24 @@ st1_models <- unlist(lapply(st1_models, remove.extra.pluses))
 # Reduce to only the unique models
 st1_models <- sort(unique(st1_models))
 
-# Supplementary Table 2
+## Supplementary Table 2
+#     Summary of a total of 106 phylogenomic analyses conducted in this study 
+#     (Table is converted from analyses_new in R data).
 st2 <- read.csv(files_of_interest[[3]])
 # Extract list of models 
 st2_models <- st2$model
 # Reduce to only the unique models
 st2_models <- unique(st2_models)
 
-# Supplementary Table 5
+## Supplementary Table 5
+#     Summary statistics of CAT substitutional categories inferred from different matrices 
+#     (Table is manually curated from Tracer result for each PhyloBayes analysis).
 st5 <- read.csv(files_of_interest[[4]])
+# Extract list of models 
+st5_models <- st5$model
+# Reduce to only the unique models
+st5_models <- unique(st5_models)
+
+# Combine and collate into single vector
+li_models <- sort(unique(c(st1_models, st2_models, st5_models)))
+
