@@ -3,7 +3,7 @@
 # Data repository: https://doi.org/10.6084/m9.figshare.12746972
 
 # Input parameters
-# supp_dir <- directory containing supplementary data from Redmond paper(downloaded from repository)
+# supp_dir <- directory containing supplementary data from Redmond and McLysaght (2021) paper (downloaded from repository)
 
 supp_dir <- "/Users/caitlin/Downloads/RedmondMcLysaght2021NatCommsData" 
 mandir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
@@ -15,7 +15,7 @@ source(paste0(main_dir, "code/func_data_processing.R"))
 
 
 
-#### 2. Extract vector of all models used in Redmond 2021 ####
+#### 2. Extract vector of all models used in Redmond and McLysaght 2021 ####
 # List all files in the supplementary data
 all_files <- list.files(supp_dir, recursive = T, full.names = T)
 # Extract files for the three sponge datasets (REA, WEA15 and WEA17)
