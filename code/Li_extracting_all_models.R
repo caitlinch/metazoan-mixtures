@@ -39,16 +39,17 @@ st1$model_site_rate_hetero[st1$model_site_rate_hetero == "GAMMA"] <- "G"
 st1 <- st1[st1$model_equilibrium != "mix", ]
 st1$model_equilibrium[is.na(st1$model_equilibrium)] <- ""
 st1$model_equilibrium[st1$model_equilibrium == "Empritical"] <- "F"
+st1$model_equilibrium[st1$model_equilibrium == "Estimated"] <- "FO"
 # Split into two sections
-st1_f <- st1[st1$model_equilibrium == "F",]
-st1_no.f <- st1[st1$model_equilibrium != "F",]
+st1_f <- st1[st1$model_equilibrium == "F" | st1$model_equilibrium == "FO",]
+st1_no.f <- st1[st1$model_equilibrium != "F" & st1$model_equilibrium != "FO",]
 # Paste models together
 st1_models_1 <- paste0(st1_f$model_rate_matrix, "+", st1_f$model_site_rate_hetero, "+", st1_f$model_equilibrium)
-st1_models_2  <- paste0(st1_no.f$model_equilibrium, "+", st1_no.f$model_rate_matrix, "+", st1_no.f$model_site_rate_hetero)
+st1_models_2  <- paste0(st1_no.f$model_rate_matrix, "+", st1_no.f$model_equilibrium, "+", st1_no.f$model_site_rate_hetero)
 # Combine models
 st1_models <- c(st1_models_1, st1_models_2)
 # Remove any pluses from the models
-st1_models <- unlist(lapply(st1_models, remove.extra.pluses))
+st1_models <- unlist(lapply(st1_models, remove.extra.plusses))
 # Reduce to only the unique models
 st1_models <- sort(unique(st1_models))
 
@@ -63,4 +64,5 @@ st2_models <- sort(unique(st2_models))
 
 # Combine and collate into single vector
 li_models <- sort(unique(c(st1_models, st2_models)))
-
+# Alphabetise models by model chunks
+li_models <- unique(sort(unlist(lapply(li_models, sort.model.chunks))))
