@@ -47,7 +47,7 @@ spreadsheet_models <- c("ModelFinder", "Full partition", "RTRev+G+F", "GTR+G4",
                         "WAG", "WAG+F", "WAG+CAT+G4", "WAG+C60", "WAG+C50", "WAG+C40", "WAG+C30", "WAG+C20", "WAG+C10",
                         "LG", "LG+F", "LG+G", "LG+G4+F", "LG+C60", "LG+C50", "LG+C40", "LG+C30", "LG+C20", "LG+C10",
                         "C20+LG+FO+R4", "C60+LG+FO+R4", "C60+LG+G+F", "LG+PMSF+G", 
-                        "Poisson+G", "JTT", "JTT+C60", "JTT+C50", "JTT+C40", "JTT+C30", "JTT+C20", "JTT+C10",
+                        "Poisson+G", "Poisson+CAT", "Poisson+CAT+G", "JTT", "JTT+C60", "JTT+C50", "JTT+C40", "JTT+C30", "JTT+C20", "JTT+C10",
                         "EX2+G", "EX3+G", "EX_EHO+G", "C60", "C50", "C40", "C30", "C20", "C10", 
                         "UL3+G", "UL2+G", "mtZOA+G4", "LG4M")
 all_models <- sort(unique(c(redmond_models, spreadsheet_models)))
