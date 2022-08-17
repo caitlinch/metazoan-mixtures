@@ -96,7 +96,7 @@ get.model.chunk <- function(model, number){
 
 
 
-remove.extra.pluses <- function(m){
+remove.extra.plusses <- function(m){
   # Quick function to remove any extra pluses in a model of sequence evolution
   
   # Change any double plusses ("++") into a single plus ("+)
