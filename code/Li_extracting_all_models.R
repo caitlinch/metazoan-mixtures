@@ -7,6 +7,7 @@ mandir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/animal
 
 
 #### 1. Prepare variables, packages, and functions
+# Source functions for extracting models and processing datasets
 source(paste0(main_dir, "code/func_data_processing.R"))
 
 
@@ -22,11 +23,15 @@ files_of_interest <- c(grep("Supplementary_Table_1.csv", all_files, value = TRUE
 ## Supplementary Table 1
 #     Summary of a total of 164 phylogenomic analyses were transcribed from the literature
 #     (Table is converted from analyses_published in Rdata).
-st1 <- read.csv(files_of_interest[[2]])
+st1 <- read.csv(files_of_interest[[1]])
 # Reduce to only AA models (no recoding)
 st1 <- st1[st1$recoding == "aa", ]
 # Remove partitioning models
 st1 <- st1[st1$model_rate_matrix != "data partitioning", ]
+# Remove NAs in the model_rate_matrix
+st1$model_rate_matrix[is.na(st1$model_rate_matrix)] <- ""
+# Remove NAs in the model_site_rate_hetero
+st1$model_site_rate_hetero[is.na(st1$model_site_rate_hetero)] <- ""
 # Relabel the model site rate heterogeneity column
 st1$model_site_rate_hetero[is.na(st1$model_site_rate_hetero)] <- ""
 st1$model_site_rate_hetero[st1$model_site_rate_hetero == "GAMMA"] <- "G"
@@ -50,11 +55,11 @@ st1_models <- sort(unique(st1_models))
 ## Supplementary Table 2
 #     Summary of a total of 106 phylogenomic analyses conducted in this study 
 #     (Table is converted from analyses_new in R data).
-st2 <- read.csv(files_of_interest[[3]])
+st2 <- read.csv(files_of_interest[[2]])
 # Extract list of models 
 st2_models <- st2$model
 # Reduce to only the unique models
-st2_models <- unique(st2_models)
+st2_models <- sort(unique(st2_models))
 
 # Combine and collate into single vector
 li_models <- sort(unique(c(st1_models, st2_models)))
