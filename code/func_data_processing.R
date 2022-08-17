@@ -116,3 +116,23 @@ remove.extra.pluses <- function(m){
   }
 }
 
+
+
+sort.model.chunks <- function(m){
+  # Small function to sort the chunks in a model and return it in a standard order
+  
+  # Break model into chunks
+  m_chunks <- strsplit(m, "\\+")[[1]]
+  # Remove any special chunks
+  # Special chunks: +I, +G, +G4, +FO, +F, +R, +R4
+  main_chunks <- m_chunks[which(!(m_chunks %in% c("FO", "F", "G", "G4", "I", "R", "R4")))]
+  # Identify the special chunks in the model
+  special_chunks <- m_chunks[which((m_chunks %in% c("FO", "F", "G", "G4", "I", "R", "R4")))]
+  # Sort the list of model chunks
+  new_m_vec <- c(sort(main_chunks), special_chunks)
+  # Stick the model chunks together
+  new_m <- paste(new_m_vec, collapse = "+")
+  # Return the new, sorted model
+  return(new_m)
+}
+
