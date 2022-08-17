@@ -48,7 +48,10 @@ st1_models <- sort(unique(st1_models))
 
 # Supplementary Table 2
 st2 <- read.csv(files_of_interest[[3]])
+# Extract list of models 
+st2_models <- st2$model
+# Reduce to only the unique models
+st2_models <- unique(st2_models)
 
-
-
+# Supplementary Table 5
 st5 <- read.csv(files_of_interest[[4]])
