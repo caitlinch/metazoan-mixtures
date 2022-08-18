@@ -30,8 +30,6 @@ st1 <- st1[st1$recoding == "aa", ]
 st1 <- st1[st1$model_rate_matrix != "data partitioning", ]
 # Remove NAs in the model_rate_matrix
 st1$model_rate_matrix[is.na(st1$model_rate_matrix)] <- ""
-# Remove NAs in the model_site_rate_hetero
-st1$model_site_rate_hetero[is.na(st1$model_site_rate_hetero)] <- ""
 # Relabel the model site rate heterogeneity column
 st1$model_site_rate_hetero[is.na(st1$model_site_rate_hetero)] <- ""
 st1$model_site_rate_hetero[st1$model_site_rate_hetero == "GAMMA"] <- "G"
