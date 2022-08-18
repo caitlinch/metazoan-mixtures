@@ -43,9 +43,9 @@ redmond_models <- c("C30", "C40", "C50", "C60", "EHO+G", "EX_EHO+G", "EX2+G", "E
                     "LG+C30", "LG+C40", "LG+C50", "LG+C60", "LG+CF4", "LG+F+G4", "LG+F+I+G4", "LG+G4", "LG+I+G4", "LG4M", 
                     "mtZOA+F+G4", "mtZOA+G4", "mtZOA+I+G4", "PMB+G4", "rtREV+G4", "rtREV+I+G4", "UL2+G", "UL3+G", 
                     "WAG+C20", "WAG+C30", "WAG+C40", "WAG+C50", "WAG+C60", "WAG+G4", "WAG+I+G4")
-li_models <- c("CAT+F81", "CAT+GTR", "CAT+GTR+G", "CAT+Poisson", "CAT+Poisson+G", 
-               "GTR+FO", "GTR+G+FO", "GTR+CAT", "GTR20", "LG+C60", "LG+G+F", "Poisson+C60", 
-               "WAG", "WAG+C60", "WAG+CAT+F", "WAG+F", "WAG+G+F")
+li_models <- c("C60+LG", "C60+Poisson", "C60+WAG", "CAT+F81", "CAT+GTR", "CAT+GTR+G", "CAT+Poisson",
+               "CAT+Poisson+G", "CAT+WAG+F", "GTR+FO", "GTR+G+FO", "GTR20", "LG+G+F", "WAG",        
+               "WAG+F", "WAG+G+F" )
 spreadsheet_models <- c("ModelFinder", "rtRev+G+F", "GTR+G4", 
                         "WAG", "WAG+F", "WAG+CAT+G4", "WAG+C60", "WAG+C50", "WAG+C40", "WAG+C30", "WAG+C20", "WAG+C10",
                         "LG", "LG+F", "LG+G", "LG+G4+F", "LG+C60", "LG+C50", "LG+C40", "LG+C30", "LG+C20", "LG+C10",
