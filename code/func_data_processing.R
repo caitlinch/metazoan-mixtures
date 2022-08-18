@@ -107,14 +107,18 @@ remove.extra.plusses <- function(m){
   m_split <- strsplit(m, "\\+")[[1]]
   # Remove any empty objects (i.e. "")
   m_split <- m_split[m_split != ""]
-  # Paste the model back together using a plus sign
-  new_m <- paste(m_split, collapse = "+")
-  
-  if (new_m != ""){
-    # Do not return new_m if it is empty ("")
-    return(new_m)
-  }
-}
+  # If there are any chunks in the model (i.e. if the model was not a + or ++,),
+  # join together the chunks from the model
+  if (length(m_split) > 0){
+    # Paste the model back together using a plus sign
+    new_m <- paste(m_split, collapse = "+")
+    
+    if (new_m != "" & new_m != "+"){
+      # Do not return new_m if it is empty ("") or a single plus ("+")
+      return(new_m)
+    } # end if (new_m != "" | new_m != "+")
+  } # end if (length(m_split) > 0)
+} # end remove.extra.plusses <- function(m)
 
 
 
