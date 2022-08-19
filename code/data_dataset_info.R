@@ -55,8 +55,6 @@ spreadsheet_models <- c("ModelFinder", "rtRev+G+F", "GTR+G4",
                         "UL3+G", "UL2+G", "mtZOA+G4", "LG4M")
 # Collate all models
 all_models <- c(redmond_models, li_models, spreadsheet_models)
-# Take all models and alphabetize matrix order
-all_models <- unlist(lapply(all_models, sort.model.chunks))
 # Sort and identify unique models
 all_models <- sort(unique(all_models))
 
