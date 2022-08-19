@@ -54,6 +54,13 @@ source(paste0(repo_dir, "code/func_data_processing.R"))
 # Source information about datasets
 source(paste0(repo_dir, "code/data_dataset_info.R"))
 
+# Create an output folder for the maximum likelihood trees
+ml_output_dir <- paste0(output_dir, "ML_trees/")
+if (dir.exists(ml_output_dir) == FALSE){dir.create(ml_output_dir)}
+# Create an output folder for the constraint trees
+constraint_output_dir <- paste0(output_dir, "constraint_trees/")
+if (dir.exists(constraint_output_dir) == FALSE){dir.create(constraint_output_dir)}
+
 # Sort and categorise models of sequence evolution 
 all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks))))
 # Identify unique matrices within the models
@@ -68,8 +75,10 @@ model_components <- model_components[!model_components == "PMSF"]
 
 
 #### 3. Process each dataset for each model of sequence evolution ####
-# Extract the list of alignments
-all_alignments <- list.files(alignment_dir, full.names = T)
+# Extract the list of all files from the folder containing alignments/models/partition files
+all_files <- list.files(alignment_dir, full.names = T)
+# Extract the list of alignments (i.e. files that contain the word "alignment")
+all_alignments <- grep("alignment", all_files, value = T)
 
 # For each alignment:
 for (a in all_alignments){
@@ -79,10 +88,40 @@ for (a in all_alignments){
   # Identify matrix (which alignment file from original reference)
   a_matrix_id <- strsplit(basename(a), "\\.")[[1]][2]
   
+  # Create a new folder in the ML tree folder for output for this dataset
+  a_ml_op_dir <- paste0(ml_output_dir, a_dataset, "/")
+  if (dir.exists(a_ml_op_dir) == FALSE){dir.create(a_ml_op_dir)}
+  
+  # Create a new folder in the constraint folder for output for this dataset
+  a_c_op_dir <- paste0(constraint_output_dir, a_dataset, "/")
+  if (dir.exists(a_c_op_dir) == FALSE){dir.create(a_c_op_dir)}
+  
   # For each of the model components:
   for (m in model_components){
+    # Change directory to the maximum likelihood tree output directory for this dataset
+    # This ensures IQ-Tree output files will be stored in the correct directory
+    setwd(a_ml_op_dir)
+    
+    # Set a prefix for the ML tree for this combination of dataset, matrix, and model
+    a_m_prefix <- paste0(a_dataset, ".", a_matrix_id, ".", m, ".", "ML")
+    
     # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
-    best.model.component.ML.tree
+    estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
+                       prefix = a_m_prefix, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
+                       redo = FALSE, safe = FALSE)
+    
+    # Extract information about this dataset
+    a_info <- all_datasets[[a_dataset]]
+    
+    # Estimate constraint trees 
+    create.constraint.trees(dataset = a_dataset, dataset_constraint_tree_dir = a_c_op_dir, 
+                            model = m, model_id = m, outgroup_taxa = a_info$Outgroup, 
+                            ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
+                            sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
+                            sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
+                            placozoa_taxa = a_info$Placozoa, cnidaria_taxa = a_info$Cnidaria, 
+                            bilateria_taxa = a_info$Bilateria, alignment_file = a, 
+                            partitioned_check = FALSE, partition_file = NA, iqtree_path = iqtree2)
     
     
     
