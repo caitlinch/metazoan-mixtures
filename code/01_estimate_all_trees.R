@@ -102,11 +102,11 @@ for (a in all_alignments){
     setwd(a_ml_op_dir)
     
     # Set a prefix for the ML tree for this combination of dataset, matrix, and model
-    a_m_prefix <- paste0(a_dataset, ".", a_matrix_id, ".", m, ".", "ML")
+    a_m_prefix <- paste0(a_dataset, ".", a_matrix_id, ".", m)
     
     # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
     estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
-                       prefix = a_m_prefix, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
+                       prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = NA,
                        redo = FALSE, safe = FALSE)
     
     # Extract information about this dataset
