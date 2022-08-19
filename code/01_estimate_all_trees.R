@@ -54,13 +54,6 @@ source(paste0(repo_dir, "code/func_data_processing.R"))
 # Source information about datasets
 source(paste0(repo_dir, "code/data_dataset_info.R"))
 
-# Create an output folder for the maximum likelihood trees
-ml_output_dir <- paste0(output_dir, "ML_trees/")
-if (dir.exists(ml_output_dir) == FALSE){dir.create(ml_output_dir)}
-# Create an output folder for the constraint trees
-constraint_output_dir <- paste0(output_dir, "constraint_trees/")
-if (dir.exists(constraint_output_dir) == FALSE){dir.create(constraint_output_dir)}
-
 # Sort and categorise models of sequence evolution 
 all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks))))
 # Identify unique matrices within the models
@@ -88,13 +81,19 @@ for (a in all_alignments){
   # Identify matrix (which alignment file from original reference)
   a_matrix_id <- strsplit(basename(a), "\\.")[[1]][2]
   
-  # Create a new folder in the ML tree folder for output for this dataset
-  a_ml_op_dir <- paste0(ml_output_dir, a_dataset, "/")
+  # Create output folders for this dataset
+  # Create a new folder in the output directory for this dataset
+  a_op_dir <- paste0(output_dir, a_dataset, "/")
+  if (dir.exists(a_op_dir) == FALSE){dir.create(a_op_dir)}
+  # Create a new folder for storing maximum likelihood trees for this dataset
+  a_ml_op_dir <- paste0(a_op_dir, "ML_trees", "/")
   if (dir.exists(a_ml_op_dir) == FALSE){dir.create(a_ml_op_dir)}
-  
-  # Create a new folder in the constraint folder for output for this dataset
-  a_c_op_dir <- paste0(constraint_output_dir, a_dataset, "/")
+  # Create a new folder for storing constraint trees for this dataset
+  a_c_op_dir <- paste0(a_op_dir, "constraint_trees", "/")
   if (dir.exists(a_c_op_dir) == FALSE){dir.create(a_c_op_dir)}
+  # Create a new folder in the constraint folder for output for this dataset
+  a_tm_op_dir <- paste0(a_op_dir, "tree_mixtures", "/")
+  if (dir.exists(a_tm_op_dir) == FALSE){dir.create(a_tm_op_dir)}
   
   # For each of the model components:
   for (m in model_components){
