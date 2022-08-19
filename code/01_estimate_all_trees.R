@@ -11,14 +11,16 @@
 
 #### 1. Input parameters ####
 ## Specify parameters:
-# alignment_dir     <- Directory containing alignments for all data sets
-#                      Alignments have the naming convention dataset.matrix_name.sequence_type.fa
-#                      E.g. Cherryh2022.all_taxa.aa.fa
-# output_dir        <- Directory for IQ-Tree output (trees and tree mixtures)
-# repo_dir          <- Location of caitlinch/metazoan-mixtures github repository
+# alignment_dir       <- Directory containing alignments for all data sets
+#                        Alignments have the naming convention dataset.matrix_name.sequence_type.fa
+#                        E.g. Cherryh2022.all_taxa.aa.fa
+# output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
+# repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
-# iqtree2           <- Location of IQ-Tree2 stable release
-# iqtree_tm         <- Location of IQ-Tree2 MAST release
+# iqtree2             <- Location of IQ-Tree2 stable release
+# iqtree_tm           <- Location of IQ-Tree2 MAST release
+
+# iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
 location = "local"
 if (location == "local"){
@@ -29,6 +31,8 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
+  iqtree_num_threads <- "AUTO"
+  
 } else if (location == "soma"){
   alignment_dir <- ""
   output_dir <- ""
@@ -36,6 +40,8 @@ if (location == "local"){
   
   iqtree2 <- ""
   iqtree2_tm <- ""
+  
+  iqtree_num_threads <- "AUTO"
 }
 
 
@@ -73,7 +79,12 @@ for (a in all_alignments){
   # Identify matrix (which alignment file from original reference)
   a_matrix_id <- strsplit(basename(a), "\\.")[[1]][2]
   
+  # For each of the model components:
   for (m in model_components){
+    # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
+    best.model.component.ML.tree
+    
+    
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
