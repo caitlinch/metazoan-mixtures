@@ -72,7 +72,11 @@ for (a in all_alignments){
   a_dataset <- strsplit(basename(a), "\\.")[[1]][1]
   # Identify matrix (which alignment file from original reference)
   a_matrix_id <- strsplit(basename(a), "\\.")[[1]][2]
-}
+  
+  for (m in model_components){
+    
+  } # end for (m in model_components)
+} # end for (a in all_alignments)
 
 
 # - Take a single alignment:
