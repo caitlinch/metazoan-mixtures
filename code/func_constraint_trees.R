@@ -5,30 +5,57 @@
 
 
 
-estimate.ml.iqtree <- function(iqtree2, alignment_file, partition_file, prefix, number_parallel_threads, number_of_bootstraps){
+estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, partition_file = NA, 
+                               prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA){
   # Function to call iqtree and estimate a maximum likelihood tree using best practices
   
   # Add partition file if present
   if (is.na(partition_file) == TRUE){
     # If the partition file is NA, there is no partition file for this alignment
     partition_call <- ""
-    # Tell IQ-Tree to use ModelFinder
-    model = "MFP"
+    # Check whether a model or mset is specified
+    if (is.NA(mset) == TRUE){
+      # If mset = NA, then no mset option is specified.
+      mset_call = ""
+      # Tell IQ-Tree to use ModelFinder
+      model_call = " -m MFP "
+    } else if (is.NA(mset) == FALSE){
+      # If mset is specified, add mset command
+      mset_call <- paste0(" -mset '", mset, "' ")
+      # Do not use ModelFinder
+      model_call = ""
+    }
   } else if (is.na(partition_file) == FALSE){
     # If the partition file is not NA, add the command for a partition file to the command line for iqtree
     partition_call <- paste0(" -p ", partition_file, " ")
-    # If there is a partition file, set the model selection to includea merging step
-    model = "MFP+MERGE"
+    # If there is a partition file, set the model selection to include a merging step
+    model_call = " -m MFP+MERGE "
+    # There is no mset command (models are already specified in the partition file)
+    mset_call = ""
   } 
   
+  # If prefix is specified, add a prefix command to the command line
+  if (is.na(number_of_bootstraps) == FALSE){
+    prefix_call = paste0(" -pre ", prefix, " ")
+  } else if (is.na(number_of_bootstraps) == TRUE){
+    prefix_call = ""
+  }
+  
+  # If number of bootstraps is specified, add a bootstrap command to the command line
+  if (is.na(number_of_bootstraps) == FALSE){
+    bootstrap_call = paste0(" -B ", number_of_bootstraps, " ")
+  } else if (is.na(number_of_bootstraps) == TRUE){
+    bootstrap_call = ""
+  }
+  
   # Assemble the command line
-  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, " -m ", model, " -pre ", prefix, 
-                        " -nt ", number_parallel_threads, " -B ", number_of_bootstraps)
+  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, prefix_call, 
+                        " -nt ", number_parallel_threads, bootstrap_call)
   # Print the iqtree2 command
   print(iqtree_call)
   
   # Call iqtree to estimate the tree
-  system(iqtree_call)
+  #system(iqtree_call)
 }
 
 
