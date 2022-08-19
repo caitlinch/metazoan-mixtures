@@ -128,6 +128,9 @@ for (a in all_alignments){
                                              partitioned_check = FALSE, partition_file = NA, 
                                              iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
     
+    # Estimate hypothesis trees for each of the constraint trees
+    lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
+    
     
     
   } # end for (m in model_components)
