@@ -118,8 +118,9 @@ for (a in all_alignments){
     setwd(a_c_op_dir)
     
     # Create constraint trees
-    constraint_df <- create.constraint.trees(dataset = a_dataset, dataset_constraint_tree_dir = a_c_op_dir, 
-                                             model = m, model_id = m, outgroup_taxa = a_info$Outgroup, 
+    constraint_df <- create.constraint.trees(dataset = a_dataset, tree_id = a_m_prefix, 
+                                             dataset_constraint_tree_dir = a_c_op_dir, 
+                                             model = m, model_id = m, outgroup_taxa = a_info$Outgroup,
                                              ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
                                              sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
                                              sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
@@ -130,6 +131,9 @@ for (a in all_alignments){
     
     # Estimate hypothesis trees for each of the constraint trees
     lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
+    
+    # Combine hypothesis trees into one file and save
+    combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir)
     
     
     
