@@ -109,6 +109,10 @@ for (a in all_alignments){
                        prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = NA,
                        redo = FALSE, safe = FALSE)
     
+    ## TO DO: extract name of best model from ML tree .iqtree file
+    # Feed best model into estimating constraint trees and into tree mixture
+    best_model <- ""
+    
     # Extract information about this dataset
     a_info <- all_datasets[[a_dataset]]
     
@@ -119,7 +123,7 @@ for (a in all_alignments){
     # Create constraint trees
     constraint_df <- create.constraint.trees(dataset = a_dataset, tree_id = a_m_prefix, 
                                              dataset_constraint_tree_dir = a_c_op_dir, 
-                                             model = m, model_id = m, outgroup_taxa = a_info$Outgroup,
+                                             model = best_model, model_id = m, outgroup_taxa = a_info$Outgroup,
                                              ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
                                              sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
                                              sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
