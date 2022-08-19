@@ -9,7 +9,7 @@
 
 
 
-#### 1. Parameters ####
+#### 1. Input parameters ####
 ## Specify parameters:
 # alignment_dir     <- Directory containing alignments for all datasets
 # output_dir        <- Directory for IQ-Tree output (trees and tree mixtures)
@@ -18,7 +18,7 @@
 # iqtree2           <- Location of IQ-Tree2 stable release
 # iqtree_tm         <- Location of IQ-Tree2 MAST release
 
-location = "soma"
+location = "local"
 if (location == "local"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
@@ -27,14 +27,32 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
-} if (location == "soma"){
+} else if (location == "soma"){
   alignment_dir <- ""
   output_dir <- ""
   repo_dir <- ""
+  
+  iqtree2 <- ""
+  iqtree2_tm <- ""
 }
 
 
-#### 2. Process each dataset for each model of sequence evolution ####
+
+
+#### 2. Prepare functions, variables and packages ####
+# Source functions
+source(paste0(repo_dir, "code/func_constraint_trees.R"))
+source(paste0(repo_dir, "code/func_data_processing.R"))
+
+# Source information about datasets
+source(paste0(repo_dir, "code/data_dataset_info.R"))
+
+# Sort and categorise models of sequence evolution 
+all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks))))
+
+
+
+#### 3. Process each dataset for each model of sequence evolution ####
 # - Take a single alignment:
 #   - Take a single model of sequence evolution
 #     - Use ModelFinder to determine the best model within that model category
