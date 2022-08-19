@@ -15,12 +15,12 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
     # If the partition file is NA, there is no partition file for this alignment
     partition_call <- ""
     # Check whether a model or mset is specified
-    if (is.NA(mset) == TRUE){
+    if (is.na(mset) == TRUE){
       # If mset = NA, then no mset option is specified.
       mset_call = ""
       # Tell IQ-Tree to use ModelFinder
       model_call = " -m MFP "
-    } else if (is.NA(mset) == FALSE){
+    } else if (is.na(mset) == FALSE){
       # If mset is specified, add mset command
       mset_call <- paste0(" -mset '", mset, "' ")
       # Do not use ModelFinder
