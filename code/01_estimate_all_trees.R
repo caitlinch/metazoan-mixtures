@@ -135,6 +135,10 @@ for (a in all_alignments){
     hyp_tree_files <- combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir, 
                                                outgroup_taxa = a_info$Outgroup)
     
+    # Change directory to the tree mixtures output directory for this dataset
+    # This ensures IQ-Tree output files will be stored in the correct directory
+    setwd(a_tm_op_dir)
+    
   } # end for (m in model_components)
 } # end for (a in all_alignments)
 
