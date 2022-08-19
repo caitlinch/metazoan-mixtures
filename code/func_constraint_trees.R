@@ -199,10 +199,59 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
 
 
 
-create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
+combine.hypothesis.trees <- function(tree_id, constraint_tree_directory){
+  # Function to open all hypothesis trees with a given id in a folder and collate them into one file
+  
+  # List all hypothesis trees in the folder
+  all_constraint_tree_dir_files <- list.files(constraint_tree_directory, recursive = TRUE)
+  # Remove any files with "ignore" in the name
+  all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
+  # Find all hypothesis trees for this combination of model and dataset
+  hypothesis_tree_files <- grep(".treefile", grep(dataset, grep(model, all_constraint_tree_dir_files, value = TRUE), value = TRUE), value = TRUE)
+  # Extend file path
+  if (length(hypothesis_tree_files) > 0){
+    hypothesis_tree_files <- paste0(constraint_tree_directory, hypothesis_tree_files)
+  }
+  # Read in hypothesis tree files
+  hypothesis_trees <- lapply(hypothesis_tree_files, read.tree)
+  # Convert hypothesis_trees from a list into a multiPhylo object 
+  class(hypothesis_trees) <- "multiPhylo"
+  # Output the (unrooted) hypothesis trees
+  unrooted_file <- paste0(constraint_tree_directory, dataset, "_", model, "_unrooted_hypothesis_trees.tre")
+  write.tree(hypothesis_trees, file = unrooted_file)
+  # Identify the outgroup for this dataset
+  dataset_list <- all_datasets[[dataset]]
+  outgroup <- dataset_list$Outgroup
+  # Root hypothesis trees
+  rooted_hypothesis_trees <- root(hypothesis_trees, outgroup)
+  # Output the rooted hypothesis trees
+  rooted_file <- paste0(constraint_tree_directory, dataset, "_", model, "_rooted_hypothesis_trees.tre")
+  write.tree(hypothesis_trees, file = rooted_file)
+  
+  # Combine file names into a vector
+  op_vec <- c(rooted_file, unrooted_file)
+  names(op_vec) <- c("rooted_hypothesis_tree_file", "unrooted_hypothesis_tree_file")
+  
+  # Return the file names
+  return(op_vec)
+}
+
+
+
+create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
                                     alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
+  
+  # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
+  if (is.na(tree_id) == FALSE){
+    # If a tree_id is provided, use it in the file names
+    output_id = tree_id
+  }
+  else if (is.na(tree_id) == TRUE){
+    # If no tree_id is provided, create one
+    output_id <- paste0(dataset, "_", model_id)
+  }
   
   ## Hypothesis 1: Ctenophora-sister
   # Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, (placozoa_taxa, cnidaria_taxa, bilateria_taxa))))
@@ -216,7 +265,7 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               "), (",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "1", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "1", ".nex")
   write(constraint_tree_1, file = constraint_tree_file_name)
   
   
@@ -232,7 +281,7 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               "),(",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                               "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "2", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "2", ".nex")
   write(constraint_tree_2, file = constraint_tree_file_name)
   
   
@@ -248,7 +297,7 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               ", (",
                               paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                               "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "3", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "3", ".nex")
   write(constraint_tree_3, file = constraint_tree_file_name)
   
   ## Hypothesis 4: Paraphyletic sponges, Porifera-sister
@@ -265,7 +314,7 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               "), (",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               ")))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "4", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "4", ".nex")
   write(constraint_tree_4, file = constraint_tree_file_name)
   
   ## Hypothesis 5: Paraphyletic sponges, Ctenophora-sister
@@ -282,7 +331,7 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               "), (",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               ")))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "5", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "5", ".nex")
   write(constraint_tree_5, file = constraint_tree_file_name)
   
   ## Hypothesis 6: Paraphyletic sponges, Porifera-sister
@@ -299,7 +348,7 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               "), (",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               ")))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "6", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "6", ".nex")
   write(constraint_tree_6, file = constraint_tree_file_name)
   
   ## Hypothesis 7: Paraphyletic sponges, Ctenophora-sister
@@ -316,13 +365,13 @@ create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model,
                               "), (",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               ")))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", "7", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "7", ".nex")
   write(constraint_tree_7, file = constraint_tree_file_name)
   
   # Assemble dataframe of information about the constraint trees
   constraint_df <- data.frame(constraint_tree_id = 1:7,
-                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, dataset, "_", model_id,"_constraint_tree_", 1:7, ".nex"),
-                              constraint_prefixes = paste0(dataset, "_", model, "_ML_H", 1:7),
+                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:7, ".nex"),
+                              constraint_prefixes = paste0(output_id, "_ML_H", 1:7),
                               alignment_path = alignment_file,
                               model = model,
                               iqtree_path = iqtree_path,
