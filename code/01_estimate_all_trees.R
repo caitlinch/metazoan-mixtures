@@ -113,16 +113,20 @@ for (a in all_alignments){
     # Extract information about this dataset
     a_info <- all_datasets[[a_dataset]]
     
-    # Estimate constraint trees 
-    create.constraint.trees(dataset = a_dataset, dataset_constraint_tree_dir = a_c_op_dir, 
-                            model = m, model_id = m, outgroup_taxa = a_info$Outgroup, 
-                            ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
-                            sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
-                            sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
-                            placozoa_taxa = a_info$Placozoa, cnidaria_taxa = a_info$Cnidaria, 
-                            bilateria_taxa = a_info$Bilateria, alignment_file = a, 
-                            partitioned_check = FALSE, partition_file = NA, 
-                            iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
+    # Change directory to the constraint tree output directory for this dataset
+    # This ensures IQ-Tree output files will be stored in the correct directory
+    setwd(a_c_op_dir)
+    
+    # Create constraint trees
+    constraint_df <- create.constraint.trees(dataset = a_dataset, dataset_constraint_tree_dir = a_c_op_dir, 
+                                             model = m, model_id = m, outgroup_taxa = a_info$Outgroup, 
+                                             ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
+                                             sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
+                                             sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
+                                             placozoa_taxa = a_info$Placozoa, cnidaria_taxa = a_info$Cnidaria, 
+                                             bilateria_taxa = a_info$Bilateria, alignment_file = a, 
+                                             partitioned_check = FALSE, partition_file = NA, 
+                                             iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
     
     
     
