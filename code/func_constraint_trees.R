@@ -6,7 +6,8 @@
 
 
 estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, partition_file = NA, 
-                               prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA){
+                               prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
+                               redo = FALSE, safe = FALSE){
   # Function to call iqtree and estimate a maximum likelihood tree using best practices
   
   # Add partition file if present
@@ -48,9 +49,23 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
     bootstrap_call = ""
   }
   
+  # If redo is TRUE, add redo command to IQ-Tree call
+  if (redo == TRUE){
+    redo_command = " -redo "
+  } else if (redo == FALSE){
+    redo_command = ""
+  }
+  
+  # If safe is TRUE, add safe command to IQ-Tree call
+  if (safe == TRUE){
+    safe_command = " -safe "
+  } else if (safe == FALSE){
+    safe_command = ""
+  }
+  
   # Assemble the command line
   iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, prefix_call, 
-                        " -nt ", number_parallel_threads, bootstrap_call)
+                        " -nt ", number_parallel_threads, bootstrap_call, redo_command, safe_command)
   # Print the iqtree2 command
   print(iqtree_call)
   
