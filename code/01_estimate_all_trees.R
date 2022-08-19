@@ -121,7 +121,8 @@ for (a in all_alignments){
                             sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
                             placozoa_taxa = a_info$Placozoa, cnidaria_taxa = a_info$Cnidaria, 
                             bilateria_taxa = a_info$Bilateria, alignment_file = a, 
-                            partitioned_check = FALSE, partition_file = NA, iqtree_path = iqtree2)
+                            partitioned_check = FALSE, partition_file = NA, 
+                            iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
     
     
     

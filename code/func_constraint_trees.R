@@ -201,7 +201,7 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
 
 create.constraint.trees <- function(dataset, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
-                                    alignment_file, partitioned_check, partition_file, iqtree_path){
+                                    alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
   
   ## Hypothesis 1: Ctenophora-sister
