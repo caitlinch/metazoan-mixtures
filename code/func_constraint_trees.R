@@ -383,7 +383,7 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
                               partition_file = partition_file)
   
   # Write dataframe of information about constraint trees
-  constraint_df_path <- paste0(dataset_constraint_tree_dir, dataset, "_", model_id, "_constraint_tree_parameters.csv")
+  constraint_df_path <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_parameters.csv")
   write.csv(constraint_df, constraint_df_path, row.names = FALSE)
   
   # Return the constraint tree dataframe
