@@ -132,9 +132,8 @@ for (a in all_alignments){
     lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
     
     # Combine hypothesis trees into one file and save
-    combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir)
-    
-    
+    combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir, 
+                             outgroup_taxa = a_info$Outgroup)
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
