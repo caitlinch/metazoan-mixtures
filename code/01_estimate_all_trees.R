@@ -111,8 +111,8 @@ for (a in all_alignments){
     
     # Extract the .iqtree file for the prefix
     all_ml_op_files <- paste0(a_ml_op_dir, list.files(a_ml_op_dir))
-    all_iqtree_files <- grep("\\.iqtree", all_ml_op_files)
-    prefix_iqtree_file <- grep(a_m_prefix, all_iqtree_files)
+    all_iqtree_files <- grep("\\.iqtree", all_ml_op_files, value = TRUE)
+    prefix_iqtree_file <- grep(a_m_prefix, all_iqtree_files, value = TRUE)
     
     # Extract best model and feed into analysis (estimating hypothesis trees; applying mixture of trees method)
     best_model <- extract.best.model(prefix_iqtree_file)
@@ -178,6 +178,15 @@ for (a in all_alignments){
                            model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
                            tree_branch_option = tree_branch_model, number_parallel_threads = iqtree_num_threads,
                            run.iqtree = FALSE)
+    
+    # Identify iqtree files from tree mixture run
+    all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
+    all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
+    tree_mixture_tr_iqfile <- grep(paste0(a_m_prefix,".TR"), all_iqtree_files, value = TRUE)
+    tree_mixture_t_iqfile <- grep(paste0(a_m_prefix,".T"), all_iqtree_files, value = TRUE)
+    
+    # Extract information about each tree mixture model run
+    
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
