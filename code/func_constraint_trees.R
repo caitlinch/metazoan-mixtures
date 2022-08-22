@@ -80,8 +80,32 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
 
 
 #### Extract details from IQ-Tree output files ####
-extract.best.model <- function(alignment_file){
+extract.best.model <- function(iqtree_file){
+  # Function that will extract the best model of sequence evolution or the model of sequence evolution used,
+  #   given a .iqtree file
   
+  # Open the .iqtree file
+  iq_lines <- readLines(iqtree_file)
+  
+  # Determine whether there is a ModelFinder section
+  mf_ind <- grep("ModelFinder", iq_lines)
+  # Determine whether there is a line detailing the best model
+  bm_ind <- grep("Best-fit model according to", iq_lines)
+  # If ModelFinder was run, extract the best model from the ModelFinder section of the .iqtree file
+  if ((length(mf_ind) > 0) & (identical(bm_ind, integer(0)) == FALSE)){
+    # Extract the line containing the best fit model
+    mf_line <- iq_lines[bm_ind]
+    # Split the line at the colon into two parts
+    mf_line_split <- strsplit(mf_line, ":")[[1]]
+    # Extract the second part of the line (contains the best fit model)
+    best_model <- mf_line_split[[2]]
+    # Remove any white space from the best model
+    best_model <- gsub(" ", "", best_model)
+  }
+  
+  
+  # Return the best model (to be fed into further analyses)
+  return(best_model)
 }
 
 
