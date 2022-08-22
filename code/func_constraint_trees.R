@@ -800,9 +800,13 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
 
 #### Applying the mixture of trees model ####
 run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
-                                   prefix, model, number_parallel_threads, iqtree2_tree_mixtures_implementation,
-                                   run.iqtree = TRUE){
+                                   prefix, model,  iqtree2_tree_mixtures_implementation, tree_branch_option = "TR",
+                                   number_parallel_threads, run.iqtree = TRUE){
   # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
+  # Currently cannot run with partition model
+  # Tree branch options: 
+  #   tree_branch_option = "TR" <- trees will have same length branches (for branches that appear in 2 or more trees)
+  #   tree_branch_option = "T"  <- tree branches can have different lengths on different trees
   
   # Add model if present
   if (is.na(model) == TRUE){
@@ -820,7 +824,7 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
     # If a model is provided, use that model
     model_call = model
     # Extend the model to have the +TR command 
-    model_call = paste0("'",model_call, "+TR'")
+    model_call = paste0("'", model_call, "+", tree_branch_option, "'")
   }
   
   # Add partition file if present
@@ -829,7 +833,9 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
     partition_call <- ""
   } else if (is.na(partition_file) == FALSE){
     # If prefix is NA, add prefix to command line 
-    partition_call <- paste0(" -p ", partition_file, " ")
+    partition_call <- paste0("-p ", partition_file,)
+    # Pad partition_call with white space (for pasting into command line)
+    partition_call <- paste0(" ", partition_call, " ")
   } 
   
   # Add prefix if present
@@ -838,17 +844,21 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
     prefix_call <- ""
   } else if (is.na(prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" -pre ", prefix, " ")
+    prefix_call <- paste0("-pre ", prefix)
+    # Pad prefix_call with white space (for pasting into command line)
+    prefix_call <- paste0(" ", prefix_call, " ")
   }
   
   if (use.partition == FALSE){
     # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, " -m  ", model_call, 
-                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, 
+                              " -m  ", model_call, " -te ", hypothesis_tree_file, 
+                              " -nt ", number_parallel_threads, prefix_call)
   } else if (use.partition == TRUE){
     # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m ", model_call, 
-                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, 
+                              " -m ", model_call, " -te ", hypothesis_tree_file, 
+                              " -nt ", number_parallel_threads, prefix_call)
   }
   
   # Change working directories (to store IQ-Tree output files in the right place)
@@ -863,3 +873,4 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
   } # end if (run.iqtree == TRUE)
   
 } # end function
+
