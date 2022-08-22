@@ -152,22 +152,9 @@ extract.model.details <- function(iqtree_file){
     op3         <- input_ls[[1]][9] # extract number of sites 
   }
   # Extract the model of substitution (same for amino-acid and nucleotide files)
-  ind         <- grep("Model of substitution: ",iq_file)
-  sub_str     <- iq_file[[ind]] # get the line that contains this info
-  sub_ls      <- strsplit(sub_str,":")[[1]]
-  # If the best model is a single model, the length of sub_ls will be 2
-  #     One section for the explanatory text and one for the model
-  # If the best model is a partition model, it will have more than two sections when split by colons
-  # Extract the second part of the line onwards (contains the best fit model)
-  best_model <- sub_ls[2:length(sub_ls)]
-  # If best_model is longer than 1, paste it together again using colons
-  if (length(best_model) >1){
-    best_model <- paste(best_model, collapse = ":")
-  }
-  # Remove any white space from the best model
-  op4 <- gsub(" ", "", best_model)
+  op4 <- extract.best.model(iqtree_file)
   # Extract information about the sequence alignment
-  if (is.na(op2.5)){
+  if (is.na(op2.5) == TRUE){
     # If the iqtree file is for a single alignment, extract information about the different kinds of sites
     ind <- grep("Number of constant sites:",iq_file)
     num_lines <- iq_file[c(ind:(ind+3))] # take the four lines listing the number of different kinds of sites
@@ -177,6 +164,17 @@ extract.model.details <- function(iqtree_file){
     num_vals_regx <- regmatches(num_vals, gregexpr("[[:digit:]]+", num_vals)) # extract all the numbers after the colon
     # four strings = four lists of numbers: take first value from each list to get number of sites
     num_vals <- c(num_vals_regx[[1]][1],num_vals_regx[[2]][1],num_vals_regx[[3]][1],num_vals_regx[[4]][1]) 
+  } else {
+    # If the iqtree file is for multiple alignments, extract information about the different kinds of sites
+    # Extract the lines containing information about the table of alignments
+    table_ind <- grep("ID\tType\tSeq\tSite\tUnique\tInfor\tInvar\tConst\tName", iq_file) + 1
+    end_table_ind <- grep("Column meanings:", iq_file) - 2
+    # Extract rows in the table
+    table_rows <- iq_file[table_ind:end_table_ind]
+    # Split the table rows at the tabs ("\t")
+    table_rows_split <- strsplit(table_rows, "\t")
+    # Extract the second element of each table row
+    table_types <- unlist(lapply(table_rows_split, "[[", 2))
   }
   
   # Check whether the sites are "amino-acid" or "nucleotide"
