@@ -114,8 +114,15 @@ extract.best.model <- function(iqtree_file){
   ## Format the model nicely for output: 
   # Split the line at the colon into two parts
   m_line_split <- strsplit(m_line, ":")[[1]]
-  # Extract the second part of the line (contains the best fit model)
-  best_model <- m_line_split[[2]]
+  # If the best model is a single model, the length of m_line_split will be 2
+  #     One section for the explanatory text and one for the model
+  # If the best model is a partition model, it will have more than two sections when split by colons
+  # Extract the second part of the line onwards (contains the best fit model)
+  best_model <- m_line_split[2:length(m_line_split)]
+  # If best_model is longer than 1, paste it together again using colons
+  if (length(best_model) >1){
+    best_model <- paste(best_model, collapse = ":")
+  }
   # Remove any white space from the best model
   best_model <- gsub(" ", "", best_model)
   
@@ -123,11 +130,11 @@ extract.best.model <- function(iqtree_file){
   return(best_model)
 }
 
-extract.model.details <- function(dotiqtree_file){
+extract.model.details <- function(iqtree_file){
   # Given a .iqtree file, this function will extract the model of sequence evolution parameters
   
   # read in the IQ-TREE file to get substitution model and parameters
-  iq_file <- readLines(dotiqtree_file)
+  iq_file <- readLines(iqtree_file)
   # extract the file name
   ind      <- grep("Input file name:",iq_file)
   op1      <- substr(iq_file[[ind]],18,nchar(iq_file[[ind]]))
@@ -140,8 +147,18 @@ extract.model.details <- function(dotiqtree_file){
   # Extract the model of substitution (same for amino-acid and nucleotide files)
   ind         <- grep("Model of substitution: ",iq_file)
   sub_str     <- iq_file[[ind]] # get the line that contains this info
-  sub_ls      <- strsplit(sub_str," ")
-  op4         <- sub_ls[[1]][4]
+  sub_ls      <- strsplit(sub_str,":")[[1]]
+  # If the best model is a single model, the length of sub_ls will be 2
+  #     One section for the explanatory text and one for the model
+  # If the best model is a partition model, it will have more than two sections when split by colons
+  # Extract the second part of the line onwards (contains the best fit model)
+  best_model <- sub_ls[2:length(sub_ls)]
+  # If best_model is longer than 1, paste it together again using colons
+  if (length(best_model) >1){
+    best_model <- paste(best_model, collapse = ":")
+  }
+  # Remove any white space from the best model
+  op4 <- gsub(" ", "", best_model)
   # Extract information about the sequence alignment
   ind <- grep("Number of constant sites:",iq_file)
   num_lines <- iq_file[c(ind:(ind+3))] # take the four lines listing the number of different kinds of sites
