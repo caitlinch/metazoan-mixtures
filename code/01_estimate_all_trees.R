@@ -203,12 +203,3 @@ for (a in all_alignments){
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
-
-
-# - Take a single alignment:
-#   - Take a single model of sequence evolution
-#     - Use ModelFinder to determine the best model within that model category
-#     - Estimate an ML tree with that model of sequuence evolution
-#     - Estimate the constraint trees
-#     - Apply the mixture of trees method using +TR
-#     - Apply the mixture of trees method using +T
