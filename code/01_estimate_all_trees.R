@@ -107,7 +107,7 @@ for (a in all_alignments){
     # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
     estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
                        prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = NA,
-                       redo = FALSE, safe = FALSE)
+                       redo = FALSE, safe = FALSE, run.iqtree = FALSE)
     
     # Extract the .iqtree file for the prefix
     all_ml_op_files <- paste0(a_ml_op_dir, list.files(a_ml_op_dir))
@@ -147,20 +147,37 @@ for (a in all_alignments){
                                              placozoa_taxa = a_info$Placozoa, cnidaria_taxa = a_info$Cnidaria, 
                                              bilateria_taxa = a_info$Bilateria, alignment_file = a, 
                                              partitioned_check = FALSE, partition_file = NA, 
-                                             iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
+                                             iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads,
+                                             run.iqtree = FALSE)
     
     # Estimate hypothesis trees for each of the constraint trees
     lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
     
     # Combine hypothesis trees into one file and save
     hyp_tree_files <- combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir, 
-                                               outgroup_taxa = a_info$Outgroup)
+                                              outgroup_taxa = a_info$Outgroup)
+    # Get name for rooted hypothesis trees
+    rooted_hyp_trees <- hyp_tree_files[grep("rooted", names(hyp_tree_files))]
     
     # Change directory to the tree mixtures output directory for this dataset
     # This ensures IQ-Tree output files will be stored in the correct directory
     setwd(a_tm_op_dir)
     
     # Apply mixture of trees method with best model from maximum likelihood tree estimation
+    # Run with +TR option (same branch lengths) 
+    tree_branch_model <- "TR"
+    run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
+                           partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
+                           model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
+                           tree_branch_option = tree_branch_model, number_parallel_threads = iqtree_num_threads,
+                           run.iqtree = FALSE)
+    # Run with +T option (different branch lengths) 
+    tree_branch_model <- "T"
+    run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
+                           partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
+                           model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
+                           tree_branch_option = tree_branch_model, number_parallel_threads = iqtree_num_threads,
+                           run.iqtree = FALSE)
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
