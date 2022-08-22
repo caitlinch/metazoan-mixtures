@@ -5,9 +5,10 @@
 
 
 
+#### Estimating an ML tree in IQ-Tree with a specified model ####
 estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, partition_file = NA, 
                                prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
-                               redo = FALSE, safe = FALSE){
+                               redo = FALSE, safe = FALSE, run.iqtree = TRUE){
   # Function to call iqtree and estimate a maximum likelihood tree using best practices
   
   # Add partition file if present
@@ -69,183 +70,16 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   # Print the iqtree2 command
   print(iqtree_call)
   
-  # Call iqtree to estimate the tree
-  #system(iqtree_call)
-}
+  if (run.iqtree == TRUE){
+    # Call iqtree to estimate the tree
+    system(iqtree_call)
+  } # end if (run.iqtree == TRUE)
+  
+} # end function
 
 
 
-run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
-                                            iqtree_path = "iqtree2", prefix = NA, model = NA, num_threads = 1){
-  # Function to apply IQ-Tree to a series of alignments with a constraint tree
-  
-  # Set model for IQ-Tree run
-  if (is.na(model) == TRUE){
-    # If no model specified for IQ-Tree, use model finder (-m MFP) command
-    iq_model = "MFP"
-  } else {
-    # Otherwise, use model specified in function call
-    iq_model = model
-  }
-  
-  # Add partition file if present
-  if (partitioned_check == FALSE){
-    partition_call <- ""
-  } else if (partitioned_check == TRUE){
-    partition_call <- paste0(" -p ", partition_file, " ")
-  } 
-  
-  # Add prefix if present
-  if (is.na(prefix) == TRUE){
-    # If prefix is NA, do nothing
-    prefix_call <- ""
-  } else if (is.na(prefix) == FALSE){
-    # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" --prefix ", prefix, " ")
-  } 
-  
-  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  prefix_call)
-  
-  # Run IQ-Tree
-  system(iqtree_call)
-}
-
-
-
-run.one.constraint.tree <- function(index, df){
-  # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
-  
-  # Identify row
-  row <- df[index, ]
-  
-  # Feed row information into function call
-  run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
-                                  partitioned_check = row$partitioned_check, partition_file = row$partition_file, 
-                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
-                                  num_threads = row$num_threads)
-}
-
-
-
-run.one.constraint.dataframe <- function(csv_file){
-  # Quick function to take in a dataframe, and estimate hypothesis trees by feeding it row by row into the run.one.constraint.tree function
-  
-  # Open the dataframe
-  df <- read.csv(csv_file)
-  # Estimate an ML tree in IQ-Tree for each constraint tree
-  lapply(1:nrow(df), run.one.constraint.tree, df)
-}
-
-
-
-run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
-                                   prefix, model, number_parallel_threads, iqtree2_tree_mixtures_implementation){
-  # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
-  
-  # Add model if present
-  if (is.na(model) == TRUE){
-    # If no model specified for IQ-Tree, use model finder (-m MFP) command
-    if (is.na(partition_file) == TRUE){
-      # If no partition file is present, use only the MFP command
-      model_call = "MFP"
-    } else if (is.na(partition_file) == FALSE){
-      # If a partition file is present, use MFP+MERGE
-      model_call = "MFP+MERGE"
-    }
-    # Extend the model to have the +TR command 
-    model_call = paste0("'",model_call, "+TR'")
-  } else if (is.na(model) == FALSE){
-    # If a model is provided, use that model
-    model_call = model
-    # Extend the model to have the +TR command 
-    model_call = paste0("'",model_call, "+TR'")
-  }
-  
-  # Add partition file if present
-  if (is.na(partition_file) == TRUE){
-    # If partition_file is NA, do nothing
-    partition_call <- ""
-  } else if (is.na(partition_file) == FALSE){
-    # If prefix is NA, add prefix to command line 
-    partition_call <- paste0(" -p ", partition_file, " ")
-  } 
-  
-  # Add prefix if present
-  if (is.na(prefix) == TRUE){
-    # If prefix is NA, do nothing
-    prefix_call <- ""
-  } else if (is.na(prefix) == FALSE){
-    # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" -pre ", prefix, " ")
-  }
-  
-  if (use.partition == FALSE){
-    # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, " -m  ", model_call, 
-                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
-  } else if (use.partition == TRUE){
-    # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m ", model_call, 
-                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
-  }
-  
-  # Change working directories (to store IQ-Tree output files in the right place)
-  setwd(dirname(hypothesis_tree_file))
-  
-  # Call IQ-Tree2 with the command
-  system(treemix_command)
-  
-}
-
-
-
-combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgroup_taxa = NA){
-  # Function to open all hypothesis trees with a given id in a folder and collate them into one file
-  
-  # List all hypothesis trees in the folder
-  all_constraint_tree_dir_files <- list.files(constraint_tree_directory, recursive = TRUE)
-  # Remove any files with "ignore" in the name
-  all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
-  # Find all files for this tree_id
-  tree_id_files <- grep(tree_id, all_constraint_tree_dir_files, value = TRUE)
-  # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 7)
-  hypothesis_tree_files <- grep("H1|H2|H3|H4|H5|H6|H7", tree_id_files, value = TRUE)
-  # Extend file path
-  if (length(hypothesis_tree_files) > 0){
-    hypothesis_tree_files <- paste0(constraint_tree_directory, hypothesis_tree_files)
-  }
-  
-  # Read in hypothesis tree files
-  hypothesis_trees <- lapply(hypothesis_tree_files, read.tree)
-  # Convert hypothesis_trees from a list into a multiPhylo object 
-  class(hypothesis_trees) <- "multiPhylo"
-  
-  # Output the (unrooted) hypothesis trees
-  unrooted_file <- paste0(constraint_tree_directory, tree_id, "_unrooted_hypothesis_trees.tre")
-  write.tree(hypothesis_trees, file = unrooted_file)
-  
-  if (is.na(outgroup_taxa) == FALSE){
-    # If the outgroup taxa are provided, root the hypothesis trees and save the rooted trees
-    # Root hypothesis trees
-    rooted_hypothesis_trees <- root(hypothesis_trees, outgroup_taxa)
-    # Output the rooted hypothesis trees
-    rooted_file <- paste0(constraint_tree_directory, tree_id, "_rooted_hypothesis_trees.tre")
-    write.tree(hypothesis_trees, file = rooted_file)
-    # Return paths for both rooted and unrooted hypothesis trees
-    op_vec <- c(rooted_file, unrooted_file)
-    names(op_vec) <- c("rooted_hypothesis_tree_file", "unrooted_hypothesis_tree_file")
-  } else if (is.na(outgroup_taxa) == TRUE){
-    # If the outgroup taxa are not provided, return only the path to the unrooted hypothesis trees
-    op_vec <- c(unrooted_file)
-    names(op_vec) <- c("unrooted_hypothesis_tree_file")
-  }
-  
-  # Return the file names
-  return(op_vec)
-}
-
-
-
+#### Creating constraint trees ####
 create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
                                     alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
@@ -397,3 +231,194 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
   # Return the constraint tree dataframe
   return(constraint_df)
 }
+
+
+
+#### Estimating ML trees using a constraint tree ####
+run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
+                                            iqtree_path = "iqtree2", prefix = NA, model = NA, num_threads = 1, run.iqtree = TRUE){
+  # Function to apply IQ-Tree to a series of alignments with a constraint tree
+  
+  # Set model for IQ-Tree run
+  if (is.na(model) == TRUE){
+    # If no model specified for IQ-Tree, use model finder (-m MFP) command
+    iq_model = "MFP"
+  } else {
+    # Otherwise, use model specified in function call
+    iq_model = model
+  }
+  
+  # Add partition file if present
+  if (partitioned_check == FALSE){
+    partition_call <- ""
+  } else if (partitioned_check == TRUE){
+    partition_call <- paste0(" -p ", partition_file, " ")
+  } 
+  
+  # Add prefix if present
+  if (is.na(prefix) == TRUE){
+    # If prefix is NA, do nothing
+    prefix_call <- ""
+  } else if (is.na(prefix) == FALSE){
+    # If prefix is NA, add prefix to command line 
+    prefix_call <- paste0(" --prefix ", prefix, " ")
+  } 
+  
+  # Collate iqtree command
+  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  prefix_call)
+  
+  # Print IQ-Tree command
+  print(iqtree_call)
+  
+  if (run.iqtree == TRUE){
+    # Run IQ-Tree
+    system(iqtree_call)
+  } # end if (run.iqtree == TRUE)
+  
+} # end function
+
+
+
+run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
+  # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
+  
+  # Identify row
+  row <- df[index, ]
+  
+  # Feed row information into function call
+  # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
+  #   either way, want to run function to print iqtree command line
+  run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
+                                  partitioned_check = row$partitioned_check, partition_file = row$partition_file, 
+                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
+                                  num_threads = row$num_threads, run.iqtree = run.iqtree)
+}
+
+
+
+run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
+  # Quick function to take in a dataframe, and estimate hypothesis trees by feeding it row by row into the run.one.constraint.tree function
+  
+  # Open the dataframe
+  df <- read.csv(csv_file)
+  # Estimate an ML tree in IQ-Tree for each constraint tree
+  # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
+  #   either way, want to run function to print iqtree command line
+  lapply(1:nrow(df), run.one.constraint.tree, df, run.iqtree = run.iqtree)
+}
+
+
+
+#### Collating multiple trees into a single file ####
+combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgroup_taxa = NA){
+  # Function to open all hypothesis trees with a given id in a folder and collate them into one file
+  
+  # List all hypothesis trees in the folder
+  all_constraint_tree_dir_files <- list.files(constraint_tree_directory, recursive = TRUE)
+  # Remove any files with "ignore" in the name
+  all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
+  # Find all files for this tree_id
+  tree_id_files <- grep(tree_id, all_constraint_tree_dir_files, value = TRUE)
+  # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 7)
+  hypothesis_tree_files <- grep("H1|H2|H3|H4|H5|H6|H7", tree_id_files, value = TRUE)
+  # Extend file path
+  if (length(hypothesis_tree_files) > 0){
+    hypothesis_tree_files <- paste0(constraint_tree_directory, hypothesis_tree_files)
+  }
+  
+  # Read in hypothesis tree files
+  hypothesis_trees <- lapply(hypothesis_tree_files, read.tree)
+  # Convert hypothesis_trees from a list into a multiPhylo object 
+  class(hypothesis_trees) <- "multiPhylo"
+  
+  # Output the (unrooted) hypothesis trees
+  unrooted_file <- paste0(constraint_tree_directory, tree_id, "_unrooted_hypothesis_trees.tre")
+  write.tree(hypothesis_trees, file = unrooted_file)
+  
+  if (is.na(outgroup_taxa) == FALSE){
+    # If the outgroup taxa are provided, root the hypothesis trees and save the rooted trees
+    # Root hypothesis trees
+    rooted_hypothesis_trees <- root(hypothesis_trees, outgroup_taxa)
+    # Output the rooted hypothesis trees
+    rooted_file <- paste0(constraint_tree_directory, tree_id, "_rooted_hypothesis_trees.tre")
+    write.tree(hypothesis_trees, file = rooted_file)
+    # Return paths for both rooted and unrooted hypothesis trees
+    op_vec <- c(rooted_file, unrooted_file)
+    names(op_vec) <- c("rooted_hypothesis_tree_file", "unrooted_hypothesis_tree_file")
+  } else if (is.na(outgroup_taxa) == TRUE){
+    # If the outgroup taxa are not provided, return only the path to the unrooted hypothesis trees
+    op_vec <- c(unrooted_file)
+    names(op_vec) <- c("unrooted_hypothesis_tree_file")
+  }
+  
+  # Return the file names
+  return(op_vec)
+}
+
+
+
+#### Applying the mixture of trees model ####
+run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
+                                   prefix, model, number_parallel_threads, iqtree2_tree_mixtures_implementation,
+                                   run.iqtree = TRUE){
+  # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
+  
+  # Add model if present
+  if (is.na(model) == TRUE){
+    # If no model specified for IQ-Tree, use model finder (-m MFP) command
+    if (is.na(partition_file) == TRUE){
+      # If no partition file is present, use only the MFP command
+      model_call = "MFP"
+    } else if (is.na(partition_file) == FALSE){
+      # If a partition file is present, use MFP+MERGE
+      model_call = "MFP+MERGE"
+    }
+    # Extend the model to have the +TR command 
+    model_call = paste0("'",model_call, "+TR'")
+  } else if (is.na(model) == FALSE){
+    # If a model is provided, use that model
+    model_call = model
+    # Extend the model to have the +TR command 
+    model_call = paste0("'",model_call, "+TR'")
+  }
+  
+  # Add partition file if present
+  if (is.na(partition_file) == TRUE){
+    # If partition_file is NA, do nothing
+    partition_call <- ""
+  } else if (is.na(partition_file) == FALSE){
+    # If prefix is NA, add prefix to command line 
+    partition_call <- paste0(" -p ", partition_file, " ")
+  } 
+  
+  # Add prefix if present
+  if (is.na(prefix) == TRUE){
+    # If prefix is NA, do nothing
+    prefix_call <- ""
+  } else if (is.na(prefix) == FALSE){
+    # If prefix is NA, add prefix to command line 
+    prefix_call <- paste0(" -pre ", prefix, " ")
+  }
+  
+  if (use.partition == FALSE){
+    # Assemble the command for the tree mixtures model
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, " -m  ", model_call, 
+                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+  } else if (use.partition == TRUE){
+    # Assemble the command for the tree mixtures model
+    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, " -m ", model_call, 
+                              " -te ", hypothesis_tree_file, " -nt ", number_parallel_threads, prefix_call)
+  }
+  
+  # Change working directories (to store IQ-Tree output files in the right place)
+  setwd(dirname(hypothesis_tree_file))
+  
+  # Print the iqtree command line
+  print(treemix_command)
+  
+  if (run.iqtree == TRUE){
+    # Call IQ-Tree2 with the command
+    system(treemix_command)
+  } # end if (run.iqtree == TRUE)
+  
+} # end function
