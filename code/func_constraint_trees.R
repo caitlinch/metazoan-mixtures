@@ -930,12 +930,12 @@ extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, mod
                 "log_likelihood", "log_likelihood_se", "unconstrained_log-likelihood",
                 "number_free_parameters", "AIC_score", "AICc_score", "BIC_score",
                 all_tree_weight_names, all_total_lengths, all_internal_lengths, all_internal_percent_names,
-                "input_file_name", "input_tree_name")
+                "input_file_name", "input_tree_name", "tree_mixture_file")
   op_vals <- c(prefix, dataset, model, best_model, tree_branch_option, 
                log_likelihood, log_likelihood_se, unconst_logl, 
                num_free_params, aic_score, aicc_score, bic_score,
                all_tree_weights, tree_lengths, internal_lengths, internal_percents,
-               input_file_name, input_tree_name)
+               input_file_name, input_tree_name, tree_mixture_file)
   # Assemble output dataframe
   op_df <- as.data.frame(matrix(op_vals, ncol = length(op_vals), nrow = 1, byrow = TRUE))
   names(op_df) <- op_names
