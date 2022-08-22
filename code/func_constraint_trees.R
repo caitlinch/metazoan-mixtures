@@ -137,7 +137,7 @@ extract.model.details <- function(iqtree_file){
   iq_file <- readLines(iqtree_file)
   # extract the file name
   ind      <- grep("Input file name:",iq_file)
-  op1      <- substr(iq_file[[ind]],18,nchar(iq_file[[ind]]))
+  op1      <- gsub(" ", "", strsplit(iq_file[[ind]], ":")[[1]][2])
   # extract the number of taxa and extract the length of the alignment
   ind         <- grep("Input data:",iq_file)
   input_str   <- iq_file[[ind]] # get the line that contains this info
