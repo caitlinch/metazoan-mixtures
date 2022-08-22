@@ -155,7 +155,7 @@ for (a in all_alignments){
     
     # Combine hypothesis trees into one file and save
     hyp_tree_files <- combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir, 
-                                              outgroup_taxa = a_info$Outgroup)
+                                               outgroup_taxa = a_info$Outgroup)
     # Get name for rooted hypothesis trees
     rooted_hyp_trees <- hyp_tree_files[grep("rooted", names(hyp_tree_files))]
     
@@ -186,6 +186,12 @@ for (a in all_alignments){
     tree_mixture_t_iqfile <- grep(paste0(a_m_prefix,".T"), all_iqtree_files, value = TRUE)
     
     # Extract information about each tree mixture model run
+    tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
+                                               dataset = a_dataset, prefix = paste0(a_m_prefix,".TR"), 
+                                               model = m, best_model = best_model, tree_branch_option = "TR")
+    t_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_t_iqfile, 
+                                              dataset = a_dataset, prefix = paste0(a_m_prefix,".T"), 
+                                              model = m,  best_model = best_model, tree_branch_option = "T")
     
     
   } # end for (m in model_components)
