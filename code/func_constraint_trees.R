@@ -222,107 +222,163 @@ extract.model.details <- function(iqtree_file){
   
   # if the input is DNA (nucleotide sites), gather that information
   if (input_type == "nucleotide"){
+    # Check for presence of rate parameter details
+    ind <- grep("A-C",iq_file)
     # Extract the rate parameters
-    rate1 <- as.numeric(strsplit(iq_file[[grep("A-C",iq_file)]],":")[[1]][2]) # A-C rate (same as code above, but combined 4 lines into 1 line)
-    rate2 <- as.numeric(strsplit(iq_file[[grep("A-G",iq_file)]],":")[[1]][2]) # A-G rate
-    rate3 <- as.numeric(strsplit(iq_file[[grep("A-T",iq_file)]],":")[[1]][2]) # A-T rate
-    rate4 <- as.numeric(strsplit(iq_file[[grep("C-G",iq_file)]],":")[[1]][2]) # C-G rate
-    rate5 <- as.numeric(strsplit(iq_file[[grep("C-T",iq_file)]],":")[[1]][2]) # C-T rate
-    rate6 <- as.numeric(strsplit(iq_file[[grep("G-T",iq_file)]],":")[[1]][2]) # G-T rate
-    
-    # Extract the state frequencies
-    state_freq_line <- iq_file[[grep("State frequencies",iq_file)]]
-    if (state_freq_line == "State frequencies: (equal frequencies)"){
-      # If the state frequencies are all equal, assign them all to 0.25 (1/4)
-      sf1 <- 0.25 # pi(A) - A freq.
-      sf2 <- 0.25 # pi(C) - C freq.
-      sf3 <- 0.25 # pi(G) - G freq.
-      sf4 <- 0.25 # pi(T) - T freq.
-    } else {
-      # If the state frequencies are not all equal, extract what they are
-      sf1 <- as.numeric(strsplit(iq_file[[grep("pi\\(A\\)",iq_file)]],"=")[[1]][2]) # pi(A) - A freq. Remember to double backslash to escape before brackets
-      sf2 <- as.numeric(strsplit(iq_file[[grep("pi\\(C\\)",iq_file)]],"=")[[1]][2]) # pi(C) - C freq.
-      sf3 <- as.numeric(strsplit(iq_file[[grep("pi\\(G\\)",iq_file)]],"=")[[1]][2]) # pi(G) - G freq.
-      sf4 <- as.numeric(strsplit(iq_file[[grep("pi\\(T\\)",iq_file)]],"=")[[1]][2]) # pi(T) - T freq.
+    if (identical(ind, integer(0)) == FALSE){
+      # Rate parameters are present in the file. Extract them
+      rate1 <- as.numeric(strsplit(iq_file[[grep("A-C",iq_file)]],":")[[1]][2]) # A-C rate (same as code above, but combined 4 lines into 1 line)
+      rate2 <- as.numeric(strsplit(iq_file[[grep("A-G",iq_file)]],":")[[1]][2]) # A-G rate
+      rate3 <- as.numeric(strsplit(iq_file[[grep("A-T",iq_file)]],":")[[1]][2]) # A-T rate
+      rate4 <- as.numeric(strsplit(iq_file[[grep("C-G",iq_file)]],":")[[1]][2]) # C-G rate
+      rate5 <- as.numeric(strsplit(iq_file[[grep("C-T",iq_file)]],":")[[1]][2]) # C-T rate
+      rate6 <- as.numeric(strsplit(iq_file[[grep("G-T",iq_file)]],":")[[1]][2]) # G-T rate
+      # Create output vectors
+      rate_names <- c("A-C_rate", "A-G_rate", "A-T_rate", "C-G_rate", "C-T_rate", "G-T_rate")
+      rate_vals <- c(rate1, rate2, rate3, rate4, rate5, rate6)
+    } else if (identical(ind, integer(0)) == TRUE){
+      # Rate parameters are not present in the file
+      # Create empty output vectors
+      rate_names <- c()
+      rate_vals <- c()
     }
     
+    # Check for presence of state frequency details
+    ind <- grep("State frequencies",iq_file)
+    # Extract the state frequencies
+    if (identical(ind, integer(0)) == FALSE){
+      # State frequencies are present in the output file
+      # Extract line of state frequencies
+      state_freq_line <- iq_file[[ind]]
+      if (state_freq_line == "State frequencies: (equal frequencies)"){
+        # If the state frequencies are all equal, assign them all to 0.25 (1/4)
+        sf1 <- 0.25 # pi(A) - A freq.
+        sf2 <- 0.25 # pi(C) - C freq.
+        sf3 <- 0.25 # pi(G) - G freq.
+        sf4 <- 0.25 # pi(T) - T freq.
+      } else {
+        # If the state frequencies are not all equal, extract what they are
+        sf1 <- as.numeric(strsplit(iq_file[[grep("pi\\(A\\)",iq_file)]],"=")[[1]][2]) # pi(A) - A freq. Remember to double backslash to escape before brackets
+        sf2 <- as.numeric(strsplit(iq_file[[grep("pi\\(C\\)",iq_file)]],"=")[[1]][2]) # pi(C) - C freq.
+        sf3 <- as.numeric(strsplit(iq_file[[grep("pi\\(G\\)",iq_file)]],"=")[[1]][2]) # pi(G) - G freq.
+        sf4 <- as.numeric(strsplit(iq_file[[grep("pi\\(T\\)",iq_file)]],"=")[[1]][2]) # pi(T) - T freq.
+      }
+      # Create output vectors
+      sf_names <- c("A_freq", "C_freq", "G_freq", "T_freq")
+      sf_vals <- c(sf1, sf2, sf3, sf4)
+    } else if (identical(ind, integer(0)) == TRUE){
+      # State frequencies are present in the output file
+      # Create output vectors
+      sf_names <- c()
+      sf_vals <- c()
+    }
+    
+    # Check for presence of model of rate heterogeneity details
+    ind <- grep("Model of rate heterogeneity:",iq_file)
     # Extract model of rate heterogeneity
-    mrh1      <- strsplit(iq_file[[grep("Model of rate heterogeneity:",iq_file)]],":")[[1]][2] # Extract model of rate heterogeneity 
-    mrh2      <- as.numeric(strsplit(iq_file[[(grep("Model of rate heterogeneity:",iq_file)+1)]],":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
-    mrh2_name <- strsplit(iq_file[[(grep("Model of rate heterogeneity:",iq_file)+1)]],":")[[1]][1] # As the line varies, extract the name for the output dataframe
-    mrh2_name <- gsub(" ","_",mrh2_name) # change the name to be easy to parse
+    if (identical(ind, integer(0)) == FALSE){
+      # If there is a section for rate heterogeneity, extract and output details 
+      mrh1      <- strsplit(iq_file[[ind]],":")[[1]][2] # Extract model of rate heterogeneity 
+      mrh2      <- as.numeric(strsplit(iq_file[[ind+1]],":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
+      mrh2_name <- strsplit(iq_file[[ind+1]],":")[[1]][1] # As the line varies, extract the name for the output dataframe
+      mrh2_name <- gsub(" ", "_", mrh2_name) # change the name to be easy to parse
+      # Assemble into output vector
+      mrh_names <- c("model_of_rate_heterogeneity", "model_of_rate_heterogeneity_line2_name", "model_of_rate_heterogeneity_line2_value")
+      mrh_vals <- c(mrh1, mrh2_name, mrh2)
+    } else {
+      # If there is no section for rate heterogeneity, ignore this section for output
+      mrh_names <- c()
+      mrh_vals <- c()
+    }
     
     # make a list of the rows for the output dataframe
-    names <- c("file_name","sequence_type","n_taxa","npartitions","n_sites",num_names,"substitution_model", "A-C_rate","A-G_rate","A-T_rate","C-G_rate","C-T_rate","G-T_rate","A_freq","C_freq",
-               "G_freq","T_freq","model_of_rate_heterogeneity","model_of_rate_heterogeneity_line2_name","model_of_rate_heterogeneity_line2_value")
+    names <- c("file_name", "sequence_type", "n_taxa", "npartitions", "n_sites", num_names, "substitution_model", 
+               rate_names, sf_names, mrh_names)
     # Make a list of the output rows for the output dataframe
-    op <- c(op1,"DNA",op2,op2.5,op3,num_vals,op4,rate1,rate2,rate3,rate4,rate5,rate6,sf1,sf2,sf3,sf4,mrh1,mrh2_name,mrh2)
+    op <- c(op1, "DNA", op2, op2.5, op3, num_vals, op4,
+            rate_vals, sf_vals, mrh_vals)
     # Create the output dataframe
-    op_df <- data.frame(names,op, stringsAsFactors = FALSE)
+    op_df <- data.frame(names, op, stringsAsFactors = FALSE)
     # Name the columns
     names(op_df) <- c("parameter","value")
     
     # Create the rate matrix Q
-    Q_start <- grep("Rate matrix Q:",iq_file)+2
-    Q_end   <- Q_start+3
-    # Create the columns
-    c1 <- c("A","C","G","T")
-    c2 <- c()
-    c3 <- c()
-    c4 <- c()
-    c5 <- c()
-    # For each row in the iqtree file rate matrix
-    for (i in Q_start:Q_end){
-      # Split the row
-      row <- strsplit(iq_file[[i]]," ")[[1]]
-      row <- row[str_detect(row,"([0-9])")] # take only the numeric elements of the vector
-      # Add the resulting values to the relevant columns
-      c2 <- c(c2,as.numeric(row[1])) # convert to numeric so can use the numbers more easily later
-      c3 <- c(c3,as.numeric(row[2]))
-      c4 <- c(c4,as.numeric(row[3]))
-      c5 <- c(c5,as.numeric(row[4]))
-    }
-    # Create a dataframe of the rate matrix Q
-    q_df <- data.frame(c1,c2,c3,c4,c5, stringsAsFactors = FALSE)
-    #Rename the columns
-    names(q_df) <- c("nucleotide","A","C","G","T")
-    
-    # Check if the model for rate heterogeneity is uniform
-    mrh1_check <- gsub(" ","",mrh1)
-    if (mrh1_check=="Uniform"){
-      # If the model for rate heterogeneity is uniform, don't need to create a matrix for discrete gamma rate categories
-      g_df <- "Uniform"
-    } else {
-      # If the model isn't uniform, need to create a matrix to collect and store the gamme category information
-      #Create the matrix for discrete gamma categories
-      g_start <- grep(" Category",iq_file)+1 # get the index for the first line of the gamma categories matrix
-      empty   <- which(iq_file=="") # get indexes of all empty lines
-      empty   <- empty[empty>g_start] # get empty lines above gamma categories matrix
-      g_end   <- empty[1]-1 # get end index for gamma categories matrix (one less than next empty line)
-      end_line <- iq_file[g_end]
-      # if the end isn't an empty line, subtract one from the end count 
-      # to exclude lines like "Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category."
-      # to see if this is what's happening, check whether the line starts with a numeric section (i.e. a category for the gamma rate)
-      check_line <- length(strsplit(strsplit(end_line, "        " )[[1]][1]," ")[[1]])
-      if (check_line > 3){
-        # If the check_line is longer than 3 characters, it won't be a group for the gamma categories but an instruction
-        # Instructions can be excluded from the gamma matrix (but categories can't)
-        g_end = g_end - 1
-      }
-      # Start collecting info for the matrix
-      g1 <- c() # initialise columns to store data in
-      g2 <- c()
-      g3 <- c()
-      # Iterate through rows in gamma matrix
-      for (i in g_start:g_end){
-        row <- strsplit(iq_file[[i]]," ")[[1]] # split the rows on the (large amount of) " "'s in the middle
+    Q_ind <- grep("Rate matrix Q:",iq_file)
+    if (identical(Q_ind, integer(0)) == FALSE){
+      # If the Q_ind exists, then the Q_df exists!
+      # Extract the Q_df
+      Q_start <- Q_ind +2
+      Q_end   <- Q_start+3
+      # Create the columns
+      c1 <- c("A","C","G","T")
+      c2 <- c()
+      c3 <- c()
+      c4 <- c()
+      c5 <- c()
+      # For each row in the iqtree file rate matrix
+      for (i in Q_start:Q_end){
+        # Split the row
+        row <- strsplit(iq_file[[i]]," ")[[1]]
         row <- row[str_detect(row,"([0-9])")] # take only the numeric elements of the vector
-        g1 <- c(g1,as.numeric(row[1])) # add the values to the columns
-        g2 <- c(g2,as.numeric(row[2]))
-        g3 <- c(g3,as.numeric(row[3]))
+        # Add the resulting values to the relevant columns
+        c2 <- c(c2,as.numeric(row[1])) # convert to numeric so can use the numbers more easily later
+        c3 <- c(c3,as.numeric(row[2]))
+        c4 <- c(c4,as.numeric(row[3]))
+        c5 <- c(c5,as.numeric(row[4]))
       }
-      g_df <- data.frame(g1,g2,g3, stringsAsFactors = FALSE) # create a dataframe of the information
-      names(g_df) <- c("category","relative_rate","proportion") # name the columns
+      # Create a dataframe of the rate matrix Q
+      q_df <- data.frame(c1,c2,c3,c4,c5, stringsAsFactors = FALSE)
+      #Rename the columns
+      names(q_df) <- c("nucleotide","A","C","G","T")
+    } else {
+      # If Q_ind is not present in this file, create an empty Q df
+      q_df <- NA
+    }
+    
+    # Check if the model of rate heterogeneity is present
+    ind <- grep("Model of rate heterogeneity:",iq_file)
+    if (identical(ind, integer(0)) == FALSE){
+      # The model of rate heterogeneity is present
+      # Check if the model for rate heterogeneity is uniform
+      mrh1_check <- gsub(" ","",mrh1)
+      if (mrh1_check=="Uniform"){
+        # If the model for rate heterogeneity is uniform, don't need to create a matrix for discrete gamma rate categories
+        g_df <- "Uniform"
+      } else {
+        # If the model isn't uniform, need to create a matrix to collect and store the gamme category information
+        #Create the matrix for discrete gamma categories
+        g_start <- grep(" Category",iq_file)+1 # get the index for the first line of the gamma categories matrix
+        empty   <- which(iq_file=="") # get indexes of all empty lines
+        empty   <- empty[empty>g_start] # get empty lines above gamma categories matrix
+        g_end   <- empty[1]-1 # get end index for gamma categories matrix (one less than next empty line)
+        end_line <- iq_file[g_end]
+        # if the end isn't an empty line, subtract one from the end count 
+        # to exclude lines like "Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category."
+        # to see if this is what's happening, check whether the line starts with a numeric section (i.e. a category for the gamma rate)
+        check_line <- length(strsplit(strsplit(end_line, "        " )[[1]][1]," ")[[1]])
+        if (check_line > 3){
+          # If the check_line is longer than 3 characters, it won't be a group for the gamma categories but an instruction
+          # Instructions can be excluded from the gamma matrix (but categories can't)
+          g_end = g_end - 1
+        }
+        # Start collecting info for the matrix
+        g1 <- c() # initialise columns to store data in
+        g2 <- c()
+        g3 <- c()
+        # Iterate through rows in gamma matrix
+        for (i in g_start:g_end){
+          row <- strsplit(iq_file[[i]]," ")[[1]] # split the rows on the (large amount of) " "'s in the middle
+          row <- row[str_detect(row,"([0-9])")] # take only the numeric elements of the vector
+          g1 <- c(g1,as.numeric(row[1])) # add the values to the columns
+          g2 <- c(g2,as.numeric(row[2]))
+          g3 <- c(g3,as.numeric(row[3]))
+        }
+        g_df <- data.frame(g1,g2,g3, stringsAsFactors = FALSE) # create a dataframe of the information
+        names(g_df) <- c("category","relative_rate","proportion") # name the columns
+      }
+    } else if (identical(ind, integer(0)) == TRUE){
+      # The model of rate heterogeneity is not present. Return an empty dataframe.
+      g_df <- NA
     }
     
     # Create a list of the three dataframes
