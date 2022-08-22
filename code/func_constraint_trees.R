@@ -144,7 +144,7 @@ extract.model.details <- function(iqtree_file){
   input_ls    <- strsplit(input_str," ")
   if (grepl("partitions", input_str) == FALSE){
     op2         <- input_ls[[1]][3] # extract number of sequences (number of taxa)
-    op2.5       <- "NA" # Specify number of partitions
+    op2.5       <- NA # Specify number of partitions
     op3         <- input_ls[[1]][6] # extract number of sites 
   } else if (grepl("partitions", input_str) == TRUE){
     op2         <- input_ls[[1]][3] # extract number of sequences (number of taxa)
@@ -167,14 +167,17 @@ extract.model.details <- function(iqtree_file){
   # Remove any white space from the best model
   op4 <- gsub(" ", "", best_model)
   # Extract information about the sequence alignment
-  ind <- grep("Number of constant sites:",iq_file)
-  num_lines <- iq_file[c(ind:(ind+3))] # take the four lines listing the number of different kinds of sites
-  num_split <- unlist(strsplit(num_lines,":")) # Split the lines at the colon
-  num_names <- num_split[c(TRUE,FALSE)] # before the colon = name
-  num_vals <- num_split[c(FALSE,TRUE)] # after the colon = value
-  num_vals_regx <- regmatches(num_vals, gregexpr("[[:digit:]]+", num_vals)) # extract all the numbers after the colon
-  # four strings = four lists of numbers: take first value from each list to get number of sites
-  num_vals <- c(num_vals_regx[[1]][1],num_vals_regx[[2]][1],num_vals_regx[[3]][1],num_vals_regx[[4]][1]) 
+  if (is.na(op2.5)){
+    # If the iqtree file is for a single alignment, extract information about the different kinds of sites
+    ind <- grep("Number of constant sites:",iq_file)
+    num_lines <- iq_file[c(ind:(ind+3))] # take the four lines listing the number of different kinds of sites
+    num_split <- unlist(strsplit(num_lines,":")) # Split the lines at the colon
+    num_names <- num_split[c(TRUE,FALSE)] # before the colon = name
+    num_vals <- num_split[c(FALSE,TRUE)] # after the colon = value
+    num_vals_regx <- regmatches(num_vals, gregexpr("[[:digit:]]+", num_vals)) # extract all the numbers after the colon
+    # four strings = four lists of numbers: take first value from each list to get number of sites
+    num_vals <- c(num_vals_regx[[1]][1],num_vals_regx[[2]][1],num_vals_regx[[3]][1],num_vals_regx[[4]][1]) 
+  }
   
   # Check whether the sites are "amino-acid" or "nucleotide"
   # First, check the input_str to see if it specifies the alignment type
