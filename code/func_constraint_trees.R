@@ -877,7 +877,7 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
 
 
 #### Extract information from tree mixture results ####
-extract.tree.mixture.results <- function(tree_mixture_file, dataset, model, prefix, best_model, tree_branch_option){
+extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, model, best_model, tree_branch_option){
   # Function to take one tree mixture file and output the results from the corresponding .iqtree file
   
   # Open tree mixture file
