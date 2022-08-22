@@ -79,6 +79,13 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
 
 
 
+#### Extract details from IQ-Tree output files ####
+extract.best.model <- function(alignment_file){
+  
+}
+
+
+
 #### Creating constraint trees ####
 create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
@@ -277,8 +284,6 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   
 } # end function
 
-
-
 run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
   # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
   
@@ -293,8 +298,6 @@ run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
                                   iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
                                   num_threads = row$num_threads, run.iqtree = run.iqtree)
 }
-
-
 
 run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
   # Quick function to take in a dataframe, and estimate hypothesis trees by feeding it row by row into the run.one.constraint.tree function
