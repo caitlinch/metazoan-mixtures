@@ -332,18 +332,43 @@ extract.model.details <- function(iqtree_file){
     names(params) <- c("parameters","gamma_categories","Q_rate_matrix")
     
   } else if (input_type=="amino-acid"){ # alternatively if the data is amino acid sites
+    # Check for presence of model of rate heterogeneity details
+    ind <- grep("Model of rate heterogeneity:",iq_file)
     # Extract model of rate heterogeneity
-    mrh1      <- strsplit(iq_file[[grep("Model of rate heterogeneity:",iq_file)]],":")[[1]][2] # Extract model of rate heterogeneity 
-    mrh2      <- as.numeric(strsplit(iq_file[[(grep("Model of rate heterogeneity:",iq_file)+1)]],":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
-    mrh2_name <- strsplit(iq_file[[(grep("Model of rate heterogeneity:",iq_file)+1)]],":")[[1]][1] # As the line varies, extract the name for the output dataframe
+    if (identical(ind, integer(0)) == FALSE){
+      # If there is a section for rate heterogeneity, extract and output details 
+      mrh1      <- strsplit(iq_file[[ind]],":")[[1]][2] # Extract model of rate heterogeneity 
+      mrh2      <- as.numeric(strsplit(iq_file[[ind+1]],":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
+      mrh2_name <- strsplit(iq_file[[ind+1]],":")[[1]][1] # As the line varies, extract the name for the output dataframe
+      # Assemble into output vector
+      mrh_names <- c("model_of_rate_heterogeneity", "model_of_rate_heterogeneity_line2_name", "model_of_rate_heterogeneity_line2_value")
+      mrh_vals <- c(mrh1, mrh2_name, mrh2)
+    } else {
+      # If there is no section for rate heterogeneity, ignore this section for output
+      mrh_names <- c()
+      mrh_vals <- c()
+    }
+    
+    # Check for presence of state frequencies details
+    ind <- grep("State frequencies:",iq_file)
     # Extract state frequencies
-    sf1      <- strsplit(iq_file[[grep("State frequencies:",iq_file)]],":")[[1]][2]
+    if (identical(ind, integer(0)) == FALSE){
+      # If there is a section for state frequencies, extract and output details 
+      sf1      <- strsplit(iq_file[[ind]],":")[[1]][2]
+      # Assemble into output vector
+      sf_names <- c("state_frequencies")
+      sf_vals <- c(sf1)
+    } else {
+      # If there is no section for state frequencies, ignore this section for output
+      sf_names <- c()
+      sf_vals <- c()
+    }
     
     # make a list of the rows for the output dataframe
-    names <- c("file_name","sequence_type","n_taxa","n_partitions","n_sites",num_names,"substitution_model","model_of_rate_heterogeneity","model_of_rate_heterogeneity_line2_name",
-               "model_of_rate_heterogeneity_line2_value","state_frequencies")
+    names <- c("file_name","sequence_type","n_taxa","n_partitions","n_sites",num_names,"substitution_model",
+               mrh_names, sf_names)
     # Make a list of the output rows for the first output dataframe
-    op <- c(op1,"amino-acid",op2,op2.5,op3,num_vals,op4,mrh1,mrh2_name,mrh2,sf1)
+    op <- c(op1,"amino-acid",op2,op2.5,op3,num_vals,op4,mrh_vals,sf_vals)
     op_df <- data.frame(names,op, stringsAsFactors = FALSE)
     names(op_df) <- c("parameter","value")
     
