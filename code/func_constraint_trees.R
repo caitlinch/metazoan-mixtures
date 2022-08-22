@@ -874,3 +874,13 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
   
 } # end function
 
+
+
+#### Extract information from tree mixture results ####
+extract.tree.mixture.results <- function(tree_mixture_file){
+  # Function to take one tree mixture file and output the results from the corresponding .iqtree file
+  
+}
+
+
+
