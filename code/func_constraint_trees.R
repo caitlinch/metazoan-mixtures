@@ -800,7 +800,7 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
 
 #### Applying the mixture of trees model ####
 run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
-                                   prefix, model,  iqtree2_tree_mixtures_implementation, tree_branch_option = "TR",
+                                   prefix, model, iqtree2_tree_mixtures_implementation, tree_branch_option = "TR",
                                    number_parallel_threads, run.iqtree = TRUE){
   # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
   # Currently cannot run with partition model
