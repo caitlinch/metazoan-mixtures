@@ -109,9 +109,26 @@ for (a in all_alignments){
                        prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = NA,
                        redo = FALSE, safe = FALSE)
     
-    ## TO DO: extract name of best model from ML tree .iqtree file
-    # Feed best model into estimating constraint trees and into tree mixture
-    best_model <- ""
+    # Extract the .iqtree file for the prefix
+    all_ml_op_files <- paste0(a_ml_op_dir, list.files(a_ml_op_dir))
+    all_iqtree_files <- grep("\\.iqtree", all_ml_op_files)
+    prefix_iqtree_file <- grep(a_m_prefix, all_iqtree_files)
+    
+    # Extract best model and feed into analysis (estimating hypothesis trees; applying mixture of trees method)
+    best_model <- extract.best.model(prefix_iqtree_file)
+    
+    # Extract information about model parameters
+    model_parameters <- extract.model.details(prefix_iqtree_file)
+    # Save model parameters as csv
+    write.csv(model_parameters$parameters, file = paste0(a_ml_op_dir, a_m_prefix, "_model_parameters.csv"), row.names = FALSE)
+    # Save gamma categories as csv (if present in .iqtree file)
+    if (is.na(model_parameters$gamma_categories) == FALSE){
+      write.csv(model_parameters$gamma_categories, file = paste0(a_ml_op_dir, a_m_prefix, "_model_gamma.categories.csv"), row.names = FALSE)
+    }
+    # Save state frequencies as csv (if present in .iqtree file)
+    if (is.na(model_parameters$frequency) == FALSE){
+      write.csv(model_parameters$frequency, file = paste0(a_ml_op_dir, a_m_prefix, "_model_state.frequencies.csv"), row.names = FALSE)
+    }
     
     # Extract information about this dataset
     a_info <- all_datasets[[a_dataset]]
@@ -120,7 +137,7 @@ for (a in all_alignments){
     # This ensures IQ-Tree output files will be stored in the correct directory
     setwd(a_c_op_dir)
     
-    # Create constraint trees
+    # Create constraint trees, including best model in the dataframe (so it will be used to estimate hypothesis trees)
     constraint_df <- create.constraint.trees(dataset = a_dataset, tree_id = a_m_prefix, 
                                              dataset_constraint_tree_dir = a_c_op_dir, 
                                              model = best_model, model_id = m, outgroup_taxa = a_info$Outgroup,
@@ -142,6 +159,8 @@ for (a in all_alignments){
     # Change directory to the tree mixtures output directory for this dataset
     # This ensures IQ-Tree output files will be stored in the correct directory
     setwd(a_tm_op_dir)
+    
+    # Apply mixture of trees method with best model from maximum likelihood tree estimation
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
