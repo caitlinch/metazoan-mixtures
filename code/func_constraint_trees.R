@@ -173,8 +173,35 @@ extract.model.details <- function(iqtree_file){
     table_rows <- iq_file[table_ind:end_table_ind]
     # Split the table rows at the tabs ("\t")
     table_rows_split <- strsplit(table_rows, "\t")
-    # Extract the second element of each table row
-    table_types <- unlist(lapply(table_rows_split, "[[", 2))
+    # Extract number of sites from each row ("Site")
+    num_sites <- unlist(lapply(table_rows_split, "[[", 4))
+    # Extract number of unique site patterns from each row ("Unique")
+    num_unique <- unlist(lapply(table_rows_split, "[[", 5))
+    # Extract number of parsimony-informative sites from each row ("Infor")
+    num_infor <- unlist(lapply(table_rows_split, "[[", 6))
+    # Extract number of invariant sites from each row ("Invar")
+    num_invar <- unlist(lapply(table_rows_split, "[[", 7))
+    # Extract number of constant sites from each row ("Const") - NOTE: can be subset of invariant sites
+    num_const <- unlist(lapply(table_rows_split, "[[", 8))
+    # Create the output vectors
+    num_names <- c("Number of constant sites", "Number of invariant (constant or ambiguous constant) sites",
+                   "Number of parsimony informative sites", "Number of distinct site patterns")
+    num_vals <- c(sum(as.numeric(num_const)), sum(as.numeric(num_invar)), 
+                  sum(as.numeric(num_infor)), sum(as.numeric(num_unique)) )
+    
+    # Column meanings:
+    # Unique: Number of unique site patterns
+    # Infor:  Number of parsimony-informative sites
+    # Invar:  Number of invariant sites
+    # Const:  Number of constant sites (can be subset of invariant sites)
+    
+    # single alignment
+    # Number of constant sites: 0 (= 0% of all sites)
+    # Number of invariant (constant or ambiguous constant) sites: 0 (= 0% of all sites)
+    # Number of parsimony informative sites: 1000
+    # Number of distinct site patterns: 1000
+    
+    
   }
   
   # Check whether the sites are "amino-acid" or "nucleotide"
