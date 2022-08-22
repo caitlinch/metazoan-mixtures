@@ -142,8 +142,15 @@ extract.model.details <- function(iqtree_file){
   ind         <- grep("Input data:",iq_file)
   input_str   <- iq_file[[ind]] # get the line that contains this info
   input_ls    <- strsplit(input_str," ")
-  op2         <- input_ls[[1]][3] # extract number of sequences (number of taxa)
-  op3         <- input_ls[[1]][6] # extract number of sites 
+  if (grepl("partitions", input_str) == FALSE){
+    op2         <- input_ls[[1]][3] # extract number of sequences (number of taxa)
+    op2.5       <- "NA" # Specify number of partitions
+    op3         <- input_ls[[1]][6] # extract number of sites 
+  } else if (grepl("partitions", input_str) == TRUE){
+    op2         <- input_ls[[1]][3] # extract number of sequences (number of taxa)
+    op2.5       <- input_ls[[1]][6] # Specify number of partitions
+    op3         <- input_ls[[1]][9] # extract number of sites 
+  }
   # Extract the model of substitution (same for amino-acid and nucleotide files)
   ind         <- grep("Model of substitution: ",iq_file)
   sub_str     <- iq_file[[ind]] # get the line that contains this info
@@ -169,9 +176,38 @@ extract.model.details <- function(iqtree_file){
   # four strings = four lists of numbers: take first value from each list to get number of sites
   num_vals <- c(num_vals_regx[[1]][1],num_vals_regx[[2]][1],num_vals_regx[[3]][1],num_vals_regx[[4]][1]) 
   
-  # check the type of sites - amino acid or DNA
+  # Check whether the sites are "amino-acid" or "nucleotide"
+  # First, check the input_str to see if it specifies the alignment type
+  if (grepl("amino-acid", input_str) == TRUE){
+    input_type = "amino-acid"
+  } else if (grepl("amino-acid", input_str) == TRUE){
+    input_type = "nucleotide"
+  } else {
+    # If the alignment type is not specified in the input_str, check whether this is included in the partition table
+    table_ind <- grep("ID\tType\tSeq\tSite\tUnique\tInfor\tInvar\tConst\tName", iq_file) + 1
+    end_table_ind <- grep("Column meanings:", iq_file) - 2
+    # Extract rows in the table
+    table_rows <- iq_file[table_ind:end_table_ind]
+    # Split the table rows at the tabs ("\t")
+    table_rows_split <- strsplit(table_rows, "\t")
+    # Extract the second element of each table row
+    table_types <- unlist(lapply(table_rows_split, "[[", 2))
+    # Check what the table_types are
+    if (unique(table_types) == "AA"){
+      # If all sequences are AA, then the input_type is AA
+      input_type = "amino-acid"
+    } else if (unique(table_types) == "DNA"){
+      # If all sequences are DNA, then the input_type is DNA
+      input_type = "nucleotide"
+    } else {
+      # If there is more than one type of sequence, then the sequences are a mix
+      input_type = "mix"
+    }
+  }
+  
+  
   # if the input is DNA (nucleotide sites), gather that information
-  if (input_ls[[1]][7]=="nucleotide"){
+  if (input_type == "nucleotide"){
     # Extract the rate parameters
     rate1 <- as.numeric(strsplit(iq_file[[grep("A-C",iq_file)]],":")[[1]][2]) # A-C rate (same as code above, but combined 4 lines into 1 line)
     rate2 <- as.numeric(strsplit(iq_file[[grep("A-G",iq_file)]],":")[[1]][2]) # A-G rate
@@ -203,10 +239,10 @@ extract.model.details <- function(iqtree_file){
     mrh2_name <- gsub(" ","_",mrh2_name) # change the name to be easy to parse
     
     # make a list of the rows for the output dataframe
-    names <- c("file_name","sequence_type","n_taxa","n_sites",num_names,"substitution_model", "A-C_rate","A-G_rate","A-T_rate","C-G_rate","C-T_rate","G-T_rate","A_freq","C_freq",
+    names <- c("file_name","sequence_type","n_taxa","npartitions","n_sites",num_names,"substitution_model", "A-C_rate","A-G_rate","A-T_rate","C-G_rate","C-T_rate","G-T_rate","A_freq","C_freq",
                "G_freq","T_freq","model_of_rate_heterogeneity","model_of_rate_heterogeneity_line2_name","model_of_rate_heterogeneity_line2_value")
     # Make a list of the output rows for the output dataframe
-    op <- c(op1,"DNA",op2,op3,num_vals,op4,rate1,rate2,rate3,rate4,rate5,rate6,sf1,sf2,sf3,sf4,mrh1,mrh2_name,mrh2)
+    op <- c(op1,"DNA",op2,op2.5,op3,num_vals,op4,rate1,rate2,rate3,rate4,rate5,rate6,sf1,sf2,sf3,sf4,mrh1,mrh2_name,mrh2)
     # Create the output dataframe
     op_df <- data.frame(names,op, stringsAsFactors = FALSE)
     # Name the columns
@@ -281,7 +317,7 @@ extract.model.details <- function(iqtree_file){
     # Name the parameters so they're easy to access once you've outputted the data
     names(params) <- c("parameters","gamma_categories","Q_rate_matrix")
     
-  } else if (input_ls[[1]][7]=="amino-acid"){ # alternatively if the data is amino acid sites
+  } else if (input_type=="amino-acid"){ # alternatively if the data is amino acid sites
     # Extract model of rate heterogeneity
     mrh1      <- strsplit(iq_file[[grep("Model of rate heterogeneity:",iq_file)]],":")[[1]][2] # Extract model of rate heterogeneity 
     mrh2      <- as.numeric(strsplit(iq_file[[(grep("Model of rate heterogeneity:",iq_file)+1)]],":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
@@ -290,10 +326,10 @@ extract.model.details <- function(iqtree_file){
     sf1      <- strsplit(iq_file[[grep("State frequencies:",iq_file)]],":")[[1]][2]
     
     # make a list of the rows for the output dataframe
-    names <- c("file_name","sequence_type","n_taxa","n_sites",num_names,"substitution_model","model_of_rate_heterogeneity","model_of_rate_heterogeneity_line2_name",
+    names <- c("file_name","sequence_type","n_taxa","n_partitions","n_sites",num_names,"substitution_model","model_of_rate_heterogeneity","model_of_rate_heterogeneity_line2_name",
                "model_of_rate_heterogeneity_line2_value","state_frequencies")
     # Make a list of the output rows for the first output dataframe
-    op <- c(op1,"amino-acid",op2,op3,num_vals,op4,mrh1,mrh2_name,mrh2,sf1)
+    op <- c(op1,"amino-acid",op2,op2.5,op3,num_vals,op4,mrh1,mrh2_name,mrh2,sf1)
     op_df <- data.frame(names,op, stringsAsFactors = FALSE)
     names(op_df) <- c("parameter","value")
     
