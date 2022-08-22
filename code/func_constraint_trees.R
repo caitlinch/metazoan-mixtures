@@ -188,21 +188,7 @@ extract.model.details <- function(iqtree_file){
                    "Number of parsimony informative sites", "Number of distinct site patterns")
     num_vals <- c(sum(as.numeric(num_const)), sum(as.numeric(num_invar)), 
                   sum(as.numeric(num_infor)), sum(as.numeric(num_unique)) )
-    
-    # Column meanings:
-    # Unique: Number of unique site patterns
-    # Infor:  Number of parsimony-informative sites
-    # Invar:  Number of invariant sites
-    # Const:  Number of constant sites (can be subset of invariant sites)
-    
-    # single alignment
-    # Number of constant sites: 0 (= 0% of all sites)
-    # Number of invariant (constant or ambiguous constant) sites: 0 (= 0% of all sites)
-    # Number of parsimony informative sites: 1000
-    # Number of distinct site patterns: 1000
-    
-    
-  }
+  } # end if (is.na(op2.5) == TRUE)
   
   # Check whether the sites are "amino-acid" or "nucleotide"
   # First, check the input_str to see if it specifies the alignment type
