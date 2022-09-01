@@ -8,7 +8,8 @@ count.taxa <- function(list){
   # Quick function to count the number of taxa in a list
   
   total_taxa <- c(list$Bilateria, list$Cnidaria, list$Placozoa, list$Porifera, list$Ctenophora, list$Outgroup)
-  return(c(length(total_taxa),total_taxa))
+  return(list("num_taxa" = length(total_taxa),
+              "taxa" = total_taxa))
 }
 
 #### PHYLOGENETIC DATASETS ####
