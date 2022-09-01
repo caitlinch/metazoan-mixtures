@@ -7,8 +7,8 @@
 count.taxa <- function(list){
   # Quick function to count the number of taxa in a list
   
-  total_taxa <- length(c(list$Bilateria, list$Cnidaria, list$Placozoa, list$Porifera, list$Ctenophora, list$Outgroup))
-  return(total_taxa)
+  total_taxa <- c(list$Bilateria, list$Cnidaria, list$Placozoa, list$Porifera, list$Ctenophora, list$Outgroup)
+  return(c(length(total_taxa),total_taxa))
 }
 
 #### PHYLOGENETIC DATASETS ####
@@ -56,6 +56,22 @@ dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_pa
                       "Models" = c(),
                       "Partitioned" = FALSE)
 
+# For Hejnol et. al. (2009):
+hejnol2009_list <- list("Bilateria" = c(),
+                        "Cnidaria" = c(),
+                        "Placozoa" = c(),
+                        "Porifera" = c(),
+                        "Ctenophora" = c(),
+                        "Outgroup" = c(),
+                        "Sponges_Calcarea" = c(),
+                        "Sponges_Homoscleromorpha" = c(),
+                        "Sponges_Hexactinellida" = c(),
+                        "Sponges_Demospongiae" = c(),
+                        "Sponges_1" = c(),
+                        "Sponges_2" = c(),
+                        "Models" = c(),
+                        "Partitioned" = FALSE)
+
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
                         "Cnidaria" = c("Hydra_vulgaris", "Bolocera_tuediae", "Aiptasia_pallida", "Hormathia_digitata", "Nematostella_vectensis", "Acropora_digitifera", 
@@ -85,6 +101,7 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
 
 # Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
 all_datasets <- list("Dunn2008" = dunn2008_list,
+                     "Hejnol2009" = hejnol2009_list,
                      "Whelan2017" = whelan2017_list)
 
 
