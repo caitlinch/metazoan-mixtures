@@ -3,6 +3,14 @@
 
 # File to store the taxa names, clade classifications, and models of sequence evolution for the Metazoan datasets used for analysis
 
+#### FUNCTIONS ####
+count.taxa <- function(list){
+  # Quick function to count the number of taxa in a list
+  
+  total_taxa <- length(c(list$Bilateria, list$Cnidaria, list$Placozoa, list$Porifera, list$Ctenophora, list$Outgroup))
+  return(total_taxa)
+}
+
 #### PHYLOGENETIC DATASETS ####
 # Format for taxa names:
 empty_list <- list("Bilateria" = c(),
@@ -21,18 +29,30 @@ empty_list <- list("Bilateria" = c(),
                    "Partitioned" = FALSE)
 
 # For Dunn et. al. (2008):
-dunn2008_list <- list("Bilateria" = c(),
-                      "Cnidaria" = c(),
+dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
+                                      "Argopecten_irradians", "Asterina_pectinifera", "Biomphalaria_glabrata", "Boophilus_microplus", 
+                                      "Branchiostoma_floridae", "Capitella_sp", "Carcinoscorpius_rotundicauda", "Carcinus_maenas", 
+                                      "Carinoma_mutabilis", "Cerebratulus_lacteus", "Chaetoderma_nitidulum", "Chaetopleura_apiculata", 
+                                      "Chaetopterus_variopedatus", "Ciona_intestinalis", "Crassostrea_virginica", "Daphnia_magna", 
+                                      "Drosophila_melanogaster", "Dugesia_japonica", "Echinococcus_granulosus", "Echinoderes_horni", 
+                                      "Euperipatoides_kanangrensis", "Euprymna_scolopes", "Fenneropenaeus_chinensis", "Gallus_gallus", 
+                                      "Haementeria_depressa", "Homo_sapiens", "Hypsibius_dujardini", "Lumbricus_rubellus", "Macrostomum_lignano",
+                                      "Mytilus_galloprovincialis", "Paraplanocera_oligoglena", "Phoronis_vancouverensis", "Platynereis_dumerilii",
+                                      "Priapulus_caudatus", "Ptychodera_flava", "Richtersius_coronifer", "Saccoglossus_kowalevskii",
+                                      "Schmidtea_mediterranea", "Scutigera_coleoptrata", "Spinochordodes_tellinii", "Strongylocentrotus_purpuratus",
+                                      "Terebratalia_transversa", "Themiste_lageniformis", "Trichinella_spiralis", "Urechis_caupo", "Xenoturbella_bocki",
+                                      "Xiphinema_index"),
+                      "Cnidaria" = c("Acropora_millepora", "Nematostella_vectensis", "Cyanea_capillata", "Hydra_magnipapillata", "Hydractinia_echinata"),
                       "Placozoa" = c(),
-                      "Porifera" = c(),
-                      "Ctenophora" = c(),
-                      "Outgroup" = c(),
+                      "Porifera" = c("Oscarella_carmela"),
+                      "Ctenophora" = c("Mertensiid_sp", "Mnemiopsis_leidyi"),
+                      "Outgroup" = c("Monosiga_ovata", "Capsaspora_owczarzaki", "Sphaeroforma_arctica", "Saccharomyces_cerevisiae", "Cryptococcus_neoformans"),
                       "Sponges_Calcarea" = c(),
-                      "Sponges_Homoscleromorpha" = c(),
+                      "Sponges_Homoscleromorpha" = c("Oscarella_carmela"),
                       "Sponges_Hexactinellida" = c(),
                       "Sponges_Demospongiae" = c(),
-                      "Sponges_1" = c(),
-                      "Sponges_2" = c(),
+                      "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                      "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                       "Models" = c(),
                       "Partitioned" = FALSE)
 
