@@ -62,7 +62,8 @@ empty_list <- list("Bilateria" = c(),
                    "Sponges_1" = c(),
                    "Sponges_2" = c(),
                    "Models" = c(),
-                   "Partitioned" = FALSE)
+                   "Partitioned" = FALSE,
+                   "Estimate.Paraphyletic.Sponges" = FALSE)
 
 # For Dunn et. al. (2008):
 dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
@@ -90,7 +91,8 @@ dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_pa
                       "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                       "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                       "Models" = c(),
-                      "Partitioned" = FALSE)
+                      "Partitioned" = FALSE,
+                      "Estimate.Paraphyletic.Sponges" = FALSE)
 
 # For Hejnol et. al. (2009):
 # Note: Taxa "Convoluta_pulchra" (a marine worm) is labelled "Isodiametra_pulchra" on Figure 2, the main phylogeny for this paper. The current accepted name 
@@ -123,7 +125,8 @@ hejnol2009_list <- list("Bilateria" = c("Xenoturbella_bocki", "Meara_stichopi", 
                         "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                         "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                         "Models" = c(),
-                        "Partitioned" = FALSE)
+                        "Partitioned" = FALSE,
+                        "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Philippe et. al. (2009):
 # Note: Taxa "RenieraXsp" (a marine sponge) is labelled "Amphimedon" in Figure 1, the main phylogeny for this paper. The current accepted name for this 
@@ -151,7 +154,8 @@ philippe2009_list <- list("Bilateria" = c("Xenoturbella_bocki", "Strongylocentro
                           "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                           "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                           "Models" = c(),
-                          "Partitioned" = FALSE)
+                          "Partitioned" = FALSE,
+                          "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Pick et. al. (2010):
 pick2010_list <- list("Bilateria" = c("Lumbricus", "Haementeri", "Urechis_ca", "Capitella", "Platynerei", "Themiste_l", "Chaetopter", "Terebratal", "Phoronis_v", "Cerebratul",
@@ -175,7 +179,8 @@ pick2010_list <- list("Bilateria" = c("Lumbricus", "Haementeri", "Urechis_ca", "
                       "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                       "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                       "Models" = c(),
-                      "Partitioned" = FALSE)
+                      "Partitioned" = FALSE,
+                      "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Philippe et. al. (2011):
 # Note: Taxa "Reniera_sp" (a marine sponge) is labelled "Amphimedon" in Figure 1, the main phylogeny for this paper. The current accepted name for this 
@@ -208,7 +213,8 @@ philippe2011_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidiu
                           "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                           "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                           "Models" = c(),
-                          "Partitioned" = FALSE)
+                          "Partitioned" = FALSE,
+                          "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Nosenko et. al. (2013):
 nosenko2013_list <- list("Bilateria" = c("Petromy_ma", "Danio_reri", "Molgula_te", "Ciona_inte", "Branchi_fl", "Saccogl_ko", "Tubifex_tu", "Helobde_ro", "Capitel_sp",
@@ -235,7 +241,8 @@ nosenko2013_list <- list("Bilateria" = c("Petromy_ma", "Danio_reri", "Molgula_te
                          "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                          "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                          "Models" = c(),
-                         "Partitioned" = FALSE)
+                         "Partitioned" = FALSE,
+                         "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Ryan et. al. (2013):
 ryan2013_list <- list("Bilateria" = c("Nemertoderma_westbladi", "Meara_stichopi", "Isodiametra_pulchra", "Symsagittifera_roscoffensis", "Convolutriloba_longifissura",
@@ -260,7 +267,8 @@ ryan2013_list <- list("Bilateria" = c("Nemertoderma_westbladi", "Meara_stichopi"
                       "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                       "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                       "Models" = c(),
-                      "Partitioned" = FALSE)
+                      "Partitioned" = FALSE,
+                      "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Moroz et. al. (2014):
 moroz2014_list <- list("Bilateria" = c("Branchiostoma", "Ciona", "Homo", "Saccoglossus", "Strongylocentrotus", "Aplysia", "Lottia", "Capitella",
@@ -291,7 +299,8 @@ moroz2014_list <- list("Bilateria" = c("Branchiostoma", "Ciona", "Homo", "Saccog
                        "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                        "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                        "Models" = c(),
-                       "Partitioned" = FALSE)
+                       "Partitioned" = FALSE,
+                       "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Borowiec et. al. (2015):
 borowiec2015_list <- list("Bilateria" = c("Strongylocentrotus", "Saccoglossus", "Branchiostoma", "Oikopleura", "Ciona", "Fugu", "Gasterosteus",
@@ -310,7 +319,8 @@ borowiec2015_list <- list("Bilateria" = c("Strongylocentrotus", "Saccoglossus", 
                           "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                           "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                           "Models" = c(),
-                          "Partitioned" = FALSE)
+                          "Partitioned" = FALSE,
+                          "Estimate.Paraphyletic.Sponges" = FALSE)
 
 # For Chang et. al. (2015):
 chang2015_list <- list("Bilateria" = c("Latimeria_menadoensis", "Homo_sapiens", "Petromyzon_marinus", "Ciona_intestinalis", "Botryllus_schlosseri",
@@ -340,7 +350,8 @@ chang2015_list <- list("Bilateria" = c("Latimeria_menadoensis", "Homo_sapiens", 
                        "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                        "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                        "Models" = c(),
-                       "Partitioned" = FALSE)
+                       "Partitioned" = FALSE,
+                       "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
@@ -367,7 +378,8 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
                         "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                         "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                         "Models" = c("PartitionFinder"),
-                        "Partitioned" = TRUE)
+                        "Partitioned" = TRUE,
+                        "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
 all_datasets <- list("Dunn2008" = dunn2008_list,
