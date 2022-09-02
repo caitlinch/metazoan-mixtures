@@ -262,6 +262,22 @@ ryan2013_list <- list("Bilateria" = c("Nemertoderma_westbladi", "Meara_stichopi"
                       "Models" = c(),
                       "Partitioned" = FALSE)
 
+# For Moroz et. al. (2014):
+moroz2014_list <- list("Bilateria" = c(),
+                   "Cnidaria" = c(),
+                   "Placozoa" = c(),
+                   "Porifera" = c(),
+                   "Ctenophora" = c(),
+                   "Outgroup" = c(),
+                   "Sponges_Calcarea" = c(),
+                   "Sponges_Homoscleromorpha" = c(),
+                   "Sponges_Hexactinellida" = c(),
+                   "Sponges_Demospongiae" = c(),
+                   "Sponges_1" = c(),
+                   "Sponges_2" = c(),
+                   "Models" = c(),
+                   "Partitioned" = FALSE)
+
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
                         "Cnidaria" = c("Hydra_vulgaris", "Bolocera_tuediae", "Aiptasia_pallida", "Hormathia_digitata", "Nematostella_vectensis", "Acropora_digitifera", 
