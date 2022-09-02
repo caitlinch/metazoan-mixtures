@@ -158,6 +158,21 @@ pick2010_list <- list("Bilateria" = c("Lumbricus", "Haementeri", "Urechis_ca", "
                       "Models" = c(),
                       "Partitioned" = FALSE)
 
+# For Philippe et. al. (2011):
+philippe2011_list <- list("Bilateria" = c(),
+                          "Cnidaria" = c(),
+                          "Placozoa" = c(),
+                          "Porifera" = c(),
+                          "Ctenophora" = c(),
+                          "Outgroup" = c(),
+                          "Sponges_Calcarea" = c(),
+                          "Sponges_Homoscleromorpha" = c(),
+                          "Sponges_Hexactinellida" = c(),
+                          "Sponges_Demospongiae" = c(),
+                          "Sponges_1" = c(),
+                          "Sponges_2" = c(),
+                          "Models" = c(),
+                          "Partitioned" = FALSE)
 
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
