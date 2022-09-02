@@ -237,6 +237,22 @@ nosenko2013_list <- list("Bilateria" = c("Petromy_ma", "Danio_reri", "Molgula_te
                          "Models" = c(),
                          "Partitioned" = FALSE)
 
+# For Ryan et. al. (2013):
+ryan2013_list <- list("Bilateria" = c(),
+                      "Cnidaria" = c(),
+                      "Placozoa" = c(),
+                      "Porifera" = c(),
+                      "Ctenophora" = c(),
+                      "Outgroup" = c(),
+                      "Sponges_Calcarea" = c(),
+                      "Sponges_Homoscleromorpha" = c(),
+                      "Sponges_Hexactinellida" = c(),
+                      "Sponges_Demospongiae" = c(),
+                      "Sponges_1" = c(),
+                      "Sponges_2" = c(),
+                      "Models" = c(),
+                      "Partitioned" = FALSE)
+
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
                         "Cnidaria" = c("Hydra_vulgaris", "Bolocera_tuediae", "Aiptasia_pallida", "Hormathia_digitata", "Nematostella_vectensis", "Acropora_digitifera", 
@@ -271,6 +287,7 @@ all_datasets <- list("Dunn2008" = dunn2008_list,
                      "Pick2010" = pick2010_list,
                      "Philippe2011" = philippe2011_list,
                      "Nosenko2013" = nosenko2013_list,
+                     "Ryan2013" = ryan2013_list,
                      "Whelan2017" = whelan2017_list)
 
 # Create a list that contains the taxa within each matrix
