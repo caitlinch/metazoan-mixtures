@@ -339,7 +339,17 @@ matrix_taxa <- list("Nosenko2013.nonribosomal_9187_smatrix.aa" = c("Acropor_hy",
                                                                  "Pachydi_gl", "Pedicel_ce", "Pedicul_hu", "Petromy_ma", "Phycomy_bl", "Pleurob_pi", "Podocor_ca",
                                                                  "Porites", "Protero_sp", "Saccogl_ko", "Scutige_co", "Spizell_pu", "Sphaero_ar", "Strongy_pu",
                                                                  "Suberit_fu", "Suberit_do", "Sycon_raph", "Tethya_wil", "Trichop_ad", "Trichop_H4", "Tubifex_tu",
-                                                                 "Xenotur_bo"))
+                                                                 "Xenotur_bo"),
+                    "Moroz2014.ED3a.aa" = c( "Mnemiopsis", "Anemonia", "Sycon", "Capsaspora", "Nematostella", "Homo", "Ephydatia", "Capitella", "Aplysia", "Ciona",
+                                             "Monosiga_brevicollis", "Clytia", "Drosophila", "Podocoryne", "Blastocladiella", "Pleurobrachia_pileus", "Oscarella",
+                                             "Hydra", "Ixodes", "Leucetta", "Oopsacas", "Spizellomyces", "Piromyces", "Aiptasia", "Pleurobrachia_bachei",
+                                             "Caenorhabditis", "Branchiostoma", "Amphimedon", "Daphnia", "Saccoglossus", "Porites", "Carteriospongia", "Glomus",
+                                             "Trichoplax", "Strongylocentrotus", "Acropora", "Monosiga_ovata", "Sphaeroforma", "Saccharomyces", "Heterochone",
+                                             "Aphrocallistes", "Lottia", "Amoebidium", "Hydractinia"),
+                    "Moroz2014.ED3d.aa" = c("CGIG", "BINF", "EMUE", "PCAR", "LGIG", "CTEL", "SROS", "TADH", "MBRE", "PAST", "DMEL", "PBAC", "BCUC", "COEL", "CFOL",
+                                            "ISCA", "BFLO", "PPIL", "DGLA", "AVIR", "EDUN", "MERT", "DPUL", "PATL", "AQUE", "HSAP", "SPUR", "HVUL", "VALL", "ACAL",
+                                            "SCOA", "HECH", "MOVA", "OMIN", "GVEN", "MLEI", "CINT", "AVAS", "AIPT", "OCAR", "CHEM", "ADIG", "NVEC", "SKOW", "LCHA",
+                                            "HCAL"))
 
 # Create one list that collates datasets to contain all taxa for each clade 
 all_taxa <- list("Bilateria" = sort(unique(unlist(lapply(all_datasets, function(d){d$Bilateria})))),
