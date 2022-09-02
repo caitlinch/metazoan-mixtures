@@ -17,7 +17,15 @@ check.sponges <- function(list){
   
   sponge_check <- setequal(list$Porifera, c(list$Sponges_Calcarea, list$Sponges_Homoscleromorpha, 
                                             list$Sponges_Hexactinellida, list$Sponges_Demospongiae))
-  return(sponge_check)
+  Porifera_taxa <- list$Porifera
+  combined_taxa <- c(list$Sponges_Calcarea, list$Sponges_Homoscleromorpha, 
+                     list$Sponges_Hexactinellida, list$Sponges_Demospongiae)
+  op_list <- list("Matching" = sponge_check,
+                  "Porifera_length" = length(Porifera_taxa),
+                  "Porifera_taxa" = Porifera_taxa,
+                  "Combined_length" = length(combined_taxa),
+                  "Combined_taxa" = combined_taxa)
+  return(op_list)
 }
 
 #### PHYLOGENETIC DATASETS ####
@@ -120,9 +128,9 @@ philippe2009_list <- list("Bilateria" = c("Xenoturbella_bocki", "Strongylocentro
                           "Sponges_Calcarea" = c("SyconXraphanus", "LeucettaXchagosensis"),
                           "Sponges_Homoscleromorpha" = c("Oscarella_carmela"),
                           "Sponges_Hexactinellida" = c("OopsacasXminuta", "Heterochone_sp"),
-                          "Sponges_Demospongiae" = c("Carteriospongia_foliascens", "Suberites_domuncula", "Ephydatia_muelleri"),
-                          "Sponges_1" = c(),
-                          "Sponges_2" = c(),
+                          "Sponges_Demospongiae" = c("Carteriospongia_foliascens", "RenieraXsp", "Suberites_domuncula", "Ephydatia_muelleri"),
+                          "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                          "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                           "Models" = c(),
                           "Partitioned" = FALSE)
 
