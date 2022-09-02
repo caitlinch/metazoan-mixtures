@@ -12,6 +12,14 @@ count.taxa <- function(list){
               "taxa" = total_taxa))
 }
 
+check.sponges <- function(list){
+  # Quick function to make sure that all the sponge species are included in the correct places in the list
+  
+  sponge_check <- setequal(list$Porifera, c(list$Sponges_Calcarea, list$Sponges_Homoscleromorpha, 
+                                            list$Sponges_Hexactinellida, list$Sponges_Demospongiae))
+  return(sponge_check)
+}
+
 #### PHYLOGENETIC DATASETS ####
 # Format for taxa names:
 empty_list <- list("Bilateria" = c(),
@@ -91,16 +99,28 @@ hejnol2009_list <- list("Bilateria" = c("Xenoturbella_bocki", "Meara_stichopi", 
                         "Partitioned" = FALSE)
 
 # For Philippe et. al. (2009):
-philippe2009_list <- list("Bilateria" = c(),
-                          "Cnidaria" = c(),
-                          "Placozoa" = c(),
-                          "Porifera" = c(),
-                          "Ctenophora" = c(),
-                          "Outgroup" = c(),
-                          "Sponges_Calcarea" = c(),
-                          "Sponges_Homoscleromorpha" = c(),
-                          "Sponges_Hexactinellida" = c(),
-                          "Sponges_Demospongiae" = c(),
+# Note: Taxa "RenieraXsp" (a marine sponge) is labelled "Amphimedon" in Figure 1, the main phylogeny for this paper. The current accepted name for this 
+#       species is "Amphimedon queenslandica".
+# Note: One species not shown in main figure (Figure 1) but in alignment: Euperipatoides kanangrensis (a velvet worm from Bilateria)
+philippe2009_list <- list("Bilateria" = c("Xenoturbella_bocki", "Strongylocentrotus_purpuratus", "Saccoglossus_kowalevskii", "Branchiostoma_floridae", "Petromyzon_marinus",
+                                          "Danio_rerio", "Molgula_tectiformis", "CionaXsavignyi", "Euprymna_scolopes", "Crassostrea_gigas", "AplysiaXcalifornica", 
+                                          "Pedicellina_cernua", "Capitella_sp__i_ecs-2004", "TubifexXtubifex", "Helobdella_robusta", "DaphniaXpulex", "PediculusXhumanus",
+                                          "NasoniaXvitripennis", "ScutigeraXcoleoptrata", "IxodesXscapularis", "Anoplodactylus_eroticus"),
+                          "Cnidaria" = c("Nematostella_vectensis", "Metridium_senile", "Montastraea_faveolata", "Acropora_millepora", "CyaneaXcapillata", "HydraXmagnipapillata",
+                                         "ClytiaXhemisphaerica", "Podocoryne_carnea", "Hydractinia_echinata", "Euperipatoides_kanangrensis"),
+                          "Placozoa" = c("Trichoplax_adhaerens"),
+                          "Porifera" = c("Oscarella_carmela", "SyconXraphanus", "LeucettaXchagosensis", "OopsacasXminuta", "Heterochone_sp", "Carteriospongia_foliascens",
+                                         "RenieraXsp", "Suberites_domuncula", "Ephydatia_muelleri"),
+                          "Ctenophora" = c("Pleurobrachia_pileus", "mertensiid_sp", "Mnemiopsis_leidyi"),
+                          "Outgroup" = c("Spizellomyces_punctatus", "Batrachochytrium_dendrobatidis", "AllomycesXmacrogynus", "RhizopusXoryzae", "Phycomyces_blakesleeanus",
+                                         "Sphaeroforma_arctica", "Amoebidium_parasiticum", "Capsaspora_owczarzaki", "MonosigaXovata", "Proterospongia_sp", "MonosigaXbrevicollis"),
+                          "Outgroup_Choanoflagellata" = c("MonosigaXovata", "Proterospongia_sp", "MonosigaXbrevicollis"),
+                          "Outgroup_Fungi" = c("Spizellomyces_punctatus", "Batrachochytrium_dendrobatidis", "AllomycesXmacrogynus", "RhizopusXoryzae", "Phycomyces_blakesleeanus",
+                                               "Sphaeroforma_arctica", "Amoebidium_parasiticum", "Capsaspora_owczarzaki"),
+                          "Sponges_Calcarea" = c("SyconXraphanus", "LeucettaXchagosensis"),
+                          "Sponges_Homoscleromorpha" = c("Oscarella_carmela"),
+                          "Sponges_Hexactinellida" = c("OopsacasXminuta", "Heterochone_sp"),
+                          "Sponges_Demospongiae" = c("Carteriospongia_foliascens", "Suberites_domuncula", "Ephydatia_muelleri"),
                           "Sponges_1" = c(),
                           "Sponges_2" = c(),
                           "Models" = c(),
