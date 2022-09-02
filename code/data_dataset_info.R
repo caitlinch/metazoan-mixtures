@@ -15,16 +15,35 @@ count.taxa <- function(list){
 check.sponges <- function(list){
   # Quick function to make sure that all the sponge species are included in the correct places in the list
   
-  sponge_check <- setequal(list$Porifera, c(list$Sponges_Calcarea, list$Sponges_Homoscleromorpha, 
-                                            list$Sponges_Hexactinellida, list$Sponges_Demospongiae))
+  # Extract species
   Porifera_taxa <- list$Porifera
   combined_taxa <- c(list$Sponges_Calcarea, list$Sponges_Homoscleromorpha, 
                      list$Sponges_Hexactinellida, list$Sponges_Demospongiae)
+  # Check for equality
+  sponge_check <- setequal(Porifera_taxa, combined_taxa)
+  # Collate output
   op_list <- list("Matching" = sponge_check,
                   "Porifera_length" = length(Porifera_taxa),
                   "Porifera_taxa" = Porifera_taxa,
                   "Combined_length" = length(combined_taxa),
                   "Combined_taxa" = combined_taxa)
+  return(op_list)
+}
+
+check.outgroups <- function(list){
+  # Quick function to make sure all the outgroup species are included in the correct places on the list
+  
+  # Extract species
+  all_outgroup_taxa <- list$Outgroup
+  collated_outgroup_taxa <- unique(unlist(list[grep("Outgroup_", names(list), value = T)]))
+  # Check for equality
+  outgroup_check <- setequal(all_outgroup_taxa, collated_outgroup_taxa)
+  # Collate output
+  op_list <- list("Matching" = outgroup_check,
+                  "Outgroup_length" = length(all_outgroup_taxa),
+                  "Outgroup_taxa" = all_outgroup_taxa,
+                  "Combined_length" = length(collated_outgroup_taxa),
+                  "Combined_taxa" = collated_outgroup_taxa)
   return(op_list)
 }
 
@@ -159,20 +178,53 @@ pick2010_list <- list("Bilateria" = c("Lumbricus", "Haementeri", "Urechis_ca", "
                       "Partitioned" = FALSE)
 
 # For Philippe et. al. (2011):
-philippe2011_list <- list("Bilateria" = c(),
-                          "Cnidaria" = c(),
+# Note: Taxa "Reniera_sp" (a marine sponge) is labelled "Amphimedon" in Figure 1, the main phylogeny for this paper. The current accepted name for this 
+#       species is "Amphimedon queenslandica".
+philippe2011_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
+                                          "Argopecten_irradians", "Asterina_pectinifera", "Biomphalaria_glabrata", "Boophilus_microplus", 
+                                          "Branchiostoma_floridae", "Carcinoscorpius_rotundicauda", "Carcinus_maenas", "Carinoma_mutabilis",
+                                          "Cerebratulus_lacteus", "Chaetoderma_nitidulum", "Chaetopleura_apiculata", "Ciona_intestinalis", 
+                                          "Drosophila_melanogaster", "Dugesia_japonica", "Echinococcus_granulosus", "Echinoderes_horni", 
+                                          "Euperipatoides_kanangrensis", "Euprymna_scolopes", "Fenneropenaeus_chinensis", "Gallus_gallus", 
+                                          "Haementeria_depressa", "Homo_sapiens", "Hypsibius_dujardini", "Lumbricus_rubellus", "Macrostomum_lignano",
+                                          "Mytilus_galloprovincialis", "Phoronis_vancouverensis", "Platynereis_dumerilii", "Priapulus_caudatus",
+                                          "Ptychodera_flava", "Richtersius_coronifer", "Saccoglossus_kowalevskii", "Schmidtea_mediterranea", 
+                                          "Scutigera_coleoptrata", "Spinochordodes_tellinii", "Strongylocentrotus_purpuratus", "Terebratalia_transversa",
+                                          "Themiste_lageniformis", "Trichinella_spiralis", "Urechis_caupo", "Xenoturbella_bocki", "Xiphinema_index",
+                                          "Daphnia_pulex", "Crassostrea_gigas", "Capitella_sp__i_ecs-2004", "Chaetopterus_sp", "Pedicellina_cernua",
+                                          "Paraplanocera_sp", "Turbanella_ambronensis", "Myzostoma_seymourcollegiorum", "Symsagittifera_roscoffensis",
+                                          "Neochildia_fusca", "Gnathostomula_peregrina", "Philodina_roseola", "Brachionus_plicatilis", "Bugula_neritina",
+                                          "Cristatella_mucedo", "Spadella_cephaloptera", "Flaccisagitta_enflata"),
+                          "Cnidaria" = c("Hydractinia_echinata", "Hydra_magnipapillata", "Cyanea_capillata", "Nematostella_vectensis", "Acropora_millepora"),
                           "Placozoa" = c(),
-                          "Porifera" = c(),
-                          "Ctenophora" = c(),
-                          "Outgroup" = c(),
+                          "Porifera" = c("Oscarella_carmela", "Reniera_sp"),
+                          "Ctenophora" = c("Mnemiopsis_leidyi", "mertensiid_sp"),
+                          "Outgroup" = c("Saccharomyces_cerevisiae", "Cryptococcus_neoformans", "Sphaeroforma_arctica", "Amoebidium_parasiticum", 
+                                         "Capsaspora_owczarzaki", "Monosiga_ovata"),
                           "Sponges_Calcarea" = c(),
-                          "Sponges_Homoscleromorpha" = c(),
+                          "Sponges_Homoscleromorpha" = c("Oscarella_carmela"),
                           "Sponges_Hexactinellida" = c(),
-                          "Sponges_Demospongiae" = c(),
-                          "Sponges_1" = c(),
-                          "Sponges_2" = c(),
+                          "Sponges_Demospongiae" = c("Reniera_sp"),
+                          "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                          "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                           "Models" = c(),
                           "Partitioned" = FALSE)
+
+# For Nosenko et. al. (2013):
+nosenko2013_list <- list("Bilateria" = c(),
+                         "Cnidaria" = c(),
+                         "Placozoa" = c(),
+                         "Porifera" = c(),
+                         "Ctenophora" = c(),
+                         "Outgroup" = c(),
+                         "Sponges_Calcarea" = c(),
+                         "Sponges_Homoscleromorpha" = c(),
+                         "Sponges_Hexactinellida" = c(),
+                         "Sponges_Demospongiae" = c(),
+                         "Sponges_1" = c(),
+                         "Sponges_2" = c(),
+                         "Models" = c(),
+                         "Partitioned" = FALSE)
 
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
