@@ -211,18 +211,29 @@ philippe2011_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidiu
                           "Partitioned" = FALSE)
 
 # For Nosenko et. al. (2013):
-nosenko2013_list <- list("Bilateria" = c(),
-                         "Cnidaria" = c(),
-                         "Placozoa" = c(),
-                         "Porifera" = c(),
-                         "Ctenophora" = c(),
-                         "Outgroup" = c(),
-                         "Sponges_Calcarea" = c(),
-                         "Sponges_Homoscleromorpha" = c(),
-                         "Sponges_Hexactinellida" = c(),
-                         "Sponges_Demospongiae" = c(),
-                         "Sponges_1" = c(),
-                         "Sponges_2" = c(),
+nosenko2013_list <- list("Bilateria" = c("Petromy_ma", "Danio_reri", "Molgula_te", "Ciona_inte", "Branchi_fl", "Saccogl_ko", "Tubifex_tu", "Helobde_ro", "Capitel_sp",
+                                         "Crassos_gi", "Aplysia_ca", "Nasonia_vi", "Daphnia_pu", "Ixodes_sca", "Anoplod_er", "Euprymn_sc", "Pedicel_ce", "Pedicul_hu",
+                                         "Scutige_co", "Strongy_pu", "Xenotur_bo"),
+                         "Cnidaria" = c("Podocor_ca", "Hydract_ec", "Hydra_vulg", "Hydra_magn", "Clytia_hem", "Nematos_ve", "Metridi_se", "Acropor_mi", "Acropor_hy",
+                                        "Acropor_pa", "Porites", "Cyanea_cap", "Montast_fa"),
+                         "Placozoa" = c("Trichop_ad", "Trichop_H4"),
+                         "Porifera" = c("Sycon_cili", "Sycon_raph", "Leucett_ch", "Leucoso_sp", "Oscarel_sp", "Oscarel_lo", "Oscarel_ca", "Corticium", "Cratero_me",
+                                        "Oopsacas_m", "Heteroc_ca", "Aphroca_va", "Suberit_do", "Suberit_fu", "Asbesto_sp", "Tethya_wil", "Astrosc_wi", "Lubomir_ba",
+                                        "Ephydat_mu", "Pachydi_gl", "Amphime_qu", "Carteri_fo"),
+                         "Ctenophora" = c("Mnemiop_le", "Beroe_sp", "Mertens_sp", "Pleurob_pi"),
+                         "Outgroup" = c("Monosig_ov", "Protero_sp", "Monosig_br", "Allomyc_ma", "Batrach_de", "Phycomy_bl", "Spizell_pu", "Capsasp_ow", "Amoebid_pa",
+                                        "Sphaero_ar"),
+                         "Outgroup_Choanoflagellata" = c("Monosig_ov", "Protero_sp", "Monosig_br"),
+                         "Outgroup_Fungi" = c("Allomyc_ma", "Batrach_de", "Phycomy_bl", "Spizell_pu"), 
+                         "Outgroup_Filasterea" = c("Capsasp_ow"),
+                         "Outgroup_Ichthyosporea" = c("Amoebid_pa", "Sphaero_ar"), 
+                         "Sponges_Calcarea" = c("Sycon_cili", "Sycon_raph", "Leucett_ch", "Leucoso_sp"),
+                         "Sponges_Homoscleromorpha" = c("Oscarel_sp", "Oscarel_lo", "Oscarel_ca", "Corticium"),
+                         "Sponges_Hexactinellida" = c("Cratero_me", "Oopsacas_m", "Heteroc_ca", "Aphroca_va"),
+                         "Sponges_Demospongiae" = c("Suberit_do", "Suberit_fu", "Asbesto_sp", "Tethya_wil", "Astrosc_wi", "Lubomir_ba", "Ephydat_mu", "Pachydi_gl",
+                                                    "Amphime_qu", "Carteri_fo"),
+                         "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                         "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                          "Models" = c(),
                          "Partitioned" = FALSE)
 
@@ -257,7 +268,36 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
 all_datasets <- list("Dunn2008" = dunn2008_list,
                      "Hejnol2009" = hejnol2009_list,
                      "Philippe2009" = philippe2009_list,
+                     "Pick2010" = pick2010_list,
+                     "Philippe2011" = philippe2011_list,
+                     "Nosenko2013" = nosenko2013_list,
                      "Whelan2017" = whelan2017_list)
+
+# Create a list that contains the taxa within each matrix
+#   For use when there are multiple alignments for a single dataset identification
+#   Checks this list to get the set of taxa to use for estimating constraint trees
+matrix_taxa <- list("Nosenko2013.nonribosomal_9187_smatrix.aa" = c("Acropor_hy", "Acropor_mi", "Acropor_pa", "Allomyc_ma", "Amoebid_pa", "Amphime_qu", "Anoplod_er",
+                                                                   "Aplysia_ca", "Aphroca_va", "Asbesto_sp", "Astrosc_wi", "Batrach_de", "Beroe_sp", "Branchi_fl",
+                                                                   "Capitel_sp", "Capsasp_ow", "Carteri_fo", "Ciona_inte", "Clytia_hem", "Corticium", "Crassos_gi",
+                                                                   "Cratero_me", "Cyanea_cap", "Danio_reri", "Daphnia_pu", "Ephydat_mu", "Euprymn_sc", "Helobde_ro",
+                                                                   "Heteroc_ca", "Hydra_magn", "Hydra_vulg", "Hydract_ec", "Ixodes_sca", "Leucett_ch", "Leucoso_sp",
+                                                                   "Lubomir_ba", "Mertens_sp", "Metridi_se", "Mnemiop_le", "Molgula_te", "Monosig_br", "Monosig_ov",
+                                                                   "Montast_fa", "Nasonia_vi", "Nematos_ve", "Oopsacas_m", "Oscarel_ca", "Oscarel_lo", "Oscarel_sp",
+                                                                   "Pachydi_gl", "Pedicel_ce", "Pedicul_hu", "Petromy_ma", "Phycomy_bl", "Pleurob_pi", "Podocor_ca",
+                                                                   "Porites", "Protero_sp", "Saccogl_ko", "Scutige_co", "Spizell_pu", "Sphaero_ar", "Strongy_pu",
+                                                                   "Suberit_do", "Sycon_cili", "Sycon_raph", "Tethya_wil", "Trichop_ad", "Trichop_H4", "Tubifex_tu",
+                                                                   "Xenotur_bo"),
+                    "Nosenko2013.ribosomal_14615_smatrix.aa" = c("Acropor_hy", "Acropor_mi", "Acropor_pa", "Allomyc_ma", "Amoebid_pa", "Amphime_qu", "Anoplod_er",
+                                                                 "Aplysia_ca", "Aphroca_va", "Asbesto_sp", "Astrosc_wi", "Batrach_de", "Beroe_sp", "Branchi_fl",
+                                                                 "Capitel_sp", "Capsasp_ow", "Carteri_fo", "Ciona_inte", "Clytia_hem", "Corticium", "Crassos_gi",
+                                                                 "Cratero_me", "Cyanea_cap", "Danio_reri", "Daphnia_pu", "Ephydat_mu", "Euprymn_sc", "Helobde_ro",
+                                                                 "Heteroc_ca", "Hydra_magn", "Hydra_vulg", "Hydract_ec", "Ixodes_sca", "Leucett_ch", "Leucoso_sp",
+                                                                 "Lubomir_ba", "Mertens_sp", "Metridi_se", "Mnemiop_le", "Molgula_te", "Monosig_br", "Monosig_ov",
+                                                                 "Montast_fa", "Nasonia_vi", "Nematos_ve", "Oopsacas_m", "Oscarel_ca", "Oscarel_lo", "Oscarel_sp",
+                                                                 "Pachydi_gl", "Pedicel_ce", "Pedicul_hu", "Petromy_ma", "Phycomy_bl", "Pleurob_pi", "Podocor_ca",
+                                                                 "Porites", "Protero_sp", "Saccogl_ko", "Scutige_co", "Spizell_pu", "Sphaero_ar", "Strongy_pu",
+                                                                 "Suberit_fu", "Suberit_do", "Sycon_raph", "Tethya_wil", "Trichop_ad", "Trichop_H4", "Tubifex_tu",
+                                                                 "Xenotur_bo"))
 
 # Create one list that collates datasets to contain all taxa for each clade 
 all_taxa <- list("Bilateria" = sort(unique(unlist(lapply(all_datasets, function(d){d$Bilateria})))),
