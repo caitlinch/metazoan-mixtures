@@ -58,31 +58,53 @@ dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_pa
                       "Partitioned" = FALSE)
 
 # For Hejnol et. al. (2009):
-hejnol2009_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
-                                        "Argopecten_irradians", "Asterina_pectinifera", "Biomphalaria_glabrata", "Boophilus_microplus", 
-                                        "Branchiostoma_floridae", "Capitella_sp", "Carcinoscorpius_rotundicauda", "Carcinus_maenas", 
-                                        "Carinoma_mutabilis", "Cerebratulus_lacteus", "Chaetoderma_nitidulum", "Chaetopleura_apiculata", 
-                                        "Ciona_intestinalis", "Crassostrea_virginica", "Drosophila_melanogaster", "Dugesia_japonica",
-                                        "Echinococcus_granulosus", "Echinoderes_horni", "Euperipatoides_kanangrensis", "Euprymna_scolopes",
-                                        "Fenneropenaeus_chinensis", "Gallus_gallus", "Homo_sapiens", "Hypsibius_dujardini", "Lumbricus_rubellus",
-                                        "Macrostomum_lignano", "Mytilus_galloprovincialis", "Phoronis_vancouverensis", "Platynereis_dumerilii",
-                                        "Priapulus_caudatus", "Ptychodera_flava", "Richtersius_coronifer", "Saccoglossus_kowalevskii",
-                                        "Schmidtea_mediterranea", "Scutigera_coleoptrata", "Spinochordodes_tellinii", "Strongylocentrotus_purpuratus",
-                                        "Terebratalia_transversa", "Themiste_lageniformis", "Trichinella_spiralis", "Urechis_caupo", "Xenoturbella_bocki",
-                                        "Xiphinema_index"),
+# Note: Taxa "Convoluta_pulchra" (a marine worm) is labelled "Isodiametra_pulchra" on Figure 2, the main phylogeny for this paper. The current accepted name 
+#       for this taxa is "Aphanostoma pulchra".
+hejnol2009_list <- list("Bilateria" = c("Xenoturbella_bocki", "Meara_stichopi", "Nemertoderma_westbladi", "Neochildia_fusca", "Symsagittifera_roscoffensis",
+                                        "Convolutriloba_longifissura", "Convoluta_pulchra", "Priapulus_caudatus", "Spinochordodes_tellinii", "Echinoderes_horni",
+                                        "Xiphinema_index", "Trichinella_spiralis", "Hypsibius_dujardini", "Richtersius_coronifer", "Epiperipatus_sp", 
+                                        "Euperipatoides_kanangrensis", "Drosophila_melanogaster", "Onychiurus_arcticus", "Daphnia_pulex", "Carcinus_maenas",
+                                        "Fenneropenaeus_chinensis", "Scutigera_coleoptrata", "Anoplodactylus_eroticus", "Acanthoscurria_gomesiana", 
+                                        "Boophilus_microplus", "Carcinoscorpius_rotundicauda", "Phoronis_vancouverensis", "Spadella_cephaloptera",
+                                        "Flaccisagitta_enflata", "Platynereis_dumerilii", "Capitella_sp", "Urechis_caupo", "Myzostoma_seymourcollegiorum",
+                                        "Lumbricus_rubellus", "Haementeria_depressa", "Helobdella_robusta", "Themiste_lageniformis", "Chaetopterus_sp",
+                                        "Chaetopleura_apiculata", "Euprymna_scolopes", "Chaetoderma_nitidulum", "Lottia_gigantea", "Mytilus_galloprovincialis",
+                                        "Crassostrea_virginica", "Argopecten_irradians", "Aplysia_californica", "Biomphalaria_glabrata", "Terebratalia_transversa",
+                                        "Cerebratulus_lacteus", "Carinoma_mutabilis", "Gnathostomula_peregrina", "Turbanella_ambronensis", "Macrostomum_lignano",
+                                        "Paraplanocera_sp", "Taenia_solium", "Echinococcus_granulosus", "Dugesia_japonica", "Schmidtea_mediterranea", "Philodina_roseola",
+                                        "Brachionus_plicatilis", "Bugula_neritina", "Cristatella_mucedo", "Symbion_pandora", "Pedicellina_sp", "Pedicellina_cernua",
+                                        "Branchiostoma_floridae", "Ciona_intestinalis", "Diplosoma_listerianum", "Halocynthia_roretzi", "Gallus_gallus", "Homo_sapiens",
+                                        "Saccoglossus_kowalevskii", "Ptychodera_flava", "Strongylocentrotus_purpuratus", "Asterina_pectinifera"),
                         "Cnidaria" = c("Acropora_millepora", "Nematostella_vectensis", "Cyanea_capillata", "Hydra_magnipapillata", "Hydractinia_echinata"),
-                        "Placozoa" = c(),
-                        "Porifera" = c("Oscarella_carmela"),
-                        "Ctenophora" = c("Mertensiid_sp", "Mnemiopsis_leidyi"),
-                        "Outgroup" = c("Monosiga_ovata", "Capsaspora_owczarzaki", "Sphaeroforma_arctica", "Saccharomyces_cerevisiae", "Cryptococcus_neoformans"),
+                        "Placozoa" = c("Trichoplax_adhaerens"),
+                        "Porifera" = c("Amphimedon_queenslandica", "Suberites_domuncula", "Oscarella_carmela"),
+                        "Ctenophora" = c("Mertensiid_sp", "Mnemiopsis_leidyi", "Pleurobrachia_pileus"),
+                        "Outgroup" = c("Saccharomyces_cerevisiae", "Cryptococcus_neoformans", "Capsaspora_owczarzaki", "Sphaeroforma_arctica", "Amoebidium_parasiticum",
+                                       "Monosiga_ovata",  "Monosiga_brevicollis"),
                         "Sponges_Calcarea" = c(),
-                        "Sponges_Homoscleromorpha" = c(),
+                        "Sponges_Homoscleromorpha" = c("Oscarella_carmela"),
                         "Sponges_Hexactinellida" = c(),
-                        "Sponges_Demospongiae" = c(),
-                        "Sponges_1" = c(),
-                        "Sponges_2" = c(),
+                        "Sponges_Demospongiae" = c("Suberites_domuncula", "Amphimedon_queenslandica"),
+                        "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                        "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                         "Models" = c(),
                         "Partitioned" = FALSE)
+
+# For Philippe et. al. (2009):
+philippe2009_list <- list("Bilateria" = c(),
+                          "Cnidaria" = c(),
+                          "Placozoa" = c(),
+                          "Porifera" = c(),
+                          "Ctenophora" = c(),
+                          "Outgroup" = c(),
+                          "Sponges_Calcarea" = c(),
+                          "Sponges_Homoscleromorpha" = c(),
+                          "Sponges_Hexactinellida" = c(),
+                          "Sponges_Demospongiae" = c(),
+                          "Sponges_1" = c(),
+                          "Sponges_2" = c(),
+                          "Models" = c(),
+                          "Partitioned" = FALSE)
 
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
@@ -114,7 +136,20 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
 # Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
 all_datasets <- list("Dunn2008" = dunn2008_list,
                      "Hejnol2009" = hejnol2009_list,
+                     "Philippe2009" = philippe2009_list,
                      "Whelan2017" = whelan2017_list)
+
+# Create one list that collates datasets to contain all taxa for each clade 
+all_taxa <- list("Bilateria" = sort(unique(unlist(lapply(all_datasets, function(d){d$Bilateria})))),
+                 "Cnidaria" = sort(unique(unlist(lapply(all_datasets, function(d){d$Cnidaria})))),
+                 "Placozoa" = sort(unique(unlist(lapply(all_datasets, function(d){d$Placozoa})))),
+                 "Porifera" = sort(unique(unlist(lapply(all_datasets, function(d){d$Porifera})))),
+                 "Ctenophora" = sort(unique(unlist(lapply(all_datasets, function(d){d$Ctenophora})))),
+                 "Outgroup" = sort(unique(unlist(lapply(all_datasets, function(d){d$Outgroup})))),
+                 "Sponges_Calcarea" = sort(unique(unlist(lapply(all_datasets, function(d){d$Sponges_Calcarea})))),
+                 "Sponges_Homoscleromorpha" = sort(unique(unlist(lapply(all_datasets, function(d){d$Sponges_Homoscleromorpha})))),
+                 "Sponges_Hexactinellida" = sort(unique(unlist(lapply(all_datasets, function(d){d$Sponges_Hexactinellida})))),
+                 "Sponges_Demospongiae" = sort(unique(unlist(lapply(all_datasets, function(d){d$Sponges_Demospongiae})))) )
 
 
 
