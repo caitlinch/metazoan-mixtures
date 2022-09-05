@@ -250,7 +250,7 @@ ryan2013_list <- list("Bilateria" = c("Nemertoderma_westbladi", "Meara_stichopi"
                                       "Petromyzon_marinus", "Gallus_gallus", "Ciona_intestinalis", "Halocynthia_roretzi", "Echinoderes_horni ", "Xiphinema_index",
                                       "Euperipatoides_kanangrensis", "Anoplodactylus_eroticus", "Boophilus_microplus", "Daphnia_pulex", "Drosophila_melanogaster",
                                       "Schmidtea_mediterranea", "Paraplanocera_oligoglena", "Capitella_telata", "Helobdella_robusta", "Cerebratulus_lacteus",
-                                      "Terebratalia_transversa", "Euprymna_scolopes", "Lottia_gigantea", "Crassostrea_virginica"),
+                                      "Terebratalia_transversa", "Euprymna_scolopes", "Lottia_gigantea", "Crassostrea_virginica", "Xenoturbella_bocki"),
                       "Cnidaria" = c("Cyanea_capillata", "Clytia_hemisphaerica", "Hydra_magnipapillata", "Podocoryna_carnea", "Hydractinia_echinata", 
                                      "Nematostella_vectensis", "Anemonia_viridis", "Aiptasia_pallida", "Metridium_senile", "Acropora_palmata", 
                                      "Acropora_millepora", "Porites_astreoides", "Montastraea_faveolata"),
@@ -352,6 +352,24 @@ chang2015_list <- list("Bilateria" = c("Latimeria_menadoensis", "Homo_sapiens", 
                        "Models" = c(),
                        "Partitioned" = FALSE,
                        "Estimate.Paraphyletic.Sponges" = TRUE)
+
+
+# For Whelan et. al. (2015):
+whelan2015_list <- list("Bilateria" = c(),
+                        "Cnidaria" = c(),
+                        "Placozoa" = c(),
+                        "Porifera" = c(),
+                        "Ctenophora" = c(),
+                        "Outgroup" = c(),
+                        "Sponges_Calcarea" = c(),
+                        "Sponges_Homoscleromorpha" = c(),
+                        "Sponges_Hexactinellida" = c(),
+                        "Sponges_Demospongiae" = c(),
+                        "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                        "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
+                        "Models" = c(),
+                        "Partitioned" = FALSE,
+                        "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
