@@ -491,18 +491,27 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
                         "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Laumer et. al. (2018):
-laumer2018_list <- list("Bilateria" = c(),
-                        "Cnidaria" = c(),
-                        "Placozoa" = c(),
-                        "Porifera" = c(),
-                        "Ctenophora" = c(),
-                        "Outgroup" = c(),
-                        "Sponges_Calcarea" = c(),
-                        "Sponges_Homoscleromorpha" = c(),
-                        "Sponges_Hexactinellida" = c(),
-                        "Sponges_Demospongiae" = c(),
-                        "Sponges_1" = c(),
-                        "Sponges_2" = c(),
+# Note: Oscarella carmela listed in taxa names in alignment files but not in tip names in figures - instead Oscarella pearsei is shown. 
+#       Could be due to the recent paper (Ereskovsky et. al. 2017) that split Oscarella carmela into two species based on phylogenetic and morphological evidence.
+# Note: Chondrilla caribensis was originally misidentified as Chondrilla nucula. Listed as C. caribensis in the figures and text, and listed as C. nucula in the alignment
+# Note: unsure assigning taxa PORI_s (not a clear label). I believe it is PORI_Ifas: PORI_Ifas is present in 3/4 Laumer 2018 alignments, while PORI_s is present only
+#       in "Laumer2018.Tplx_BUSCOeuk.aa.alignment.phylip"
+
+laumer2018_list <- list("Bilateria" = c("ECHI_Spur", "CRAN_Mmus", "PRIA_Pcau", "TARD_Rvar", "NEMA_Ppac", "ARTH_Dmel", "PLAT_Sman", "MOLL_Cgig", "BRAC_Lana", "ANNE_Ctel",
+                                        "XENO_XbJC", "XENO_XbXC", "NEMO_Nemw", "ACOE_Isop", "MICR_Limn"),
+                        "Cnidaria" = c("CNID_Aala", "CNID_Adig", "CNID_Aplm", "CNID_Atet", "CNID_Csow", "CNID_Epal", "CNID_Gven", "CNID_Hvul", "CNID_Lcmp", "CNID_Ltet",
+                                       "CNID_Nvec", "CNID_Pnct", "CNID_Smel"),
+                        "Placozoa" = c("PLAC_Tadh", "PLAC_TH11", "PLAC_TpH4", "PLAC_TpH6"),
+                        "Porifera" = c("PORI_Aque", "PORI_Ccan", "PORI_Ccor", "PORI_Cele", "PORI_Cnuc", "PORI_Cvar", "PORI_Easp", "PORI_Ifas", "PORI_Lcom", "PORI_Ocar",
+                                       "PORI_Pfic", "PORI_s", "PORI_Scil", "PORI_Scoa", "PORI_Slac", "PORI_Snux"),
+                        "Ctenophora" = c("CTEN_Baby", "CTEN_Cmet", "CTEN_Edun", "CTEN_Mlei", "CTEN_Pbac", "CTEN_Vmul"),
+                        "Outgroup" = c("OUTC_Aspc", "OUTC_Chol", "OUTC_Dcos", "OUTC_Mbre", "OUTC_Sdol", "OUTC_Smac", "OUTC_Sros"),
+                        "Sponges_Calcarea" = c("PORI_Scoa", "PORI_Scil", "PORI_Lcom", "PORI_Ccor"),
+                        "Sponges_Homoscleromorpha" = c("PORI_Ccan", "PORI_Ocar"),
+                        "Sponges_Hexactinellida" = c("PORI_Snux", "PORI_Easp"),
+                        "Sponges_Demospongiae" = c("PORI_Cele", "PORI_Cvar", "PORI_Slac", "PORI_Aque", "PORI_Pfic", "PORI_Ifas", "PORI_Cnuc", "Pori_s"),
+                        "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
+                        "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
                         "Models" = c(),
                         "Partitioned" = FALSE,
                         "Estimate.Paraphyletic.Sponges" = FALSE)
