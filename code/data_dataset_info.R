@@ -372,7 +372,7 @@ chang2015_list <- list("Bilateria" = c("Latimeria_menadoensis", "Homo_sapiens", 
 
 
 # For Whelan et. al. (2015):
-whelan2015_list <- list("Bilateria" = c("Amoebidium_parasiticum", "Capitella_teleta", "Danio_rerio", "Daphnia_pulex", "Drosophila_melanogaster", "Homo_sapiens",
+whelan2015_list <- list("Bilateria" = c("Capitella_teleta", "Danio_rerio", "Daphnia_pulex", "Drosophila_melanogaster", "Homo_sapiens",
                                         "Lottia_gigantea", "Petromyzon_marinus", "Priapulus_caudatus", "Saccoglossus_kowalevskii", "Strongylocentrotus_purpuratus",
                                         "Hemithiris_psittacea", "Lithobius_forficatus", "Tubulanus_polymorphus",
                                         "Xenoturbel", "Strongyloc", "Saccogloss", "Branchiost", "Petromyzon", "Danio_reri", "Molgula_te", "CionaXsavi", "Euprymna_s",
@@ -399,6 +399,9 @@ whelan2015_list <- list("Bilateria" = c("Amoebidium_parasiticum", "Capitella_tel
                                        "Rhizopus_oryzae", 
                                        "Spizellomy", "Batrachoch", "AllomycesX", "RhizopusXo", "Phycomyces", "Sphaerofor", "Amoebidium", "Capsaspora", "MonosigaXo",
                                        "Proterospo", "MonosigaXb"),
+                        "Outgroup_Choanoflagellata" = c("Salpingoeca_rosetta", "Monosiga_brevicollis", "Monosiga_ovata", "Salpingoeca_pyxidium", 
+                                                        "Acanthoeca_spectabilis",
+                                                        "MonosigaXo", "Proterospo", "MonosigaXb"),
                         "Sponges_Calcarea" = c("Sycon_ciliatum", "Sycon_coactum",
                                                "SyconXraph", "LeucettaXc"),
                         "Sponges_Homoscleromorpha" = c("Corticium_candelabrum", "Oscarella_carmela",
@@ -417,20 +420,20 @@ whelan2015_list <- list("Bilateria" = c("Amoebidium_parasiticum", "Capitella_tel
 
 # For Simion et. al. (2017):
 simion2017_list <- list("Bilateria" = c(),
-                   "Cnidaria" = c(),
-                   "Placozoa" = c(),
-                   "Porifera" = c(),
-                   "Ctenophora" = c(),
-                   "Outgroup" = c(),
-                   "Sponges_Calcarea" = c(),
-                   "Sponges_Homoscleromorpha" = c(),
-                   "Sponges_Hexactinellida" = c(),
-                   "Sponges_Demospongiae" = c(),
-                   "Sponges_1" = c(),
-                   "Sponges_2" = c(),
-                   "Models" = c(),
-                   "Partitioned" = FALSE,
-                   "Estimate.Paraphyletic.Sponges" = TRUE)
+                        "Cnidaria" = c(),
+                        "Placozoa" = c(),
+                        "Porifera" = c(),
+                        "Ctenophora" = c(),
+                        "Outgroup" = c(),
+                        "Sponges_Calcarea" = c(),
+                        "Sponges_Homoscleromorpha" = c(),
+                        "Sponges_Hexactinellida" = c(),
+                        "Sponges_Demospongiae" = c(),
+                        "Sponges_1" = c(),
+                        "Sponges_2" = c(),
+                        "Models" = c(),
+                        "Partitioned" = FALSE,
+                        "Estimate.Paraphyletic.Sponges" = TRUE)
 
 # For Whelan et. al. (2017):
 whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purpatus", "Hemithris_psittacea", "Capitella_teleta", "Drosophila_melanogaster","Daphnia_pulex"),
