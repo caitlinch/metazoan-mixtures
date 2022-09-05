@@ -372,29 +372,44 @@ chang2015_list <- list("Bilateria" = c("Latimeria_menadoensis", "Homo_sapiens", 
 
 
 # For Whelan et. al. (2015):
-whelan2015_list <- list("Bilateria" = c("",
+whelan2015_list <- list("Bilateria" = c("Amoebidium_parasiticum", "Capitella_teleta", "Danio_rerio", "Daphnia_pulex", "Drosophila_melanogaster", "Homo_sapiens",
+                                        "Lottia_gigantea", "Petromyzon_marinus", "Priapulus_caudatus", "Saccoglossus_kowalevskii", "Strongylocentrotus_purpuratus",
+                                        
                                         "Xenoturbel", "Strongyloc", "Saccogloss", "Branchiost", "Petromyzon", "Danio_reri", "Molgula_te", "CionaXsavi", "Euprymna_s",
                                         "Crassostre", "AplysiaXca", "Pedicellin", "Capitella", "TubifexXtu", "Helobdella", "DaphniaXpu", "PediculusX", "NasoniaXvi",
                                         "ScutigeraX", "IxodesXsca", "Anoplodact"),
-                        "Cnidaria" = c("",
+                        "Cnidaria" = c("Abylopsis_tetragona", "Acropora_digitifera", "Agalma_elegans", "Aiptasia_pallida", "Aurelia_aurita", "Bolocera_tuediae",
+                                       "Eunicella_verrucosa", "Hormathia_digitata", "Hydra_oligactis", "Hydra_viridissima", "Hydra_vulgaris", "Nanomia_bijuga",
+                                       "Nematostella_vectensis",
+                                       
                                        "Nematostel", "Metridium", "Montastrae", "Acropora_m", "CyaneaXcap", "HydraXmagn", "ClytiaXhem", "Podocoryne", "Hydractini",
                                        "Euperipato"),
-                        "Placozoa" = c("",
+                        "Placozoa" = c("Trichoplax_adhaerens",
+                                       
                                        "Trichoplax"),
-                        "Porifera" = c("",
+                        "Porifera" = c("Amphimedon_queenslandica", "Aphrocallistes_vastus", "Chondrilla_nucula", "Corticium_candelabrum", "Crella_elegans",
+                                       "Ephydatia_muelleri", "Hyalonema_populiferum", "Ircinia_fasciculata", "Kirkpatrickia_variolosa", "Latrunculia_apicalis",
+                                       "Oscarella_carmela", "Petrosia_ficiformis", "Pseudospongosorites_suberitoides", "Rossella_fibulata", "Sycon_ciliatum",
+                                       "Sycon_coactum", "Sympagella_nux",
+                                       
                                        "Oscarella", "SyconXraph", "LeucettaXc", "OopsacasXm", "Heterochon", "Carteriosp", "RenieraXsp", "Suberites", "Ephydatia"),
-                        "Ctenophora" = c("",
+                        "Ctenophora" = c("Beroe_abyssicola", "Bolinopsis_infundibulum", "Coeloplana_astericola", "Dryodora_glandiformis", "Euplokamis_dunlapae",
+                                         "Mnemiopsis_leidyi", "Pleurobrachia_bachei", "Vallicula_sp",
+                                         
                                          "Pleurobrac", "mertensiid", "Mnemiopsis"),
-                        "Outgroup" = c("",
+                        "Outgroup" = c("Amoebidium_parasiticum", "Capsaspora_owczarzaki", "Monosiga_brevicollis", "Monosiga_ovata", "Saccharomyces_cerevisiae",
+                                       "Salpingoeca_pyxidium", "Salpingoeca_rosetta", "Sphaeroforma_arctica", "Spizellomyces_punctatus",
+                                       
                                        "Spizellomy", "Batrachoch", "AllomycesX", "RhizopusXo", "Phycomyces", "Sphaerofor", "Amoebidium", "Capsaspora", "MonosigaXo",
                                        "Proterospo", "MonosigaXb"),
-                        "Sponges_Calcarea" = c("",
+                        "Sponges_Calcarea" = c("Sycon_ciliatum", "Sycon_coactum",
                                                "SyconXraph", "LeucettaXc"),
-                        "Sponges_Homoscleromorpha" = c("",
+                        "Sponges_Homoscleromorpha" = c("Corticium_candelabrum", "Oscarella_carmela",
                                                        "Oscarella"),
-                        "Sponges_Hexactinellida" = c("",
+                        "Sponges_Hexactinellida" = c("Aphrocallistes_vastus", "Hyalonema_populiferum", "Rossella_fibulata", "Sympagella_nux",
                                                      "OopsacasXm", "Heterochon"),
-                        "Sponges_Demospongiae" = c("",
+                        "Sponges_Demospongiae" = c("Amphimedon_queenslandica", "Chondrilla_nucula", "Crella_elegans", "Ephydatia_muelleri", "Ircinia_fasciculata",
+                                                   "Kirkpatrickia_variolosa", "Latrunculia_apicalis", "Petrosia_ficiformis", "Pseudospongosorites_suberitoides",
                                                    "Carteriosp", "RenieraXsp", "Suberites", "Ephydatia"),
                         "Sponges_1" = c("Sponges_Calcarea", "Sponges_Homoscleromorpha"),
                         "Sponges_2" = c("Sponges_Hexactinellida", "Sponges_Demospongiae"),
@@ -441,6 +456,7 @@ all_datasets <- list("Dunn2008" = dunn2008_list,
                      "Moroz2014" = moroz2014_list,
                      "Borowiec2015" = borowiec2015_list,
                      "Chang2015" = chang2015_list,
+                     "Whelan2015" = whelan2015_list,
                      "Whelan2017" = whelan2017_list)
 
 # Create a list that contains the taxa within each matrix
