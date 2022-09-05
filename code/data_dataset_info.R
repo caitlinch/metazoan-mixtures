@@ -65,23 +65,6 @@ convert.philippe2009.name <- function(taxon){
 }
 
 #### PHYLOGENETIC DATASETS ####
-# Format for taxa names:
-empty_list <- list("Bilateria" = c(),
-                   "Cnidaria" = c(),
-                   "Placozoa" = c(),
-                   "Porifera" = c(),
-                   "Ctenophora" = c(),
-                   "Outgroup" = c(),
-                   "Sponges_Calcarea" = c(),
-                   "Sponges_Homoscleromorpha" = c(),
-                   "Sponges_Hexactinellida" = c(),
-                   "Sponges_Demospongiae" = c(),
-                   "Sponges_1" = c(),
-                   "Sponges_2" = c(),
-                   "Models" = c(),
-                   "Partitioned" = FALSE,
-                   "Estimate.Paraphyletic.Sponges" = FALSE)
-
 # For Dunn et. al. (2008):
 dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
                                       "Argopecten_irradians", "Asterina_pectinifera", "Biomphalaria_glabrata", "Boophilus_microplus", 
@@ -507,6 +490,40 @@ whelan2017_list <- list("Bilateria" = c("Homo_sapiens", "Strongylocentrotus_purp
                         "Partitioned" = TRUE,
                         "Estimate.Paraphyletic.Sponges" = TRUE)
 
+# For Laumer et. al. (2018):
+laumer2018_list <- list("Bilateria" = c(),
+                        "Cnidaria" = c(),
+                        "Placozoa" = c(),
+                        "Porifera" = c(),
+                        "Ctenophora" = c(),
+                        "Outgroup" = c(),
+                        "Sponges_Calcarea" = c(),
+                        "Sponges_Homoscleromorpha" = c(),
+                        "Sponges_Hexactinellida" = c(),
+                        "Sponges_Demospongiae" = c(),
+                        "Sponges_1" = c(),
+                        "Sponges_2" = c(),
+                        "Models" = c(),
+                        "Partitioned" = FALSE,
+                        "Estimate.Paraphyletic.Sponges" = FALSE)
+
+# For Laumer et. al. (2019):
+laumer2019_list <- list("Bilateria" = c(),
+                        "Cnidaria" = c(),
+                        "Placozoa" = c(),
+                        "Porifera" = c(),
+                        "Ctenophora" = c(),
+                        "Outgroup" = c(),
+                        "Sponges_Calcarea" = c(),
+                        "Sponges_Homoscleromorpha" = c(),
+                        "Sponges_Hexactinellida" = c(),
+                        "Sponges_Demospongiae" = c(),
+                        "Sponges_1" = c(),
+                        "Sponges_2" = c(),
+                        "Models" = c(),
+                        "Partitioned" = FALSE,
+                        "Estimate.Paraphyletic.Sponges" = FALSE)
+
 # Create one list that contains all other lists, indexed by dataset identifier (first author+year of publication)
 all_datasets <- list("Dunn2008" = dunn2008_list,
                      "Hejnol2009" = hejnol2009_list,
@@ -520,7 +537,9 @@ all_datasets <- list("Dunn2008" = dunn2008_list,
                      "Chang2015" = chang2015_list,
                      "Whelan2015" = whelan2015_list,
                      "Simion2017" = simion2017_list,
-                     "Whelan2017" = whelan2017_list)
+                     "Whelan2017" = whelan2017_list,
+                     "Laumer2018" = laumer2018_list,
+                     "Laumer2019" = laumer2019_list)
 
 # Create a list that contains the taxa within each matrix
 #   For use when there are multiple alignments for a single dataset identification
