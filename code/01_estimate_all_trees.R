@@ -46,7 +46,7 @@ if (location == "local"){
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
-  iqtree_num_threads <- "AUTO"
+  iqtree_num_threads <- "10"
 }
 
 
