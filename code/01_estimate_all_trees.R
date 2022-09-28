@@ -38,13 +38,13 @@ if (location == "local"){
   
   iqtree_num_threads <- "2"
   
-} else if (location == "server"){
-  alignment_dir <- ""
-  output_dir <- ""
-  repo_dir <- ""
+} else if (location == "soma"){
+  alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
+  output_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
+  repo_dir <- "/data/caitlin/metazoan-mixtures/output/"
   
-  iqtree2 <- ""
-  iqtree2_tm <- ""
+  iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
   iqtree_num_threads <- "AUTO"
 }
