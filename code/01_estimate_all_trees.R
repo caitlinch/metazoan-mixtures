@@ -183,17 +183,10 @@ for (a in all_alignments){
     tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
                                                dataset = a_dataset, prefix = paste0(a_m_prefix,".TR"), 
                                                model = m, best_model = best_model, tree_branch_option = "TR")
-    t_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_t_iqfile, 
-                                              dataset = a_dataset, prefix = paste0(a_m_prefix,".T"), 
-                                              model = m,  best_model = best_model, tree_branch_option = "T")
-    
-    # Collate results dataframes
-    op_df <- rbind(tr_results, r_results)
-    names(op_df) <- names(tr_results)
     
     # Output results dataframe
     op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.csv")
-    write.csv(op_df, file = op_file, row.names = FALSE)
+    write.csv(tr_results, file = op_file, row.names = FALSE)
     
   } # end for (m in model_components)
 } # end for (a in all_alignments)
