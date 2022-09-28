@@ -24,16 +24,16 @@
 
 location = "local"
 if (location == "local"){
-  alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments"
-  output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
-  repo_dir <- "/Users/caitlin/Repositories/metazoan-mixtures/"
+  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all"
+  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+  repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   
-  iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
+  iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
+  iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
   iqtree_num_threads <- "AUTO"
   
-} else if (location == "soma"){
+} else if (location == "server"){
   alignment_dir <- ""
   output_dir <- ""
   repo_dir <- ""
@@ -166,13 +166,6 @@ for (a in all_alignments){
     # Apply mixture of trees method with best model from maximum likelihood tree estimation
     # Run with +TR option (same branch lengths) 
     tree_branch_model <- "TR"
-    run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
-                           partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
-                           model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
-                           tree_branch_option = tree_branch_model, number_parallel_threads = iqtree_num_threads,
-                           run.iqtree = FALSE)
-    # Run with +T option (different branch lengths) 
-    tree_branch_model <- "T"
     run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
                            partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
                            model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
