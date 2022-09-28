@@ -725,8 +725,8 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
   all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
   # Find all files for this tree_id
   tree_id_files <- grep(tree_id, all_constraint_tree_dir_files, value = TRUE)
-  # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 7)
-  hypothesis_tree_files <- grep("H1|H2|H3|H4|H5|H6|H7", tree_id_files, value = TRUE)
+  # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 5)
+  hypothesis_tree_files <- grep("H1|H2|H3|H4|H5", tree_id_files, value = TRUE)
   # Extend file path
   if (length(hypothesis_tree_files) > 0){
     hypothesis_tree_files <- paste0(constraint_tree_directory, hypothesis_tree_files)
