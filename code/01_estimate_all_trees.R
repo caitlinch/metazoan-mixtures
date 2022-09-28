@@ -108,7 +108,7 @@ for (a in all_alignments){
     
     # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
     estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
-                       prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = NA,
+                       prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = 1000,
                        redo = FALSE, safe = FALSE, run.iqtree = FALSE)
     
     # Extract the .iqtree file for the prefix
@@ -146,9 +146,8 @@ for (a in all_alignments){
                                              ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
                                              sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
                                              sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
-                                             placozoa_taxa = a_info$Placozoa, cnidaria_taxa = a_info$Cnidaria, 
-                                             bilateria_taxa = a_info$Bilateria, alignment_file = a, 
-                                             partitioned_check = FALSE, partition_file = NA, 
+                                             cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
+                                             alignment_file = a, partitioned_check = FALSE, partition_file = NA, 
                                              iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads,
                                              run.iqtree = FALSE)
     
