@@ -9,6 +9,11 @@
 
 
 
+## TO DO
+# 1. Remove Placozoa taxa from alignments
+
+
+
 #### 1. Input parameters ####
 ## Specify parameters:
 # alignment_dir       <- Directory containing alignments for all data sets
