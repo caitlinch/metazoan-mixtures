@@ -27,7 +27,7 @@
 
 # iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
-location = "local"
+location = "soma"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
@@ -40,8 +40,8 @@ if (location == "local"){
   
 } else if (location == "soma"){
   alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
-  output_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
-  repo_dir <- "/data/caitlin/metazoan-mixtures/output/"
+  output_dir <- "/data/caitlin/metazoan-mixtures/output/"
+  repo_dir <- "/data/caitlin/metazoan-mixtures/"
   
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
