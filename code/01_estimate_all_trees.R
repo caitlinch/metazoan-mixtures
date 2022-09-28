@@ -167,11 +167,10 @@ for (a in all_alignments){
     
     # Apply mixture of trees method with best model from maximum likelihood tree estimation
     # Run with +TR option (same branch lengths) 
-    tree_branch_model <- "TR"
     run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
                            partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
                            model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
-                           tree_branch_option = tree_branch_model, number_parallel_threads = iqtree_num_threads,
+                           tree_branch_option = "TR", number_parallel_threads = iqtree_num_threads,
                            run.iqtree = FALSE)
     
     # Identify iqtree files from tree mixture run
