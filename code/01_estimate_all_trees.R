@@ -36,7 +36,7 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
-  iqtree_num_threads <- "AUTO"
+  iqtree_num_threads <- "2"
   
 } else if (location == "server"){
   alignment_dir <- ""
