@@ -63,6 +63,8 @@ model_components <- model_components[!model_components %in% c("F", "FO", "G", "G
 # PMSF is more complex than other models - requires separate function
 # For now, remove PMSF from list 
 model_components <- model_components[!model_components == "PMSF"]
+# For now, remove ModelFinder from the list (comparing existing models - ModelFinder will use best model)
+model_components <- model_components[!model_components == "ModelFinder"]
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
 
