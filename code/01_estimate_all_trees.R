@@ -72,8 +72,6 @@ model_components <- model_components[!model_components == "PMSF"]
 model_components <- model_components[!model_components == "ModelFinder"]
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
-test_model_components <- c("LG", "JTT", "F81", "GTR")
-
 
 #### 3. Process each dataset for each model of sequence evolution ####
 # Extract the list of all files from the folder containing alignments/models/partition files
@@ -81,12 +79,8 @@ all_files <- list.files(alignment_dir, full.names = T)
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("alignment", all_files, value = T)
 
-test_alignments <- c(grep("Whelan2017.Metazoa_Choano_RCFV_strict.aa.alignment.fa", all_alignments, value = T), 
-                     grep("Ryan2013.REA_EST_includingXenoturbella.aa.alignment.fas", all_alignments, value = T))
-
 # For each alignment:
-# for (a in all_alignments){
-for (a in test_alignments){
+for (a in all_alignments){
   # Extract details about alignment from file name
   # Identify dataset (original paper citation)
   a_dataset <- strsplit(basename(a), "\\.")[[1]][1]
@@ -108,8 +102,7 @@ for (a in test_alignments){
   if (dir.exists(a_tm_op_dir) == FALSE){dir.create(a_tm_op_dir)}
   
   # For each of the model components:
-  # for (m in model_components){
-  for (m in test_model_components){
+  for (m in model_components){
     # Change directory to the maximum likelihood tree output directory for this dataset
     # This ensures IQ-Tree output files will be stored in the correct directory
     setwd(a_ml_op_dir)
