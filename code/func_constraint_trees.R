@@ -37,9 +37,9 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   } 
   
   # If prefix is specified, add a prefix command to the command line
-  if (is.na(number_of_bootstraps) == FALSE){
+  if (is.na(prefix) == FALSE){
     prefix_call = paste0(" -pre ", prefix, " ")
-  } else if (is.na(number_of_bootstraps) == TRUE){
+  } else if (is.na(prefix) == TRUE){
     prefix_call = ""
   }
   
@@ -671,11 +671,11 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
     prefix_call <- ""
   } else if (is.na(prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" --prefix ", prefix, " ")
+    prefix_call <- paste0(" --pre ", prefix, " ")
   } 
   
   # Collate iqtree command
-  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, " -m ", iq_model, " -g ", constraint_tree_file, " -T ", num_threads,  prefix_call)
+  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, " -m ", iq_model, " -g ", constraint_tree_file, " -nt ", num_threads,  prefix_call)
   
   # Print IQ-Tree command
   print(iqtree_call)
