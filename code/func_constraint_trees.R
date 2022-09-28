@@ -697,7 +697,7 @@ run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
   # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
   #   either way, want to run function to print iqtree command line
   run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
-                                  partitioned_check = row$partitioned_check, partition_file = row$partition_file, 
+                                  partitioned_check = FALSE, partition_file = row$partition_file, 
                                   iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
                                   num_threads = row$num_threads, run.iqtree = run.iqtree)
 }
