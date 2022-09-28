@@ -936,6 +936,7 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
                               " -m  ", model_call, " -te ", hypothesis_tree_file, 
                               " -nt ", number_parallel_threads, prefix_call)
   } else if (use.partition == TRUE){
+    # Partition model not implemented for mixture of trees model yet!
     # Assemble the command for the tree mixtures model
     treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, 
                               " -m ", model_call, " -te ", hypothesis_tree_file, 
