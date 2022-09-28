@@ -1,0 +1,14 @@
+ML tree estimation for each model (e.g. 'LG' model):
+iqtree2 -s alignment.fa -mset 'LG' -bb 1000 -nt AUTO --pre dataset.alignment.LG.ML
+
+Estimating ML trees with constraint trees (e.g. if best model from ML tree estimation is 'LG+G+I'):
+iqtree2 -s alignment.fa -m 'LG+G+I' -g constraint_tree_1.nex -nt AUTO --pre dataset.alignment.LG.H1
+
+Applying mixture of trees implementation:
+iqtree2_tm  -s alignment.fa -m  'LG+G+I' -te hypothesis_trees.nex  -nt AUTO --pre dataset.alignment.LG.TR
+
+
+
+
+
+I have removed Placozoa from the constraint trees. I think I will remove it from the alignments too - the biological question I am interested in does not include Placozoa, so it seems neatest to exclude it entirely.
