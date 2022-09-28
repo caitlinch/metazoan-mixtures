@@ -119,8 +119,8 @@ for (a in test_alignments){
     
     # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
     estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
-                       prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = "AUTO", number_of_bootstraps = 1000,
-                       redo = FALSE, safe = FALSE, run.iqtree = FALSE)
+                       prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = iqtree_num_threads, number_of_bootstraps = 1000,
+                       redo = FALSE, safe = FALSE, run.iqtree = TRUE)
     
     # Extract the .iqtree file for the prefix
     all_ml_op_files <- paste0(a_ml_op_dir, list.files(a_ml_op_dir))
@@ -160,7 +160,7 @@ for (a in test_alignments){
                                              cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
                                              alignment_file = a, partitioned_check = FALSE, partition_file = NA, 
                                              iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads,
-                                             run.iqtree = FALSE)
+                                             run.iqtree = TRUE)
     
     # Estimate hypothesis trees for each of the constraint trees
     lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
@@ -181,7 +181,7 @@ for (a in test_alignments){
                            partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
                            model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
                            tree_branch_option = "TR", number_parallel_threads = iqtree_num_threads,
-                           run.iqtree = FALSE)
+                           run.iqtree = TRUE)
     
     # Identify iqtree files from tree mixture run
     all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
