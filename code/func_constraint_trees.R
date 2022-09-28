@@ -45,7 +45,7 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   
   # If number of bootstraps is specified, add a bootstrap command to the command line
   if (is.na(number_of_bootstraps) == FALSE){
-    bootstrap_call = paste0(" -B ", number_of_bootstraps, " ")
+    bootstrap_call = paste0(" -bb ", number_of_bootstraps, " ")
   } else if (is.na(number_of_bootstraps) == TRUE){
     bootstrap_call = ""
   }
@@ -65,8 +65,9 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   }
   
   # Assemble the command line
-  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, prefix_call, 
-                        " -nt ", number_parallel_threads, bootstrap_call, redo_command, safe_command)
+  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, 
+                        bootstrap_call, redo_command, safe_command, " -nt ", number_parallel_threads,
+                        prefix_call)
   # Print the iqtree2 command
   print(iqtree_call)
   
@@ -526,8 +527,124 @@ extract.model.details <- function(iqtree_file){
 
 #### Creating constraint trees ####
 create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
-                                    porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
+                                    porifera_taxa, sponges_1_taxa, sponges_2_taxa, cnidaria_taxa, bilateria_taxa,
                                     alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
+  # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
+  # Does not include Placozoa - Placozoa is not relevant to the question I am investigating (and is only ~1 taxa in most data sets)
+  
+  # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
+  if (is.na(tree_id) == FALSE){
+    # If a tree_id is provided, use it in the file names
+    output_id = tree_id
+  }
+  else if (is.na(tree_id) == TRUE){
+    # If no tree_id is provided, create one
+    output_id <- paste0(dataset, "_", model_id)
+  }
+  
+  ## Hypothesis 1: Ctenophora-sister
+  # Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, (cnidaria_taxa, bilateria_taxa))))
+  # Construct constraint tree
+  constraint_tree_1 <- paste0("((", 
+                              paste(outgroup_taxa, collapse = ", "), 
+                              "),((", 
+                              paste(ctenophora_taxa, collapse = ", "), 
+                              "),((", 
+                              paste(c(porifera_taxa), collapse = ", "),
+                              "), (",
+                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "),
+                              "))));")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "1", ".nex")
+  write(constraint_tree_1, file = constraint_tree_file_name)
+  
+  
+  ## Hypothesis 2: Porifera-sister
+  # Tree: (outgroup_taxa, (porifera_taxa, (ctenophora_taxa, (cnidaria_taxa, bilateria_taxa))))
+  # Construct constraint tree
+  constraint_tree_2 <- paste0("((", 
+                              paste(outgroup_taxa, collapse = ", "), 
+                              "),((", 
+                              paste(porifera_taxa, collapse = ", "), 
+                              "),((", 
+                              paste(c(ctenophora_taxa), collapse = ", "),
+                              "),(",
+                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                              "))));")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "2", ".nex")
+  write(constraint_tree_2, file = constraint_tree_file_name)
+  
+  
+  ## Hypothesis 3: Porifera+Ctenophora-sister
+  # Tree: (outgroup_taxa, ((porifera_taxa, ctenophora_taxa), (cnidaria_taxa, bilateria_taxa)))
+  # Construct constraint tree
+  constraint_tree_3 <- paste0("((", 
+                              paste(outgroup_taxa, collapse = ", "), 
+                              "),((", 
+                              paste(c(porifera_taxa, ctenophora_taxa), collapse = ", "), 
+                              "),(", 
+                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                              ")));")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "3", ".nex")
+  write(constraint_tree_3, file = constraint_tree_file_name)
+  
+  ## Hypothesis 4: Paraphyletic sponges, Porifera-sister
+  # Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, (cnidaria_taxa, bilateria_taxa)))))
+  # Construct constraint tree
+  constraint_tree_4 <- paste0("((", 
+                              paste(outgroup_taxa, collapse = ", ") ,
+                              ") ,((", 
+                              paste(sponges_1_taxa, collapse = ", "), 
+                              "), ((", 
+                              paste(sponges_2_taxa, collapse = ", "), 
+                              "), ((", 
+                              paste(c(ctenophora_taxa), collapse = ", "),
+                              "), (",
+                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "),
+                              ")))));")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "4", ".nex")
+  write(constraint_tree_4, file = constraint_tree_file_name)
+  
+  ## Hypothesis 5: Paraphyletic sponges, Ctenophora-sister
+  # Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, (cnidaria_taxa, bilateria_taxa)))))
+  # Construct constraint tree
+  constraint_tree_5 <- paste0("((", 
+                              paste(outgroup_taxa, collapse = ", "),
+                              ") ,((",
+                              paste(ctenophora_taxa, collapse = ", "),
+                              "), ((", 
+                              paste(sponges_1_taxa, collapse = ", "),
+                              "), ((", 
+                              paste(c(sponges_2_taxa), collapse = ", "),
+                              "), (",
+                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "),
+                              ")))));")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "5", ".nex")
+  write(constraint_tree_5, file = constraint_tree_file_name)
+  
+  # Assemble dataframe of information about the constraint trees
+  constraint_df <- data.frame(constraint_tree_id = 1:7,
+                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:5, ".nex"),
+                              constraint_prefixes = paste0(output_id, "_ML_H", 1:5),
+                              alignment_path = alignment_file,
+                              model = model,
+                              iqtree_path = iqtree_path,
+                              constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
+                                                   constraint_tree_4, constraint_tree_5),
+                              num_threads = number_parallel_threads,
+                              partitioned = partitioned_check,
+                              partition_file = partition_file)
+  
+  # Write dataframe of information about constraint trees
+  constraint_df_path <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_parameters.csv")
+  write.csv(constraint_df, constraint_df_path, row.names = FALSE)
+  
+  # Return the constraint tree dataframe
+  return(constraint_df)
+}
+
+create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
+                                             porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
+                                             alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
   
   # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
@@ -641,7 +758,6 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
   # Return the constraint tree dataframe
   return(constraint_df)
 }
-
 
 
 #### Estimating ML trees using a constraint tree ####
