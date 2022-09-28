@@ -3,5 +3,4 @@
 		- Use ModelFinder to determine the best model within that model category
 		- Estimate an ML tree with that model of sequuence evolution
 		- Estimate the constraint trees
-		- Apply the mixture of trees method using +TR
-		- Apply the mixture of trees method using +T
+		- Apply the mixture of trees method using +TR (branch lengths maintained across trees in mixture)
