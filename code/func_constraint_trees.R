@@ -79,6 +79,11 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
 } # end function
 
 
+ml.iqtree.wrapper <- function(i, df){
+  # Function to take row from a dataframe and call estimate.ml.iqtree using information from that row
+  
+}
+
 
 #### Extract details from IQ-Tree output files ####
 extract.best.model <- function(iqtree_file){
