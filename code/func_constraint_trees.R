@@ -624,7 +624,7 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
   write(constraint_tree_5, file = constraint_tree_file_name)
   
   # Assemble dataframe of information about the constraint trees
-  constraint_df <- data.frame(constraint_tree_id = 1:7,
+  constraint_df <- data.frame(constraint_tree_id = 1:5,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:5, ".nex"),
                               constraint_prefixes = paste0(output_id, "_ML_H", 1:5),
                               alignment_path = alignment_file,
