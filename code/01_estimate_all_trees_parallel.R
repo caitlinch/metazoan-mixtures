@@ -36,7 +36,9 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
-  iqtree_num_threads <- "2"
+  iqtree_num_threads <- 1
+  ml_tree_bootstraps <- 1000
+  parallel_threads <- 1
   
 } else if (location == "soma"){
   alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
@@ -46,7 +48,9 @@ if (location == "local"){
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
-  iqtree_num_threads <- "10"
+  iqtree_num_threads <- 1
+  ml_tree_bootstraps <- 1000
+  parallel_threads <- 20
 } else if (location == "laptop"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
@@ -55,19 +59,31 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
-  iqtree_num_threads <- "1"
+  iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
+  parallel_threads <- 1
 }
 
 
 
 #### 2. Prepare functions, variables and packages ####
+# Open packages
+library(parallel)
+
 # Source functions
 source(paste0(repo_dir, "code/func_constraint_trees.R"))
 source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # Source information about datasets
 source(paste0(repo_dir, "code/data_dataset_info.R"))
+
+# Extract the list of all files from the folder containing alignments/models/partition files
+all_files <- list.files(alignment_dir)
+if (length(all_files) > 0){
+  all_files <- paste0(alignment_dir, all_files)
+}
+# Extract the list of alignments (i.e. files that contain the word "alignment")
+all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 # Sort and categorise models of sequence evolution 
 all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks))))
@@ -84,14 +100,12 @@ model_components <- c(model_components, "ModelFinder")
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
 
-#### 3. Process each dataset for each model of sequence evolution ####
-# Extract the list of all files from the folder containing alignments/models/partition files
-all_files <- list.files(alignment_dir)
-if (length(all_files) > 0){
-  all_files <- paste0(alignment_dir, all_files)
-}
-# Extract the list of alignments (i.e. files that contain the word "alignment")
-all_alignments <- grep("\\.alignment\\.", all_files, value = T)
+
+#### 3. Estimate maximum likelihood trees for each combination of model and dataset ####
+# Create a folder for the ml trees and move to that folder
+ml_tree_dir <- paste0(output_dir, "maximum_likelihood_trees/")
+if (file.exists(ml_tree_dir) == FALSE){dir.create(ml_tree_dir)}
+setwd(ml_tree_dir)
 
 # Create a dataframe of combinations of alignments and models
 ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 1)),
@@ -105,6 +119,8 @@ ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, "."
 ml_tree_df$iqtree_num_threads <- iqtree_num_threads
 ml_tree_df$iqtree_num_bootstraps <- ml_tree_bootstraps
 ml_tree_df$alignment_file <- all_alignments
+ml_tree_df$iqtree_file <- paste0(all_alignments, ".iqtree")
+ml_tree_df$ml_tree_file <- paste0(all_alignments, ".treefile")
 
 # Fix model specification for rows with ModelFinder
 ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
@@ -114,22 +130,27 @@ ml_tree_df$model_mset[which(ml_tree_df$model_code == "ModelFinder")] <- NA
 ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
 
 # Create IQ-Tree2 commands
-ml_tree_df$iqtree2_call <- lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, ml_tree_df)
+ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, iqtree_path = iqtree2, df = ml_tree_df))
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
 # Run IQ-Tree commands
-mclapply()
+mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
+
+
+
+#### 4. Estimate constraint and hypothesis trees for each combination of model and dataset ####
+# Create a folder for the ml trees and move to that folder
+c_tree_dir <- paste0(output_dir, "constraint_trees/")
+if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
+setwd(c_tree_dir)
+
+
+
 
 ############### un parallelised code below
-# Create the iqtree command line for each row of the matrix
-estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
-                   prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = iqtree_num_threads, number_of_bootstraps = 1000,
-                   redo = FALSE, safe = FALSE, run.iqtree = TRUE)
-
-
 
 
 for (a in all_alignments){
