@@ -550,10 +550,14 @@ extract.model.details <- function(iqtree_file){
 
 
 #### Creating constraint trees ####
-constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num_threads = 1, dataset_info = all_datasets, df){
+constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num_threads = 1, 
+                                    dataset_info = all_datasets, matrix_taxa_info = matrix_taxa, df){
   
   # Extract the relevant row
   row <- df[i, ]
+  
+  # Extract the relevant list of taxa for this dataframe
+  # First, check whether this matrix is included in the 
   
   # Create the constraint tree dataframe
   constraint_df <- create.constraint.trees(dataset = row$dataset, tree_id = row$prefix, 
