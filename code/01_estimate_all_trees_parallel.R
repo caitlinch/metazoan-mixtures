@@ -120,6 +120,10 @@ ml_tree_df$iqtree2_call <- lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, ml_tree
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
+# Run IQ-Tree commands
+mclapply()
+
+############### un parallelised code below
 # Create the iqtree command line for each row of the matrix
 estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
                    prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = iqtree_num_threads, number_of_bootstraps = 1000,
