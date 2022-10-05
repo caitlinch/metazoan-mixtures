@@ -550,6 +550,29 @@ extract.model.details <- function(iqtree_file){
 
 
 #### Creating constraint trees ####
+constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num_threads = 1, dataset_info = all_datasets, df){
+  
+  # Extract the relevant row
+  row <- df[i, ]
+  
+  # Create the constraint tree dataframe
+  constraint_df <- create.constraint.trees(dataset = row$dataset, tree_id = row$prefix, 
+                                           dataset_constraint_tree_dir = output_directory, 
+                                           model = row$best_model, model_id = row$model_code, 
+                                           outgroup_taxa = a_info$Outgroup,
+                                           ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
+                                           sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
+                                           sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
+                                           cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
+                                           alignment_file = row$alignment_file, partitioned_check = FALSE, 
+                                           partition_file = NA, 
+                                           iqtree_path = iqtree_path, number_parallel_threads = iqtree_num_threads)
+  
+  # Return the constraint tree dataframe
+  return(constraint_df)
+  
+}
+
 create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, cnidaria_taxa, bilateria_taxa,
                                     alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
