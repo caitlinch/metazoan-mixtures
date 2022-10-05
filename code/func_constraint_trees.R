@@ -280,7 +280,7 @@ extract.model.details <- function(iqtree_file){
     if (identical(ind, integer(0)) == FALSE){
       # If there is a section for rate heterogeneity, extract and output details 
       mrh1      <- strsplit(iq_file[[ind]], ":")[[1]][2] # Extract model of rate heterogeneity 
-      mrh2      <- as.numeric(strsplit(iq_file[[ind+1]], ":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
+      mrh2      <- strsplit(iq_file[[ind+1]], ":")[[1]][2] # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
       mrh2_name <- strsplit(iq_file[[ind+1]], ":")[[1]][1] # As the line varies, extract the name for the output dataframe
       mrh2_name <- gsub(" ", "_", mrh2_name) # change the name to be easy to parse
       # Assemble into output vector
@@ -395,7 +395,7 @@ extract.model.details <- function(iqtree_file){
     if (identical(ind, integer(0)) == FALSE){
       # If there is a section for rate heterogeneity, extract and output details 
       mrh1      <- strsplit(iq_file[[ind]], ":")[[1]][2] # Extract model of rate heterogeneity 
-      mrh2      <- as.numeric(strsplit(iq_file[[ind+1]], ":")[[1]][2]) # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
+      mrh2      <- strsplit(iq_file[[ind+1]], ":")[[1]][2] # Line after the "model of rate heterogeneity" varies - extract it regardless of what it is 
       mrh2_name <- strsplit(iq_file[[ind+1]], ":")[[1]][1] # As the line varies, extract the name for the output dataframe
       # Assemble into output vector
       mrh_names <- c("model_of_rate_heterogeneity", "model_of_rate_heterogeneity_line2_name", "model_of_rate_heterogeneity_line2_value")
@@ -449,8 +449,10 @@ extract.model.details <- function(iqtree_file){
         # if the end isn't an empty line, subtract one from the end count 
         # to exclude lines like "Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category."
         # to see if this is what's happening, check whether the line starts with a numeric section (i.e. a category for the gamma rate)
-        check_line <- length(strsplit(strsplit(end_line, "        " )[[1]][1], " ")[[1]])
-        if (check_line > 3){
+        check_line <- strsplit(strsplit(end_line, "        " )[[1]][1], " ")[[1]]
+        check_line <- check_line[which(check_line != "")]
+        check_line_count <- length(check_line)
+        if (check_line_count > 3){
           # If the check_line is longer than 3 objects, it won't be a group for the gamma categories but an instruction
           # Eg. the relative rates line has 17 objects, because each word in the sentence is an object
           # Instructions can be excluded from the gamma matrix (but categories can't)
