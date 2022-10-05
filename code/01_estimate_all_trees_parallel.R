@@ -150,7 +150,7 @@ setwd(c_tree_dir)
 # Extract the best model for each combination of matrix and model
 ml_tree_df$best_model <- unlist(lapply(ml_tree_df$iqtree_file, extract.best.model))
 # Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
+ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
 # Create a constraint df for each row in the ml_tree_df
@@ -166,6 +166,13 @@ write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
 
 # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
 lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
+
+# Combine hypothesis trees into one file and save
+ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir, 
+                                outgroup_taxa = NA)
+# Save dataframe
+ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
+write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
 ############### un parallelised code below
 
