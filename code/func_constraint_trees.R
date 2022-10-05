@@ -557,20 +557,53 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
   row <- df[i, ]
   
   # Extract the relevant list of taxa for this dataframe
-  # First, check whether this matrix is included in the 
+  # First, check whether this matrix is included in the keys of the matrix_taxa list
+  row_dataset <- row$dataset
+  row_key <- paste0(row$dataset, ".", row$matrix_name, ".", row$sequence_format)
+  list_keys <- names(matrix_taxa_info)
+  # Check if row_key in list_key
+  if ((row_key %in% list_keys) == FALSE){
+    # If row key is not in list key, then all taxa for this dataset have the same names
+    # Extract the object containing those taxa names
+    taxa_clades <- dataset_info[[row_dataset]]
+  } else if ((row_key %in% list_keys) == TRUE){
+    # First, identify the list of taxa in this matrix
+    keep_taxa <- matrix_taxa_info[[row_key]]
+    # Secondly, extract the taxa clades for this dataset
+    dataset_taxa_clades <- dataset_info[[row_dataset]]
+    # Make a copy of the clades
+    taxa_clades <- dataset_taxa_clades
+    # Lastly, remove any taxa that is NOT in the keep_taxa from taxa_clades
+    taxa_clades$Bilateria <- dataset_taxa_clades$Bilateria[which(dataset_taxa_clades$Bilateria %in% keep_taxa)]
+    taxa_clades$Cnidaria <- dataset_taxa_clades$Cnidaria[which(dataset_taxa_clades$Cnidaria %in% keep_taxa)]
+    taxa_clades$Placozoa <- dataset_taxa_clades$Placozoa[which(dataset_taxa_clades$Placozoa %in% keep_taxa)]
+    taxa_clades$Porifera <- dataset_taxa_clades$Porifera[which(dataset_taxa_clades$Porifera %in% keep_taxa)]
+    taxa_clades$Ctenophora <- dataset_taxa_clades$Ctenophora[which(dataset_taxa_clades$Ctenophora %in% keep_taxa)]
+    taxa_clades$Outgroup <- dataset_taxa_clades$Outgroup[which(dataset_taxa_clades$Outgroup %in% keep_taxa)]
+    taxa_clades$Sponges_Calcarea <- dataset_taxa_clades$Sponges_Calcarea[which(dataset_taxa_clades$Sponges_Calcarea %in% keep_taxa)]
+    taxa_clades$Sponges_Homoscleromorpha <- dataset_taxa_clades$Sponges_Homoscleromorpha[which(dataset_taxa_clades$Sponges_Homoscleromorpha %in% keep_taxa)]
+    taxa_clades$Sponges_Hexactinellida <- dataset_taxa_clades$Sponges_Hexactinellida[which(dataset_taxa_clades$Sponges_Hexactinellida %in% keep_taxa)]
+    taxa_clades$Sponges_Demospongiae <- dataset_taxa_clades$Sponges_Demospongiae[which(dataset_taxa_clades$Sponges_Demospongiae %in% keep_taxa)]
+  }
   
   # Create the constraint tree dataframe
-  constraint_df <- create.constraint.trees(dataset = row$dataset, tree_id = row$prefix, 
+  constraint_df <- create.constraint.trees(dataset = row$dataset, 
+                                           tree_id = row$prefix, 
                                            dataset_constraint_tree_dir = output_directory, 
-                                           model = row$best_model, model_id = row$model_code, 
-                                           outgroup_taxa = a_info$Outgroup,
-                                           ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
-                                           sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
-                                           sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
-                                           cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
-                                           alignment_file = row$alignment_file, partitioned_check = FALSE, 
+                                           model = row$best_model, 
+                                           model_id = row$model_code, 
+                                           outgroup_taxa = taxa_clades$Outgroup,
+                                           ctenophora_taxa = taxa_clades$Ctenophora, 
+                                           porifera_taxa = taxa_clades$Porifera, 
+                                           sponges_1_taxa = as.character(unlist(taxa_clades[c(taxa_clades$Sponges_1)])), 
+                                           sponges_2_taxa = as.character(unlist(taxa_clades[c(taxa_clades$Sponges_2)])), 
+                                           cnidaria_taxa = taxa_clades$Cnidaria, 
+                                           bilateria_taxa = taxa_clades$Bilateria, 
+                                           alignment_file = row$alignment_file, 
+                                           partitioned_check = FALSE, 
                                            partition_file = NA, 
-                                           iqtree_path = iqtree_path, number_parallel_threads = iqtree_num_threads)
+                                           iqtree_path = iqtree_path, 
+                                           number_parallel_threads = iqtree_num_threads)
   
   # Return the constraint tree dataframe
   return(constraint_df)
