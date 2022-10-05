@@ -174,92 +174,15 @@ ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis
 ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
+
+
+#### 5. Apply mixtures across trees and sites (MAST model) ####
+# Create a folder for the ml trees and move to that folder
+m_tree_dir <- paste0(output_dir, "tree_mixtures/")
+if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
+setwd(m_tree_dir)
+
 ############### un parallelised code below
-
-
-for (a in all_alignments){
-  # Extract details about alignment from file name
-  # Identify dataset (original paper citation)
-  a_dataset <- strsplit(basename(a), "\\.")[[1]][1]
-  # Identify matrix (which alignment file from original reference)
-  a_matrix_id <- strsplit(basename(a), "\\.")[[1]][2]
-  
-  # Create output folders for this dataset
-  # Create a new folder in the output directory for this dataset
-  a_op_dir <- paste0(output_dir, a_dataset, "/")
-  if (dir.exists(a_op_dir) == FALSE){dir.create(a_op_dir)}
-  # Create a new folder for storing maximum likelihood trees for this dataset
-  a_ml_op_dir <- paste0(a_op_dir, "ML_trees", "/")
-  if (dir.exists(a_ml_op_dir) == FALSE){dir.create(a_ml_op_dir)}
-  # Create a new folder for storing constraint trees for this dataset
-  a_c_op_dir <- paste0(a_op_dir, "constraint_trees", "/")
-  if (dir.exists(a_c_op_dir) == FALSE){dir.create(a_c_op_dir)}
-  # Create a new folder in the constraint folder for output for this dataset
-  a_tm_op_dir <- paste0(a_op_dir, "tree_mixtures", "/")
-  if (dir.exists(a_tm_op_dir) == FALSE){dir.create(a_tm_op_dir)}
-  
-  # For each of the model components:
-  for (m in model_components){
-    # Change directory to the maximum likelihood tree output directory for this dataset
-    # This ensures IQ-Tree output files will be stored in the correct directory
-    setwd(a_ml_op_dir)
-    
-    # Set a prefix for the ML tree for this combination of dataset, matrix, and model
-    a_m_prefix <- paste0(a_dataset, ".", a_matrix_id, ".", m)
-    
-    # Estimate a maximum likelihood tree with the best model of sequence evolution containing that model component
-    estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
-                       prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = iqtree_num_threads, number_of_bootstraps = 1000,
-                       redo = FALSE, safe = FALSE, run.iqtree = TRUE)
-    
-    # Extract the .iqtree file for the prefix
-    all_ml_op_files <- paste0(a_ml_op_dir, list.files(a_ml_op_dir))
-    all_iqtree_files <- grep("\\.iqtree", all_ml_op_files, value = TRUE)
-    prefix_iqtree_file <- grep(a_m_prefix, all_iqtree_files, value = TRUE)
-    
-    # Extract best model and feed into analysis (estimating hypothesis trees; applying mixture of trees method)
-    best_model <- extract.best.model(prefix_iqtree_file)
-    
-    # Extract information about model parameters
-    model_parameters <- extract.model.details(prefix_iqtree_file)
-    # Save model parameters as csv
-    write.csv(model_parameters$parameters, file = paste0(a_ml_op_dir, a_m_prefix, "_model_parameters.csv"), row.names = FALSE)
-    # Save gamma categories as csv (if present in .iqtree file)
-    if (class(model_parameters$gamma_categories) == "data.frame"){
-      write.csv(model_parameters$gamma_categories, file = paste0(a_ml_op_dir, a_m_prefix, "_model_gamma.categories.csv"), row.names = FALSE)
-    }
-    # Save state frequencies as csv (if present in .iqtree file)
-    if (class(model_parameters$frequency) == "data.frame"){
-      write.csv(model_parameters$frequency, file = paste0(a_ml_op_dir, a_m_prefix, "_model_state.frequencies.csv"), row.names = FALSE)
-    }
-    
-    # Extract information about this dataset
-    a_info <- all_datasets[[a_dataset]]
-    
-    # Change directory to the constraint tree output directory for this dataset
-    # This ensures IQ-Tree output files will be stored in the correct directory
-    setwd(a_c_op_dir)
-    
-    # Create constraint trees, including best model in the dataframe (so it will be used to estimate hypothesis trees)
-    constraint_df <- create.constraint.trees(dataset = a_dataset, tree_id = a_m_prefix, 
-                                             dataset_constraint_tree_dir = a_c_op_dir, 
-                                             model = best_model, model_id = m, outgroup_taxa = a_info$Outgroup,
-                                             ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
-                                             sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
-                                             sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
-                                             cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
-                                             alignment_file = a, partitioned_check = FALSE, partition_file = NA, 
-                                             iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
-    
-    # Estimate hypothesis trees for each of the constraint trees
-    lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
-    
-    # Combine hypothesis trees into one file and save
-    hyp_tree_files <- combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir, 
-                                               outgroup_taxa = a_info$Outgroup)
-    # Get name for rooted hypothesis trees
-    rooted_hyp_trees <- hyp_tree_files[grep("rooted", names(hyp_tree_files))]
-    
     # Change directory to the tree mixtures output directory for this dataset
     # This ensures IQ-Tree output files will be stored in the correct directory
     setwd(a_tm_op_dir)
@@ -286,6 +209,4 @@ for (a in all_alignments){
     # Output results dataframe
     op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.csv")
     write.csv(tr_results, file = op_file, row.names = FALSE)
-    
-  } # end for (m in model_components)
-} # end for (a in all_alignments)
+
