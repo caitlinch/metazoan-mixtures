@@ -131,11 +131,11 @@ for (a in all_alignments){
     # Save model parameters as csv
     write.csv(model_parameters$parameters, file = paste0(a_ml_op_dir, a_m_prefix, "_model_parameters.csv"), row.names = FALSE)
     # Save gamma categories as csv (if present in .iqtree file)
-    if (is.na(model_parameters$gamma_categories) == FALSE){
+    if (class(model_parameters$gamma_categories) == "data.frame"){
       write.csv(model_parameters$gamma_categories, file = paste0(a_ml_op_dir, a_m_prefix, "_model_gamma.categories.csv"), row.names = FALSE)
     }
     # Save state frequencies as csv (if present in .iqtree file)
-    if (is.na(model_parameters$frequency) == FALSE){
+    if (class(model_parameters$frequency) == "data.frame"){
       write.csv(model_parameters$frequency, file = paste0(a_ml_op_dir, a_m_prefix, "_model_state.frequencies.csv"), row.names = FALSE)
     }
     
