@@ -56,6 +56,7 @@ if (location == "local"){
   iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
   iqtree_num_threads <- "1"
+  ml_tree_bootstraps <- 1000
 }
 
 
@@ -100,6 +101,8 @@ ml_tree_df$model_m <- ""
 ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
 ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
 ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model)
+ml_tree_df$iqtree_num_threads <- iqtree_num_threads
+ml_tree_df$iqtree_num_bootstraps <- ml_tree_bootstraps
 ml_tree_df$alignment_file <- all_alignments
 
 # Fix model specification for rows with ModelFinder
@@ -108,6 +111,9 @@ ml_tree_df[ml_tree_df$model_m == "MFP",]$model_mset <- ""
 
 # Sort matrix by dataset and matrix
 ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
+
+# Create IQ-Tree2 commands
+ml_tree_df$iqtree2_call <- lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, ml_tree_df)
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
