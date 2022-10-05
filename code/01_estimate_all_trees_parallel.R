@@ -75,10 +75,11 @@ model_components <- sort(unique(unlist(strsplit(all_models, "\\+"))))
 # Remove components that do not correspond to a matrix or model (e.g. remove "I", "F", "G4")
 model_components <- model_components[!model_components %in% c("F", "FO", "G", "G4", "I", "R", "R4")]
 # PMSF is more complex than other models - requires separate function
-# For now, remove PMSF from list 
+# For now, remove PMSF from list
 model_components <- model_components[!model_components == "PMSF"]
-# For now, remove ModelFinder from the list (comparing existing models - ModelFinder will use best model)
+# Move ModelFinder to the end of the list
 model_components <- model_components[!model_components == "ModelFinder"]
+model_components <- c(model_components, "ModelFinder")
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
 
@@ -89,9 +90,30 @@ if (length(all_files) > 0){
   all_files <- paste0(alignment_dir, all_files)
 }
 # Extract the list of alignments (i.e. files that contain the word "alignment")
-all_alignments <- grep("alignment", all_files, value = T)
+all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 # Create a dataframe of combinations of alignments and models
+ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 1)),
+                          model_mset = model_components,
+                          stringsAsFactors = FALSE)
+ml_tree_df$model_m <- ""
+ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
+ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
+ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model)
+ml_tree_df$alignment_file <- all_alignments
+
+# Fix model specification for rows with ModelFinder
+ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
+ml_tree_df[ml_tree_df$model_m == "MFP",]$model_mset <- ""
+
+# Sort matrix by dataset and matrix
+ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
+
+# Create the iqtree command line for each row of the matrix
+estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
+                   prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = iqtree_num_threads, number_of_bootstraps = 1000,
+                   redo = FALSE, safe = FALSE, run.iqtree = TRUE)
+
 
 
 
