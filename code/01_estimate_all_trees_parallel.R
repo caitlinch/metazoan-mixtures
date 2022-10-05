@@ -119,8 +119,8 @@ ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, "."
 ml_tree_df$iqtree_num_threads <- iqtree_num_threads
 ml_tree_df$iqtree_num_bootstraps <- ml_tree_bootstraps
 ml_tree_df$alignment_file <- all_alignments
-ml_tree_df$iqtree_file <- paste0(all_alignments, ".iqtree")
-ml_tree_df$ml_tree_file <- paste0(all_alignments, ".treefile")
+ml_tree_df$iqtree_file <- paste0(ml_tree_df$prefix, ".iqtree")
+ml_tree_df$ml_tree_file <- paste0(ml_tree_df$prefix, ".treefile")
 
 # Fix model specification for rows with ModelFinder
 ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
@@ -147,7 +147,22 @@ c_tree_dir <- paste0(output_dir, "constraint_trees/")
 if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 setwd(c_tree_dir)
 
+# Extract the best model for each combination of matrix and model
+ml_tree_df$best_model <- unlist(lapply(ml_tree_df$iqtree_file, extract.best.model))
+# Save dataframe
+ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
+write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
+# Create a constraint df for each row in the ml_tree_df
+constraint_df <- create.constraint.trees(dataset = a_dataset, tree_id = a_m_prefix, 
+                                         dataset_constraint_tree_dir = a_c_op_dir, 
+                                         model = best_model, model_id = m, outgroup_taxa = a_info$Outgroup,
+                                         ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
+                                         sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
+                                         sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
+                                         cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
+                                         alignment_file = a, partitioned_check = FALSE, partition_file = NA, 
+                                         iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
 
 
 ############### un parallelised code below
