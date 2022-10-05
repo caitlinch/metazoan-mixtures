@@ -169,7 +169,7 @@ lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
 
 # Combine hypothesis trees into one file and save
 ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir, 
-                                outgroup_taxa = NA)
+                                           outgroup_taxa = NA)
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
@@ -182,31 +182,27 @@ m_tree_dir <- paste0(output_dir, "tree_mixtures/")
 if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
 setwd(m_tree_dir)
 
-############### un parallelised code below
-    # Change directory to the tree mixtures output directory for this dataset
-    # This ensures IQ-Tree output files will be stored in the correct directory
-    setwd(a_tm_op_dir)
-    
-    # Apply mixture of trees method with best model from maximum likelihood tree estimation
-    # Run with +TR option (same branch lengths) 
-    run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
-                           partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
-                           model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
-                           tree_branch_option = "TR", number_parallel_threads = iqtree_num_threads,
-                           run.iqtree = TRUE)
-    
-    # Identify iqtree files from tree mixture run
-    all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
-    all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
-    tree_mixture_tr_iqfile <- grep(paste0(a_m_prefix,".TR"), all_iqtree_files, value = TRUE)
-    tree_mixture_t_iqfile <- grep(paste0(a_m_prefix,".T"), all_iqtree_files, value = TRUE)
-    
-    # Extract information about each tree mixture model run
-    tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
-                                               dataset = a_dataset, prefix = paste0(a_m_prefix,".TR"), 
-                                               model = m, best_model = best_model, tree_branch_option = "TR")
-    
-    # Output results dataframe
-    op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.csv")
-    write.csv(tr_results, file = op_file, row.names = FALSE)
+# Create the tree mixture prefix and command lines
+ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
+ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm, 
+                               iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
+
+# Run the mixture of trees models
+mclapply(ml_tree_df$MAST_call, system, mc.cores = parallel_threads)
+
+
+############### Incomplete code: still need to extract results from MAST model and save to csv file
+# # Identify iqtree files from tree mixture run
+# all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
+# all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
+# tree_mixture_tr_iqfile <- grep(paste0(a_m_prefix,".TR"), all_iqtree_files, value = TRUE)
+# 
+# # Extract information about each tree mixture model run
+# tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
+#                                            dataset = a_dataset, prefix = paste0(a_m_prefix,".TR"), 
+#                                            model = m, best_model = best_model, tree_branch_option = "TR")
+# 
+# # Output results dataframe
+# op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.csv")
+# write.csv(tr_results, file = op_file, row.names = FALSE)
 
