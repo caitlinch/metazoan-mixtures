@@ -789,7 +789,7 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
     prefix_call <- ""
   } else if (is.na(prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" --pre ", prefix, " ")
+    prefix_call <- paste0(" -pre ", prefix, " ")
   } 
   
   # Collate iqtree command
