@@ -75,7 +75,10 @@ model_components <- model_components[!model_components == "ModelFinder"]
 
 #### 3. Process each dataset for each model of sequence evolution ####
 # Extract the list of all files from the folder containing alignments/models/partition files
-all_files <- list.files(alignment_dir, full.names = T)
+all_files <- list.files(alignment_dir)
+if (length(all_files) > 0){
+  all_files <- paste0(alignment_dir, all_files)
+}
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("alignment", all_files, value = T)
 
