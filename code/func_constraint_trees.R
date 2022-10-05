@@ -964,6 +964,23 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
 
 
 #### Applying the mixture of trees model ####
+tree.mixture.wrapper <- function(i, iqtree_tm_path, iqtree_num_threads, df){
+  # Wrapper function to take the mixture of trees model 
+  
+  # Extract a row from the alignment
+  row <- df[i, ]
+  
+  # Apply mixture of trees method with best model from maximum likelihood tree estimation
+  # Run with +TR option (same branch lengths) 
+  treemix_call <- run.tree.mixture.model(alignment_file = row$alignment_file, hypothesis_tree_file = row$hypothesis_tree_files, 
+                                         partition_file = NA, use.partition = FALSE, prefix = paste0(row$prefix,".TR"),
+                                         model = row$best_model, iqtree2_tree_mixtures_implementation = iqtree_tm_path, 
+                                         tree_branch_option = "TR", number_parallel_threads = iqtree_num_threads,
+                                         run.iqtree = FALSE)
+  # Return the tree mixture iqtree call
+  return(treemix_call)
+}
+
 run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
                                    prefix, model, iqtree2_tree_mixtures_implementation, tree_branch_option = "TR",
                                    number_parallel_threads, run.iqtree = TRUE){
@@ -1030,14 +1047,14 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
   # Change working directories (to store IQ-Tree output files in the right place)
   setwd(dirname(hypothesis_tree_file))
   
-  # Print the iqtree command line
-  print(treemix_command)
-  
   if (run.iqtree == TRUE){
     # Call IQ-Tree2 with the command
     system(treemix_command)
   } # end if (run.iqtree == TRUE)
   
+  
+  # Return the iqtree command line
+  return(treemix_command)
 } # end function
 
 
