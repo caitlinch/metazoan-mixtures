@@ -15,17 +15,22 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   if (is.na(partition_file) == TRUE){
     # If the partition file is NA, there is no partition file for this alignment
     partition_call <- ""
-    # Check whether a model or mset is specified
+    # Check whether model is specified
+    if (is.na(model) == TRUE){
+      # Tell IQ-Tree to use ModelFinder
+      model_call = " -m MFP "
+    } else if (is.na(model) == FALSE){
+      # Do not use ModelFinder
+      model_call = paste0(" -m ", model, " ")
+    }
+    # Check whether mset is specified
     if (is.na(mset) == TRUE){
       # If mset = NA, then no mset option is specified.
       mset_call = ""
       # Tell IQ-Tree to use ModelFinder
-      model_call = " -m MFP "
     } else if (is.na(mset) == FALSE){
       # If mset is specified, add mset command
       mset_call <- paste0(" -mset '", mset, "' ")
-      # Do not use ModelFinder
-      model_call = ""
     }
   } else if (is.na(partition_file) == FALSE){
     # If the partition file is not NA, add the command for a partition file to the command line for iqtree
@@ -68,19 +73,26 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, 
                         bootstrap_call, redo_command, safe_command, " -nt ", number_parallel_threads,
                         prefix_call)
-  # Print the iqtree2 command
-  print(iqtree_call)
   
   if (run.iqtree == TRUE){
     # Call iqtree to estimate the tree
     system(iqtree_call)
   } # end if (run.iqtree == TRUE)
   
+  # Return the iqtree2 command
+  return(iqtree_call)
 } # end function
 
 
 ml.iqtree.wrapper <- function(i, df){
   # Function to take row from a dataframe and call estimate.ml.iqtree using information from that row
+  
+  # Extract the row
+  row <- df[i,]
+  
+  iqtree_call <- estimate.ml.iqtree(iqtree2, alignment_file, model = "MFP", mset = NA, partition_file = NA, 
+                                    prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
+                                    redo = FALSE, safe = FALSE, run.iqtree = TRUE)
   
 }
 
