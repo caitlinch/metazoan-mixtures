@@ -95,19 +95,20 @@ all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 # Create a dataframe of combinations of alignments and models
 ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 1)),
-                          model_mset = model_components,
+                          model_code = model_components,
                           stringsAsFactors = FALSE)
-ml_tree_df$model_m <- ""
+ml_tree_df$model_mset <- ml_tree_df$model_code
+ml_tree_df$model_m <- NA
 ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
 ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
-ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model)
+ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model_code)
 ml_tree_df$iqtree_num_threads <- iqtree_num_threads
 ml_tree_df$iqtree_num_bootstraps <- ml_tree_bootstraps
 ml_tree_df$alignment_file <- all_alignments
 
 # Fix model specification for rows with ModelFinder
 ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
-ml_tree_df[ml_tree_df$model_m == "MFP",]$model_mset <- ""
+ml_tree_df$model_mset[which(ml_tree_df$model_code == "ModelFinder")] <- NA
 
 # Sort matrix by dataset and matrix
 ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
