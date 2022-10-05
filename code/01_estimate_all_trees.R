@@ -155,8 +155,7 @@ for (a in all_alignments){
                                              sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
                                              cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
                                              alignment_file = a, partitioned_check = FALSE, partition_file = NA, 
-                                             iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads,
-                                             run.iqtree = TRUE)
+                                             iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
     
     # Estimate hypothesis trees for each of the constraint trees
     lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
