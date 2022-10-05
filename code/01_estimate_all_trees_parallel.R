@@ -109,6 +109,10 @@ ml_tree_df[ml_tree_df$model_m == "MFP",]$model_mset <- ""
 # Sort matrix by dataset and matrix
 ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
 
+# Save dataframe
+ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
+write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
+
 # Create the iqtree command line for each row of the matrix
 estimate.ml.iqtree(iqtree2, a, model = NA, mset = m, partition_file = NA, 
                    prefix = paste0(a_m_prefix, ".ML"), number_parallel_threads = iqtree_num_threads, number_of_bootstraps = 1000,
