@@ -154,16 +154,17 @@ ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parame
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
 # Create a constraint df for each row in the ml_tree_df
-constraint_df <- create.constraint.trees(dataset = a_dataset, tree_id = a_m_prefix, 
-                                         dataset_constraint_tree_dir = a_c_op_dir, 
-                                         model = best_model, model_id = m, outgroup_taxa = a_info$Outgroup,
-                                         ctenophora_taxa = a_info$Ctenophora, porifera_taxa = a_info$Porifera, 
-                                         sponges_1_taxa = as.character(unlist(a_info[c(a_info$Sponges_1)])), 
-                                         sponges_2_taxa = as.character(unlist(a_info[c(a_info$Sponges_2)])), 
-                                         cnidaria_taxa = a_info$Cnidaria, bilateria_taxa = a_info$Bilateria, 
-                                         alignment_file = a, partitioned_check = FALSE, partition_file = NA, 
-                                         iqtree_path = iqtree2, number_parallel_threads = iqtree_num_threads)
+constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir, 
+                          iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads, 
+                          dataset_info = all_datasets, df = ml_tree_df)
+# Collate the constraints into a single dataframe
+constraint_df <- do.call(rbind, constraint_list)
+# Save the constraint tree dataframe
+c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv")
+write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
 
+# Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
+lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
 
 ############### un parallelised code below
 
