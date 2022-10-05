@@ -84,16 +84,21 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
 } # end function
 
 
-ml.iqtree.wrapper <- function(i, df){
+ml.iqtree.wrapper <- function(i, iqtree_path, df){
   # Function to take row from a dataframe and call estimate.ml.iqtree using information from that row
   
   # Extract the row
   row <- df[i,]
   
-  iqtree_call <- estimate.ml.iqtree(iqtree2, alignment_file, model = "MFP", mset = NA, partition_file = NA, 
-                                    prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
-                                    redo = FALSE, safe = FALSE, run.iqtree = TRUE)
+  # Create the command line for iqtree
+  iqtree_call <- estimate.ml.iqtree(iqtree2 = iqtree_path, alignment_file = row$alignment_file, 
+                                    model = row$model_m, mset = row$model_mset, partition_file = NA, 
+                                    prefix = row$prefix, number_parallel_threads = row$iqtree_num_threads, 
+                                    number_of_bootstraps = row$iqtree_num_bootstraps,
+                                    redo = FALSE, safe = FALSE, run.iqtree = FALSE)
   
+  # Return the command line for iqtree
+  return(iqtree_call)
 }
 
 
