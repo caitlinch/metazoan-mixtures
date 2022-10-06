@@ -150,65 +150,65 @@ ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, 
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
-# Run IQ-Tree commands to estimate ML trees for each model/matrix combination
-mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
-
-
-
-#### 4. Estimate constraint and hypothesis trees for each combination of model and dataset ####
-# Create a folder for the ml trees and move to that folder
-c_tree_dir <- paste0(output_dir, "constraint_trees/")
-if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
-setwd(c_tree_dir)
-
-# Extract the best model for each combination of matrix and model
-ml_tree_df$best_model <- unlist(lapply(ml_tree_df$iqtree_file, extract.best.model))
-# Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
-write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
-
-# Create a constraint df for each row in the ml_tree_df
-constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir, 
-                          iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads, 
-                          dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
-                          df = ml_tree_df)
-# Collate the constraints into a single dataframe
-constraint_df <- do.call(rbind, constraint_list)
-# Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
-constraint_df$model_mrate <- NA
-
-# Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
-constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
-
-# Save the constraint tree dataframe
-c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv")
-write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
-
-# Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
-mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
-
-# Combine hypothesis trees into one file and save
-ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir, 
-                                           outgroup_taxa = NA)
-# Save dataframe
-ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
-write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
-
-
-
-#### 5. Apply mixtures across trees and sites (MAST model) ####
-# Create a folder for the ml trees and move to that folder
-m_tree_dir <- paste0(output_dir, "tree_mixtures/")
-if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
-setwd(m_tree_dir)
-
-# Create the tree mixture prefix and command lines
-ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
-ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm, 
-                               iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
-
-# Run the mixture of trees models
-mclapply(ml_tree_df$MAST_call, system, mc.cores = parallel_threads)
+# # Run IQ-Tree commands to estimate ML trees for each model/matrix combination
+# mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
+# 
+# 
+# 
+# #### 4. Estimate constraint and hypothesis trees for each combination of model and dataset ####
+# # Create a folder for the ml trees and move to that folder
+# c_tree_dir <- paste0(output_dir, "constraint_trees/")
+# if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
+# setwd(c_tree_dir)
+# 
+# # Extract the best model for each combination of matrix and model
+# ml_tree_df$best_model <- unlist(lapply(ml_tree_df$iqtree_file, extract.best.model))
+# # Save dataframe
+# ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
+# write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
+# 
+# # Create a constraint df for each row in the ml_tree_df
+# constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir, 
+#                           iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads, 
+#                           dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
+#                           df = ml_tree_df)
+# # Collate the constraints into a single dataframe
+# constraint_df <- do.call(rbind, constraint_list)
+# # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
+# constraint_df$model_mrate <- NA
+# 
+# # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
+# constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
+# 
+# # Save the constraint tree dataframe
+# c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv")
+# write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
+# 
+# # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
+# mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
+# 
+# # Combine hypothesis trees into one file and save
+# ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir, 
+#                                            outgroup_taxa = NA)
+# # Save dataframe
+# ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
+# write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
+# 
+# 
+# 
+# #### 5. Apply mixtures across trees and sites (MAST model) ####
+# # Create a folder for the ml trees and move to that folder
+# m_tree_dir <- paste0(output_dir, "tree_mixtures/")
+# if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
+# setwd(m_tree_dir)
+# 
+# # Create the tree mixture prefix and command lines
+# ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
+# ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm, 
+#                                iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
+# 
+# # Run the mixture of trees models
+# mclapply(ml_tree_df$MAST_call, system, mc.cores = parallel_threads)
 
 
 ############### Incomplete code: still need to extract results from MAST model and save to csv file
