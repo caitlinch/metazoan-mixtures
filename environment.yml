@@ -8,3 +8,4 @@ dependencies:
   - r-ape
   - r-phangorn
   - r-phylotools
+  - r-treetools
