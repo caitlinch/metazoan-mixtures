@@ -9,11 +9,6 @@
 
 
 
-## TO DO
-# 1. Remove Placozoa taxa from alignments
-
-
-
 #### 1. Input parameters ####
 ## Specify parameters:
 # alignment_dir       <- Directory containing alignments for all data sets
@@ -27,9 +22,9 @@
 
 # iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
-location = "laptop"
+location = "local"
 if (location == "local"){
-  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all"
+  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   
@@ -113,6 +108,7 @@ ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignmen
                           stringsAsFactors = FALSE)
 ml_tree_df$model_mset <- ml_tree_df$model_code
 ml_tree_df$model_m <- NA
+ml_tree_df$model_mrate <- "E,I,G,I+G,R,I+R"
 ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
 ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
 ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model_code)
