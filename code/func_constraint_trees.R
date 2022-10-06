@@ -18,7 +18,7 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
     # Check whether model is specified
     if (is.na(model) == TRUE){
       # Tell IQ-Tree to use ModelFinder
-      model_call = " -m MFP "
+      model_call = ""
     } else if (is.na(model) == FALSE){
       # Do not use ModelFinder
       model_call = paste0(" -m ", model, " ")
