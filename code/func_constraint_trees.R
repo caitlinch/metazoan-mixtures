@@ -861,7 +861,7 @@ create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_cons
 
 #### Estimating ML trees using a constraint tree ####
 run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
-                                            iqtree_path = "iqtree2", prefix = NA, best_model = NA, mrate = NA, num_threads = 1, run.iqtree = TRUE){
+                                            iqtree_path = "iqtree2", prefix = NA, best_model = NA, num_threads = 1, run.iqtree = TRUE){
   # Function to apply IQ-Tree to a series of alignments with a constraint tree
   
   # Set best_model as model for IQ-Tree run
@@ -871,15 +871,6 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   } else {
     # Otherwise, use best_model specified in function call
     model_call = paste0(" -m ", best_model, " ")
-  }
-  
-  # Set mrate for IQ-Tree run
-  if (is.na(mrate) == TRUE){
-    # If no mrate command specified for IQ-Tree (mrate = NA), do not make an mrate command (leave empty string)
-    mrate_call = ""
-  } else {
-    # Otherwise, use mrate specified in function call
-    mrate_call = paste0(" -mrate ", mrate, " ")
   }
   
   # Add partition file if present
@@ -899,7 +890,7 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   } 
   
   # Collate iqtree command
-  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, model_call, mrate_call, " -g ", constraint_tree_file, " -nt ", num_threads,  prefix_call)
+  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, model_call, " -g ", constraint_tree_file, " -nt ", num_threads,  prefix_call)
   
   if (run.iqtree == TRUE){
     # Run IQ-Tree
@@ -922,7 +913,7 @@ run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
   run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
                                   partitioned_check = FALSE, partition_file = row$partition_file, 
                                   iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, best_model = row$best_model,
-                                  mrate = row$model_mrate, num_threads = row$num_threads, run.iqtree = run.iqtree)
+                                  num_threads = row$num_threads, run.iqtree = run.iqtree)
 }
 
 run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){

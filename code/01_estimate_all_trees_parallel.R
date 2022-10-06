@@ -31,6 +31,7 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
+  iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
   parallel_threads <- 1
@@ -47,6 +48,7 @@ if (location == "local"){
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
   parallel_threads <- 20
+  
 } else if (location == "laptop"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
@@ -55,6 +57,7 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
+  iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
   parallel_threads <- 1
@@ -157,8 +160,8 @@ constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_di
                           df = ml_tree_df)
 # Collate the constraints into a single dataframe
 constraint_df <- do.call(rbind, constraint_list)
-# Add the mrate options for IQ-Tree to the dataframe
-constraint_df$model_mrate <- iqtree_mrate
+# Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
+constraint_df$model_mrate <- NA
 
 # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
 constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
