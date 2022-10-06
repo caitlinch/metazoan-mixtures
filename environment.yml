@@ -1,4 +1,4 @@
-name: sponge-mixt
+name: metazoan-mixtures
 channels:
   - conda-forge
   - defaults
