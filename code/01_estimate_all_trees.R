@@ -52,6 +52,9 @@ if (location == "local"){
 
 
 #### 2. Prepare functions, variables and packages ####
+# Open packages
+library(ape)
+
 # Source functions
 source(paste0(repo_dir, "code/func_constraint_trees.R"))
 source(paste0(repo_dir, "code/func_data_processing.R"))
@@ -164,7 +167,7 @@ for (a in all_alignments){
     hyp_tree_files <- combine.hypothesis.trees(tree_id = a_m_prefix, constraint_tree_directory = a_c_op_dir, 
                                                outgroup_taxa = a_info$Outgroup)
     # Get name for rooted hypothesis trees
-    rooted_hyp_trees <- hyp_tree_files[grep("rooted", names(hyp_tree_files))]
+    rooted_hyp_trees <- hyp_tree_files[grep("unrooted", names(hyp_tree_files), invert = T)]
     
     # Change directory to the tree mixtures output directory for this dataset
     # This ensures IQ-Tree output files will be stored in the correct directory
@@ -173,7 +176,7 @@ for (a in all_alignments){
     # Apply mixture of trees method with best model from maximum likelihood tree estimation
     # Run with +TR option (same branch lengths) 
     run.tree.mixture.model(alignment_file = a, hypothesis_tree_file = rooted_hyp_trees, 
-                           partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".", tree_branch_model),
+                           partition_file = NA, use.partition = FALSE, prefix = paste0(a_m_prefix,".TR"),
                            model = best_model, iqtree2_tree_mixtures_implementation = iqtree2_tm, 
                            tree_branch_option = "TR", number_parallel_threads = iqtree_num_threads,
                            run.iqtree = TRUE)
@@ -182,7 +185,6 @@ for (a in all_alignments){
     all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
     all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
     tree_mixture_tr_iqfile <- grep(paste0(a_m_prefix,".TR"), all_iqtree_files, value = TRUE)
-    tree_mixture_t_iqfile <- grep(paste0(a_m_prefix,".T"), all_iqtree_files, value = TRUE)
     
     # Extract information about each tree mixture model run
     tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
