@@ -43,6 +43,7 @@ if (location == "local"){
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
+  iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
   parallel_threads <- 20
@@ -108,7 +109,7 @@ ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignmen
                           stringsAsFactors = FALSE)
 ml_tree_df$model_mset <- ml_tree_df$model_code
 ml_tree_df$model_m <- NA
-ml_tree_df$model_mrate <- "E,I,G,I+G,R,I+R"
+ml_tree_df$model_mrate <- iqtree_mrate
 ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
 ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
 ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model_code)
@@ -132,7 +133,7 @@ ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, 
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
-# Run IQ-Tree commands
+# Run IQ-Tree commands to estimate ML trees for each model/matrix combination
 mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
 
 
@@ -156,12 +157,18 @@ constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_di
                           df = ml_tree_df)
 # Collate the constraints into a single dataframe
 constraint_df <- do.call(rbind, constraint_list)
+# Add the mrate options for IQ-Tree to the dataframe
+constraint_df$model_mrate <- iqtree_mrate
+
+# Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
+constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
+
 # Save the constraint tree dataframe
 c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv")
 write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
 
-# Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
-lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df)
+# Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
+mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
 
 # Combine hypothesis trees into one file and save
 ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir, 
