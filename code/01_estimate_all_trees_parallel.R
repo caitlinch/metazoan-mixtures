@@ -34,7 +34,6 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
-  parallel_threads <- 1
   
 } else if (location == "soma"){
   alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
@@ -47,7 +46,6 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
-  parallel_threads <- 20
   
 } else if (location == "dayhoff"){
   alignment_dir <- "/home/u5348329/metazoan-mixtures/data_all/"
@@ -60,7 +58,6 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
-  parallel_threads <- 20
 } else if (location == "laptop"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
@@ -72,9 +69,14 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
-  parallel_threads <- 1
 }
 
+args = commandArgs(trailingOnly = TRUE)
+if (length(args) > 0){
+  parallel_threads <- args[1]
+} else {
+  parallel_threads <- 1
+}
 
 
 #### 2. Prepare functions, variables and packages ####
