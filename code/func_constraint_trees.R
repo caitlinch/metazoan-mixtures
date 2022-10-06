@@ -6,7 +6,7 @@
 
 
 #### Estimating an ML tree in IQ-Tree with a specified model ####
-estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, partition_file = NA, 
+estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, mrate = NA, partition_file = NA, 
                                prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
                                redo = FALSE, safe = FALSE, run.iqtree = TRUE){
   # Function to call iqtree and estimate a maximum likelihood tree using best practices
@@ -32,6 +32,15 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
       # If mset is specified, add mset command
       mset_call <- paste0(" -mset '", mset, "' ")
     }
+    # Check whether mrate is specified
+    if (is.na(mrate) == TRUE){
+      # If mrate = NA, then no mset option is specified.
+      mrate_call = ""
+      # Tell IQ-Tree to use ModelFinder
+    } else if (is.na(mrate) == FALSE){
+      # If mrate is specified, add mrate command
+      mrate_call <- paste0(" -mrate '", mrate, "' ")
+    }
   } else if (is.na(partition_file) == FALSE){
     # If the partition file is not NA, add the command for a partition file to the command line for iqtree
     partition_call <- paste0(" -p ", partition_file, " ")
@@ -39,6 +48,7 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
     model_call = " -m MFP+MERGE "
     # There is no mset command (models are already specified in the partition file)
     mset_call = ""
+    mrate_call = ""
   } 
   
   # If prefix is specified, add a prefix command to the command line
@@ -70,7 +80,7 @@ estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA
   }
   
   # Assemble the command line
-  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, 
+  iqtree_call <- paste0(iqtree2, " -s ", alignment_file, partition_call, model_call, mset_call, mrate_call,
                         bootstrap_call, redo_command, safe_command, " -nt ", number_parallel_threads,
                         prefix_call)
   
@@ -92,7 +102,7 @@ ml.iqtree.wrapper <- function(i, iqtree_path, df){
   
   # Create the command line for iqtree
   iqtree_call <- estimate.ml.iqtree(iqtree2 = iqtree_path, alignment_file = row$alignment_file, 
-                                    model = row$model_m, mset = row$model_mset, partition_file = NA, 
+                                    model = row$model_m, mset = row$model_mset, mrate = row$model_mrate, partition_file = NA, 
                                     prefix = row$prefix, number_parallel_threads = row$iqtree_num_threads, 
                                     number_of_bootstraps = row$iqtree_num_bootstraps,
                                     redo = FALSE, safe = FALSE, run.iqtree = FALSE)
@@ -981,8 +991,8 @@ tree.mixture.wrapper <- function(i, iqtree_tm_path, iqtree_num_threads, df){
   return(treemix_call)
 }
 
-run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partition_file, use.partition = FALSE, 
-                                   prefix, model, iqtree2_tree_mixtures_implementation, tree_branch_option = "TR",
+run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, prefix, model, 
+                                   iqtree2_tree_mixtures_implementation, tree_branch_option = "TR",
                                    number_parallel_threads, run.iqtree = TRUE){
   # Function runs the IQ-Tree2 mixture of trees model implementation given a sequence alignment, a set of hypothesis trees, and details about the model.
   # Currently cannot run with partition model
@@ -1009,17 +1019,6 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
     model_call = paste0("'", model_call, "+", tree_branch_option, "'")
   }
   
-  # Add partition file if present
-  if (is.na(partition_file) == TRUE){
-    # If partition_file is NA, do nothing
-    partition_call <- ""
-  } else if (is.na(partition_file) == FALSE){
-    # If prefix is NA, add prefix to command line 
-    partition_call <- paste0("-p ", partition_file,)
-    # Pad partition_call with white space (for pasting into command line)
-    partition_call <- paste0(" ", partition_call, " ")
-  } 
-  
   # Add prefix if present
   if (is.na(prefix) == TRUE){
     # If prefix is NA, do nothing
@@ -1031,18 +1030,10 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, partiti
     prefix_call <- paste0(" ", prefix_call, " ")
   }
   
-  if (use.partition == FALSE){
-    # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, 
-                              " -m  ", model_call, " -te ", hypothesis_tree_file, 
-                              " -nt ", number_parallel_threads, prefix_call)
-  } else if (use.partition == TRUE){
-    # Partition model not implemented for mixture of trees model yet!
-    # Assemble the command for the tree mixtures model
-    treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, partition_call, 
-                              " -m ", model_call, " -te ", hypothesis_tree_file, 
-                              " -nt ", number_parallel_threads, prefix_call)
-  }
+  # Assemble the command for the tree mixtures model
+  treemix_command <- paste0(iqtree2_tree_mixtures_implementation, " -s ", alignment_file, 
+                            " -m  ", model_call, " -te ", hypothesis_tree_file, 
+                            " -nt ", number_parallel_threads, prefix_call)
   
   # Change working directories (to store IQ-Tree output files in the right place)
   setwd(dirname(hypothesis_tree_file))
