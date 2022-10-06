@@ -44,9 +44,14 @@ all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 # Extract information about each alignment
 dimension_list <- lapply(all_alignments, matrix.dimensions)
-dimension_df <- do.call(rbind, dimension_list)
+dimension_df <- as.data.frame(do.call(rbind, dimension_list))
 names(dimension_df) <- c("dataset", "matrix_name", "sequence_format", "num_taxa", "num_sites", "alignment_path")
 
 # Save the dataframe
 df_path <- paste0(output_dir, "alignment_dimensions.csv")
 write.csv(dimension_df, file = df_path, row.names = FALSE)
+
+
+# Broken:
+# "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/Dunn2008.Dunn2008.aa.alignment.nex"  [3]
+# "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/Hejnol2009.Hejnol_etal_2009.aa.alignment.nex [4]
