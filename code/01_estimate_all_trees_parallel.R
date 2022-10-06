@@ -1,4 +1,4 @@
-# metazoan-mixtures/code/01_estimate_all_trees.R
+# metazoan-mixtures/code/01_estimate_all_trees_parallel.R
 ## This script estimates maximum likelihood trees and maximum likelihood under constraint trees for empirical data sets
 # Caitlin Cherryh, 2022
 
