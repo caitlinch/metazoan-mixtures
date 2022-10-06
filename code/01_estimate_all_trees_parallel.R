@@ -22,7 +22,7 @@
 
 # iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
-location = "local"
+location = "dayhoff"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
@@ -49,6 +49,18 @@ if (location == "local"){
   ml_tree_bootstraps <- 1000
   parallel_threads <- 20
   
+} else if (location == "dayhoff"){
+  alignment_dir <- "/home/u5348329/metazoan-mixtures/data_all/"
+  output_dir <- "/home/u5348329/metazoan-mixtures/output/"
+  repo_dir <- "/home/u5348329/metazoan-mixtures/"
+  
+  iqtree2 <- "/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  iqtree2_tm <- "/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
+  
+  iqtree_mrate <- "E,I,G,I+G,R,I+R"
+  iqtree_num_threads <- 1
+  ml_tree_bootstraps <- 1000
+  parallel_threads <- 20
 } else if (location == "laptop"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
