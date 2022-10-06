@@ -10,6 +10,9 @@ library(phylotools)
 matrix.dimensions <- function(alignment_path){
   # Small function to  check the number of dimensions in an alignment
   
+  # Print the file path
+  print(alignment_path)
+  
   # Get details about the alignment from the filepath name
   dataset = strsplit(basename(alignment_path), "\\.")[[1]][1]
   sequence_format = strsplit(basename(alignment_path), "\\.")[[1]][3]
