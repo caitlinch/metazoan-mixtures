@@ -598,10 +598,11 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
   
   # Create the constraint tree dataframe
   constraint_df <- create.constraint.trees(dataset = row$dataset, 
+                                           model_code = row$model_code,
                                            tree_id = row$prefix, 
                                            dataset_constraint_tree_dir = output_directory, 
-                                           model = row$best_model, 
-                                           model_id = row$model_code, 
+                                           best_model = row$best_model,
+                                           mrate = row$model_mrate,
                                            outgroup_taxa = taxa_clades$Outgroup,
                                            ctenophora_taxa = taxa_clades$Ctenophora, 
                                            porifera_taxa = taxa_clades$Porifera, 
@@ -620,7 +621,7 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
   
 }
 
-create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
+create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, best_model, model_code, outgroup_taxa, ctenophora_taxa, 
                                     porifera_taxa, sponges_1_taxa, sponges_2_taxa, cnidaria_taxa, bilateria_taxa,
                                     alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
@@ -633,7 +634,7 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
   }
   else if (is.na(tree_id) == TRUE){
     # If no tree_id is provided, create one
-    output_id <- paste0(dataset, "_", model_id)
+    output_id <- paste0(dataset, "_", model_code)
   }
   
   ## Hypothesis 1: Ctenophora-sister
@@ -716,11 +717,13 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
   write(constraint_tree_5, file = constraint_tree_file_name)
   
   # Assemble dataframe of information about the constraint trees
-  constraint_df <- data.frame(constraint_tree_id = 1:5,
+  constraint_df <- data.frame(dataset = dataset,
+                              model_code = model_code,
+                              constraint_tree_id = 1:5,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:5, ".nex"),
                               constraint_prefixes = paste0(output_id, "_ML_H", 1:5),
                               alignment_path = alignment_file,
-                              model = model,
+                              best_model = best_model,
                               iqtree_path = iqtree_path,
                               constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
                                                    constraint_tree_4, constraint_tree_5),
@@ -736,7 +739,7 @@ create.constraint.trees <- function(dataset, tree_id = NA, dataset_constraint_tr
   return(constraint_df)
 }
 
-create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, model, model_id, outgroup_taxa, ctenophora_taxa, 
+create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, best_model, model_code, outgroup_taxa, ctenophora_taxa, 
                                              porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
                                              alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
@@ -748,7 +751,7 @@ create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_cons
   }
   else if (is.na(tree_id) == TRUE){
     # If no tree_id is provided, create one
-    output_id <- paste0(dataset, "_", model_id)
+    output_id <- paste0(dataset, "_", model_code)
   }
   
   ## Hypothesis 1: Ctenophora-sister
@@ -833,11 +836,13 @@ create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_cons
   write(constraint_tree_5, file = constraint_tree_file_name)
   
   # Assemble dataframe of information about the constraint trees
-  constraint_df <- data.frame(constraint_tree_id = 1:7,
+  constraint_df <- data.frame(dataset = dataset,
+                              model_code = model_code,
+                              constraint_tree_id = 1:7,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:5, ".nex"),
                               constraint_prefixes = paste0(output_id, "_ML_H", 1:5),
                               alignment_path = alignment_file,
-                              model = model,
+                              best_model = best_model,
                               iqtree_path = iqtree_path,
                               constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, 
                                                    constraint_tree_4, constraint_tree_5),
@@ -856,16 +861,25 @@ create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_cons
 
 #### Estimating ML trees using a constraint tree ####
 run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
-                                            iqtree_path = "iqtree2", prefix = NA, model = NA, num_threads = 1, run.iqtree = TRUE){
+                                            iqtree_path = "iqtree2", prefix = NA, best_model = NA, mrate = NA, num_threads = 1, run.iqtree = TRUE){
   # Function to apply IQ-Tree to a series of alignments with a constraint tree
   
-  # Set model for IQ-Tree run
-  if (is.na(model) == TRUE){
-    # If no model specified for IQ-Tree, use model finder (-m MFP) command
-    iq_model = "MFP"
+  # Set best_model as model for IQ-Tree run
+  if (is.na(best_model) == TRUE){
+    # If no best_model specified for IQ-Tree, use model finder (-m MFP) command
+    model_call = " -m MFP "
   } else {
-    # Otherwise, use model specified in function call
-    iq_model = model
+    # Otherwise, use best_model specified in function call
+    model_call = paste0(" -m ", best_model, " ")
+  }
+  
+  # Set mrate for IQ-Tree run
+  if (is.na(mrate) == TRUE){
+    # If no mrate command specified for IQ-Tree (mrate = NA), do not make an mrate command (leave empty string)
+    mrate_call = ""
+  } else {
+    # Otherwise, use mrate specified in function call
+    mrate_call = paste0(" -mrate ", mrate, " ")
   }
   
   # Add partition file if present
@@ -885,16 +899,15 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   } 
   
   # Collate iqtree command
-  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, " -m ", iq_model, " -g ", constraint_tree_file, " -nt ", num_threads,  prefix_call)
-  
-  # Print IQ-Tree command
-  print(iqtree_call)
+  iqtree_call <- paste0(iqtree_path, " -s ", alignment_path,  partition_call, model_call, mrate_call, " -g ", constraint_tree_file, " -nt ", num_threads,  prefix_call)
   
   if (run.iqtree == TRUE){
     # Run IQ-Tree
     system(iqtree_call)
   } # end if (run.iqtree == TRUE)
   
+  # Return the IQ-Tree command
+  return(iqtree_call)
 } # end function
 
 run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
@@ -908,8 +921,8 @@ run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
   #   either way, want to run function to print iqtree command line
   run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
                                   partitioned_check = FALSE, partition_file = row$partition_file, 
-                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, model = row$model,
-                                  num_threads = row$num_threads, run.iqtree = run.iqtree)
+                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, best_model = row$best_model,
+                                  mrate = row$model_mrate, num_threads = row$num_threads, run.iqtree = run.iqtree)
 }
 
 run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
