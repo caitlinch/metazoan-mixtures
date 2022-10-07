@@ -1,4 +1,3 @@
-sbatch iqtree_run_1.sh
 sbatch iqtree_run_10.sh
 sbatch iqtree_run_11.sh
 sbatch iqtree_run_12.sh
@@ -8,6 +7,7 @@ sbatch iqtree_run_15.sh
 sbatch iqtree_run_16.sh
 sbatch iqtree_run_17.sh
 sbatch iqtree_run_18.sh
+sbatch iqtree_run_1.sh
 sbatch iqtree_run_2.sh
 sbatch iqtree_run_3.sh
 sbatch iqtree_run_4.sh
