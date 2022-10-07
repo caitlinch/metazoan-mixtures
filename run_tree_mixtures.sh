@@ -20,8 +20,8 @@ cd /home/u5348329/metazoan-mixtures/
 source /home/u5348329/.bashrc
 source conda activate tree_mixtures
 
-# Run Rscript in a clean R instance, output a logfile
-Rscript --vanilla --verbose /code/01_estimate_all_trees_parallel.R 2
+# Run Rscript in a clean R instance
+Rscript --vanilla --verbose --no-restore --quite --no-save /code/01_estimate_all_trees_parallel.R 2
 
 # append logfile to this scripts logfile
 cat slurm-${SLURM_JOBID}.Rout >> slurm-${SLURM_JOBID}.out
