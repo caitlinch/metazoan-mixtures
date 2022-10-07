@@ -73,7 +73,7 @@ if (location == "local"){
 
 args = commandArgs(trailingOnly = TRUE)
 if (length(args)==0) {
-  stop("At least one argument must be supplied (input file).n", call.=FALSE)
+  stop("One argument must be supplied (number of parallel threads)", call.=TRUE)
 }else if (length(args) > 0){
   parallel_threads <- args[1]
 } else {
