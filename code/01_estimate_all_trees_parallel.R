@@ -72,7 +72,7 @@ if (location == "local"){
 }
 
 input_args = commandArgs(trailingOnly = TRUE)
-print(input_args)
+print(paste0("Number of parallel processes to run: ", input_args))
 if (length(input_args)==0) {
   stop("One argument must be supplied (number of parallel threads)", call.=TRUE)
 }else if (length(input_args) > 0){
