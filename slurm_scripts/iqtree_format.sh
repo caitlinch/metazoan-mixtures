@@ -11,10 +11,9 @@
 #SBATCH --mem-per-cpu=5000 # 5GB - needed ~4.6GB for the Whelan2017 alignment
 #
 #SBATCH --mail-user u5348329@anu.edu.au
-#SBATCH --mail-type ALL
+#SBATCH --mail-type NONE
 
 # Change to working directory for this project
-cd /mnt/data/dayhoff/home/u5348329/metazoan-mixtures/
-
+cd /home/u5348329/metazoan-mixtures/
 
 # Run iqtree command
