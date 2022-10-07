@@ -16,9 +16,9 @@
 # Change to working directory for this project
 cd /home/u5348329/metazoan-mixtures/
 
-# Activate Anaconda work environment
-source /home/u5348329/.bashrc
-source conda activate tree_mixtures
+# # Activate Anaconda work environment
+# source /home/u5348329/.bashrc
+# conda activate tree_mixtures
 
 # Run Rscript in a clean R instance
-Rscript --vanilla --verbose --no-restore --no-save code/01_estimate_all_trees_parallel.R &> tree_mixtures_R.log
+Rscript --vanilla --verbose --no-restore --no-save code/01_estimate_all_trees_parallel.R 2 &> tree_mixtures_R.log
