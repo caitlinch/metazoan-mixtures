@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #SBATCH --job-name=tree_mixtures
-#SBATCH --output={SLURM_JOBID}.out
-#SBATCH --error=test.err 
+#SBATCH --output=tree_mixtures.out
+#SBATCH --error= tree_mixtures.err 
 #SBATCH --partition=Standard
 #
 #SBATCH --time=3:00
