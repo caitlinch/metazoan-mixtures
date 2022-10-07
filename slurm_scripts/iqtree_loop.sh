@@ -26,8 +26,9 @@ ls *.bak
 rm *.bak
 
 # Create a list of all the .sh files
-ls > /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/iqtree_individual_job_runs.sh
+ls iqtree_run_* > /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/iqtree_individual_job_runs.sh
 
 # Add the prefix "sbatch " to each line (to call all  432 jobs at once)
 sed -i'.bak' 's/^/sbatch /' /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/iqtree_individual_job_runs.sh
+
 
