@@ -21,7 +21,7 @@ source /home/u5348329/.bashrc
 source conda activate tree_mixtures
 
 # Run Rscript in a clean R instance
-Rscript --vanilla --verbose --no-restore --quiet --no-save /code/01_estimate_all_trees_parallel.R 2
+Rscript --vanilla --verbose --no-restore --no-save /code/01_estimate_all_trees_parallel.R 2
 
 # append logfile to this scripts logfile
 cat slurm-${SLURM_JOBID}.Rout >> slurm-${SLURM_JOBID}.out
