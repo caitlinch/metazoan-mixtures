@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #SBATCH --job-name=tree_mixtures
-#SBATCH --output=tree_mixtures.out
-#SBATCH --error= tree_mixtures.err 
+#SBATCH --output=%j.%x.out
+#SBATCH --error= %j.%x.err 
 #SBATCH --partition=Standard
 #
 #SBATCH --time=3:00
@@ -21,10 +21,4 @@ source /home/u5348329/.bashrc
 source conda activate tree_mixtures
 
 # Run Rscript in a clean R instance
-Rscript --vanilla --verbose --no-restore --no-save /code/01_estimate_all_trees_parallel.R 2
-
-# append logfile to this scripts logfile
-cat slurm-${SLURM_JOBID}.Rout >> slurm-${SLURM_JOBID}.out
-
-# remove Rout log
-rm slurm-${SLURM_JOBID}.Rout
+Rscript --vanilla --verbose --no-restore --no-save code/01_estimate_all_trees_parallel.R &> tree_mixtures_R.log
