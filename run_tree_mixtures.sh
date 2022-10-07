@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name=tree_mixtures
 #SBATCH --output=%j.%x.out
-#SBATCH --error= %j.%x.err 
+#SBATCH --error=%j.%x.err 
 #SBATCH --partition=Standard
 #
 #SBATCH --time=3:00
