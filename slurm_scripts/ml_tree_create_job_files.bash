@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Change to folder where you want to create the files
-cd /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/ML_iqtree_sh_scripts/
+# cd /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/ML_iqtree_sh_scripts/
+cd /home/u5348329/metazoan-mixtures/slurm_files/ML_tree_iqtree_runs/
 
 # Split the iqtree calls into 18 files of 24 lines each
-#split -l 24 --numeric-suffixes=1 /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_iqtree2_calls.csv split_
+#split -l 24 -d /Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_iqtree2_calls.csv split_
  split -l 24 --numeric-suffixes=1 /home/u5348329/metazoan-mixtures/output/maximum_likelihood_iqtree2_calls.csv split_
 
 # Add file extensions to split_ files
@@ -37,7 +38,7 @@ done
 # Create a list of all the .sh files
 ls iqtree_run_* > iqtree_individual_job_runs.sh
 
-# Add the prefix "sbatch " to each line (to call all  432 jobs at once)
+# Add the prefix "sbatch " to each line (to call all 18 jobs at once)
 sed -i'.bak' 's/^/sbatch /' iqtree_individual_job_runs.sh
 
 # Remove all files with .bak extension
