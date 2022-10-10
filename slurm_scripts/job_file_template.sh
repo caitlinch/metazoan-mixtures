@@ -5,10 +5,10 @@
 #SBATCH --error=/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/%j.${id}.%x.err 
 #SBATCH --partition=Standard
 #
-#SBATCH --time=72:00:00 # 5 hours - needed ~4 for the Whelan2017 alignment (give 72 hours)
+#SBATCH --time=72:00:00 # 72 hours = 3 days
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=5000 # 5GB - needed ~4.6GB for the Whelan2017 alignment
+#SBATCH --mem-per-cpu=7000 # 7GB (largest alignment run so far needed 6.5 GB)
 #
 #SBATCH --mail-user u5348329@anu.edu.au
 #SBATCH --mail-type NONE
