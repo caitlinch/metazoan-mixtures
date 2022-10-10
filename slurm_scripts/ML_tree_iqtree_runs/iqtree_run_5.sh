@@ -1,17 +1,17 @@
 #!/bin/bash
 #
-#SBATCH --job-name=tree_mixtures.5
+#SBATCH --job-name=treemix.5
 #SBATCH --output=/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/%j.5.%x.out
 #SBATCH --error=/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/%j.5.%x.err 
 #SBATCH --partition=Standard
 #
-#SBATCH --time=72:00:00 # 5 hours - needed ~4 for the Whelan2017 alignment (give 72 hours)
+#SBATCH --time=72:00:00 # 72 hours
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=5000 # 5GB - needed ~4.6GB for the Whelan2017 alignment
+#SBATCH --mem-per-cpu=7000 # 7GB 
 #
 #SBATCH --mail-user u5348329@anu.edu.au
-#SBATCH --mail-type NONE
+#SBATCH --mail-type ALL
 
 # Change to working directory for this project
 cd /home/u5348329/metazoan-mixtures/output/maximum_likelihood_trees/
@@ -34,8 +34,7 @@ cd /home/u5348329/metazoan-mixtures/output/maximum_likelihood_trees/
 /home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'C30'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.C30 
 /home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'C40'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.C40 
 /home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'C50'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.C50 
-/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'C60'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.C60 
-/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'CAT'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.CAT 
+/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'C60'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.C60
 /home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'CF4'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.CF4 
 /home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'EHO'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.EHO 
 /home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2 -s /home/u5348329/metazoan-mixtures/data_all/Laumer2018.Tplx_phylo_d1.aa.alignment.phylip -mset 'EX_EHO'  -mrate 'E,I,G,I+G,R,I+R'  -bb 1000  -nt 1 -pre Laumer2018.Tplx_phylo_d1.EX_EHO 
