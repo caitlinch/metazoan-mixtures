@@ -68,11 +68,17 @@ all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks))))
 model_components <- sort(unique(unlist(strsplit(all_models, "\\+"))))
 # Remove components that do not correspond to a matrix or model (e.g. remove "I", "F", "G4")
 model_components <- model_components[!model_components %in% c("F", "FO", "G", "G4", "I", "R", "R4")]
-# PMSF is more complex than other models - requires separate function
-# For now, remove PMSF from list 
-model_components <- model_components[!model_components == "PMSF"]
-# For now, remove ModelFinder from the list (comparing existing models - ModelFinder will use best model)
+# Create a vector of models to exclude from analysis
+#   PMSF: PMSF is more complex to run than other models - requires separate function/multiple steps
+#   CAT: CAT is not a model in IQ-Tree. Use C10:C60 instead.
+#   GTR: GTR is a DNA model
+#   F81: F81 is a DNA model
+exclude_models <- c("PMSF", "CAT", "GTR", "F81")
+# Remove the models to exclude from the list of models
+model_components <- model_components[which(!model_components %in% exclude_models)]
+# Move ModelFinder to the end of the list (will take the longest as has to test all possible models, so run last)
 model_components <- model_components[!model_components == "ModelFinder"]
+model_components <- c(model_components, "ModelFinder")
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
 
