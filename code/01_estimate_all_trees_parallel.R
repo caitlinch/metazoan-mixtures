@@ -83,6 +83,7 @@ if (length(input_args)==0) {
 #### 2. Prepare functions, variables and packages ####
 # Open packages
 library(parallel)
+library(ape)
 
 # Source functions
 source(paste0(repo_dir, "code/func_constraint_trees.R"))
