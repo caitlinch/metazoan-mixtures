@@ -27,5 +27,8 @@ library(patchwork)
 
 
 #### 3. Plot figures for introduction and methods sections of manuscript ####
-
+## Plotting the alternative phylogenetic hypotheses
+# Open the trees
+trees_file <- paste0(repo_dir, "trees/alternative_phylogenetic_hypotheses.nex")
+trees <- read.tree(trees_file)
 
