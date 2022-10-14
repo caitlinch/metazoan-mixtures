@@ -164,6 +164,10 @@ ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, 
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
 write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
+# Save list of iqtree2 commands
+iqtree_calls_name <- paste0(output_dir, "maximum_likelihood_iqtree2_calls.txt")
+write(ml_tree_df$iqtree2_call, file = iqtree_calls_name)
+
 # Run IQ-Tree commands to estimate ML trees for each model/matrix combination
 mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
 
