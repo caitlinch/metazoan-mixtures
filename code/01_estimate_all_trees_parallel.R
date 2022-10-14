@@ -147,6 +147,13 @@ ml_tree_df$ml_tree_file <- paste0(ml_tree_df$prefix, ".treefile")
 ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
 ml_tree_df$model_mset[which(ml_tree_df$model_code == "ModelFinder")] <- NA
 
+# Remove +R and +I+R/+R+I from mrate command for CAT models (C10-C60), as they already include a Gamma model of rate heterogeneity
+cat_rows <- which(ml_tree_df$model_code %in% c("C10", "C20", "C30", "C40", "C50", "C60"))
+split_mrate <- strsplit(iqtree_mrate, ",")[[1]]
+split_not_r_mrates <- grep("R", split_mrate, invert = T, value = T)
+not_r_mrates <- paste(split_not_r_mrates, collapse = ",")
+ml_tree_df$model_mrate[cat_rows] <- not_r_mrates
+
 # Sort matrix by dataset and matrix
 ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
 
