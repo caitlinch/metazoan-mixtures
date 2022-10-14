@@ -22,10 +22,12 @@ ls *.bak
 rm *.bak
 
 # Create a list of all the .sh files
-ls iqtree_run_* > ../iqtree_individual_job_runs.sh
+ls iqtree_run_* > iqtree_individual_job_runs.sh
 
 # Add the prefix "sbatch " to each line (to call all 384 jobs at once)
-sed -i'.bak' 's/^/sbatch /' ../iqtree_individual_job_runs.sh
+sed -i'.bak' 's/^/sbatch /' iqtree_individual_job_runs.sh
+# Remove backup file 
+rm iqtree_individual_job_runs.sh.bak
 
 # Convert file line endings from dos format to unix format using dos2unix
 for i in {1..384}
