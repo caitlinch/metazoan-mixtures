@@ -169,6 +169,15 @@ write(ml_tree_df$iqtree2_call, file = iqtree_calls_name)
 # Run IQ-Tree commands to estimate ML trees for each model/matrix combination
 mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 
+# Update data frame to include maximum likelihood trees
+ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
+
+# Extract the best model for each combination of matrix and model
+ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.best.model))
+
+# Save dataframe
+ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
+write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
 
 #### 4. Estimate constraint and hypothesis trees for each combination of model and dataset ####
@@ -176,12 +185,6 @@ mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 c_tree_dir <- paste0(output_dir, "constraint_trees/")
 if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 setwd(c_tree_dir)
-
-# Extract the best model for each combination of matrix and model
-ml_tree_df$best_model <- unlist(lapply(ml_tree_df$iqtree_file, extract.best.model))
-# Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
-write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
 
 # Create a constraint df for each row in the ml_tree_df
 constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir,
