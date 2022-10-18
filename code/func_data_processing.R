@@ -142,7 +142,7 @@ sort.model.chunks <- function(m){
 
 
 
-extract.ml.tree <- function(tree_file){
+extract.treefile <- function(tree_file){
   # Small function to extract a tree using a file path
   
   # Check whether the tree file exists
