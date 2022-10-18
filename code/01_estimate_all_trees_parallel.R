@@ -34,6 +34,7 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
+  number_parallel_processes <- 1
   
 } else if (location == "soma"){
   alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
@@ -46,7 +47,8 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
-  
+  number_parallel_processes <- 20
+
 } else if (location == "dayhoff"){
   alignment_dir <- "/home/u5348329/metazoan-mixtures/data_all/"
   output_dir <- "/home/u5348329/metazoan-mixtures/output/"
@@ -58,6 +60,8 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
+  number_parallel_processes <- 20
+  
 } else if (location == "laptop"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
@@ -69,15 +73,9 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
+  number_parallel_processes <- 1
 }
 
-input_args = commandArgs(trailingOnly = TRUE)
-print(paste0("Number of parallel processes to run: ", input_args))
-if (length(input_args)==0) {
-  stop("One argument must be supplied (number of parallel threads)", call.=TRUE)
-}else if (length(input_args) > 0){
-  parallel_threads <- input_args[1]
-}
 
 
 #### 2. Prepare functions, variables and packages ####
@@ -169,7 +167,7 @@ iqtree_calls_name <- paste0(output_dir, "maximum_likelihood_iqtree2_calls.txt")
 write(ml_tree_df$iqtree2_call, file = iqtree_calls_name)
 
 # Run IQ-Tree commands to estimate ML trees for each model/matrix combination
-mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
+mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 
 
 
@@ -203,7 +201,7 @@ c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv"
 write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
 
 # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
-mclapply(ml_tree_df$iqtree2_call, system, mc.cores = parallel_threads)
+mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 
 # Combine hypothesis trees into one file and save
 ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
@@ -226,7 +224,7 @@ ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_
                                iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
 
 # Run the mixture of trees models
-mclapply(ml_tree_df$MAST_call, system, mc.cores = parallel_threads)
+mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 
 
 ############### Incomplete code: still need to extract results from MAST model and save to csv file
