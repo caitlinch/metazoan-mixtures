@@ -140,3 +140,22 @@ sort.model.chunks <- function(m){
   return(new_m)
 }
 
+
+
+extract.ml.tree <- function(tree_file){
+  # Small function to extract a tree using a file path
+  
+  # Check whether the tree file exists
+  if (file.exists(tree_file) == TRUE){
+    # If the file exists, open and read the tree
+    tree_text <- readLines(tree_file)
+  } else if (file.exists(tree_file) == FALSE){
+    # If the file doesn't exist, return NA
+    tree_text <- NA
+  }
+  
+  # Return the tree (if it exists)
+  return(tree_text)
+}  
+
+
