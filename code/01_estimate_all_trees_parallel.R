@@ -160,7 +160,7 @@ ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, 
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
-write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
+write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
 # Save list of iqtree2 commands
 iqtree_calls_name <- paste0(output_dir, "maximum_likelihood_iqtree2_calls.txt")
@@ -177,7 +177,7 @@ ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_tr
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
-write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
+write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
 
 #### 4. Estimate constraint and hypothesis trees for each combination of model and dataset ####
@@ -201,7 +201,7 @@ constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.const
 
 # Save the constraint tree dataframe
 c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv")
-write.csv(constraint_df, file = c_tree_df_name, row.names = FALSE)
+write.table(constraint_df, file = c_tree_df_name, row.names = FALSE, sep = "\t")
 
 # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
 mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
@@ -211,7 +211,7 @@ ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis
                                            outgroup_taxa = NA)
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
-write.csv(ml_tree_df, file = ml_tree_df_name, row.names = FALSE)
+write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
 
 
@@ -243,5 +243,5 @@ mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 # 
 # # Output results dataframe
 # op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.csv")
-# write.csv(tr_results, file = op_file, row.names = FALSE)
+# write.table(tr_results, file = op_file, row.names = FALSE, sep = "\t")
 
