@@ -159,7 +159,7 @@ ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
 ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, iqtree_path = iqtree2, df = ml_tree_df))
 
 # Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.csv")
+ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.tsv")
 write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
 # Save list of iqtree2 commands
@@ -176,7 +176,7 @@ ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_
 ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.best.model))
 
 # Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.csv")
+ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.tsv")
 write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
 
@@ -200,7 +200,7 @@ constraint_df$model_mrate <- NA
 constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
 
 # Save the constraint tree dataframe
-c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.csv")
+c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.tsv")
 write.table(constraint_df, file = c_tree_df_name, row.names = FALSE, sep = "\t")
 
 # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
@@ -210,7 +210,7 @@ mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
                                            outgroup_taxa = NA)
 # Save dataframe
-ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.csv")
+ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.tsv")
 write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
 
@@ -230,7 +230,7 @@ ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_
 mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 
 
-############### Incomplete code: still need to extract results from MAST model and save to csv file
+############### Incomplete code: still need to extract results from MAST model and save to tsv file
 # # Identify iqtree files from tree mixture run
 # all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
 # all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
@@ -242,6 +242,6 @@ mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 #                                            model = m, best_model = best_model, tree_branch_option = "TR")
 # 
 # # Output results dataframe
-# op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.csv")
+# op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.tsv")
 # write.table(tr_results, file = op_file, row.names = FALSE, sep = "\t")
 
