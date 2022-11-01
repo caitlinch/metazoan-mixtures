@@ -214,6 +214,62 @@ extract.treefile <- function(tree_file){
 }  
 
 
+extract.model.log.likelihood <- function(iqtree_file, var = "LogL"){
+  # Function to extract the log likelihood of a model from in IQ-Tree
+  # Can extract either the log likelihood (var = "LogL), the BIC (var = "BIC),
+  #   the weighted BIC (var = "wBIC") or all three (var = "All")
+  
+  # Check if the iqtree file exists
+  if (file.exists(iqtree_file) == TRUE){
+    # If the iqtree_file does exist:
+    ## Open the .iqtree file:
+    iq_lines <- readLines(iqtree_file)
+    
+    ## Extract the table of models sorted by BIC scores
+    # Find the line detailing the best model
+    table_ind <- grep("List of models sorted by BIC scores: ", iq_lines)
+    # Add two to the table ind to get the start of the table
+    table_start<- table_ind + 2
+    table_end <- grep("AIC, w-AIC   : Akaike information criterion scores and weights.", iq_lines) - 2
+    # Extract the table lines
+    table_lines <- iq_lines[table_start:table_end]
+    # Split table into rows using " "
+    split_table_lines <- strsplit(table_lines, " ")
+    # Remove empty strings from table lines
+    split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != ""]})
+    # Remove "+" from table lines
+    split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != "+"]})
+    # Remove "-" from table lines
+    split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != "-"]})
+    # Make table lines into data frame
+    table_df <- as.data.frame(do.call(rbind, split_table_lines[2:length(split_table_lines)]))
+    names(table_df) <- split_table_lines[[1]]
+    
+    ## Extract the log likelihood, BIC and wBIC for the best model
+    logl <- table_df$LogL[1]
+    bic <- table_df$BIC[1]
+    wbic <- table_df$`w-BIC`[1]
+    best_model = "LG+F+R8"
+    all <- c("BestModel" = best_model, "LogL" = logl, "BIC" = bic, "w-BIC" = wbic)
+    
+    # Prepare output for return
+    if (var == "LogL"){
+      output = logl
+    } else if (var == "BIC"){
+      output = bic
+    } else if (var == "wBIC"){
+      output = wbic
+    } else if (var == "All"){
+      output = all
+    } # end if (var == "LogL")
+    
+  } # end if (file.exists(iqtree_file) == TRUE)
+  
+  # Return the output
+  return(output)
+}
+
+
 extract.model.details <- function(iqtree_file){
   # Given a .iqtree file, this function will extract the model of sequence evolution parameters
   
