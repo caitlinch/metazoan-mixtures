@@ -32,7 +32,7 @@ source(paste0(repo_dir, "code/data_dataset_info.R"))
 
 # Remove the individual dataset lists (only need collated lists) (yes this is a bit cheeky)
 rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
-     philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list)
+     philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, all_models)
 
 #### 3. Prepare name csv ####
 # Set a file path for the name csv
