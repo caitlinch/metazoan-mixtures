@@ -60,7 +60,7 @@ if (location == "local"){
   iqtree_mrate <- "E,I,G,I+G,R,I+R"
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
-  number_parallel_processes <- 20
+  number_parallel_processes <- 1
   
 } else if (location == "laptop"){
   alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
@@ -172,8 +172,12 @@ mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 # Update data frame to include maximum likelihood trees
 ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
 
+# Extract the log likelihood value for the tree
+
 # Extract the best model for each combination of matrix and model
 ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.best.model))
+
+# Extract the BIC value and log likelihood value for the best model
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.tsv")
