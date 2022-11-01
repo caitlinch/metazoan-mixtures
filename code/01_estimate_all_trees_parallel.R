@@ -178,6 +178,9 @@ ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_
 ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.best.model))
 
 # Extract the BIC value and log likelihood value for the best model
+ml_tree_df$best_model_LogL <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.model.log.likelihood, var = "LogL"))
+ml_tree_df$best_model_BIC <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.model.log.likelihood, var = "BIC"))
+ml_tree_df$best_model_wBIC <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.model.log.likelihood, var = "wBIC"))
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.tsv")
