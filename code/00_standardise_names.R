@@ -36,7 +36,7 @@ rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018
 
 #### 3. Prepare name csv ####
 # Set a file path for the name csv
-mastmet_file_path <- paste0(output_dir, "MAST_metazoa_taxa_reconciliation.csv")
+mastmet_file_path <- paste0(output_dir, "MAST_metazoa_taxa_collation.csv")
 if (file.exists(mastmet_file_path) == FALSE){
   # Create a new data frame with all the taxa from all the matrices you're using
   mastmet_df <- data.frame("dataset" = c(rep("Borowiec0215", extract.taxa.vector(all_datasets[["Borowiec2015"]])$number),
