@@ -607,3 +607,71 @@ extract.model.details <- function(iqtree_file){
   return(params)
 }
 
+
+#### Extract information from tree mixture results ####
+extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, model, best_model, tree_branch_option){
+  # Function to take one tree mixture file and output the results from the corresponding .iqtree file
+  
+  # Open tree mixture file
+  iq_lines <- readLines(tree_mixture_file)
+  
+  # Extract input file details
+  ind <- grep("Input file name", iq_lines)
+  input_file_name <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  ind <- grep("User tree file name", iq_lines)
+  input_tree_name <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  
+  # Extract tree weights
+  ind <- grep("Tree weights", iq_lines)
+  tree_weight_str <- strsplit(iq_lines[ind], ":")[[1]][2]
+  all_tree_weights <- strsplit(tree_weight_str, ",")[[1]]
+  all_tree_weights <- as.numeric(gsub(" ", "", all_tree_weights))
+  all_tree_weight_names <- paste0("tree_", 1:length(all_tree_weights), "_weight")
+  
+  # Extract tree lengths
+  ind <- grep("Total tree lengths", iq_lines)
+  tree_lengths_raw <- strsplit(strsplit(iq_lines[ind], ":")[[1]][2], " ")[[1]]
+  tree_lengths <- tree_lengths_raw[tree_lengths_raw != ""]
+  all_total_lengths <- paste0("tree_", 1:length(all_tree_weights), "_total_length")
+  ind <- grep("Sum of internal branch lengths:", iq_lines)
+  internal_lengths_raw <- strsplit(strsplit(iq_lines[ind], ":")[[1]][2], " ")[[1]]
+  internal_lengths_trimmed <- grep("\\(|\\)|of|tree|length", internal_lengths_raw, invert = TRUE, value = TRUE)
+  internal_lengths <- internal_lengths_trimmed[internal_lengths_trimmed != ""]
+  all_internal_lengths <- paste0("tree_", 1:length(all_tree_weights), "_sum_internal_branch_lengths")
+  internal_percents <- gsub("\\%", "", gsub("\\(", "", grep("\\%", internal_lengths_raw, value = TRUE)))
+  all_internal_percent_names <- paste0("tree_", 1:length(all_tree_weights), "_internal_branch_percent")
+  
+  # Extract likelihood values
+  ind <- grep("Log-likelihood of the tree", iq_lines)
+  log_likelihood_str <- strsplit(iq_lines[ind], ":")[[1]][2]
+  log_likelihood <- gsub(" ", "", strsplit(log_likelihood_str, "\\(")[[1]][1])
+  log_likelihood_se <- gsub(" ", "", gsub(")", "", gsub("s.e.", "", strsplit(log_likelihood_str, "\\(")[[1]][2])))
+  ind <- grep("Unconstrained log-likelihood", iq_lines)
+  unconst_logl <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  ind <- grep("Number of free parameters", iq_lines)
+  num_free_params <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  ind <- grep("Akaike information criterion", iq_lines)[1]
+  aic_score <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  ind <- grep("Corrected Akaike information criterion", iq_lines)
+  aicc_score <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  ind <- grep("Bayesian information criterion", iq_lines)
+  bic_score <- gsub(" ", "", strsplit(iq_lines[ind], ":")[[1]][2])
+  
+  # Collate output vectors
+  op_names <- c("prefix", "dataset", "model", "best_model", "tree_branch_option", 
+                "log_likelihood", "log_likelihood_se", "unconstrained_log-likelihood",
+                "number_free_parameters", "AIC_score", "AICc_score", "BIC_score",
+                all_tree_weight_names, all_total_lengths, all_internal_lengths, all_internal_percent_names,
+                "input_file_name", "input_tree_name", "tree_mixture_file")
+  op_vals <- c(prefix, dataset, model, best_model, tree_branch_option, 
+               log_likelihood, log_likelihood_se, unconst_logl, 
+               num_free_params, aic_score, aicc_score, bic_score,
+               all_tree_weights, tree_lengths, internal_lengths, internal_percents,
+               input_file_name, input_tree_name, tree_mixture_file)
+  # Assemble output dataframe
+  op_df <- as.data.frame(matrix(op_vals, ncol = length(op_vals), nrow = 1, byrow = TRUE))
+  names(op_df) <- op_names
+  # Return output dataframe
+  return(op_df)
+}
+
