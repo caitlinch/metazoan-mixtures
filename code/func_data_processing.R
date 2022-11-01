@@ -319,6 +319,46 @@ extract.tree.log.likelihood <- function(iqtree_file, var = "LogL"){
 }
 
 
+extract.rates <- function(iqtree_file){
+  # Function to extract the rate parameters of a model from in IQ-Tree
+  
+  # Check if the iqtree file exists
+  if (file.exists(iqtree_file) == TRUE){
+    # If the iqtree_file does exist:
+    ## Open the .iqtree file:
+    iq_lines <- readLines(iqtree_file)
+    
+    # Extract the rates from the iqtree file
+    rate_ind <- grep("Site proportion and rates\\:", iq_lines)
+    # Check if the rate_ind is present (if yes, that means there's a line containing the rates and weights)
+    if (identical(rate_ind,logical(0)) == FALSE & class(rate_ind) == "integer"){
+      # The site proportion and weights values are present
+      # Extract the rate parameters
+      rates_line <- iq_lines[rate_ind]
+      # Remove text from the beginning of the line
+      rates_raw <- strsplit(rates_line, "\\:")[[1]][2]
+      # Split up by the spaces
+      split_rates <- strsplit(rates_raw, " ")[[1]]
+      # Remove any entries that are empty characters (i.e. "")
+      split_rates <- split_rates[split_rates != ""]
+      # Split rates again by the commas (",")
+      split2_rates <- unlist(strsplit(split_rates, ","))
+      # Remove brackets from values
+      rate_vals <- unlist(strsplit(unlist(strsplit(split2_rates, "\\(")), "\\)"))
+      # Make output (for attaching into IQ-Tree2 command line)
+      rates_op <- paste(rate_vals, collapse = ",")
+    } else if (identical(rate_ind,logical(0)) == TRUE & class(rate_ind) == "logical"){
+      # The site proportion and weights values are missing
+      # Return NA for this file
+      rates_op <- NA
+    } # end if (identical(rate_ind,logical(0)) == FALSE & class(rate_ind) == "integer")
+  } # end if (file.exists(iqtree_file) == TRUE)
+  
+  # Return the output
+  return(rates_op)
+}
+
+
 extract.model.details <- function(iqtree_file){
   # Given a .iqtree file, this function will extract the model of sequence evolution parameters
   
