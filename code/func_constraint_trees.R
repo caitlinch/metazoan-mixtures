@@ -1,7 +1,8 @@
 ## caitlinch/metazoan-mixtures/func_constraint_trees.R
 # Caitlin Cherryh 2022
 
-# Functions for testing and applying constraint trees in iqtree2
+# Functions for estimating maximum likelihood trees and constrained maximum likelihood trees,
+#     and for running the Mixture of Trees and Sites (MAST) model in iqtree2
 
 
 #### Estimating an ML tree in IQ-Tree with a specified model ####
