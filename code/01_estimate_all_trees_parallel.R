@@ -48,7 +48,7 @@ if (location == "local"){
   iqtree_num_threads <- 1
   ml_tree_bootstraps <- 1000
   number_parallel_processes <- 20
-
+  
 } else if (location == "dayhoff"){
   alignment_dir <- "/home/u5348329/metazoan-mixtures/data_all/"
   output_dir <- "/home/u5348329/metazoan-mixtures/output/"
@@ -172,7 +172,13 @@ mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 # Update data frame to include maximum likelihood trees
 ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
 
-# Extract the log likelihood value for the tree
+# Extract the log likelihood and other values for the tree
+ml_tree_df$tree_LogL <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "LogL"))
+ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "ULL"))
+ml_tree_df$tree_NumFreeParams <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "NFP"))
+ml_tree_df$tree_BIC <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "BIC"))
+ml_tree_df$tree_length <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "TrLen"))
+ml_tree_df$tree_SumInternalBranch <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "SIBL"))
 
 # Extract the best model for each combination of matrix and model
 ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.best.model))
