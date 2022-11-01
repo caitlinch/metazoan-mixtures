@@ -262,7 +262,56 @@ extract.model.log.likelihood <- function(iqtree_file, var = "LogL"){
     } else if (var == "All"){
       output = all
     } # end if (var == "LogL")
+  } # end if (file.exists(iqtree_file) == TRUE)
+  
+  # Return the output
+  return(output)
+}
+
+
+extract.tree.log.likelihood <- function(iqtree_file, var = "LogL"){
+  # Function to extract the log likelihood of a model from in IQ-Tree
+  # Can extract either the log likelihood (var = "LogL), the unconstrained log likelihood (without tree) (var = "ULL"),
+  #   the number of free parameters (var = "NFP), the BIC (var = "BIC"), the total tree length (var = "TrLen"), 
+  #   the sum of internal branch lengths (var = "SIBL"),  or all of the above (var = "All")
+  
+  # Check if the iqtree file exists
+  if (file.exists(iqtree_file) == TRUE){
+    # If the iqtree_file does exist:
+    ## Open the .iqtree file:
+    iq_lines <- readLines(iqtree_file)
     
+    ## Extract the variables from the iqtree file
+    if (var == "LogL"){
+      # Log Likelihood
+      output <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Log-likelihood of the tree\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
+    } else if (var == "ULL"){
+      # Unconstrained log likelihood (without tree)
+      output <- gsub(" ", "", strsplit(iq_lines[grep("Unconstrained log-likelihood \\(without tree\\)\\:", iq_lines)], "\\:")[[1]][2])
+    } else if (var == "NFP"){
+      # Number of free parameters
+      output <- gsub(" ", "", strsplit(iq_lines[grep("Number of free parameters \\(\\#branches \\+ \\#model parameters\\)\\:", iq_lines)], "\\:")[[1]][2])
+    } else if (var == "BIC"){
+      # BIC
+      output <- gsub(" ", "", strsplit(iq_lines[grep("Bayesian information criterion \\(BIC\\) score\\:", iq_lines)], "\\:")[[1]][2])
+    } else if (var == "TrLen"){
+      # Tree length
+      output <- gsub(" ", "", strsplit(iq_lines[grep("Total tree length \\(sum of branch lengths\\)\\:", iq_lines)], "\\:")[[1]][2])
+    } else if (var == "SIBL"){
+      # Sum of internal branch lengths
+      output <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Sum of internal branch lengths\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
+    } else if (var == "All"){
+      # Extract all values
+      logl <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Log-likelihood of the tree\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
+      ull <- gsub(" ", "", strsplit(iq_lines[grep("Unconstrained log-likelihood \\(without tree\\)\\:", iq_lines)], "\\:")[[1]][2])
+      nfp <- gsub(" ", "", strsplit(iq_lines[grep("Number of free parameters \\(\\#branches \\+ \\#model parameters\\)\\:", iq_lines)], "\\:")[[1]][2])
+      bic <- gsub(" ", "", strsplit(iq_lines[grep("Bayesian information criterion \\(BIC\\) score\\:", iq_lines)], "\\:")[[1]][2])
+      treelen <- gsub(" ", "", strsplit(iq_lines[grep("Total tree length \\(sum of branch lengths\\)\\:", iq_lines)], "\\:")[[1]][2])
+      sibl <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Sum of internal branch lengths\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
+      # Assemble all variables into a vector (for outputting all informating at once)
+      output <- c("LogL" = logl, "Unconstrained_LogL" = ull, "NumFreeParams" = nfp, 
+               "BIC" = bic, "TreeLength" = treelen, "SumInternalBranchLengths" = sibl)
+    } # end if (var == "LogL")
   } # end if (file.exists(iqtree_file) == TRUE)
   
   # Return the output
