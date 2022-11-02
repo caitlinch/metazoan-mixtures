@@ -283,7 +283,8 @@ manual.name.look.up <- function(s){
                       "HydraXmagnipapillata" = "Hydra_magnipapillata", "ClytiaXhemisphaerica" = "Clytia_hemisphaerica", "SyconXraphanus" = "Sycon_raphanus",
                       "LeucettaXchagosensis" = "Leucetta_chagosensis", "OopsacasXminuta" = "Oopsacas_minuta", "Heterochone_sp" = "Heterochone_sp",
                       "RenieraXsp" = "Reniera_sp", "AllomycesXmacrogynus" = "Allomyces_macrogynus", "RhizopusXoryzae" = "Rhizopus_oryzae",
-                      "MonosigaXovata" = "Monosiga_ovata", "MonosigaXbrevicollis" = "Monosiga_brevicollis")
+                      "MonosigaXovata" = "Monosiga_ovata", "MonosigaXbrevicollis" = "Monosiga_brevicollis", "Echinoderes_horni" = "Echinoderes_horni",
+                      "Hydra_vulgaris_01" = "Hydra_vulgaris")
   # Select the species name for the given code
   reconciled_s <- manual_list[[s]]
   # Return the reconciled name
