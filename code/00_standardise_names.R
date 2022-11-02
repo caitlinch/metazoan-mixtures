@@ -126,13 +126,5 @@ manual_taxonomy_df$original_name <- gsub("\\_\\_", "", manual_taxonomy_df$origin
 manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_name)
 
 # For each taxa in the mastmet_df, find a consistent taxa name in the Li tsv files
-relabelled_taxa <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
-
-
-laumer2018_inds <- which(mastmet_df$dataset == "Laumer2018")
-laumer2019_inds <- which(mastmet_df$dataset == "Laumer2019")
-species_row <- mastmet_df[1,]
-
-unique(mastmet_df[which(mastmet_df$dataset == "Laumer2018" | mastmet_df$dataset == "Laumer2019"),]$original_name)
-unlist(lapply(which(mastmet_df$dataset == "Pick2010"), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
+mastmet_df$relabelled_name <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
 
