@@ -104,7 +104,7 @@ find.species.name <- function(species_row, taxon_table_df){
   if (is.na(li_alignment_name) == FALSE){
     # If there is a corresponding alignment in Li et. al., find the relabelled species name for this species
     # Reduce the taxon_table_df to just the species present in this dataset
-    species_df <- taxon_table_df[(intersect(grep(species_row$dataset, taxon_table_df$original_matrix), grep(species_row$alignment, taxon_table_df$original_matrix))),]
+    species_df <- taxon_table_df[(intersect(grep(species_row$dataset, taxon_table_df$original_matrix), grep(li_alignment_name, taxon_table_df$original_matrix))),]
     # Check whether this species name is present in the tsv files
     relabelled_name <- species_df$relabelled_name[which(species_df$matrix_name == species_row$original_name)]
   } else if (is.na(li_alignment_name) == TRUE){
