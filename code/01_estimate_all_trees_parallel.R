@@ -7,6 +7,11 @@
 # 2. Estimates ML trees using a constraint tree for empirical data sets under different models
 # 3. Applies the MAST (Mixtures Across Sites and Trees) model 
 
+# In this script, MAST refers to the Mixtures Across Sites and Trees model
+#   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 
+#   "MAST: Phylogenetic Inference with Mixtures Across Sites and Trees", bioRxiv 2022.10.06.511210; 
+#   doi: https://doi.org/10.1101/2022.10.06.511210
+
 
 
 #### 1. Input parameters ####

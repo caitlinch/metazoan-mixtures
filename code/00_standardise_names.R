@@ -4,7 +4,13 @@
 
 # For this script, you will need the naming csv from Li et. al. (2021)
 #     Available from the data repository: https://figshare.com/articles/dataset/Rooting_the_animal_tree_of_life/13122881
-#     Download the reconciliation.tar.xz and identify the location of the "reconciliation/taxonomy_info/taxon_table.tsv" file
+#     Download the reconciliation.tar.xz and identify the `reconciliation/taxonomy_info/taxon_table.tsv` and 
+#     `reconciliation/taxonomy_info/manual_taxonomy_map.tsv` files
+
+# In this script, MAST refers to the Mixtures Across Sites and Trees model
+#   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 
+#   "MAST: Phylogenetic Inference with Mixtures Across Sites and Trees", bioRxiv 2022.10.06.511210; 
+#   doi: https://doi.org/10.1101/2022.10.06.511210
 
 
 
@@ -12,8 +18,8 @@
 ## Specify parameters:
 # output_dir            <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir              <- Location of caitlinch/metazoan-mixtures github repository
-# taxon_table_path      <- Location of the reconciliation/taxonomy_info/taxon_table.tsv from Li et. al. (2021)
-# manual_taxonomy_path  <- Location of the reconciliation/taxonomy_info/manual_taxonomy_map.tsv from Li et. al. (2021)
+# taxon_table_path      <- Location of the `reconciliation/taxonomy_info/taxon_table.tsv` from Li et. al. (2021)
+# manual_taxonomy_path  <- Location of the `reconciliation/taxonomy_info/manual_taxonomy_map.tsv` from Li et. al. (2021)
 
 location = "local"
 if (location == "local"){
@@ -35,7 +41,7 @@ rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018
      philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, all_models)
 
 #### 3. Prepare name csv ####
-# Set a file path for the name csv
+# Set a file path for the MAST metazoan taxa collation csv
 mastmet_file_path <- paste0(output_dir, "MAST_metazoa_taxa_collation.csv")
 if (file.exists(mastmet_file_path) == FALSE){
   # Create a new data frame with all the taxa from all the matrices you're using
@@ -114,5 +120,6 @@ if (file.exists(mastmet_file_path) == FALSE){
 # Open the tsv files from Li et. al. 2021
 taxtab_df <- read.delim(taxon_table_path)
 mantax_df <- read.delim(manual_taxonomy_path)
+# For each taxa in the mastmet_df, find a consistent taxa name in the Li tsvs
 
 
