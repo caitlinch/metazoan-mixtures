@@ -99,7 +99,7 @@ find.species.name <- function(species_row, taxon_table_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
   
   # Determine which Li et. al. 2021 alignment corresponds to this alignment
-  li_alignment_name <- match.alignment.name(species_row$dataset, species_row$alignment)
+  li_alignment_name <- convert.alignment.name(species_row$dataset, species_row$alignment)
   # Check whether there is a corresponding Li et. al. alignment
   if (is.na(li_alignment_name) == FALSE){
     # If there is a corresponding alignment in Li et. al., find the relabelled species name for this species
