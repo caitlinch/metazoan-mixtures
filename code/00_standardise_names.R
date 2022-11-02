@@ -30,7 +30,7 @@ if (location == "local"){
 source(paste0(repo_dir, "code/func_naming.R"))
 source(paste0(repo_dir, "code/data_dataset_info.R"))
 
-# Remove the individual dataset lists (only need collated lists) (yes this is a bit cheeky)
+# Remove the individual dataset lists (only need collated lists) (yes it is a bit cheeky to hard code the removal)
 rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
      philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, all_models)
 
@@ -111,15 +111,8 @@ if (file.exists(mastmet_file_path) == FALSE){
 
 
 #### 4. Standardize the names ####
-# Open the tsv files
-names_df <- read.delim(taxon_table_path)
+# Open the tsv files from Li et. al. 2021
+taxtab_df <- read.delim(taxon_table_path)
 mantax_df <- read.delim(manual_taxonomy_path)
-# Add column for matrix classifications for this study
-names_df$MAST_matrix <- NA
-# Reorganise the columns
-names_df <- names_df[, c("MAST_matrix", "matrix_name", "relabelled_name", "clade_assignment", "original_matrix", "ncbi_tax_id", "ncbi_taxonomy")]
-# Rename the column to match
-names(names_df) <- c("MAST_matrices", "matrix_name", "relabelled_name", "clade_assignment", "Li2021_matrices", "ncbi_tax_id", "ncbi_taxonomy")
-# Add in the corresponding matrix name for our study
-names_df$MAST_matrix[which(names_df$Li2021_matrix == "../considered_data/Borowiec2015/Best108.nex")] <- "Borowiec2015.Best108.aa.alignment"
+
 
