@@ -53,14 +53,14 @@ filter.matrix.names <- function(taxa_list, matrix_subset){
                         "Models" = taxa_list$Models,
                         "Partitioned" = taxa_list$Partitioned,
                         "Estimate.Paraphyletic.Sponges" = taxa_list$Estimate.Paraphyletic.Sponges
-                        )
+  )
   # Output the filtered list
   return(new_taxa_list)
 }
 
 
 #### Functions to reconcile species names across datasets ####
-match.alignment.name <- function(dataset_name, alignment_name){
+convert.alignment.name <- function(dataset_name, alignment_name){
   # Small function to take an alignment and dataset and return the corresponding alignment name 
   #   for the taxon_table_df from Li et. al. (2021)
   
@@ -94,15 +94,28 @@ match.alignment.name <- function(dataset_name, alignment_name){
   return(li_name)
 }
 
+
 find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
   
   # Determine which Li et. al. 2021 alignment corresponds to this alignment
   li_alignment_name <- match.alignment.name(species_row$dataset, species_row$alignment)
-  # Reduce the taxon_table_df to just the species present in this dataset
+  # Check whether there is a corresponding Li et. al. alignment
+  if (is.na(li_alignment_name) == FALSE){
+    # If there is a corresponding alignment in Li et. al., find the relabelled species name for this species
+    # Reduce the taxon_table_df to just the species present in this dataset
+    species_df <- taxon_table_df[(intersect(grep(species_row$dataset, taxon_table_df$original_matrix), grep(species_row$alignment, taxon_table_df$original_matrix))),]
+    # Check whether this species name is present in the tsv files
+    relabelled_name <- species_df$relabelled_name[which(species_df$matrix_name == species_row$original_name)]
+  } else if (is.na(li_alignment_name) == TRUE){
+    # There is no corresponding alignment
+    # This species will need further checks
+    # Return NA
+    relabelled_name <- NA
+  }
   
-  # Check whether this species name is present in the tsv files
-  
+  # Return the relabelled species name
+  return(relabelled_name)
 }
 
 
