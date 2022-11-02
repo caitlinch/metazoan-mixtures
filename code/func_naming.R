@@ -269,7 +269,15 @@ manual.name.look.up <- function(s){
   # Function to manually change the name for tricky species
   
   manual_list <- list("Oscarella_sp_sn2011" = "Oscarella_sp", "Beroe_moroz" = "Beroe_sp", "Amoebidium_parasiticum_JAP72" = "Amoebidium_parasiticum",
-                      "Salpingoeca_sp_atcc50818" = "Salpingoeca_sp", "Ircinia_fasciculata" = "Ircinia_fasciculata")
+                      "Salpingoeca_sp_atcc50818" = "Salpingoeca_sp", "Ircinia_fasciculata" = "Ircinia_fasciculata", "Porites" = "Porites_sp",
+                      "Corticium" = "Corticium_sp", "Beroe_sp" = "Beroe_sp", "Anoplod_er" = "Anoplodactylus_eroticus", "Euprymn_sc" = "Euprymna_scolopes",
+                      "Pedicel_ce" = "Pedicellina_sp", "Pedicul_hu" = "Pediculus_humanus", "Scutige_co" = "Scutigera_coleoptrata", 
+                      "Strongy_pu" = "Strongylocentrotus_purpuratus", "Xenotur_bo" = "Xenoturbella_bocki", "Cyanea_cap" = "Cyanea_capillata",
+                      "Montast_fa" = "Montastraea_faveolata", "Leucoso_sp" = "Leucosolenia_sp", "Oscarel_lo" = "Oscarella_lobularis",
+                      "Oscarel_ca" = "Oscarella_carmela", "Corticium" = "Corticium_sp", "Aphroca_va" = "Aphrocallistes_vastus",
+                      "Suberit_fu" = "Suberites_fuscus", "Allomyc_ma" = "Allomyces_macrogynus", "Batrach_de" = "Batrachochytrium_dendrobatidis",
+                      "Phycomy_bl" = "Phycomyces_blakesleeanus", "Spizell_pu" = "Spizellomyces_punctatus", "Capsasp_ow" = "Capsaspora_owczarzaki",
+                      "Amoebid_pa" = "Amoebidium_parasiticum", "Sphaero_ar" = "Sphaeroforma_arctica")
   # Select the species name for the given code
   reconciled_s <- manual_list[[s]]
   # Return the reconciled name
