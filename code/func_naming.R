@@ -95,7 +95,7 @@ convert.alignment.name <- function(dataset_name, alignment_name){
 }
 
 
-find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
+find.species.name <- function(species_row, taxon_table_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
   
   # Determine which Li et. al. 2021 alignment corresponds to this alignment
