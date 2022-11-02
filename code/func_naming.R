@@ -126,16 +126,24 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
     # If there is a corresponding alignment in Li et. al., find the relabelled species name for this species
     # Reduce the taxon_table_df to just the species present in this dataset
     species_df <- taxon_table_df[(intersect(grep(species_row$dataset, taxon_table_df$original_matrix), grep(li_alignment_name, taxon_table_df$original_matrix))),]
-    # Process the species data frame, if required
-    if (species_row$dataset == "Philippe2009" & li_alignment_name == "Philippe2009"){
-      # If this is the Philippe2009 dataset, I manually fixed the taxa names to remove the underscores ("____")
-      # Remove the strings of underscores from the end of the species names
-      species_df$matrix_name <- gsub("\\_\\_", "", species_df$matrix_name)
-      # If there is a single trailing underscore left, remove it
-      species_df$matrix_name <- gsub("_$","",species_df$matrix_name)
-    }
+    if (nrow(species_df) == 0)
+      # Process the species data frame, if required
+      if (species_row$dataset == "Philippe2009" & li_alignment_name == "Philippe2009"){
+        # If this is the Philippe2009 dataset, I manually fixed the taxa names to remove the underscores ("____")
+        # Remove the strings of underscores from the end of the species names
+        species_df$matrix_name <- gsub("\\_\\_", "", species_df$matrix_name)
+        # If there is a single trailing underscore left, remove it
+        species_df$matrix_name <- gsub("_$","",species_df$matrix_name)
+      }
     # Check whether this species name is present in the tsv files
-    relabelled_name <- species_df$relabelled_name[which(species_df$matrix_name == species_row$original_name)]
+    name_check <- which(species_df$matrix_name == species_row$original_name)
+    if (identical(which(species_df$matrix_name == "Beroe_moroz"), integer(0)) == FALSE){
+      # If the name check gives you a row, find the corresponding relabelled name
+      relabelled_name <- species_df$relabelled_name[which(species_df$matrix_name == species_row$original_name)]
+    } else if (identical(which(species_df$matrix_name == "Beroe_moroz"), integer(0)) == TRUE){
+      # Perform a manual name look up
+      relabelled_name <- manual.name.look.up(species_row$original_name)
+    }
   } else if (is.na(li_alignment_name) == TRUE){
     # There is no corresponding alignment
     # This species will need further checks
@@ -257,7 +265,16 @@ laumer.name.converter <- function(s){
   return(reconciled_s)
 }
 
-
+manual.name.look.up <- function(s){
+  # Function to manually change the name for tricky species
+  
+  manual_list <- list("Oscarella_sp_sn2011" = "Oscarella_sp", "Beroe_moroz" = "Beroe_sp", "Amoebidium_parasiticum_JAP72" = "Amoebidium_parasiticum",
+                      "Salpingoeca_sp_atcc50818" = "Salpingoeca_sp")
+  # Select the species name for the given code
+  reconciled_s <- manual_list[[s]]
+  # Return the reconciled name
+  return(reconciled_s)
+}
 
 
 
