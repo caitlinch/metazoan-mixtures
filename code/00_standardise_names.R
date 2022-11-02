@@ -131,11 +131,10 @@ relabelled_names <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mas
 which(nchar(relabelled_name) == 0)
 
 
-# Philippe2009: missing 8, 11, 13, 14, 16, 17, 18, 19, 20, 26, 27, 28, 34, 35, 36, 37, 39, 47, 48, 53, 55
-which(mastmet_df$dataset == "Philippe2009")
-which(mastmet_df$dataset == "Philippe2009")[c(8, 11, 13, 14, 16, 17, 18, 19, 20, 26, 27, 28, 34, 35, 36, 37, 39, 47, 48, 53, 55)]
-check_df <- mastmet_df[which(mastmet_df$dataset == "Philippe2009")[c(8, 11, 13, 14, 16, 17, 18, 19, 20, 26, 27, 28, 34, 35, 36, 37, 39, 47, 48, 53, 55)],]
-lapply(1:nrow(check_df), function(i){find.species.name(check_df[i,], taxon_table_df, manual_taxonomy_df)})
-lapply(which(mastmet_df$dataset == "Philippe2009"), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
 # Ryan: missing 15
+which(mastmet_df$dataset == "Ryan2013")
+which(mastmet_df$dataset == "Ryan2013")[c(15)]
+check_df <- mastmet_df[which(mastmet_df$dataset == "Ryan2013")[c(15)],]
+lapply(1:nrow(check_df), function(i){find.species.name(check_df[i,], taxon_table_df, manual_taxonomy_df)})
+lapply(which(mastmet_df$dataset == "Ryan2013"), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
 

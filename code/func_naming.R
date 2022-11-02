@@ -126,15 +126,14 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
     # If there is a corresponding alignment in Li et. al., find the relabelled species name for this species
     # Reduce the taxon_table_df to just the species present in this dataset
     species_df <- taxon_table_df[(intersect(grep(species_row$dataset, taxon_table_df$original_matrix), grep(li_alignment_name, taxon_table_df$original_matrix))),]
-    if (nrow(species_df) == 0)
-      # Process the species data frame, if required
-      if (species_row$dataset == "Philippe2009" & li_alignment_name == "Philippe2009"){
-        # If this is the Philippe2009 dataset, I manually fixed the taxa names to remove the underscores ("____")
-        # Remove the strings of underscores from the end of the species names
-        species_df$matrix_name <- gsub("\\_\\_", "", species_df$matrix_name)
-        # If there is a single trailing underscore left, remove it
-        species_df$matrix_name <- gsub("_$","",species_df$matrix_name)
-      }
+    # Process the species data frame, if required
+    if (species_row$dataset == "Philippe2009" & li_alignment_name == "Philippe2009"){
+      # If this is the Philippe2009 dataset, I manually fixed the taxa names to remove the underscores ("____")
+      # Remove the strings of underscores from the end of the species names
+      species_df$matrix_name <- gsub("\\_\\_", "", species_df$matrix_name)
+      # If there is a single trailing underscore left, remove it
+      species_df$matrix_name <- gsub("_$","",species_df$matrix_name)
+    }
     # Check whether this species name is present in the tsv files
     name_check <- which(species_df$matrix_name == species_row$original_name)
     if (identical(name_check, integer(0)) == FALSE){
@@ -277,7 +276,14 @@ manual.name.look.up <- function(s){
                       "Oscarel_ca" = "Oscarella_carmela", "Corticium" = "Corticium_sp", "Aphroca_va" = "Aphrocallistes_vastus",
                       "Suberit_fu" = "Suberites_fuscus", "Allomyc_ma" = "Allomyces_macrogynus", "Batrach_de" = "Batrachochytrium_dendrobatidis",
                       "Phycomy_bl" = "Phycomyces_blakesleeanus", "Spizell_pu" = "Spizellomyces_punctatus", "Capsasp_ow" = "Capsaspora_owczarzaki",
-                      "Amoebid_pa" = "Amoebidium_parasiticum", "Sphaero_ar" = "Sphaeroforma_arctica")
+                      "Amoebid_pa" = "Amoebidium_parasiticum", "Sphaero_ar" = "Sphaeroforma_arctica", "CionaXsavignyi" = "Ciona_savignyi",
+                      "AplysiaXcalifornica" = "Aplysia_californica", "Capitella_sp__i_ecs-2004" = "Capitella_sp", "TubifexXtubifex" = "Tubifex_tubifex",
+                      "DaphniaXpulex" = "Daphnia_pulex", "PediculusXhumanus" = "Pediculus_humanus", "NasoniaXvitripennis" = "Nasonia_vitripennis",
+                      "ScutigeraXcoleoptrata" = "Scutigera_coleoptrata", "IxodesXscapularis" = "Ixodes_scapularis", "CyaneaXcapillata" = "Cyanea_capillata",
+                      "HydraXmagnipapillata" = "Hydra_magnipapillata", "ClytiaXhemisphaerica" = "Clytia_hemisphaerica", "SyconXraphanus" = "Sycon_raphanus",
+                      "LeucettaXchagosensis" = "Leucetta_chagosensis", "OopsacasXminuta" = "Oopsacas_minuta", "Heterochone_sp" = "Heterochone_sp",
+                      "RenieraXsp" = "Reniera_sp", "AllomycesXmacrogynus" = "Allomyces_macrogynus", "RhizopusXoryzae" = "Rhizopus_oryzae",
+                      "MonosigaXovata" = "Monosiga_ovata", "MonosigaXbrevicollis" = "Monosiga_brevicollis")
   # Select the species name for the given code
   reconciled_s <- manual_list[[s]]
   # Return the reconciled name
