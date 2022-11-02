@@ -158,9 +158,12 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       relabelled_name <- gsub("\\.", "", concat_species)
     } else if (species_row$dataset == "Pick2010"){
       # For Pick2010 dataset
-      formatted_species_name <- gsub("0", "", species_row$original_name)
       # Check the list of manual conversions to see if there's a matching name
       relabelled_name <- pick2011.name.converter(species_row$original_name)
+    } else if (species_row$dataset == "Laumer2018" | species_row$dataset == "Laumer2019"){
+      # For Laumer2018 and Laumer2019 dataset
+      # Check the list of manual conversions to see if there's a matching name
+      relabelled_name <- laumer.name.converter(species_row$original_name)
     } else{
       # Return NA
       relabelled_name <- NA 
@@ -178,7 +181,7 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
 pick2011.name.converter <- function(s){
   # Small function to manually convert Pick et. al. 2010 names
   
-  # List of all Pick et. al. 2010 codes and corresponding species names
+  # List of all Pick et. al. 2010 taxa codes and corresponding species names
   pick2010_names <- list("Lumbricus" = "Lumbricus_rubellus",  "Haementeri" = "Haementeria_depressa", "Urechis_ca" = "Urechis_caupo", 
                          "Capitella" = "Capitella_sp",  "Platynerei" = "Platynereis_dumerilii", "Themiste_l" = "Themiste_lageniformis",
                          "Chaetopter" = "Chaetopterus_sp", "Terebratal" = "Terebratalia_transversa", "Phoronis_v" = "Phoronis_vancouverensis",
@@ -209,6 +212,44 @@ pick2011.name.converter <- function(s){
                          "Sphaerofor" = "Sphaeroforma_arctica")
   # Select the species name for the given code
   reconciled_s <- pick2010_names[[s]]
+  # Return the reconciled name
+  return(reconciled_s)
+}
+
+
+laumer.name.converter <- function(s){
+  # Small function to manually convert Laumer et. al. 2018 and Laumer et. al. 2019 names
+  
+  # List of all Laumer et. al. 2018/Laumer et. al. 2019 taxa codes and corresponding species names
+  laumer_names <- list("ACOE_Isop" = "Isodiametra_pulchra", "ANNE_Ctel" = "Capitella_teleta", "ARTH_Dmel" = "Drosophila_melanogaster",
+                       "BRAC_Lana" = "Lingula_anatina", "BRAC_Ttvs" = "Terebratalia_transversa", "CEPH_Bflo" = "Branchiostoma_floridae",
+                       "CNID_Aala" = "Alatina_alata", "CNID_Adig" = "Acropora_digitifera", "CNID_Aplm" = "Alcyonium_palmatum", 
+                       "CNID_Atet" = "Abylopsis_tetragona", "CNID_Csow" = "Craspedacusta_sowerbyi", "CNID_Epal" = "Exaiptasia_pallida",
+                       "CNID_Gven" = "Gorgonia_ventalina", "CNID_Hvul" = "Hydra_vulgaris", "CNID_Lcmp" = "Lucernariopsis_campanulata",
+                       "CNID_Ltet" = "Liriope_tetraphylla", "CNID_Nvec" = "Nematostella_vectensis", "CNID_Phyd" = "Polypodium_hydriforme",
+                       "CNID_Pnct" = "Pelagia_noctiluca", "CNID_Smel" = "Stomolophus_meleagris", "CRAN_Mmus" = "Mus_musculus",
+                       "CTEN_Baby" = "Beroe_abyssicola", "CTEN_Cmet" = "Coeloplana_cf_meteoris", "CTEN_Edun" = "Euplokamis_dunlapae",
+                       "CTEN_Mlei" = "Mnemiopsis_leidyi", "CTEN_Pbac" = "Pleurobrachia_bachei", "CTEN_Vmul" = "Vallicula_multiformis",
+                       "ECHI_Spur" = "Strongylocentrotus_purpuratus", "MICR_Limn" = "Limnognathia_maerski", "MOLL_Cgig" = "Crassostrea_gigas",
+                       "MOLL_Lott" = "Lottia_gigantea", "NEMA_Ppac" = "Pristionchus_pacificus", "NEMO_Nemw" = "Nemertoderma_westbladi",
+                       "ONYC_Peri" = "Peripatoides_sp", "OUTC_Aspc" = "Acanthoeca_spectabilis", "OUTC_Chol" = "Codosiga_hollandica",
+                       "OUTC_Dcos" = "Didymoeca_costata", "OUTC_Mbre" = "Monosiga_brevicolis", "OUTC_Sdol" = "Salpingoeca_dolichothecata",
+                       "OUTC_Smac" = "Salpingoeca_macrocollata", "OUTC_Sros" = "Salpingoeca_rosetta", "OUTF_Amac" = "Allomyces_macrogynus",
+                       "OUTF_Foxy" = "Fusarium_oxysporum", "OUTF_Mver" = "Mortierella_verticillata", "OUTF_Rall" = "Rozella_allomycis",
+                       "OUTF_Rsol" = "Rhizophagus_irregularis", "OUTF_Spun" = "Spizellomyces_punctatus", "OUTI_Apar" = "Amoebidium_parasiticum",
+                       "OUTI_Cowc" = "Capsaspora_owczarzaki", "OUTI_Falb" = "Fonticula_alba", "OUTI_Mvar" = "Ministeria_vibrans",
+                       "OUTI_Sart" = "Sphaeroforma_artica", "OUTI_Ttra" = "Thecamonas_trahens", "PLAC_Tadh" = "Trichoplax_adhaerens",
+                       "PLAC_TH11" = "Trichoplax_sp", "PLAC_TpH4" = "Trichoplax_sp", "PLAC_TpH6" = "Trichoplax_sp", 
+                       "PLAT_Sman" = "Schistosoma_mansoni", "PORI_Aque" = "Amphimedon_queenslandica", "PORI_Avas" = "Aphrocallistes_vastus",
+                       "PORI_Ccan" = "Corticium_candelabrum", "PORI_Ccla" = "Clathrina_coriacea", "PORI_Ccor" = "Clathrina_coriacea",
+                       "PORI_Cele" = "Crella_elegans", "PORI_Cnuc" = "Chondrilla_caribensis", "PORI_Cvar" = "Cliona_varians",
+                       "PORI_Easp" = "Euplectella_aspergillum", "PORI_Ifas" = "Ircinia_fasciculata", "PORI_Lcom" = "Leucosolenia_complicata",
+                       "PORI_Ocar" = "Oscarella_carmela", "PORI_Pfic" = "Petrosia_ficiformis", "PORI_Psub" = "Pseudospongosorites_suberitoides",
+                       "PORI_Scil" = "Sycon_ciliatum", "PORI_Scoa" = "Sycon_coactum", "PORI_Slac" = "Spongilla_lacustris",
+                       "PORI_Snux" = "Sympagella_nux", "PRIA_Pcau" = "Priapulus_caudatus", "TARD_Rvar" = "Ramazzottius_varieornatus",
+                       "XENO_XbJC" = "Xenoturbella_bocki")
+  # Select the species name for the given code
+  reconciled_s <- laumer_names[[s]]
   # Return the reconciled name
   return(reconciled_s)
 }
