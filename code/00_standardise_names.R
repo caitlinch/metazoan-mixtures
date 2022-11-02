@@ -120,9 +120,19 @@ if (file.exists(mastmet_file_path) == FALSE){
 # Open the tsv files from Li et. al. 2021
 taxon_table_df <- read.delim(taxon_table_path)
 manual_taxonomy_df <- read.delim(manual_taxonomy_path)
+# Remove any strings of underscores from the manual taxonomy map
+manual_taxonomy_df$original_name <- gsub("\\_\\_", "", manual_taxonomy_df$original_name)
+# If there is a single trailing underscore left, remove it
+manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_name)
+
 # For each taxa in the mastmet_df, find a consistent taxa name in the Li tsv files
 relabelled_taxa <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df)})
-
+laumer2018_inds <- which(mastmet_df$dataset == "Laumer2018")
+laumer2019_inds <- which(mastmet_df$dataset == "Laumer2019")
+philippe2011_inds <- which(mastmet_df$dataset == "Philippe2011") # To fix: rows 671 692 694 from mastmet
+pick2010_inds <- which(mastmet_df$dataset == "Pick2010")
+simion2017_inds <- which(mastmet_df$dataset == "Simion2017")
 species_row <- mastmet_df[1,]
 
+unlist(lapply(which(mastmet_df$dataset == "Philippe2011"), function(i){find.species.name(mastmet_df[i,], taxon_table_df)}))
 
