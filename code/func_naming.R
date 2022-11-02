@@ -137,10 +137,10 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       }
     # Check whether this species name is present in the tsv files
     name_check <- which(species_df$matrix_name == species_row$original_name)
-    if (identical(which(species_df$matrix_name == "Beroe_moroz"), integer(0)) == FALSE){
+    if (identical(name_check, integer(0)) == FALSE){
       # If the name check gives you a row, find the corresponding relabelled name
-      relabelled_name <- species_df$relabelled_name[which(species_df$matrix_name == species_row$original_name)]
-    } else if (identical(which(species_df$matrix_name == "Beroe_moroz"), integer(0)) == TRUE){
+      relabelled_name <- species_df$relabelled_name[name_check]
+    } else if (identical(name_check, integer(0)) == TRUE){
       # Perform a manual name look up
       relabelled_name <- manual.name.look.up(species_row$original_name)
     }
@@ -269,7 +269,7 @@ manual.name.look.up <- function(s){
   # Function to manually change the name for tricky species
   
   manual_list <- list("Oscarella_sp_sn2011" = "Oscarella_sp", "Beroe_moroz" = "Beroe_sp", "Amoebidium_parasiticum_JAP72" = "Amoebidium_parasiticum",
-                      "Salpingoeca_sp_atcc50818" = "Salpingoeca_sp")
+                      "Salpingoeca_sp_atcc50818" = "Salpingoeca_sp", "Ircinia_fasciculata" = "Ircinia_fasciculata")
   # Select the species name for the given code
   reconciled_s <- manual_list[[s]]
   # Return the reconciled name

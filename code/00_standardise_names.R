@@ -126,5 +126,19 @@ manual_taxonomy_df$original_name <- gsub("\\_\\_", "", manual_taxonomy_df$origin
 manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_name)
 
 # For each taxa in the mastmet_df, find a consistent taxa name in the Li tsv files
-mastmet_df$relabelled_name <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
+relabelled_names <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
+# Identify which didn't run properly
+which(nchar(relabelled_name) == 0)
+
+
+# Chang: missing 56, 62, 68, 72, 77
+which(mastmet_df$dataset == "Chang2015")
+which(mastmet_df$dataset == "Chang2015")[c(58, 68, 72, 77)]
+check_df <- mastmet_df[which(mastmet_df$dataset == "Chang2015")[c(56, 68, 72, 77)],]
+lapply(1:nrow(check_df), function(i){find.species.name(check_df[i,], taxon_table_df, manual_taxonomy_df)})
+# Nosenko: missing 32, 44, 59, 86, 87, 88, 89, 90, 91, 92 103, 104, 105, 110, 112, 113, 114, 118, 120, 130, 136:142
+# Philippe2009: missing 8, 11, 13, 14, 16, 17, 18, 19, 20, 26, 27, 28, 34, 35, 36, 37, 39, 47, 48, 53, 55
+# Ryan: missing 15
+
+lapply(which(mastmet_df$dataset == "Chang2015"), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
 
