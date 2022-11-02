@@ -147,7 +147,10 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       if (length(unique(check_df$relabelled_name)) == 1){
         # If the relabelled names from this matrix name are identical, return the relabelled name
         relabelled_name <- unique(check_df$relabelled_name)
-      } 
+      } else {
+        # Look up the species in the manual taxonomy map
+        relabelled_name <- check.manual.taxonomy.map(species_row, manual_taxonomy_df)
+      }
     } else if (species_row$dataset == "Simion2017"){
       # For Simion2017 dataset
       # Taxa are already nicely labelled, just some have extra bits attached at end (e.g. Amoebidium_parasiticum_JAP72)
