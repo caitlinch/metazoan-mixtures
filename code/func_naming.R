@@ -147,14 +147,22 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       if (length(unique(check_df$relabelled_name)) == 1){
         # If the relabelled names from this matrix name are identical, return the relabelled name
         relabelled_name <- unique(check_df$relabelled_name)
-      } else {
-        # Check the list of manual conversions to see if there's a matching name
-        relabelled_name <- check.manual.taxonomy.map(species_row, manual_taxonomy_df)
-      }
-    } else {
-      # Return NA
-      relabelled_name <- NA 
-    } # end if (species_row$dataset == "Philippe2011")
+      } 
+    } else if (species_row$dataset == "Simion2017"){
+      # For Simion2017 dataset
+      # Taxa are already nicely labelled, just some have extra bits attached at end (e.g. Amoebidium_parasiticum_JAP72)
+      # Split taxa at the underscore and keep only the first two parts
+      split_species <- strsplit(species_row$original_name, "_")[[1]]
+      concat_species <- paste(split_species[1:2], collapse = "_")
+      # Remove any "." characters
+      relabelled_name <- gsub("\\.", "", concat_species)
+    } else{
+      # Check the list of manual conversions to see if there's a matching name
+      relabelled_name <- check.manual.taxonomy.map(species_row, manual_taxonomy_df)
+    } #end if (species_row$dataset == "Philippe2011"){
+  } else {
+    # Return NA
+    relabelled_name <- NA 
   } # end if (is.na(li_alignment_name) == FALSE)
   
   # Return the relabelled species name
