@@ -121,7 +121,8 @@ if (file.exists(mastmet_file_path) == FALSE){
 taxon_table_df <- read.delim(taxon_table_path)
 manual_taxonomy_df <- read.delim(manual_taxonomy_path)
 # For each taxa in the mastmet_df, find a consistent taxa name in the Li tsv files
-s <- mastmet_df$original_name[1]
+relabelled_taxa <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df)})
+
 species_row <- mastmet_df[1,]
 
 
