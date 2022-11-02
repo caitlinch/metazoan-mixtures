@@ -94,9 +94,30 @@ convert.alignment.name <- function(dataset_name, alignment_name){
   return(li_name)
 }
 
+check.manual.taxonomy.map <- function(species_row, manual_taxonomy_df){
+  # Function to take a species name, and check if it's in the manual taxonomy map
+  
+  # Remove any strings of underscores or trailing underscores from the species name
+  reformat_species_name <- gsub("_$","",gsub("\\_\\_", "", species_row$original_name))
+  # Check for identical names
+  matching_ind <- grep(reformat_species_name, manual_taxonomy_df$original_name)
+  # Check whether there is a matching name 
+  if (identical(matching_ind, integer(0)) == FALSE){
+    matching_name <- manual_taxonomy_df$new_name[matching_ind]
+  } else if (identical(matching_ind, integer(0)) == TRUE){
+    # There is no matching name
+    # Return NA
+    matching_name <- NA
+  }
+  
+  # Return the matched name
+  return(matching_name)
+}
 
-find.species.name <- function(species_row, taxon_table_df){
+
+find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
+  # Works for all datasets except Laumer2018, Laumer2019, Philippe2011, Pick2010, Simion2017
   
   # Determine which Li et. al. 2021 alignment corresponds to this alignment
   li_alignment_name <- convert.alignment.name(species_row$dataset, species_row$alignment)
@@ -118,9 +139,23 @@ find.species.name <- function(species_row, taxon_table_df){
   } else if (is.na(li_alignment_name) == TRUE){
     # There is no corresponding alignment
     # This species will need further checks
-    # Return NA
-    relabelled_name <- NA
-  }
+    if (species_row$dataset == "Philippe2011"){
+      # For Philippe2011 dataset
+      # Check if any of the matrix names have this name
+      check_df <- taxon_table_df[taxon_table_df$matrix_name == species_row$original_name, ]
+      # Check that all taxa with this matrix name were given the same original name
+      if (length(unique(check_df$relabelled_name)) == 1){
+        # If the relabelled names from this matrix name are identical, return the relabelled name
+        relabelled_name <- unique(check_df$relabelled_name)
+      } else {
+        # Check the list of manual conversions to see if there's a matching name
+        relabelled_name <- check.manual.taxonomy.map(species_row, manual_taxonomy_df)
+      }
+    } else {
+      # Return NA
+      relabelled_name <- NA 
+    } # end if (species_row$dataset == "Philippe2011")
+  } # end if (is.na(li_alignment_name) == FALSE)
   
   # Return the relabelled species name
   return(relabelled_name)
