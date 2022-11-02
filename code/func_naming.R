@@ -156,9 +156,12 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       concat_species <- paste(split_species[1:2], collapse = "_")
       # Remove any "." characters
       relabelled_name <- gsub("\\.", "", concat_species)
+    } else if (species_row$dataset == "Pick2010"){
+      # For Pick2010 dataset
+      formatted_species_name <- gsub("0", "", species_row$original_name)
     } else{
       # Check the list of manual conversions to see if there's a matching name
-      relabelled_name <- check.manual.taxonomy.map(species_row, manual_taxonomy_df)
+      relabelled_name <- pick2011.name.converter(species_row$original_name)
     } #end if (species_row$dataset == "Philippe2011"){
   } else {
     # Return NA
@@ -170,6 +173,43 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
 }
 
 
+pick2011.name.converter <- function(s){
+  # Small function to manually convert Pick et. al. 2010 names
+  
+  # List of all Pick et. al. 2010 codes and corresponding species names
+  pick2010_names <- list("Lumbricus" = "Lumbricus_rubellus",  "Haementeri" = "Haementeria_depressa", "Urechis_ca" = "Urechis_caupo", 
+                         "Capitella" = "Capitella_sp",  "Platynerei" = "Platynereis_dumerilii", "Themiste_l" = "Themiste_lageniformis",
+                         "Chaetopter" = "Chaetopterus_sp", "Terebratal" = "Terebratalia_transversa", "Phoronis_v" = "Phoronis_vancouverensis",
+                         "Cerebratul" = "Cerebratulus_lacteus", "Carinoma_m" = "Carinoma_mutabilis", "Crassostre" = "Crassostrea_virginica",
+                         "Argopecten"= "Argopecten_irradians", "Mytilus_ga" = "Mytilus_galloprovincialis", "Biomphalar" = "Biomphalaria_glabrata",
+                         "Aplysia_ca" = "Aplysia_californica", "Euprymna_s" = "Euprymna_scolopes", "Chaetopleu" = "Chaetopleura_apiculata",
+                         "Chaetoderm" = "Chaetoderma_nitidulum", "Schmidtea" = "Schmidtea_mediterranea", "Dugesia_ja" = "Dugesia_japonica",
+                         "Echinococc" = "Echinococcus_granulosus", "Paraplanoc" = "Paraplanocera_sp", "Macrostomu" = "Macrostomum_lignano",
+                         "Acanthoscu" = "Acanthoscurria_gomesiana", "Boophilus" = "Boophilus_microplus", "Anoplodact" = "Anoplodactylus_eroticus",
+                         "Carcinosco" = "Carcinoscorpius_rotundicauda", "Scutigera"  = "Scutigera_coleoptrata",  "Litopenaeu" = "Litopenaeus_vannamei",
+                         "Homarus_am" = "Homarus_americanus", "Drosophila" = "Drosophila_melanogaster", "Daphnia_pu" = "Daphnia_pulex", 
+                         "Euperipato" = "Euperipatoides_kanangrensis", "Xiphinema" = "Xiphinema_index", "Trichinell" = "Trichinella_spiralis",
+                         "Spinochord" = "Spinochordodes_tellinii", "Richtersiu" = "Richtersius_coronifer", "Hypsibius" = "Hypsibius_dujardini",
+                         "Priapulus" = "Priapulus_caudatus", "Echinodere" = "Echinoderes_horni",  "Saccogloss" = "Saccoglossus_kowalevskii",
+                         "Ptychodera" = "Ptychodera_flava", "Strongyloc" = "Strongylocentrotus_purpuratus", "Asterina_p" = "Asterina_pectinifera",
+                         "Xenoturbel" = "Xenoturbella_bocki", "Homo_sapie" = "Homo_sapiens", "Gallus_gal" = "Gallus_gallus", 
+                         "Ciona_inte" = "Ciona_intestinalis", "Branchiost" = "Branchiostoma_floridae", "Trichoplax" = "Trichoplax_adhaerens",
+                         "Podocoryne" = "Podocoryne_carnea", "Hydractini" = "Hydractinia_echinata", "Hydra_magn" = "Hydra_magnipapillata",
+                         "Clytia_hem" = "Clytia_hemisphaerica", "Cyanea_cap" = "Cyanea_capillata",  "Metridium" = "Metridium_senile", 
+                         "Anemonia_v" = "Anemonia_viridis", "Nematostel" = "Nematostella_vectensis", "Montastrae" = "Montastraea_faveolata",
+                         "Acropora_m" = "Acropora_millepora", "Lubomirski" = "Lubomirskia_baicalensis", "Ephydatia" = "Ephydatia_muelleri",
+                         "Pachydicty" = "Pachydictyum_globosum", "Suberites" = "Suberites_domuncula", "Amphimedon" = "Amphimedon_queenslandica",
+                         "Carteriosp" = "Carteriospongia_foliascens", "Heterochon" = "Heterochone_calyx", "Crateromor" = "Crateromorpha_meyeri",
+                         "Oopsacas_m" = "Oopsacas_minuta",  "Oscarella" = "Oscarella_sp",  "Oscarell00" = "Oscarella_sp", "Sycon_raph" = "Sycon_raphanus",
+                         "Leucetta_c" = "Leucetta_chagosensis", "mertensiid" = "Mertensiid_sp", "Pleurobrac" = "Pleurobrachia_pileus",
+                         "Mnemiopsis" = "Mnemiopsis_leidyi", "Proterospo" = "Proterospongia_sp", "Monosiga_b" = "Monosiga_brevicollis",
+                         "Monosiga00" = "Monosiga_ovata", "Amoebidium" = "Amoebidium_parasiticum", "Capsaspora" = "Capsaspora_owczarzaki",
+                         "Sphaerofor" = "Sphaeroforma_arctica")
+  # Select the species name for the given code
+  reconciled_s <- pick2010_names[[s]]
+  # Return the reconciled name
+  return(reconciled_s)
+}
 
 
 
