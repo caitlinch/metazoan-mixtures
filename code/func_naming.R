@@ -3,6 +3,8 @@
 
 # Functions for taxa naming
 
+
+#### Functions for collecting and summarising information from the dataset taxa lists ### 
 extract.taxa.vector <- function(dataset_list){
   # Given a taxa list, this function returns all taxa in that dataset and the number of taxa in that dataset
   
@@ -55,6 +57,55 @@ filter.matrix.names <- function(taxa_list, matrix_subset){
   # Output the filtered list
   return(new_taxa_list)
 }
+
+
+#### Functions to reconcile species names across datasets ####
+match.alignment.name <- function(dataset_name, alignment_name, taxon_table_df){
+  # Small function to take an alignment and dataset and return the corresponding alignment name 
+  #   for the taxon_table_df from Li et. al. (2021)
+  
+  if (dataset_name == "Borowiec2015" & alignment_name == "Best108"){
+    li_name <- "Best108"
+  } else if (dataset_name == "Chang2015" & alignment_name == "Chang_AA"){
+    li_name <- "Chang2015"
+  } else if (dataset_name == "Dunn2008" & alignment_name == "Dunn2008_FixedNames"){
+    li_name <- "Dunn2008"
+  } else if (dataset_name == "Hejnol2009" & alignment_name == "Hejnol_etal_2009_FixedNames"){
+    li_name <- "Hejnol2009"
+  } else if (dataset_name == "Moroz2014" & alignment_name == "ED3d"){
+    li_name <- "3d"
+  } else if (dataset_name == "Nosenko2013" & alignment_name == "nonribosomal_9187_smatrix"){
+    li_name <- "nonribo_9187"
+  } else if (dataset_name == "Nosenko2013" & alignment_name == "ribosomal_14615_smatrix"){
+    li_name <- "ribo_11057"
+  } else if (dataset_name == "Philippe2009" & alignment_name == "Philippe_etal_superalignment_FixedNames"){
+    li_name <- "Philippe2009"
+  } else if (dataset_name == "Ryan2013" & alignment_name == "REA_EST_includingXenoturbella"){
+    li_name <- "est"
+  } else if (dataset_name == "Whelan2015" & alignment_name == "Dataset10_CertainPruned_LBAtaxa_LBAandHeteroGenesPruned"){
+    li_name <- "D10"
+  } else if (dataset_name == "Whelan2017" & alignment_name == "Metazoa_Choano_RCFV_strict"){
+    li_name <- "full"
+  } else {
+    li_name <- NA
+  }
+  
+  # Return the corresponding alignment name from Li et. al. (2021)
+  return(li_name)
+}
+
+find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
+  # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
+  
+  # Reduce the taxon_table_df to just the species present in this dataset
+  
+  # Check whether this species name is present in the tsv files
+  
+}
+
+
+
+
 
 
 
