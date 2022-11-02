@@ -60,7 +60,7 @@ filter.matrix.names <- function(taxa_list, matrix_subset){
 
 
 #### Functions to reconcile species names across datasets ####
-match.alignment.name <- function(dataset_name, alignment_name, taxon_table_df){
+match.alignment.name <- function(dataset_name, alignment_name){
   # Small function to take an alignment and dataset and return the corresponding alignment name 
   #   for the taxon_table_df from Li et. al. (2021)
   
@@ -97,6 +97,8 @@ match.alignment.name <- function(dataset_name, alignment_name, taxon_table_df){
 find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
   
+  # Determine which Li et. al. 2021 alignment corresponds to this alignment
+  li_alignment_name <- match.alignment.name(species_row$dataset, species_row$alignment)
   # Reduce the taxon_table_df to just the species present in this dataset
   
   # Check whether this species name is present in the tsv files
