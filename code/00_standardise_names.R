@@ -131,8 +131,8 @@ relabelled_taxa <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mast
 
 laumer2018_inds <- which(mastmet_df$dataset == "Laumer2018")
 laumer2019_inds <- which(mastmet_df$dataset == "Laumer2019")
-pick2010_inds <- which(mastmet_df$dataset == "Pick2010")
 species_row <- mastmet_df[1,]
 
+unique(mastmet_df[which(mastmet_df$dataset == "Laumer2018" | mastmet_df$dataset == "Laumer2019"),]$original_name)
 unlist(lapply(which(mastmet_df$dataset == "Pick2010"), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
 
