@@ -159,9 +159,11 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
     } else if (species_row$dataset == "Pick2010"){
       # For Pick2010 dataset
       formatted_species_name <- gsub("0", "", species_row$original_name)
-    } else{
       # Check the list of manual conversions to see if there's a matching name
       relabelled_name <- pick2011.name.converter(species_row$original_name)
+    } else{
+      # Return NA
+      relabelled_name <- NA 
     } #end if (species_row$dataset == "Philippe2011"){
   } else {
     # Return NA
