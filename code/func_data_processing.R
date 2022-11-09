@@ -335,12 +335,13 @@ extract.rates <- function(iqtree_file){
     ## Open the .iqtree file:
     iq_lines <- readLines(iqtree_file)
     
-    # Extract the rates from the iqtree file
+    # Check for +R parameters 
     rate_ind <- grep("Site proportion and rates\\:", iq_lines)
     # Check if the rate_ind is present (if yes, that means there's a line containing the rates and weights)
-    if (identical(rate_ind,logical(0)) == FALSE & class(rate_ind) == "integer"){
+    if (identical(rate_ind,integer(0)) == FALSE & class(rate_ind) == "integer"){
+      ## Rates (+R)
       # The site proportion and weights values are present
-      # Extract the rate parameters
+      # Extract the rate weights and parameters from the iqtree file
       rates_line <- iq_lines[rate_ind]
       # Remove text from the beginning of the line
       rates_raw <- strsplit(rates_line, "\\:")[[1]][2]
@@ -353,8 +354,9 @@ extract.rates <- function(iqtree_file){
       # Remove brackets from values
       rate_vals <- unlist(strsplit(unlist(strsplit(split2_rates, "\\(")), "\\)"))
       # Make output (for attaching into IQ-Tree2 command line)
+      # Order is: proportion_1, rate_1, proportion_2, rate_2, ....., proportion_n, rate_n
       rates_op <- paste(rate_vals, collapse = ",")
-    } else if (identical(rate_ind,logical(0)) == TRUE & class(rate_ind) == "logical"){
+    } else {
       # The site proportion and weights values are missing
       # Return NA for this file
       rates_op <- NA
@@ -363,6 +365,75 @@ extract.rates <- function(iqtree_file){
   
   # Return the output
   return(rates_op)
+}
+
+
+extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
+  # Function to extract the gamma parameters of a model from in IQ-Tree
+  #   gamma.parameter = "List" - if model has gamma rate, returns the site relative weights and proportions
+  #   gamma.parameter = "Shape" - if model has gamma rate, returns the gamma shape alpha 
+  
+  # Check if the iqtree file exists
+  if (file.exists(iqtree_file) == TRUE){
+    # If the iqtree_file does exist:
+    ## Open the .iqtree file:
+    iq_lines <- readLines(iqtree_file)
+    
+    # Check for +G parameters 
+    gamma_shape_ind <- grep("Gamma shape alpha\\:", iq_lines)
+    gamma_list_ind <- grep("Model of rate heterogeneity\\: Gamma", iq_lines)
+    # Check if the gamma parameters are present (if yes, that means there's a line containing the rates and weights)
+    if ( (identical(gamma_shape_ind,integer(0)) == FALSE & class(gamma_shape_ind) == "integer") |
+                (identical(gamma_list_ind,integer(0)) == FALSE & class(gamma_list_ind) == "integer") ){
+      ## Gamma (+G)
+      if (gamma.parameter == "Shape"){
+        ## Extract the value of the gamma shape alpha
+        # Extract the line containing the gamma alpha vaue
+        gamma_line <- iq_lines[gamma_shape_ind]
+        # Process the line to extract just the gamma alpha value
+        raw_gamma_alpha <- strsplit(gamma_line, "\\:")[[1]][2]
+        gamma_alpha <- as.numeric(gsub(" ", "", raw_gamma_alpha))
+        # Set the output 
+        gamma_op <- gamma_alpha
+      } else if (gamma.parameter == "List"){
+        ## Extract the gamma weights and proportions
+        #Create the matrix for discrete gamma categories
+        g_start <- grep(" Category", iq_lines) + 1 # get the index for the first line of the gamma categories matrix
+        empty   <- which(iq_lines == "") # get indexes of all empty lines
+        empty   <- empty[empty > g_start] # get empty lines above gamma categories matrix
+        g_end   <- empty[1] - 1 # get end index for gamma categories matrix (one less than next empty line)
+        end_line <- iq_lines[g_end]
+        # if the end isn't an empty line, subtract one from the end count 
+        # to exclude lines like "Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category."
+        # to see if this is what's happening, check whether the line starts with a numeric section (i.e. a category for the gamma rate)
+        check_line <- length(strsplit(strsplit(end_line, "        " )[[1]][1], " ")[[1]])
+        if (check_line > 3){
+          # If the check_line is longer than 3 characters, it won't be a group for the gamma categories but an instruction
+          # Instructions can be excluded from the gamma matrix (but categories can't)
+          g_end = g_end - 1
+        }
+        # Extract the lines of interest
+        g_lines <- iq_lines[g_start:g_end]
+        # Split the g_lines at the spaces
+        g_lines_split <- strsplit(g_lines, " ")
+        # Remove empty values
+        g_lines_neat <- lapply(1:length(g_lines_split), function(i){g_lines_split[[i]] <- g_lines_split[[i]][which(g_lines_split[[i]] != "")]})
+        # Collect the values in the right order for the output
+        raw_gamma_vals <- unlist(lapply(1:length(g_lines_neat), function(i){c(g_lines_neat[[i]][3], g_lines_neat[[i]][2])}))
+        # Create a nice output format
+        gamma_vals <- paste(gsub(" ", "", raw_gamma_vals), collapse = ",")
+        # Set the output
+        gamma_op <- gamma_vals
+      } # end if (gamma.parameter == "Shape"){
+    }else {
+      # The site proportion and weights values are missing
+      # Return NA for this file
+      gamma_op <- NA
+    } # end if ( (identical(gamma_shape_ind,integer(0)) == FALSE & class(gamma_shape_ind) == "integer") | ( ...) ){
+  } # end if (file.exists(iqtree_file) == TRUE)
+  
+  # Return the output
+  return(gamma_op)
 }
 
 
@@ -580,7 +651,7 @@ extract.model.details <- function(iqtree_file){
         # If the model for rate heterogeneity is uniform, don't need to create a matrix for discrete gamma rate categories
         g_df <- "Uniform"
       } else {
-        # If the model isn't uniform, need to create a matrix to collect and store the gamme category information
+        # If the model isn't uniform, need to create a matrix to collect and store the gamma category information
         #Create the matrix for discrete gamma categories
         g_start <- grep(" Category", iq_file) + 1 # get the index for the first line of the gamma categories matrix
         empty   <- which(iq_file == "") # get indexes of all empty lines
