@@ -127,14 +127,5 @@ manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_nam
 
 # For each taxa in the mastmet_df, find a consistent taxa name in the Li tsv files
 relabelled_names <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
-# Identify which didn't run properly
-which(nchar(relabelled_name) == 0)
 
-
-# Ryan: missing 15
-which(mastmet_df$dataset == "Ryan2013")
-which(mastmet_df$dataset == "Ryan2013")[c(15)]
-check_df <- mastmet_df[which(mastmet_df$dataset == "Ryan2013")[c(15)],]
-lapply(1:nrow(check_df), function(i){find.species.name(check_df[i,], taxon_table_df, manual_taxonomy_df)})
-lapply(which(mastmet_df$dataset == "Ryan2013"), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
 
