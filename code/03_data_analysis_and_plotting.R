@@ -1,4 +1,4 @@
-# metazoan-mixtures/code/02_data_analysis_and_plotting.R
+# metazoan-mixtures/code/03_data_analysis_and_plotting.R
 ## This script performs data analysis and creates plots of methods and results
 # Caitlin Cherryh, 2022
 
