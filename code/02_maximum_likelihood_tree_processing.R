@@ -25,8 +25,8 @@ library(ape)
 
 
 
-#### 3. Plot figures for introduction and methods sections of manuscript ####
-## Plotting the alternative phylogenetic hypotheses
-# Open the trees
-trees_file <- paste0(repo_dir, "trees/alternative_phylogenetic_hypotheses.nex")
-trees <- read.tree(trees_file)
+#### 3. Update the taxa labels in each tree ####
+# Extract the full list of trees
+all_files <- list.files(output_dir)
+all_trees <- grep(".treefile", all_files, value = T)
+
