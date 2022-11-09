@@ -126,7 +126,7 @@ manual_taxonomy_df$original_name <- gsub("\\_\\_", "", manual_taxonomy_df$origin
 manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_name)
 
 # For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
-# 325 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
+# 322 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
 # Either find a consistent taxa name in the Li et. al. (2021) tsv files, or use the hard-coded dictionary to relabel species from datasets not included in Li et. al. (2021)
 mastmet_df$relabelled_names <- unlist(lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
 
