@@ -441,6 +441,41 @@ extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
 }
 
 
+extract.alisim.line <- function(log_file){
+  # Given a .log file (output from IQ-Tree), this function will extract the model specification from the Alisim instructions
+  
+  # Check if the log file exists
+  if (file.exists(log_file) == TRUE){
+    # If the log file does exist:
+    ## Open the .log file:
+    log_lines <- readLines(log_file)
+    
+    # Check for an Alisim line
+    alisim_ind <- grep("ALISIM COMMAND", log_lines)
+    # Check if the alisim_ind is present (if yes, that means there's a line containing Alisim simulation details)
+    if (identical(alisim_ind,integer(0)) == FALSE & class(alisim_ind) == "integer"){
+      ## Alisim model extraction
+      alisim_line <- log_lines[grep("--alisim", log_lines)]
+      # Split the line at the '\"' to get only the model 
+      split_line <- strsplit(alisim_line, '\"')[[1]]
+      # Need to only extract the part inside the '\"' - take the part of the split_line directly following "-m"
+      #   e.g. if "-m" is in the first part of the line, take the second part of the line
+      #  Because we split the line at the quotes, the part after "-m" will always be the model (as the model is in quotation marks)
+      model_raw <- split_line[grep("-m", split_line)+1]
+      # Remove any blank spaces from the mode
+      alisim_model <- gsub(" ", "", model_raw)
+    } else {
+      # The Alisim line is missing, and we cannot report the model
+      # Return NA for this file
+      alisim_model <- NA
+    } # end if (identical(rate_ind,logical(0)) == FALSE & class(rate_ind) == "integer")
+  } # end if (file.exists(iqtree_file) == TRUE)
+  
+  # Return the output
+  return(alisim_model)
+}
+
+
 extract.model.details <- function(iqtree_file){
   # Given a .iqtree file, this function will extract the model of sequence evolution parameters
   
