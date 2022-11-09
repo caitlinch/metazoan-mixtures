@@ -187,6 +187,27 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
     relabelled_name <- NA 
   } # end if (is.na(li_alignment_name) == FALSE)
   
+  # Perform manual check to update relabelled name if it includes any numbers
+  number_check <- grepl("1|2|3|4|5|6|7|8|9|0", relabelled_name)
+  # If numbers are present in the relabelled name, check whether there is an updated name programmed
+  if (number_check == TRUE){
+    # If the species name meets a number of preapproved exceptions, remove the numbers from the relabelled name
+    if (relabelled_name == "Hydra_vulgaris_01"){
+      # Remove the "_01" from the species name
+      relabelled_name = "Hydra_vulgaris"
+    } else if (relabelled_name == "Trichoplax_sp_H4"){
+      # Remove the "_H4" from the species name
+      relabelled_name = "Trichoplax_sp"
+    } else if (relabelled_name == "Pedicellina_sp_JB1"){
+      # Remove the "_JB1" from the species name
+      relabelled_name = "Pedicellina_sp"
+    } else {
+      # If the relabelled name contains a number but is not one of the identified names to correct,
+      #   simply return the relabelled name as-is
+      relabelled_name = relabelled_name
+    }
+  } # end if (number_check == TRUE){
+
   # Return the relabelled species name
   return(relabelled_name)
 }

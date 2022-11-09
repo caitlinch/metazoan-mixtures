@@ -125,7 +125,27 @@ manual_taxonomy_df$original_name <- gsub("\\_\\_", "", manual_taxonomy_df$origin
 # If there is a single trailing underscore left, remove it
 manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_name)
 
-# For each taxa in the mastmet_df, find a consistent taxa name in the Li tsv files
-relabelled_names <- lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)})
+# For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
+# 325 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
+# Either find a consistent taxa name in the Li et. al. (2021) tsv files, or use the hard-coded dictionary to relabel species from datasets not included in Li et. al. (2021)
+mastmet_df$relabelled_names <- unlist(lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
+
+# Save the dataframe with the relabelled species names
+mastmet_file_path <- paste0(output_dir, "MAST_metazoa_taxa_reconciliation.csv")
+write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
+
+
+# Odd labels to fix
+# Dunn2008 - Hydra_vulgaris_01
+# Hejnol2009 - Pedicellina_sp_JB1
+# Hejnol2009 - Hydra_vulgaris_01
+# Philippe2011 - Hydra_vulgaris_01
+# Nosenko2013: Trichplax_sp_H4
+# Chang2015 - Hydra_vulgaris_01
+
+check_df <- mastmet_df[grep("1|2|3|4|5|6|7|8|9|0", mastmet_df$relabelled_names), ]
+unlist(lapply(1:nrow(check_df), function(i){find.species.name(check_df[i,], taxon_table_df, manual_taxonomy_df)}))
+
+
 
 
