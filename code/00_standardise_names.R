@@ -135,17 +135,6 @@ mastmet_file_path <- paste0(output_dir, "MAST_metazoa_taxa_reconciliation.csv")
 write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
 
 
-# Odd labels to fix
-# Dunn2008 - Hydra_vulgaris_01
-# Hejnol2009 - Pedicellina_sp_JB1
-# Hejnol2009 - Hydra_vulgaris_01
-# Philippe2011 - Hydra_vulgaris_01
-# Nosenko2013: Trichplax_sp_H4
-# Chang2015 - Hydra_vulgaris_01
-
-check_df <- mastmet_df[grep("1|2|3|4|5|6|7|8|9|0", mastmet_df$relabelled_names), ]
-unlist(lapply(1:nrow(check_df), function(i){find.species.name(check_df[i,], taxon_table_df, manual_taxonomy_df)}))
-
 
 
 
