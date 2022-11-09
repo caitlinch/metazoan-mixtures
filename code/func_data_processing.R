@@ -3,6 +3,10 @@
 
 # Functions for manipulating, processing, and preparing datasets
 
+#### Packages ####
+library(stringr) # Used in extract.model.details for detecting presence/absence of a pattern in a string (using str_detect) 
+
+
 #### Process models to prepare for IQ-Tree runs ####
 create.model.dataframe <- function(model_vector, output.counts = FALSE, output.model.chunks = FALSE){
   # Function to read in a partition file and return the list of models applied to the charsets
@@ -501,7 +505,7 @@ extract.model.details <- function(iqtree_file){
   # First, check the input_str to see if it specifies the alignment type
   if (grepl("amino-acid", input_str) == TRUE){
     input_type = "amino-acid"
-  } else if (grepl("amino-acid", input_str) == TRUE){
+  } else if (grepl("nucleotide", input_str) == TRUE){
     input_type = "nucleotide"
   } else {
     # If the alignment type is not specified in the input_str, check whether this is included in the partition table
