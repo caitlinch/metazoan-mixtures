@@ -177,21 +177,28 @@ mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 # Update data frame to include maximum likelihood trees
 ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
 
+# Make a list of .iqtree files and .log files
+all_iqtree_files <- paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file)
+all_log_files <- paste0(output_dir, "maximum_likelihood_trees/", gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
+
 # Extract the log likelihood and other values for the tree
-ml_tree_df$tree_LogL <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "LogL"))
-ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "ULL"))
-ml_tree_df$tree_NumFreeParams <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "NFP"))
-ml_tree_df$tree_BIC <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "BIC"))
-ml_tree_df$tree_length <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "TrLen"))
-ml_tree_df$tree_SumInternalBranch <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.tree.log.likelihood, var = "SIBL"))
+ml_tree_df$tree_LogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
+ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "ULL"))
+ml_tree_df$tree_NumFreeParams <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "NFP"))
+ml_tree_df$tree_BIC <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "BIC"))
+ml_tree_df$tree_length <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "TrLen"))
+ml_tree_df$tree_SumInternalBranch <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "SIBL"))
 
 # Extract the best model for each combination of matrix and model
-ml_tree_df$best_model <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.best.model))
+ml_tree_df$best_model <- unlist(lapply(all_iqtree_files, extract.best.model))
 
 # Extract the BIC value and log likelihood value for the best model
-ml_tree_df$best_model_LogL <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.model.log.likelihood, var = "LogL"))
-ml_tree_df$best_model_BIC <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.model.log.likelihood, var = "BIC"))
-ml_tree_df$best_model_wBIC <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file), extract.model.log.likelihood, var = "wBIC"))
+ml_tree_df$best_model_LogL <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "LogL"))
+ml_tree_df$best_model_BIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "BIC"))
+ml_tree_df$best_model_wBIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "wBIC"))
+
+# Extract details about the model
+ml_tree_df$alisim_model <- unlist(lapply(all_log_files, extract.alisim.model))
 
 # Save dataframe
 ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.tsv")
