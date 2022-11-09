@@ -117,7 +117,7 @@ check.manual.taxonomy.map <- function(species_row, manual_taxonomy_df){
 
 find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
-  # Works for all datasets except Laumer2018, Laumer2019, Philippe2011, Pick2010, Simion2017
+  # Works for all 16 alignments used in our main analysis
   
   # Determine which Li et. al. 2021 alignment corresponds to this alignment
   li_alignment_name <- convert.alignment.name(species_row$dataset, species_row$alignment)
@@ -134,14 +134,18 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       # If there is a single trailing underscore left, remove it
       species_df$matrix_name <- gsub("_$","",species_df$matrix_name)
     }
+    # Remove any spaces from the species name
+    # Spaces are not included in names in the taxon_table_df, so any spaces will prevent identifying matching matrix_names
+    # (i.e. the name of this species in the original alignment)
+    original_name_no_space <- gsub(" ", "", species_row$original_name)
     # Check whether this species name is present in the tsv files
-    name_check <- which(species_df$matrix_name == species_row$original_name)
+    name_check <- which(species_df$matrix_name == original_name_no_space)
     if (identical(name_check, integer(0)) == FALSE){
       # If the name check gives you a row, find the corresponding relabelled name
       relabelled_name <- species_df$relabelled_name[name_check]
     } else if (identical(name_check, integer(0)) == TRUE){
       # Perform a manual name look up
-      relabelled_name <- manual.name.look.up(species_row$original_name)
+      relabelled_name <- manual.name.look.up(original_name_no_space)
     }
   } else if (is.na(li_alignment_name) == TRUE){
     # There is no corresponding alignment
