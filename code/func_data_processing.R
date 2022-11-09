@@ -441,7 +441,7 @@ extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
 }
 
 
-extract.alisim.line <- function(log_file){
+extract.alisim.model <- function(log_file){
   # Given a .log file (output from IQ-Tree), this function will extract the model specification from the Alisim instructions
   
   # Check if the log file exists
