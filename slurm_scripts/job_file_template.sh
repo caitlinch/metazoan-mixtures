@@ -7,7 +7,7 @@
 #
 #SBATCH --time=120:00:00 # 5 days
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=10
 #SBATCH --mem=7000 # 7GB
 #
 #SBATCH --mail-user u5348329@anu.edu.au
