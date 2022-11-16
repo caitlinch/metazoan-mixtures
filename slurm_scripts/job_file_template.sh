@@ -8,12 +8,12 @@
 #SBATCH --time=72:00:00 # 72 hours
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=7000 # 7GB
+#SBATCH --mem=7000 # 7GB
 #
 #SBATCH --mail-user u5348329@anu.edu.au
-#SBATCH --mail-type NONE
+#SBATCH --mail-type TIME_LIMIT,FAIL
 
 # Change to working directory for this project
-cd /home/u5348329/metazoan-mixtures/output/maximum_likelihood_trees/
+cd /mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/maximum_likelihood_trees/
 
 # Run iqtree command
