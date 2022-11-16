@@ -55,12 +55,12 @@ if (location == "local"){
   number_parallel_processes <- 20
   
 } else if (location == "dayhoff"){
-  alignment_dir <- "/home/u5348329/metazoan-mixtures/data_all/"
-  output_dir <- "/home/u5348329/metazoan-mixtures/output/"
-  repo_dir <- "/home/u5348329/metazoan-mixtures/"
+  alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
+  output_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
+  repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   
-  iqtree2 <- "/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree2_tm <- "/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
+  iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  iqtree2_tm <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
   number_parallel_processes <- 1
   
