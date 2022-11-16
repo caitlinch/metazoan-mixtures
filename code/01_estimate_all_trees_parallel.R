@@ -36,9 +36,6 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
-  iqtree_mrate <- "E,I,G,I+G,R,I+R"
-  iqtree_num_threads <- 1
-  ml_tree_bootstraps <- 1000
   number_parallel_processes <- 1
   
 } else if (location == "soma"){
@@ -49,9 +46,6 @@ if (location == "local"){
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
-  iqtree_mrate <- "E,I,G,I+G,R,I+R"
-  iqtree_num_threads <- 1
-  ml_tree_bootstraps <- 1000
   number_parallel_processes <- 20
   
 } else if (location == "dayhoff"){
@@ -62,9 +56,6 @@ if (location == "local"){
   iqtree2 <- "/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree2_tm <- "/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
-  iqtree_mrate <- "E,I,G,I+G,R,I+R"
-  iqtree_num_threads <- 1
-  ml_tree_bootstraps <- 1000
   number_parallel_processes <- 1
   
 } else if (location == "laptop"){
@@ -75,11 +66,13 @@ if (location == "local"){
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
   iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
-  iqtree_mrate <- "E,I,G,I+G,R,I+R"
-  iqtree_num_threads <- 1
-  ml_tree_bootstraps <- 1000
   number_parallel_processes <- 1
 }
+
+# Set parameters that are identical for all run locations
+iqtree_mrate <- "E,I,G,I+G,R,I+R"
+iqtree_num_threads <- 10
+ml_tree_bootstraps <- 1000
 
 
 
