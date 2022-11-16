@@ -71,7 +71,7 @@ if (location == "local"){
 
 # Set parameters that are identical for all run locations
 iqtree_mrate <- "E,I,G,I+G,R,I+R"
-iqtree_num_threads <- 10
+iqtree_num_threads <- 5
 ml_tree_bootstraps <- 1000
 
 
