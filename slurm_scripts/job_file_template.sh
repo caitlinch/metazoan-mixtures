@@ -5,7 +5,7 @@
 #SBATCH --error=/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/job_files/%j.%x.err 
 #SBATCH --partition=Standard
 #
-#SBATCH --time=72:00:00 # 72 hours
+#SBATCH --time=120:00:00 # 5 days
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=7000 # 7GB
