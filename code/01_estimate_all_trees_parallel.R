@@ -17,8 +17,8 @@
 #### 1. Input parameters ####
 ## Specify parameters:
 # alignment_dir       <- Directory containing alignments for all data sets
-#                        Alignments have the naming convention dataset.matrix_name.sequence_type.fa
-#                        E.g. Cherryh2022.all_taxa.aa.fa
+#                       Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                       E.g. Cherryh2022.alignment1.aa.fa
 # output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
@@ -26,6 +26,12 @@
 # iqtree_tm           <- Location of IQ-Tree2 MAST release
 
 # iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
+# iqtree_mrate <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
+#                 We set iqtree_mrate = "E,I,G,I+G,R,I+R"
+#                 See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
+# ml_tree_bootstraps <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
+# number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
+#                               If 1, then all processes will run sequentially
 
 location = "dayhoff"
 if (location == "local"){
@@ -87,6 +93,10 @@ source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # Source information about datasets
 source(paste0(repo_dir, "code/data_dataset_info.R"))
+
+# Remove the individual dataset lists (only need collated lists) (yes it is a bit cheeky to hard code the removal)
+rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
+   philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, models_list)
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir)
