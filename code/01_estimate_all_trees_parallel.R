@@ -96,7 +96,7 @@ source(paste0(repo_dir, "code/data_dataset_info.R"))
 
 # Remove the individual dataset lists (only need collated lists) (yes it is a bit cheeky to hard code the removal)
 rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
-   philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, models_list)
+   philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, models_list, all_taxa)
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir)
