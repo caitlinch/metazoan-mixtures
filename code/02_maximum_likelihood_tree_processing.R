@@ -21,20 +21,22 @@ repo_dir        <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtur
 
 #### 2. Prepare functions, variables and packages ####
 # Open packages
-library(ape)
+library(ape) # for `read.tree` and `write.tree`
+library(TreeTools) # for `as.multiPhylo`
 
 # Source functions and taxa lists
 source(paste0(repo_dir, "code/func_naming.R"))
 
 # Open the renaming csv
-naming_reconciliation_df <- read.csv(paste0(repo_dir, "MAST_metazoa_taxa_reconciliation.csv"), stringsAsFactors = FALSE)
+taxa_df <- read.csv(paste0(repo_dir, "MAST_metazoa_taxa_reconciliation.csv"), stringsAsFactors = FALSE)
 
 #### 3. Update the taxa labels in each tree ####
 # Extract the full list of trees
 all_files <- paste0(output_dir, list.files(output_dir))
 all_tree_files <- grep("\\.treefile", all_files, value = T)
+# Rename all trees
+all_trees_list <- lapply(all_tree_files, update.tree.taxa, naming_reconciliation_df = taxa_df, 
+                    output.clade.names = TRUE, save.updated.tree = TRUE, output.directory = results_dir)
+all_trees <- as.multiPhylo(all_trees_list)
 
-treefile <- all_tree_files[1]
-output.directory = results_dir
-save.updated.tree = TRUE
 
