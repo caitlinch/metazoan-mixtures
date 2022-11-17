@@ -1,7 +1,52 @@
 ## caitlinch/metazoan-mixtures/func_names.R
 # Caitlin Cherryh 2022
 
-# Functions for taxa naming
+# Functions for updating and renaming taxa
+
+library(ape)
+
+#### Functions for updating taxa names in trees ####
+update.tree.taxa <- function(treefile, naming_reconciliation_df, output.clade.names = FALSE, save.updated.tree = FALSE, output.directory = NA){
+  # Function that takes a tree file and a data frame of original and updated taxa names,  
+  #   and updates the original taxa names in the tree file to the updated taxa names from the data frame
+  
+  # Identify which dataset and alignment this tree matches
+  tree_dataset <- strsplit(basename(treefile), "\\.")[[1]][1]
+  tree_matrix <- strsplit(basename(treefile), "\\.")[[1]][2]
+  # Reduce the reconciliation data frame to only species for that dataset and matrix
+  tree_taxa_df <- naming_reconciliation_df[naming_reconciliation_df$dataset == tree_dataset & naming_reconciliation_df$alignment == tree_matrix,]
+  
+  # Open the tree
+  t <- read.tree(treefile)
+  # Extract the list of taxa names
+  t_names <- t$tip.label
+  # Remove any of the rows that are not present in the t_names vector
+  keep_rows <- which((tree_taxa_df$original_name %in% t_names) == TRUE)
+  tree_taxa_df <- tree_taxa_df[keep_rows,]
+  # Reorder the tree_taxa_df so it's in the same order as the t_names vector
+  tree_taxa_df <- tree_taxa_df[match(t_names, tree_taxa_df$original_name),]
+  # Update the tree to have the new taxa names
+  if (output.clade.names == FALSE){
+    # Output the complete species names
+    t$tip.label <- tree_taxa_df$relabelled_names
+  } else if (output.clade.names == TRUE){
+    # Output the clade name pasted to the complete species name
+    t$tip.label <- paste0(toupper(tree_taxa_df$clade), "_",tree_taxa_df$relabelled_names)
+  }
+  
+  # Save the tree (if required)
+  if ( (save.updated.tree == TRUE) & (is.na(output.directory) == FALSE) ){
+    # Create the new file name
+    split_tree_file <- strsplit(basename(treefile), "\\.")[[1]]
+    new_treefile <- paste0(output.directory, paste(head(split_tree_file, -1), collapse = "."), ".relabelled.", tail(split_tree_file, 1))
+    # Output the tree to the new file path
+    write.tree(t, file = new_treefile)
+  }
+  
+  # Return the new tree
+  return(t)
+}
+
 
 
 #### Functions for collecting and summarising information from the dataset taxa lists ### 
@@ -207,7 +252,7 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       relabelled_name = relabelled_name
     }
   } # end if (number_check == TRUE){
-
+  
   # Return the relabelled species name
   return(relabelled_name)
 }
