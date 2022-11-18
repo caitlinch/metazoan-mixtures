@@ -40,15 +40,5 @@ all_trees_list <- lapply(all_tree_files, update.tree.taxa, naming_reconciliation
 all_trees <- as.multiPhylo(all_trees_list)
 
 
-# Fixing taxa names
-pick_trees <- grep("Pick2010", all_tree_files, value = T)
-treefile <- pick_trees[1]
-
-# Renaming function parameters
-naming_reconciliation_df = taxa_df
-output.clade.names = TRUE
-save.updated.tree = TRUE
-output.directory = renamed_tree_dir
-
 
 
