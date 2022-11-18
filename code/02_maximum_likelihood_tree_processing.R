@@ -59,6 +59,9 @@ setdiff(t_names,tree_taxa_df$original_name)
 mastmet_file_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/Cherryh_MAST_metazoa_taxa_collation.csv"
 mastmet_df <- read.csv(mastmet_file_path, stringsAsFactors = F)
 
+mp_1 <- c("Lumbricus", "Capitella", "Schmidtea", "Boophilus", "Scutigera", "Xiphinema", "Hypsibius", "Priapulus", "Metridium", "Ephydatia", "Suberites", "Oscarella")
+mp_2 <- c("Metridium_", "Ephydatia_", "Suberites_", "Oscarella_", "Capitella_", "Lumbricus_", "Schmidtea_", "Priapulus_", "Hypsibius_", "Xiphinema_", "Scutigera_", "Boophilus_")
+
 # > setdiff(tree_taxa_df$original_name, tip_names)
 # [1] "Lumbricus" "Capitella" "Schmidtea" "Boophilus" "Scutigera" "Xiphinema" "Hypsibius" "Priapulus" "Metridium" "Ephydatia" "Suberites" "Oscarella"
 # > setdiff(tip_names,tree_taxa_df$original_name)
