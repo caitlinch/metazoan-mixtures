@@ -160,6 +160,39 @@ check.manual.taxonomy.map <- function(species_row, manual_taxonomy_df){
 }
 
 
+check.tip.manual.taxonomy.map <- function(species_name, manual_taxonomy_df){
+  # Function to take a species name, and check if it's in the manual taxonomy map
+  
+  # Remove any strings of underscores or trailing underscores from the species name
+  reformat_species_name <- gsub("_$","",gsub("\\_\\_", "", species_name))
+  # Check for identical names
+  matching_ind <- grep(reformat_species_name, manual_taxonomy_df$original_name)
+  # Check whether there is a matching name 
+  if (identical(matching_ind, integer(0)) == FALSE){
+    matching_name <- manual_taxonomy_df$new_name[matching_ind]
+    # Check whether more than one species has the same matching name
+    if (length(matching_name) > 1){
+      # See if the species names are identical
+      if (length(unique(matching_name)) == 1){
+        # If the potential species names are identical, use that name
+        matching_name <- unique(matching_name)
+      } else {
+        # If the potential species names are different, just return NA
+        matching_name <- NA
+      }
+    }
+  } else if (identical(matching_ind, integer(0)) == TRUE){
+    # There is no matching name
+    # Return NA
+    matching_name <- NA
+  }
+  
+  # Return the matched name
+  return(matching_name)
+}
+
+
+
 find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
   # Function to take a species name and check Li et. al. tsv files to see if a reconciled species name exists
   # Works for all 16 alignments used in our main analysis
@@ -257,6 +290,12 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       relabelled_name = relabelled_name
     }
   } # end if (number_check == TRUE){
+  
+  # Perform manual checks for some specific species names
+  if (relabelled_name == "Porites" & species_row$dataset == "Nosenko2013"){
+    # Get the full species name for "Porites_astreoides"
+    relabelled_name <- check.tip.manual.taxonomy.map(relabelled_name, manual_taxonomy_df)
+  }
   
   # Return the relabelled species name
   return(relabelled_name)
