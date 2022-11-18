@@ -52,7 +52,8 @@ save.updated.tree = TRUE
 output.directory = renamed_tree_dir
 
 # Find missing tips
-t$tip.label[which(!t$tip.label %in% tree_taxa_df$original_name)]
+tip_names <- t$tip.label
+tip_names[which(!tip_names %in% tree_taxa_df$original_name)]
 setdiff(t_names,tree_taxa_df$original_name)
 # Check whether missing taxa are in mastmet_df
 mastmet_file_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/Cherryh_MAST_metazoa_taxa_collation.csv"
