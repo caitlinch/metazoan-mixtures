@@ -131,7 +131,9 @@ manual_taxonomy_df[DGLA_ind,]$new_name <- "Dryodora_glandiformis"
 # Correct an entry of the taxon_table_df
 DGLA_ind <- which(taxon_table_df$relabelled_name == "Dryodora_glandiformis_" & taxon_table_df$matrix_name == "DGLA")
 taxon_table_df[DGLA_ind,]$relabelled_name <- "Dryodora_glandiformis"
-
+# Save updated taxon_table_df
+mt_file_path <- paste0(output_dir, "Li2021_taxon_table_updated.Cherryh.tsv")
+write.csv(manual_taxonomy_df,  file = mt_file_path, row.names = F)
 
 # For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
 # 322 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
