@@ -66,7 +66,7 @@ convert.philippe2009.name <- function(taxon){
 
 #### PHYLOGENETIC DATASETS ####
 # For Dunn et. al. (2008):
-dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
+dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Anoplodactylus_eroticus", "Aplysia_californica", 
                                       "Argopecten_irradians", "Asterina_pectinifera", "Biomphalaria_glabrata", "Boophilus_microplus", 
                                       "Branchiostoma_floridae", "Capitella_sp", "Carcinoscorpius_rotundicauda", "Carcinus_maenas", 
                                       "Carinoma_mutabilis", "Cerebratulus_lacteus", "Chaetoderma_nitidulum", "Chaetopleura_apiculata", 
@@ -83,7 +83,8 @@ dunn2008_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_pa
                       "Placozoa" = c(),
                       "Porifera" = c("Oscarella_carmela"),
                       "Ctenophora" = c("Mertensiid_sp", "Mnemiopsis_leidyi"),
-                      "Outgroup" = c("Monosiga_ovata", "Capsaspora_owczarzaki", "Sphaeroforma_arctica", "Saccharomyces_cerevisiae", "Cryptococcus_neoformans"),
+                      "Outgroup" = c("Monosiga_ovata", "Capsaspora_owczarzaki", "Sphaeroforma_arctica", "Saccharomyces_cerevisiae", "Cryptococcus_neoformans",
+                                     "Amoebidium_parasiticum"),
                       "Sponges_Calcarea" = c(),
                       "Sponges_Homoscleromorpha" = c("Oscarella_carmela"),
                       "Sponges_Hexactinellida" = c(),
