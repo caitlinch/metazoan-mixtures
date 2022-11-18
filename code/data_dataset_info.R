@@ -286,7 +286,7 @@ moroz2014_list <- list("Bilateria" = c("Branchiostoma", "Ciona", "Homo", "Saccog
                                         "PBAC", "PPIL", "MERT", "BINF", "COEL", "EDUN", "VALL", "DGLA", "MLEI", "BCUC", "PATL"),
                        "Outgroup" = c("Spizellomyces", "Piromyces", "Glomus", "Blastocladiella", "Saccharomyces", "Amoebidium", "Capsaspora", 
                                       "Sphaeroforma", "Monosiga_brevicollis", "Monosiga_ovata",
-                                      "MOVA"),
+                                      "MOVA", "MBRE", "SROS"),
                        "Outgroup_Choanoflagellata" = c("Monosiga_brevicollis", "Monosiga_ovata",
                                                        "MBRE", "MOVA", "SROS"),
                        "Sponges_Calcarea" = c("Leucetta", "Sycon",
