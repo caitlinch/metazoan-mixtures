@@ -41,18 +41,17 @@ all_trees <- as.multiPhylo(all_trees_list)
 
 
 # Fixing Moroz taxa names
-moroz_tree_files <- grep("Moroz", all_tree_files, value = T)
-m_file <- moroz_tree_files[1]
+nosenko_trees_nonribo <- grep("nonribosomal",grep("Nosenko2013", all_tree_files, value = T), value = T)
+treefile <- nosenko_trees_nonribo[1]
 
 # Renaming function parameters
-treefile <- m_file
 naming_reconciliation_df = taxa_df
 output.clade.names = TRUE
 save.updated.tree = TRUE
 output.directory = renamed_tree_dir
 
 # Find missing tips
-tip_names <- t$tip.label
+tip_names <- read.tree(treefile)$tip.label
 tip_names[which(!tip_names %in% tree_taxa_df$original_name)]
 setdiff(t_names,tree_taxa_df$original_name)
 # Check whether missing taxa are in mastmet_df
