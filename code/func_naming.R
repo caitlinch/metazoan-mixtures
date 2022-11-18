@@ -122,7 +122,7 @@ convert.alignment.name <- function(dataset_name, alignment_name){
   } else if (dataset_name == "Nosenko2013" & alignment_name == "nonribosomal_9187_smatrix"){
     li_name <- "nonribo_9187"
   } else if (dataset_name == "Nosenko2013" & alignment_name == "ribosomal_14615_smatrix"){
-    li_name <- "ribo_11057"
+    li_name <- "ribo_14615"
   } else if (dataset_name == "Philippe2009" & alignment_name == "Philippe_etal_superalignment_FixedNames"){
     li_name <- "Philippe2009"
   } else if (dataset_name == "Ryan2013" & alignment_name == "REA_EST_includingXenoturbella"){
