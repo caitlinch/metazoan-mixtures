@@ -241,8 +241,13 @@ find.species.name <- function(species_row, taxon_table_df, manual_taxonomy_df){
       # Remove the "_01" from the species name
       relabelled_name = "Hydra_vulgaris"
     } else if (relabelled_name == "Trichoplax_sp_H4"){
-      # Remove the "_H4" from the species name
-      relabelled_name = "Trichoplax_sp"
+      if (species_row$dataset == "Laumer2018" | species_row$dataset == "Laumer2019"){
+        # Keep the "_H41" from the species name (multiple PLAC species so need the numbers to distinguish between them!)
+        relabelled_name = "Trichoplax_sp_H4"
+      } else {
+        # Remove the "_H41" from the species name
+        relabelled_name = "Trichoplax_sp"
+      }
     } else if (relabelled_name == "Pedicellina_sp_JB1"){
       # Remove the "_JB1" from the species name
       relabelled_name = "Pedicellina_sp"
@@ -319,7 +324,7 @@ laumer.name.converter <- function(s){
                        "OUTF_Rsol" = "Rhizophagus_irregularis", "OUTF_Spun" = "Spizellomyces_punctatus", "OUTI_Apar" = "Amoebidium_parasiticum",
                        "OUTI_Cowc" = "Capsaspora_owczarzaki", "OUTI_Falb" = "Fonticula_alba", "OUTI_Mvar" = "Ministeria_vibrans",
                        "OUTI_Sart" = "Sphaeroforma_artica", "OUTI_Ttra" = "Thecamonas_trahens", "PLAC_Tadh" = "Trichoplax_adhaerens",
-                       "PLAC_TH11" = "Trichoplax_sp", "PLAC_TpH4" = "Trichoplax_sp", "PLAC_TpH6" = "Trichoplax_sp", 
+                       "PLAC_TH11" = "Trichoplax_sp_11", "PLAC_TpH4" = "Trichoplax_sp_H4", "PLAC_TpH6" = "Trichoplax_sp_H6", 
                        "PLAT_Sman" = "Schistosoma_mansoni", "PORI_Aque" = "Amphimedon_queenslandica", "PORI_Avas" = "Aphrocallistes_vastus",
                        "PORI_Ccan" = "Corticium_candelabrum", "PORI_Ccla" = "Clathrina_coriacea", "PORI_Ccor" = "Clathrina_coriacea",
                        "PORI_Cele" = "Crella_elegans", "PORI_Cnuc" = "Chondrilla_caribensis", "PORI_Cvar" = "Cliona_varians",
