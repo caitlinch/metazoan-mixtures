@@ -120,10 +120,15 @@ if (file.exists(mastmet_file_path) == FALSE){
 # Open the tsv files from Li et. al. 2021
 taxon_table_df <- read.delim(taxon_table_path)
 manual_taxonomy_df <- read.delim(manual_taxonomy_path)
+# Update the formatting of the manual_taxonomy_df
 # Remove any strings of underscores from the manual taxonomy map
 manual_taxonomy_df$original_name <- gsub("\\_\\_", "", manual_taxonomy_df$original_name)
 # If there is a single trailing underscore left, remove it
 manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_name)
+# Correct an entry of the manual_taxonomy_df
+DGLA_ind <- which(manual_taxonomy_df$study == "Moroz2014" & manual_taxonomy_df$new_name == "Dryodora_glandiformis_" & manual_taxonomy_df$original_name == "DGLA")
+manual_taxonomy_df[DGLA_ind,]$new_name <- "Dryodora_glandiformis"
+
 
 # For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
 # 322 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
