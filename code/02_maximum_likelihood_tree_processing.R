@@ -3,7 +3,7 @@
 # Caitlin Cherryh, 2022
 
 ## This script:
-# 1. Plots figures for the introduction and methods section of the manuscript
+# 1. Updates taxa names for maximum likelihood trees to be consistent across datasets
 
 
 
