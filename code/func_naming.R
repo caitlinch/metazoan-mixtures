@@ -312,7 +312,7 @@ pick2011.name.converter <- function(s){
                          "Cerebratul" = "Cerebratulus_lacteus", "Carinoma_m" = "Carinoma_mutabilis", "Crassostre" = "Crassostrea_virginica",
                          "Argopecten"= "Argopecten_irradians", "Mytilus_ga" = "Mytilus_galloprovincialis", "Biomphalar" = "Biomphalaria_glabrata",
                          "Aplysia_ca" = "Aplysia_californica", "Euprymna_s" = "Euprymna_scolopes", "Chaetopleu" = "Chaetopleura_apiculata",
-                         "Chaetoderm" = "Chaetoderma_nitidulum", "Schmidtea" = "Schmidtea_mediterranea", "Dugesia_ja" = "Dugesia_japonica",
+                         "Chaetoderm" = "Chaetoderma_nitidulum", "Schmidtea_" = "Schmidtea_mediterranea", "Dugesia_ja" = "Dugesia_japonica",
                          "Echinococc" = "Echinococcus_granulosus", "Paraplanoc" = "Paraplanocera_sp", "Macrostomu" = "Macrostomum_lignano",
                          "Acanthoscu" = "Acanthoscurria_gomesiana", "Boophilus_" = "Boophilus_microplus", "Anoplodact" = "Anoplodactylus_eroticus",
                          "Carcinosco" = "Carcinoscorpius_rotundicauda", "Scutigera_"  = "Scutigera_coleoptrata",  "Litopenaeu" = "Litopenaeus_vannamei",

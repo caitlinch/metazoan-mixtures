@@ -38,7 +38,7 @@ source(paste0(repo_dir, "code/data_dataset_info.R"))
 
 # Remove the individual dataset lists (only need collated lists) (yes it is a bit cheeky to hard code the removal)
 rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
-     philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, all_models, models_list)
+   philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, all_models, models_list)
 
 #### 3. Prepare name csv ####
 # Set a file path for the MAST metazoan taxa collation csv
@@ -132,18 +132,19 @@ manual_taxonomy_df[DGLA_ind,]$new_name <- "Dryodora_glandiformis"
 DGLA_ind <- which(taxon_table_df$relabelled_name == "Dryodora_glandiformis_" & taxon_table_df$matrix_name == "DGLA")
 taxon_table_df[DGLA_ind,]$relabelled_name <- "Dryodora_glandiformis"
 # Save updated taxon_table_df
-mt_file_path <- paste0(dirname(mastmet_file_path), "/", "Li2021_taxon_table_updated.Cherryh.tsv")
+tt_file_path <- paste0(dirname(mastmet_file_path), "/", "Li2021_taxon_table_updated.Cherryh.tsv")
+write.table(taxon_table_df,  file = tt_file_path, sep = "\t",row.names = F)
+# Save updated manual_taxonomy_df
+mt_file_path <- paste0(dirname(mastmet_file_path), "/", "Li2021_manual_taxonomy_map_updated.Cherryh.tsv")
 write.table(manual_taxonomy_df,  file = mt_file_path, sep = "\t",row.names = F)
 
 # For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
 # 322 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
 # Either find a consistent taxa name in the Li et. al. (2021) tsv files, or use the hard-coded dictionary to relabel species from datasets not included in Li et. al. (2021)
 mastmet_df$relabelled_names <- unlist(lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
-
 # Save the dataframe with the relabelled species names
 mastmet_file_path <- paste0(repo_dir, "Cherryh_MAST_metazoa_taxa_reconciliation.csv")
 write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
-
 
 
 
