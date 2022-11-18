@@ -40,3 +40,17 @@ all_trees_list <- lapply(all_tree_files, update.tree.taxa, naming_reconciliation
 all_trees <- as.multiPhylo(all_trees_list)
 
 
+# Fixing Moroz taxa names
+moroz_tree_files <- grep("Moroz", all_tree_files, value = T)
+m_file <- moroz_tree_files[1]
+
+# Renaming function parameters
+treefile <- m_file
+naming_reconciliation_df = taxa_df
+output.clade.names = TRUE
+save.updated.tree = TRUE
+output.directory = results_dir
+
+
+
+
