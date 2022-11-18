@@ -41,8 +41,8 @@ all_trees <- as.multiPhylo(all_trees_list)
 
 
 # Fixing Moroz taxa names
-nosenko_trees_nonribo <- grep("nonribosomal",grep("Nosenko2013", all_tree_files, value = T), value = T)
-treefile <- nosenko_trees_nonribo[1]
+pick_trees <- grep("Pick2010", all_tree_files, value = T)
+treefile <- pick_trees[1]
 
 # Renaming function parameters
 naming_reconciliation_df = taxa_df
@@ -52,10 +52,16 @@ output.directory = renamed_tree_dir
 
 # Find missing tips
 tip_names <- read.tree(treefile)$tip.label
+tree_taxa_df <- taxa_df[taxa_df$dataset == "Pick2010",]
 tip_names[which(!tip_names %in% tree_taxa_df$original_name)]
 setdiff(t_names,tree_taxa_df$original_name)
 # Check whether missing taxa are in mastmet_df
 mastmet_file_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/Cherryh_MAST_metazoa_taxa_collation.csv"
 mastmet_df <- read.csv(mastmet_file_path, stringsAsFactors = F)
+
+# > setdiff(tree_taxa_df$original_name, tip_names)
+# [1] "Lumbricus" "Capitella" "Schmidtea" "Boophilus" "Scutigera" "Xiphinema" "Hypsibius" "Priapulus" "Metridium" "Ephydatia" "Suberites" "Oscarella"
+# > setdiff(tip_names,tree_taxa_df$original_name)
+# [1] "Metridium_" "Ephydatia_" "Suberites_" "Oscarella_" "Capitella_" "Lumbricus_" "Schmidtea_" "Priapulus_" "Hypsibius_" "Xiphinema_" "Scutigera_" "Boophilus_"
 
 
