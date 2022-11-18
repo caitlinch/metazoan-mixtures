@@ -28,7 +28,7 @@ library(TreeTools) # for `as.multiPhylo`
 source(paste0(repo_dir, "code/func_naming.R"))
 
 # Open the renaming csv
-taxa_df <- read.csv(paste0(repo_dir, "MAST_metazoa_taxa_reconciliation.csv"), stringsAsFactors = FALSE)
+taxa_df <- read.csv(paste0(repo_dir, "Cherryh_MAST_metazoa_taxa_reconciliation.csv"), stringsAsFactors = FALSE)
 
 #### 3. Update the taxa labels in each tree ####
 # Extract the full list of trees
