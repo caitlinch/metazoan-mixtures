@@ -132,8 +132,8 @@ manual_taxonomy_df[DGLA_ind,]$new_name <- "Dryodora_glandiformis"
 DGLA_ind <- which(taxon_table_df$relabelled_name == "Dryodora_glandiformis_" & taxon_table_df$matrix_name == "DGLA")
 taxon_table_df[DGLA_ind,]$relabelled_name <- "Dryodora_glandiformis"
 # Save updated taxon_table_df
-mt_file_path <- paste0(output_dir, "Li2021_taxon_table_updated.Cherryh.tsv")
-write.csv(manual_taxonomy_df,  file = mt_file_path, row.names = F)
+mt_file_path <- paste0(dirname(mastmet_file_path), "/", "Li2021_taxon_table_updated.Cherryh.tsv")
+write.table(manual_taxonomy_df,  file = mt_file_path, sep = "\t",row.names = F)
 
 # For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
 # 322 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
@@ -141,7 +141,7 @@ write.csv(manual_taxonomy_df,  file = mt_file_path, row.names = F)
 mastmet_df$relabelled_names <- unlist(lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
 
 # Save the dataframe with the relabelled species names
-mastmet_file_path <- paste0(output_dir, "Cherryh_MAST_metazoa_taxa_reconciliation.csv")
+mastmet_file_path <- paste0(repo_dir, "Cherryh_MAST_metazoa_taxa_reconciliation.csv")
 write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
 
 
