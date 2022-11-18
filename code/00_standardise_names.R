@@ -128,6 +128,9 @@ manual_taxonomy_df$original_name <- gsub("_$","",manual_taxonomy_df$original_nam
 # Correct an entry of the manual_taxonomy_df
 DGLA_ind <- which(manual_taxonomy_df$study == "Moroz2014" & manual_taxonomy_df$new_name == "Dryodora_glandiformis_" & manual_taxonomy_df$original_name == "DGLA")
 manual_taxonomy_df[DGLA_ind,]$new_name <- "Dryodora_glandiformis"
+# Correct an entry of the taxon_table_df
+DGLA_ind <- which(taxon_table_df$relabelled_name == "Dryodora_glandiformis_" & taxon_table_df$matrix_name == "DGLA")
+taxon_table_df[DGLA_ind,]$relabelled_name <- "Dryodora_glandiformis"
 
 
 # For each taxa in the mastmet_df, relabel the species name so that each species has an identical name in all datasets
