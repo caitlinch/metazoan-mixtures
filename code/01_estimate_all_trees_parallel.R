@@ -5,7 +5,7 @@
 ## This script:
 # 1. Estimates ML trees for empirical data sets under different models
 # 2. Estimates ML trees using a constraint tree for empirical data sets under different models
-# 3. Applies the MAST (Mixtures Across Sites and Trees) model 
+# 3. Applies the MAST (Mixtures Across Sites and Trees) method
 
 # In this script, MAST refers to the Mixtures Across Sites and Trees model
 #   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 
