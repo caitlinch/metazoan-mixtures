@@ -33,7 +33,7 @@
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                               If 1, then all processes will run sequentially
 
-location = "laptop"
+location = "local"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
@@ -64,15 +64,6 @@ if (location == "local"){
   
   number_parallel_processes <- 1
   
-} else if (location == "laptop"){
-  alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
-  output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
-  repo_dir <- "/Users/caitlin/Repositories/metazoan-mixtures/"
-  
-  iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
-  
-  number_parallel_processes <- 1
 }
 
 # Set parameters that are identical for all run locations
@@ -84,10 +75,11 @@ ml_tree_bootstraps <- 1000
 
 #### 2. Prepare functions, variables and packages ####
 # Open packages
-library(parallel)s
+library(parallel)
 library(ape)
 
 # Source functions
+source(paste0(repo_dir, "code/func_pmsf_trees.R"))
 source(paste0(repo_dir, "code/func_constraint_trees.R"))
 source(paste0(repo_dir, "code/func_data_processing.R"))
 
@@ -99,5 +91,5 @@ if (length(all_files) > 0){
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
-
-
+alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/example.phy"
+alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/Philippe2011.UPDUNN_MB_FixedNames.aa.alignment.nex"
