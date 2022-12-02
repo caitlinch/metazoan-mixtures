@@ -186,7 +186,7 @@ pick2010_list <- list("Bilateria" = c("Lumbricus_", "Haementeri", "Urechis_ca", 
 # For Philippe et. al. (2011):
 # Note: Taxa "Reniera_sp" (a marine sponge) is labelled "Amphimedon" in Figure 1, the main phylogeny for this paper. The current accepted name for this 
 #       species is "Amphimedon queenslandica".
-philippe2011_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Amoebidium_parasiticum", "Anoplodactylus_eroticus", "Aplysia_californica", 
+philippe2011_list <- list("Bilateria" = c("Acanthoscurria_gomesiana", "Anoplodactylus_eroticus", "Aplysia_californica", 
                                           "Argopecten_irradians", "Asterina_pectinifera", "Biomphalaria_glabrata", "Boophilus_microplus", 
                                           "Branchiostoma_floridae", "Carcinoscorpius_rotundicauda", "Carcinus_maenas", "Carinoma_mutabilis",
                                           "Cerebratulus_lacteus", "Chaetoderma_nitidulum", "Chaetopleura_apiculata", "Ciona_intestinalis", 
