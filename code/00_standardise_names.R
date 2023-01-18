@@ -43,7 +43,9 @@ rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018
 #### 3. Prepare name csv ####
 # Set a file path for the MAST metazoan taxa collation csv
 mastmet_file_path <- paste0(output_dir, "Cherryh_MAST_metazoa_taxa_collation.csv")
-if (file.exists(mastmet_file_path) == FALSE){
+if (file.exists(mastmet_file_path) == TRUE){
+  mastmet_df <- read.csv(mastmet_file_path, stringsAsFactors = F)
+} else if (file.exists(mastmet_file_path) == FALSE){
   # Create a new data frame with all the taxa from all the matrices you're using
   mastmet_df <- data.frame("dataset" = c(rep("Borowiec2015", extract.taxa.vector(all_datasets[["Borowiec2015"]])$number),
                                          rep("Chang2015", extract.taxa.vector(all_datasets[["Chang2015"]])$number),
@@ -111,8 +113,6 @@ if (file.exists(mastmet_file_path) == FALSE){
                                            rep("Metazoa_Choano_RCFV_strict", extract.taxa.vector(all_datasets[["Whelan2017"]])$number) ) )
   # Save the data frame as a csv file
   write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
-} else if (file.exists(mastmet_file_path) == TRUE){
-  mastmet_df <- read.csv(mastmet_file_path, stringsAsFactors = F)
 }
 
 
