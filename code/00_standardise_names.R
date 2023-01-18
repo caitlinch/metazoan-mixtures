@@ -142,6 +142,18 @@ write.table(manual_taxonomy_df,  file = mt_file_path, sep = "\t",row.names = F)
 # 322 unique species are included in the 16 alignments (1086 tips total), so each species should have an identical label in each alignment it appears in
 # Either find a consistent taxa name in the Li et. al. (2021) tsv files, or use the hard-coded dictionary to relabel species from datasets not included in Li et. al. (2021)
 mastmet_df$relabelled_names <- unlist(lapply(1:nrow(mastmet_df), function(i){find.species.name(mastmet_df[i,], taxon_table_df, manual_taxonomy_df)}))
+# Add row for missing taxa for Simion2017
+new_row <- data.frame("dataset" = "Simion2017",
+                      "original_name" = "Acanthoeca_sp._10tr",
+                      "clade" = "Outgroup",
+                      "alignment" = "supermatrix_97sp_401632pos_1719genes",
+                      "relabelled_names" = "Acanthoeca_sp")
+# Combine row for missing taxa with large dataframe
+mastmet_df <- rbind(mastmet_df, new_row)
+# Reorder rows - alphabetical within each clade and dataset
+mastmet_df <- mastmet_df[order(mastmet_df$dataset, mastmet_df$alignment, mastmet_df$clade, mastmet_df$relabelled_names),]
+# Reset row numbers
+rownames(mastmet_df) <- 1:nrow(mastmet_df)
 # Save the dataframe with the relabelled species names
 mastmet_file_path <- paste0(repo_dir, "Cherryh_MAST_metazoa_taxa_reconciliation.csv")
 write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
