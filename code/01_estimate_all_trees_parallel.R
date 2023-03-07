@@ -5,12 +5,6 @@
 ## This script:
 # 1. Estimates ML trees for empirical data sets under different models
 # 2. Estimates ML trees using a constraint tree for empirical data sets under different models
-# 3. Applies the MAST (Mixtures Across Sites and Trees) method
-
-# In this script, MAST refers to the Mixtures Across Sites and Trees model
-#   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 
-#   "MAST: Phylogenetic Inference with Mixtures Across Sites and Trees", bioRxiv 2022.10.06.511210; 
-#   doi: https://doi.org/10.1101/2022.10.06.511210
 
 
 
@@ -23,7 +17,6 @@
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
 # iqtree2             <- Location of IQ-Tree2 stable release
-# iqtree_tm           <- Location of IQ-Tree2 MAST release
 
 # iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 # iqtree_mrate <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
@@ -40,7 +33,6 @@ if (location == "local"){
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
   number_parallel_processes <- 1
   
@@ -50,7 +42,6 @@ if (location == "local"){
   repo_dir <- "/data/caitlin/metazoan-mixtures/"
   
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
   number_parallel_processes <- 20
   
@@ -60,7 +51,6 @@ if (location == "local"){
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   
   iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree2_tm <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
   number_parallel_processes <- 1
   
@@ -70,7 +60,6 @@ if (location == "local"){
   repo_dir <- "/Users/caitlin/Repositories/metazoan-mixtures/"
   
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  iqtree2_tm <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
   number_parallel_processes <- 1
 }
@@ -79,6 +68,13 @@ if (location == "local"){
 iqtree_mrate <- "E,I,G,I+G,R,I+R"
 iqtree_num_threads <- 5
 ml_tree_bootstraps <- 1000
+
+# Set control parameters
+estimate.ML.trees <- FALSE
+extract.ML.trees <- FALSE
+extract.ML.tree.information <- FALSE
+prepare.hypothesis.trees <- FALSE
+estimate.hypothesis.trees <- FALSE
 
 
 
@@ -234,35 +230,4 @@ ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis
 ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.tsv")
 write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
 
-
-
-#### 5. Apply mixtures across trees and sites (MAST model) ####
-# Create a folder for the ml trees and move to that folder
-m_tree_dir <- paste0(output_dir, "tree_mixtures/")
-if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
-setwd(m_tree_dir)
-
-# Create the tree mixture prefix and command lines
-ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
-ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm,
-                               iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
-
-# Run the mixture of trees models
-mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
-
-
-############### Incomplete code: still need to extract results from MAST model and save to tsv file
-# # Identify iqtree files from tree mixture run
-# all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
-# all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
-# tree_mixture_tr_iqfile <- grep(paste0(a_m_prefix,".TR"), all_iqtree_files, value = TRUE)
-# 
-# # Extract information about each tree mixture model run
-# tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
-#                                            dataset = a_dataset, prefix = paste0(a_m_prefix,".TR"), 
-#                                            model = m, best_model = best_model, tree_branch_option = "TR")
-# 
-# # Output results dataframe
-# op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.tsv")
-# write.table(tr_results, file = op_file, row.names = FALSE, sep = "\t")
 
