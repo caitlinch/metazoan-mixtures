@@ -26,7 +26,7 @@
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                               If 1, then all processes will run sequentially
 
-location = "dayhoff"
+location = "local"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
@@ -75,6 +75,9 @@ extract.ML.trees <- FALSE
 extract.ML.tree.information <- FALSE
 prepare.hypothesis.trees <- FALSE
 estimate.hypothesis.trees <- FALSE
+collate.hypothesis.logs <- FALSE
+
+
 
 
 
@@ -121,113 +124,172 @@ model_components <- model_components[!model_components == "ModelFinder"]
 model_components <- c(model_components, "ModelFinder")
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
+# Create file names for output csv files
+txt_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_iqtree2_calls.txt")
+df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
+df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_tree_topologies.tsv")
+df_op_01_03 <- paste0(output_dir, "01_03_maximum_likelihood_tree_estimation_parameters_complete.tsv")
+df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_estimation_parameters.tsv")
+df_op_01_05 <- paste0(output_dir, "01_05_constraint_trees.tsv")
+
+
+
 
 
 #### 3. Estimate maximum likelihood trees for each combination of model and dataset ####
-# Create a folder for the ml trees and move to that folder
-ml_tree_dir <- paste0(output_dir, "maximum_likelihood_trees/")
-if (file.exists(ml_tree_dir) == FALSE){dir.create(ml_tree_dir)}
-setwd(ml_tree_dir)
+# Estimate ML trees (for each combination of alignment and model)
+if (estimate.ML.trees == TRUE){
+  # Create a folder for the ml trees and move to that folder
+  ml_tree_dir <- paste0(output_dir, "maximum_likelihood_trees/")
+  if (file.exists(ml_tree_dir) == FALSE){dir.create(ml_tree_dir)}
+  setwd(ml_tree_dir)
+  
+  # Create a dataframe of combinations of alignments and models
+  ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 1)),
+                            model_code = model_components,
+                            stringsAsFactors = FALSE)
+  ml_tree_df$model_mset <- ml_tree_df$model_code
+  ml_tree_df$model_m <- NA
+  ml_tree_df$model_mrate <- iqtree_mrate
+  ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
+  ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
+  ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model_code)
+  ml_tree_df$iqtree_num_threads <- iqtree_num_threads
+  ml_tree_df$iqtree_num_bootstraps <- ml_tree_bootstraps
+  ml_tree_df$alignment_file <- all_alignments
+  ml_tree_df$iqtree_file <- paste0(ml_tree_df$prefix, ".iqtree")
+  ml_tree_df$ml_tree_file <- paste0(ml_tree_df$prefix, ".treefile")
+  
+  # Fix model specification for rows with ModelFinder
+  ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
+  ml_tree_df$model_mset[which(ml_tree_df$model_code == "ModelFinder")] <- NA
+  
+  # Sort matrix by dataset and matrix
+  ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
+  
+  # Create IQ-Tree2 commands
+  ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, iqtree_path = iqtree2, df = ml_tree_df))
+  
+  # Save dataframe
+  write.table(ml_tree_df, file = df_op_01_01, row.names = FALSE, sep = "\t")
+  
+  # Save list of iqtree2 commands
+  write(ml_tree_df$iqtree2_call, file = txt_op_01_01)
+  
+  # Run IQ-Tree commands to estimate ML trees for each model/matrix combination
+  mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
+}
 
-# Create a dataframe of combinations of alignments and models
-ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 1)),
-                          model_code = model_components,
-                          stringsAsFactors = FALSE)
-ml_tree_df$model_mset <- ml_tree_df$model_code
-ml_tree_df$model_m <- NA
-ml_tree_df$model_mrate <- iqtree_mrate
-ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
-ml_tree_df$matrix_name <- unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 2))
-ml_tree_df$prefix <- paste0(ml_tree_df$dataset, ".", ml_tree_df$matrix_name, ".", ml_tree_df$model_code)
-ml_tree_df$iqtree_num_threads <- iqtree_num_threads
-ml_tree_df$iqtree_num_bootstraps <- ml_tree_bootstraps
-ml_tree_df$alignment_file <- all_alignments
-ml_tree_df$iqtree_file <- paste0(ml_tree_df$prefix, ".iqtree")
-ml_tree_df$ml_tree_file <- paste0(ml_tree_df$prefix, ".treefile")
-
-# Fix model specification for rows with ModelFinder
-ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
-ml_tree_df$model_mset[which(ml_tree_df$model_code == "ModelFinder")] <- NA
-
-# Sort matrix by dataset and matrix
-ml_tree_df <- ml_tree_df[order(ml_tree_df$dataset, ml_tree_df$matrix_name),]
-
-# Create IQ-Tree2 commands
-ml_tree_df$iqtree2_call <- unlist(lapply(1:nrow(ml_tree_df), ml.iqtree.wrapper, iqtree_path = iqtree2, df = ml_tree_df))
-
-# Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters.tsv")
-write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
-
-# Save list of iqtree2 commands
-iqtree_calls_name <- paste0(output_dir, "maximum_likelihood_iqtree2_calls.txt")
-write(ml_tree_df$iqtree2_call, file = iqtree_calls_name)
-
-# Run IQ-Tree commands to estimate ML trees for each model/matrix combination
-mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
-
-# Update data frame to include maximum likelihood trees
-ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
-
-# Make a list of .iqtree files and .log files
-all_iqtree_files <- paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file)
-all_log_files <- paste0(output_dir, "maximum_likelihood_trees/", gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
-
-# Extract the log likelihood and other values for the tree
-ml_tree_df$tree_LogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
-ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "ULL"))
-ml_tree_df$tree_NumFreeParams <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "NFP"))
-ml_tree_df$tree_BIC <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "BIC"))
-ml_tree_df$tree_length <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "TrLen"))
-ml_tree_df$tree_SumInternalBranch <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "SIBL"))
-
-# Extract the best model for each combination of matrix and model
-ml_tree_df$best_model <- unlist(lapply(all_iqtree_files, extract.best.model))
-
-# Extract the BIC value and log likelihood value for the best model
-ml_tree_df$best_model_LogL <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "LogL"))
-ml_tree_df$best_model_BIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "BIC"))
-ml_tree_df$best_model_wBIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "wBIC"))
-
-# Extract details about the model
-ml_tree_df$alisim_model <- unlist(lapply(all_log_files, extract.alisim.model))
-
-# Save dataframe
-ml_tree_df_name <- paste0(output_dir, "maximum_likelihood_tree_estimation_parameters_complete.tsv")
-write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
+if (extract.ML.trees == TRUE){
+  # Open ml_tree_df file (if it exists), but with a new name
+  # Want to save the trees into a separate file - due to length and complexity of each cell entry
+  if (file.exists(df_op_01_01) == TRUE){
+    ml_tree_topology_df <- read.csv(df_op_01_01)
+  }
+  
+  # Update data frame to include maximum likelihood trees
+  ml_tree_topology_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
+  
+  # Save data frame with trees included
+  write.table(ml_tree_topology_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
+}
 
 
-#### 4. Estimate constraint and hypothesis trees for each combination of model and dataset ####
+
+
+
+#### 4. Extract information from ML trees and log files ####
+# Extract information about each run from the IQ-Tree output and log files
+if (extract.ML.tree.information == TRUE){
+  # Open ml_tree_df file (if it exists)
+  if (file.exists(df_op_01_01) == TRUE){
+    ml_tree_df <- read.csv(df_op_01_01)
+  }
+  
+  # Make a list of .iqtree files and .log files
+  all_iqtree_files <- paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file)
+  all_log_files <- paste0(output_dir, "maximum_likelihood_trees/", gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
+  
+  # Extract the log likelihood and other values for the tree
+  ml_tree_df$tree_LogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
+  ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "ULL"))
+  ml_tree_df$tree_NumFreeParams <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "NFP"))
+  ml_tree_df$tree_BIC <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "BIC"))
+  ml_tree_df$tree_length <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "TrLen"))
+  ml_tree_df$tree_SumInternalBranch <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "SIBL"))
+  
+  # Extract the best model for each combination of matrix and model
+  ml_tree_df$best_model <- unlist(lapply(all_iqtree_files, extract.best.model))
+  
+  # Extract the BIC value and log likelihood value for the best model
+  ml_tree_df$best_model_LogL <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "LogL"))
+  ml_tree_df$best_model_BIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "BIC"))
+  ml_tree_df$best_model_wBIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "wBIC"))
+  
+  # Extract details about the model
+  ml_tree_df$alisim_model <- unlist(lapply(all_log_files, extract.alisim.model))
+  
+  # Save dataframe
+  write.table(ml_tree_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
+}
+
+
+
+
+
+#### 5. Estimate constraint and hypothesis trees for each combination of model and dataset ####
 # Create a folder for the ml trees and move to that folder
 c_tree_dir <- paste0(output_dir, "constraint_trees/")
 if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 setwd(c_tree_dir)
 
-# Create a constraint df for each row in the ml_tree_df
-constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir,
-                          iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                          dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
-                          df = ml_tree_df)
-# Collate the constraints into a single dataframe
-constraint_df <- do.call(rbind, constraint_list)
-# Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
-constraint_df$model_mrate <- NA
+# Prepare constraint trees to estimate hypothesis trees
+if (prepare.hypothesis.trees == TRUE){
+  # Open ml_tree_df file (if it exists)
+  if (file.exists(df_op_01_01) == TRUE){
+    ml_tree_df <- read.csv(df_op_01_01)
+  }
+  
+  # Create a constraint df for each row in the ml_tree_df
+  constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir,
+                            iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads,
+                            dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
+                            df = ml_tree_df)
+  # Collate the constraints into a single dataframe
+  constraint_df <- do.call(rbind, constraint_list)
+  # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
+  constraint_df$model_mrate <- NA
+  
+  # Save the constraint tree dataframe
+  write.table(constraint_df, file = df_op_01_04, row.names = FALSE, sep = "\t")
+}
 
-# Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
-constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
+# Estimate hypothesis trees
+if (estimate.hypothesis.trees == TRUE){
+  # Open ml_tree_df file (if it exists)
+  if (file.exists(df_op_01_04) == TRUE){
+    constraint_df <- read.csv(df_op_01_04)
+  }
+  
+  # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
+  constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
+  
+  # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
+  mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
+}
 
-# Save the constraint tree dataframe
-c_tree_df_name <- paste0(output_dir, "constraint_tree_estimation_parameters.tsv")
-write.table(constraint_df, file = c_tree_df_name, row.names = FALSE, sep = "\t")
-
-# Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
-mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
-
-# Combine hypothesis trees into one file and save
-ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
-                                           outgroup_taxa = NA)
-# Save dataframe
-ml_tree_df_name <- paste0(output_dir, "MAST_estimation_parameters.tsv")
-write.table(ml_tree_df, file = ml_tree_df_name, row.names = FALSE, sep = "\t")
+# Extract hypothesis trees from output and save into a tsv
+if (collate.hypothesis.logs == TRUE){
+  # Open ml_tree_df file (if it exists)
+  if (file.exists(df_op_01_01) == TRUE){
+    ml_tree_df <- read.csv(df_op_01_01)
+  }
+  
+  # Combine hypothesis trees into one file and save
+  ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
+                                             outgroup_taxa = NA)
+  # Save dataframe
+  write.table(ml_tree_df, file = df_op_01_05, row.names = FALSE, sep = "\t")
+}
 
 
