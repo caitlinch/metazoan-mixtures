@@ -7,7 +7,6 @@
 # alignment_dir       <- Directory containing alignments for all data sets
 #                        Alignments have the naming convention dataset.matrix_name.sequence_type.fa
 #                        E.g. Cherryh2022.all_taxa.aa.fa
-# output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
 location = "local"
@@ -45,24 +44,32 @@ all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 # Two alignment paths need to be corrected - Dunn2008 and Hejnol2009
 # To correct Dunn 2008 (issue in reading file - read in as phyDat and write out as fasta file):
-corrected_dunn_file <- grep("FixedNames", grep("Dunn2008", all_alignments, value = T), value = T)
-if (file.exists(corrected_dunn_file) == FALSE){
-  # Get name of original alignment file
-  dunn_al <- grep("Original", grep("Dunn2008", all_alignments, value = T), value = T)
-  # Open alignment as phyDat
-  dunn_data <- ReadAsPhyDat(dunn_al)
-  # Write alignment as fasta file
-  write.phyDat(dunn_data, file = corrected_dunn_file, format = "fasta", colsep = "") 
+dunn_extension <- tail(strsplit(grep("Dunn", all_alignments, value = TRUE), "\\.")[[1]],1)
+# Check if alignment is a fasta file
+if (dunn_extension != "fasta" & dunn_extension != "fas" & dunn_extension != "FASTA"){
+  corrected_dunn_file <- grep("FixedNames", grep("Dunn2008", all_alignments, value = T), value = T)
+  if (file.exists(corrected_dunn_file) == FALSE){
+    # Get name of original alignment file
+    dunn_al <- grep("Original", grep("Dunn2008", all_alignments, value = T), value = T)
+    # Open alignment as phyDat
+    dunn_data <- ReadAsPhyDat(dunn_al)
+    # Write alignment as fasta file
+    write.phyDat(dunn_data, file = corrected_dunn_file, format = "fasta", colsep = "") 
+  }
 }
-# To correct Dunn 2008 (issue in reading file - read in as phyDat and write out as fasta file):
-corrected_hejnol_file <- grep("Original", grep("Hejnol2009", all_alignments, value = T), value = T)
-if (file.exists(corrected_hejnol_file) == FALSE){
-  # Get name of original alignment file
-  hejnol_al <- grep("FixedNames", grep("Hejnol2009", all_alignments, value = T), value = T)
-  # Open alignment as phyDat
-  hejnol_data <- ReadAsPhyDat(hejnol_al)
-  # Write alignment as fasta file
-  write.phyDat(hejnol_data, file = corrected_hejnol_file, format = "fasta", colsep = "")
+# To correct Hejnol 2009 (issue in reading file - read in as phyDat and write out as fasta file):
+hejnol_extension <- tail(strsplit(grep("Hejnol", all_alignments, value = TRUE), "\\.")[[1]],1)
+# Check if alignment is a fasta file
+if (hejnol_extension != "fasta" & hejnol_extension != "fas" & hejnol_extension != "FASTA"){
+  corrected_hejnol_file <- grep("Original", grep("Hejnol2009", all_alignments, value = T), value = T)
+  if (file.exists(corrected_hejnol_file) == FALSE){
+    # Get name of original alignment file
+    hejnol_al <- grep("FixedNames", grep("Hejnol2009", all_alignments, value = T), value = T)
+    # Open alignment as phyDat
+    hejnol_data <- ReadAsPhyDat(hejnol_al)
+    # Write alignment as fasta file
+    write.phyDat(hejnol_data, file = corrected_hejnol_file, format = "fasta", colsep = "")
+  }
 }
 
 # Re-extract the list of alignments and remove the files containing the word "Original"
@@ -73,6 +80,7 @@ if (length(all_files) > 0){
 }
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("\\.alignment\\.", all_files, value = T)
+# Remove files that contain the word "Original"
 all_alignments <- grep("Original", all_alignments, value = T, invert = T)
 
 
@@ -82,6 +90,12 @@ all_alignments <- grep("Original", all_alignments, value = T, invert = T)
 dimension_list <- lapply(all_alignments, matrix.dimensions)
 dimension_df <- as.data.frame(do.call(rbind, dimension_list))
 names(dimension_df) <- c("dataset", "matrix_name", "sequence_format", "num_taxa", "num_sites", "alignment_path")
+
+# Check the output folder exists
+output_dir <- paste0(repo_dir, "data/")
+if (dir.exists(output_dir) == FALSE){
+  dir.crate(output_dir)
+}
 
 # Save the dataframe
 df_path <- paste0(output_dir, "alignment_dimensions.csv")
