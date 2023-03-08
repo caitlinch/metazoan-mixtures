@@ -388,7 +388,7 @@ extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
     gamma_list_ind <- grep("Model of rate heterogeneity\\: Gamma", iq_lines)
     # Check if the gamma parameters are present (if yes, that means there's a line containing the rates and weights)
     if ( (identical(gamma_shape_ind,integer(0)) == FALSE & class(gamma_shape_ind) == "integer") |
-                (identical(gamma_list_ind,integer(0)) == FALSE & class(gamma_list_ind) == "integer") ){
+         (identical(gamma_list_ind,integer(0)) == FALSE & class(gamma_list_ind) == "integer") ){
       ## Gamma (+G)
       if (gamma.parameter == "Shape"){
         ## Extract the value of the gamma shape alpha
@@ -438,6 +438,68 @@ extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
   
   # Return the output
   return(gamma_op)
+}
+
+
+extract.state.frequencies <- function(iqtree_file){
+  # Given an iqtree file, this function will extract the state frequencies for the alignment
+  
+  ## Check if the iqtree file exists
+  if (file.exists(iqtree_file) == TRUE){
+    ## Open the .iqtree file:
+    iq_lines <- readLines(iqtree_file)
+    
+    ## Extract state frequency details:
+    # Check for presence of state frequencies details
+    ind <- grep("State frequencies:", iq_lines)
+    if (identical(ind, integer(0)) == FALSE){
+      ## Determine whether state frequencies were empirically determined (or not!)
+      # If there is a section for state frequencies, extract and output details 
+      sf1 <- strsplit(iq_lines[[ind]], ":")[[1]][2]
+      # Check whether state frequencies are needed
+      sf1_squashed <- gsub(" ", "", sf1)
+      if (sf1_squashed == "(empiricalcountsfromalignment)"){
+        ## If state frequencies were determined from the alignment, 
+        #    extract the lines with state frequencies from the .iqtree file
+        # Get starting line for frequencies
+        start_ind <- grep("State frequencies:", iq_lines) + 2
+        # Take the 20 lines containing AA frequencies
+        freq_lines <- iq_lines[start_ind:(start_ind+19)]
+        # Split up the frequency lines into the label and the frequency
+        freq_split <- unlist(strsplit(freq_lines, "="))
+        
+        ## Process the frequencies 
+        # Get the frequency
+        freq_nums <- freq_split[c(FALSE, TRUE)]
+        # Remove any spaces (from IQTree formatting)
+        freq_nums <- gsub(" ","",freq_nums)
+        
+        ## Process the labels
+        # Get corresponding AA letter
+        freq_names <- freq_split[c(TRUE, FALSE)]
+        # Remove IQTree formatting
+        freq_names <- gsub("pi\\(", "", freq_names)
+        freq_names <- gsub("\\)", "", freq_names)
+        freq_names <- gsub(" ", "", freq_names)
+        
+        ## Make the output pretty
+        # Create a nice output by pasting together the frequencies in order
+        f_op = paste(freq_nums, collapse = ",")
+        
+      } else if (sf1_squashed == "(equalfrequencies)"){
+        ## If state frequencies were equal, generate equal state frequencies
+        f_op <- paste(as.character(rep(1/20, 20)), collapse = ",")
+      } else {
+        f_op <- "State frequencies from model"
+      }
+    } else if (identical(ind, integer(0)) == TRUE){
+      # If no details on state frequencies are needed, return an empty dataframe
+      f_op <- NA
+    }
+  }
+  
+  ## Output the frequencies
+  return(f_op)
 }
 
 
