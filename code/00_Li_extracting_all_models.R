@@ -1,18 +1,24 @@
-# Input parameters
-# supp_dir <- directory containing supplementary data from Li et. al. (2021) paper (downloaded from github repository)
+# metazoan-mixtures/code/00_matrix_parameters.R
+## This script extracts the number of taxa and number of sites from a list of alignments
+# Caitlin Cherryh, 2022
 
-supp_dir <- "/Users/caitlin/Downloads/animal_tree_root-main" 
-mandir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/animal_tree_root-main/"
+#### 1. Input parameters ####
+## Specify parameters:
+# supp_dir <- directory containing supplementary data from Li et. al. (2021) paper (downloaded from github repository https://github.com/dunnlab/animal_tree_root)
+# main_dir <- directory for the GitHub repository for this project: caitlinch/metazoan-mixtures
+
+supp_dir <- "/Users/caitlincherryh/Documents/Repositories_notMine/animal_tree_root-main" 
+main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 
 
 
-#### 1. Prepare variables, packages, and functions
+#### 2. Prepare variables, packages, and functions
 # Source functions for extracting models and processing datasets
 source(paste0(main_dir, "code/func_data_processing.R"))
 
 
 
-#### 2. Extract vector of all models used in Li et. al. (2021) ####
+#### 3. Extract vector of all models used in Li et. al. (2021) ####
 # List all files in the supp_dir
 all_files <- list.files(supp_dir, recursive = TRUE, full.names = TRUE)
 # Extract files that contain information about models
@@ -34,7 +40,7 @@ st1$model_rate_matrix[is.na(st1$model_rate_matrix)] <- ""
 st1$model_site_rate_hetero[is.na(st1$model_site_rate_hetero)] <- ""
 st1$model_site_rate_hetero[st1$model_site_rate_hetero == "GAMMA"] <- "G"
 # Relabel the model equilibrium column
-st1 <- st1[st1$model_equilibrium != "mix", ]
+st1$model_equilibrium[st1$model_equilibrium == "mix"] <- ""
 st1$model_equilibrium[is.na(st1$model_equilibrium)] <- ""
 st1$model_equilibrium[st1$model_equilibrium == "Empritical"] <- "F"
 st1$model_equilibrium[st1$model_equilibrium == "Estimated"] <- "FO"
@@ -64,3 +70,16 @@ st2_models <- sort(unique(st2_models))
 li_models <- sort(unique(c(st1_models, st2_models)))
 # Alphabetise models by model chunks
 li_models <- unique(sort(unlist(lapply(li_models, sort.model.chunks))))
+
+### Save the output
+# Ensure the output folder exists (and create it if it doesn't)
+output_dir <- paste0(main_dir, "data/")
+if (dir.exists(output_dir) == FALSE){
+  dir.create(output_dir)
+}
+
+# Save the models as a text file
+output_path <- paste0(output_dir, "Li2021_all_models.txt")
+write(li_models, file = output_path)
+
+
