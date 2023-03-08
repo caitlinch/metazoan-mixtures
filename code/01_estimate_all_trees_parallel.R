@@ -249,6 +249,7 @@ if (extract.ML.tree.information == TRUE){
 
 
 #### 5. Estimate constraint and hypothesis trees for each combination of model and dataset ####
+### START HERE: CHECK AND UPDATE ####
 # Move to the folder for the constraint trees
 setwd(c_tree_dir)
 
