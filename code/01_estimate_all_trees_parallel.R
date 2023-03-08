@@ -184,7 +184,7 @@ if (extract.ML.trees == TRUE){
   # Open ml_tree_df file (if it exists), but with a new name
   # Want to save the trees into a separate file - due to length and complexity of each cell entry
   if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_topology_df <- read.csv(df_op_01_01)
+    ml_tree_topology_df <- read.table(df_op_01_01, header = T)
   }
   
   # Update data frame to include maximum likelihood trees
@@ -203,7 +203,7 @@ if (extract.ML.trees == TRUE){
 if (extract.ML.tree.information == TRUE){
   # Open ml_tree_df file (if it exists)
   if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_df <- read.csv(df_op_01_01)
+    ml_tree_df <- read.table(df_op_01_01, header = T)
   }
   
   # Make a list of .iqtree files and .log files
@@ -247,7 +247,7 @@ setwd(c_tree_dir)
 if (prepare.hypothesis.trees == TRUE){
   # Open ml_tree_df file (if it exists)
   if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_df <- read.csv(df_op_01_01)
+    ml_tree_df <- read.table(df_op_01_01, header = T)
   }
   
   # Create a constraint df for each row in the ml_tree_df
@@ -268,7 +268,7 @@ if (prepare.hypothesis.trees == TRUE){
 if (estimate.hypothesis.trees == TRUE){
   # Open ml_tree_df file (if it exists)
   if (file.exists(df_op_01_04) == TRUE){
-    constraint_df <- read.csv(df_op_01_04)
+    constraint_df <- read.table(df_op_01_04, header = T)
   }
   
   # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
@@ -282,7 +282,7 @@ if (estimate.hypothesis.trees == TRUE){
 if (collate.hypothesis.logs == TRUE){
   # Open ml_tree_df file (if it exists)
   if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_df <- read.csv(df_op_01_01)
+    ml_tree_df <- read.table(df_op_01_01, header = T)
   }
   
   # Combine hypothesis trees into one file and save
