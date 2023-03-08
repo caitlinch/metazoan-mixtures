@@ -35,3 +35,12 @@ sponge_partition_model_list <- lapply(sponge_partition_files, extract.partition.
 # Combine list of partition model dataframes into a single dataframe
 models <- sort(unique(unlist(sponge_partition_model_list)))
 
+# Ensure the output folder exists (and create it if it doesn't)
+output_dir <- paste0(main_dir, "data/")
+if (dir.exists(output_dir) == FALSE){
+  dir.create(output_dir)
+}
+
+# Save the models as a text file
+output_path <- paste0(output_dir, "Redmond.McLysaght2021_all_models.txt")
+write(models, file = output_path)
