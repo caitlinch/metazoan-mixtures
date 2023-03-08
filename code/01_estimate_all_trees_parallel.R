@@ -25,6 +25,13 @@
 # ml_tree_bootstraps <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                               If 1, then all processes will run sequentially
+## Specify control parameters (all take logical values TRUE or FALSE:
+# estimate.ML.trees <- TRUE to estimate all maximum likelihood trees (each combination of model and alignment). FALSE to skip.
+# extract.ML.trees <- TRUE to open all maximum likelihood trees and add to dataframe. FALSE to skip.
+# extract.ML.tree.information <- TRUE to extract information from maximum likelihood tree log file and iqtree file. FALSE to skip.
+# prepare.hypothesis.trees <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
+# estimate.hypothesis.trees <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
+# collate.hypothesis.logs <- TRUE tto extract information from hypothesis tree log file and iqtree file. FALSE to skip.
 
 location = "local"
 if (location == "local"){
@@ -72,8 +79,8 @@ ml_tree_bootstraps <- 1000
 # Set control parameters
 estimate.ML.trees <- FALSE
 extract.ML.trees <- FALSE
-extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- FALSE
+extract.ML.tree.information <- TRUE
+prepare.hypothesis.trees <- TRUE
 estimate.hypothesis.trees <- FALSE
 collate.hypothesis.logs <- FALSE
 
