@@ -15,15 +15,12 @@
 
 
 #### 1. Input parameters ####
-## Specify parameters:
-# output_dir            <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir              <- Location of caitlinch/metazoan-mixtures github repository
 # taxon_table_path      <- Location of the `reconciliation/taxonomy_info/taxon_table.tsv` from Li et. al. (2021)
 # manual_taxonomy_path  <- Location of the `reconciliation/taxonomy_info/manual_taxonomy_map.tsv` from Li et. al. (2021)
 
 location = "local"
 if (location == "local"){
-  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   taxon_table_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/00_Li2021_supp/reconciliation_keep/taxonomy_info/taxon_table.tsv"
   manual_taxonomy_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/00_Li2021_supp/reconciliation_keep/taxonomy_info/manual_taxonomy_map.tsv"
@@ -40,9 +37,17 @@ source(paste0(repo_dir, "code/data_dataset_info.R"))
 rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
    philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, all_models, models_list)
 
+# Check whether the data directory at the github repository exists
+data_dir <- paste0(repo_dir, "data/")
+if (dir.exists(data_dir) == FALSE){
+  dir.create(data_dir)
+}
+
+
+
 #### 3. Prepare name csv ####
 # Set a file path for the MAST metazoan taxa collation csv
-mastmet_file_path <- paste0(output_dir, "Cherryh_MAST_metazoa_taxa_collation.csv")
+mastmet_file_path <- paste0(data_dir, "Cherryh_MAST_metazoa_taxa_collation.csv")
 if (file.exists(mastmet_file_path) == TRUE){
   mastmet_df <- read.csv(mastmet_file_path, stringsAsFactors = F)
 } else if (file.exists(mastmet_file_path) == FALSE){
@@ -114,6 +119,7 @@ if (file.exists(mastmet_file_path) == TRUE){
   # Save the data frame as a csv file
   write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
 }
+
 
 
 #### 4. Standardize the names ####
