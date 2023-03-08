@@ -230,7 +230,7 @@ if (extract.ML.tree.information == TRUE){
   trimmed_ml_tree_df$alisim_model <- unlist(lapply(complete_log_files, extract.alisim.model))
   
   # Update data frame to include maximum likelihood trees
-  trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(trimmed_ml_tree_df, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
+  trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
   
   # Trim unneeded columns
   output_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_mset", "model_m", "model_mrate", "sequence_format", "matrix_name",
