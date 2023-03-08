@@ -1,21 +1,27 @@
+# metazoan-mixtures/code/00_Redmond_extracting_all_models.R
+## This script extracts the list of models used for tree estimation in a precious study, 
+# Caitlin Cherryh, 2022
+
 # File to extract all models used in the Redmond and McLysaght paper (from the partition files!)
 # Paper: https://www.nature.com/articles/s41467-021-22074-7
 # Data repository: https://doi.org/10.6084/m9.figshare.12746972
 
-# Input parameters
-# supp_dir <- directory containing supplementary data from Redmond and McLysaght (2021) paper (downloaded from repository)
+#### 1. Input parameters ####
+# supp_dir <- Directory containing supplementary data from Redmond and McLysaght (2021) paper 
+#             Downloaded from repository here: https://doi.org/10.6084/m9.figshare.12746972
+# main_dir <- Directory for GitHub repository for this project (caitlinch/metazoan-mixtures)
 
-supp_dir <- "/Users/caitlin/Downloads/RedmondMcLysaght2021NatCommsData" 
-mandir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+supp_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/RedmondMcLysaght2021NatCommsData" 
+main_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 
 
 
-#### 1. Prepare variables, packages, and functions
+#### 2. Prepare variables, packages, and functions
 source(paste0(main_dir, "code/func_data_processing.R"))
 
 
 
-#### 2. Extract vector of all models used in Redmond and McLysaght 2021 ####
+#### 3. Extract vector of all models used in Redmond and McLysaght 2021 ####
 # List all files in the supplementary data
 all_files <- list.files(supp_dir, recursive = T, full.names = T)
 # Extract files for the three sponge datasets (REA, WEA15 and WEA17)
