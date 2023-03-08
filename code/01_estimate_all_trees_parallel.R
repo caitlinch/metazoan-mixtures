@@ -86,8 +86,6 @@ collate.hypothesis.logs <- FALSE
 
 
 
-
-
 #### 2. Prepare functions, variables and packages ####
 # Open packages
 library(parallel)
@@ -131,7 +129,15 @@ model_components <- model_components[!model_components == "ModelFinder"]
 model_components <- c(model_components, "ModelFinder")
 # Note: partitioning schemes currently not possible in mixture of trees implementation
 
-# Create file names for output csv files
+# Create output folders
+# Create a folder for the ml trees
+ml_tree_dir <- paste0(output_dir, "maximum_likelihood_trees/")
+if (file.exists(ml_tree_dir) == FALSE){dir.create(ml_tree_dir)}
+# Create a folder for the constraint trees
+c_tree_dir <- paste0(output_dir, "constraint_trees/")
+if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
+
+# Create file paths for output files
 txt_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_iqtree2_calls.txt")
 df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
 df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_tree_topologies.tsv")
@@ -141,14 +147,10 @@ df_op_01_05 <- paste0(output_dir, "01_05_constraint_trees.tsv")
 
 
 
-
-
 #### 3. Estimate maximum likelihood trees for each combination of model and dataset ####
 # Estimate ML trees (for each combination of alignment and model)
 if (estimate.ML.trees == TRUE){
-  # Create a folder for the ml trees and move to that folder
-  ml_tree_dir <- paste0(output_dir, "maximum_likelihood_trees/")
-  if (file.exists(ml_tree_dir) == FALSE){dir.create(ml_tree_dir)}
+  # Move to the folder for the maximum likelihood trees
   setwd(ml_tree_dir)
   
   # Create a dataframe of combinations of alignments and models
@@ -195,13 +197,11 @@ if (extract.ML.trees == TRUE){
   }
   
   # Update data frame to include maximum likelihood trees
-  ml_tree_topology_df$maximum_likelihood_tree <- unlist(lapply(paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$ml_tree_file), extract.treefile))
+  ml_tree_topology_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, ml_tree_df$ml_tree_file), extract.treefile))
   
   # Save data frame with trees included
   write.table(ml_tree_topology_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
 }
-
-
 
 
 
@@ -214,8 +214,11 @@ if (extract.ML.tree.information == TRUE){
   }
   
   # Make a list of .iqtree files and .log files
-  all_iqtree_files <- paste0(output_dir, "maximum_likelihood_trees/", ml_tree_df$iqtree_file)
-  all_log_files <- paste0(output_dir, "maximum_likelihood_trees/", gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
+  all_iqtree_files <- paste0(ml_tree_dir, ml_tree_df$iqtree_file)
+  all_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
+  
+  # Determine which files exist
+  complete_iqtree_files <- all_iqtree_files[file.exists(all_iqtree_files)]
   
   # Extract the log likelihood and other values for the tree
   ml_tree_df$tree_LogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
@@ -242,12 +245,8 @@ if (extract.ML.tree.information == TRUE){
 
 
 
-
-
 #### 5. Estimate constraint and hypothesis trees for each combination of model and dataset ####
-# Create a folder for the ml trees and move to that folder
-c_tree_dir <- paste0(output_dir, "constraint_trees/")
-if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
+# Move to the folder for the constraint trees
 setwd(c_tree_dir)
 
 # Prepare constraint trees to estimate hypothesis trees
