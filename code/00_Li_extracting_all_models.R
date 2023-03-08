@@ -1,5 +1,5 @@
 # metazoan-mixtures/code/00_matrix_parameters.R
-## This script extracts the number of taxa and number of sites from a list of alignments
+## This script extracts the list of models used in a previous study, from the github repository of that study
 # Caitlin Cherryh, 2022
 
 #### 1. Input parameters ####
