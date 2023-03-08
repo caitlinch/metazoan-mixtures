@@ -223,7 +223,6 @@ if (extract.ML.tree.information == TRUE){
   # Update the best model column to remove "+I+I+" values (should be "+I+" - output error from IQ-Tree)
   trimmed_ml_tree_df$best_model <- gsub("\\+I\\+I\\+", "+I+", trimmed_ml_tree_df$best_model)
   
-  
   # Extract the BIC value and log likelihood value for the best model
   trimmed_ml_tree_df$best_model_LogL <- unlist(lapply(complete_iqtree_files, extract.model.log.likelihood, var = "LogL"))
   trimmed_ml_tree_df$best_model_BIC <- unlist(lapply(complete_iqtree_files, extract.model.log.likelihood, var = "BIC"))
@@ -231,7 +230,8 @@ if (extract.ML.tree.information == TRUE){
   
   # Extract details about the model
   trimmed_ml_tree_df$estimated_rates <- unlist(lapply(complete_iqtree_files, extract.rates))
-  trimmed_ml_tree_df$estimated_gamma <- unlist(lapply(complete_iqtree_files, extract.rates))
+  trimmed_ml_tree_df$estimated_gamma <- unlist(lapply(complete_iqtree_files, extract.gamma.values))
+  trimmed_ml_tree_df$estimated_state_frequencies <- unlist(lapply(complete_iqtree_files, extract.state.frequencies))
   
   # Update data frame to include maximum likelihood trees
   trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
@@ -240,7 +240,7 @@ if (extract.ML.tree.information == TRUE){
   output_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_mset", "model_m", "model_mrate", "sequence_format", "matrix_name",
                                              "prefix", "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC", "tree_length",
                                              "tree_SumInternalBranch", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
-                                             "estimated_rates", "estimated_gamma", "maximum_likelihood_tree")]
+                                             "estimated_rates", "estimated_gamma", "estimated_state_frequencies", "maximum_likelihood_tree")]
   
   # Save dataframe
   write.table(output_ml_tree_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
