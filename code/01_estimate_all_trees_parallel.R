@@ -27,8 +27,7 @@
 #                               If 1, then all processes will run sequentially
 ## Specify control parameters (all take logical values TRUE or FALSE:
 # estimate.ML.trees <- TRUE to estimate all maximum likelihood trees (each combination of model and alignment). FALSE to skip.
-# extract.ML.trees <- TRUE to open all maximum likelihood trees and add to dataframe. FALSE to skip.
-# extract.ML.tree.information <- TRUE to extract information from maximum likelihood tree log file and iqtree file. FALSE to skip.
+# extract.ML.tree.information <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
 # prepare.hypothesis.trees <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # estimate.hypothesis.trees <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # collate.hypothesis.logs <- TRUE tto extract information from hypothesis tree log file and iqtree file. FALSE to skip.
@@ -78,7 +77,6 @@ ml_tree_bootstraps <- 1000
 
 # Set control parameters
 estimate.ML.trees <- FALSE
-extract.ML.trees <- FALSE
 extract.ML.tree.information <- TRUE
 prepare.hypothesis.trees <- TRUE
 estimate.hypothesis.trees <- FALSE
@@ -140,10 +138,9 @@ if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 # Create file paths for output files
 txt_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_iqtree2_calls.txt")
 df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
-df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_tree_topologies.tsv")
-df_op_01_03 <- paste0(output_dir, "01_03_maximum_likelihood_tree_estimation_parameters_complete.tsv")
-df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_estimation_parameters.tsv")
-df_op_01_05 <- paste0(output_dir, "01_05_constraint_trees.tsv")
+df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
+df_op_01_03 <- paste0(output_dir, "01_04_constraint_tree_estimation_parameters.tsv")
+df_op_01_04 <- paste0(output_dir, "01_05_constraint_tree_results.tsv")
 
 
 
@@ -189,58 +186,60 @@ if (estimate.ML.trees == TRUE){
   mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 }
 
-if (extract.ML.trees == TRUE){
-  # Open ml_tree_df file (if it exists), but with a new name
-  # Want to save the trees into a separate file - due to length and complexity of each cell entry
-  if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_topology_df <- read.table(df_op_01_01, header = T)
-  }
-  
-  # Update data frame to include maximum likelihood trees
-  ml_tree_topology_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, ml_tree_df$ml_tree_file), extract.treefile))
-  
-  # Save data frame with trees included
-  write.table(ml_tree_topology_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
-}
-
 
 
 #### 4. Extract information from ML trees and log files ####
 # Extract information about each run from the IQ-Tree output and log files
 if (extract.ML.tree.information == TRUE){
-  # Open ml_tree_df file (if it exists)
-  if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_df <- read.table(df_op_01_01, header = T)
-  }
+  # Open ml_tree_df file 
+  ml_tree_df <- read.table(df_op_01_01, header = T)
   
-  # Make a list of .iqtree files and .log files
+  # Make a list of .iqtree files (and .log files)
   all_iqtree_files <- paste0(ml_tree_dir, ml_tree_df$iqtree_file)
   all_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
   
-  # Determine which files exist
-  complete_iqtree_files <- all_iqtree_files[file.exists(all_iqtree_files)]
+  # Determine which files exist (i.e. that ML tree estimated in IQ-Tree)
+  finished_iqtree_files <- all_iqtree_files[file.exists(all_iqtree_files)]
+  
+  # Reduce the df to only rows that both the completed iqtree file and the log file are present for
+  trimmed_ml_tree_df <- ml_tree_df[ml_tree_df$iqtree_file %in% basename(finished_iqtree_files),]
+  
+  # Get the correct order for the .iqtree files by reading off the trimmed_ml_tree_df$iqtree_file column
+  complete_iqtree_files <- paste0(ml_tree_dir, trimmed_ml_tree_df$iqtree_file)
+  
+  # Determine the completed log files - every finished tree will have a .treefile, a .iqtree file and a .log file
+  complete_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", trimmed_ml_tree_df$iqtree_file))
   
   # Extract the log likelihood and other values for the tree
-  ml_tree_df$tree_LogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
-  ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "ULL"))
-  ml_tree_df$tree_NumFreeParams <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "NFP"))
-  ml_tree_df$tree_BIC <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "BIC"))
-  ml_tree_df$tree_length <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "TrLen"))
-  ml_tree_df$tree_SumInternalBranch <- unlist(lapply(all_iqtree_files, extract.tree.log.likelihood, var = "SIBL"))
+  trimmed_ml_tree_df$tree_LogL <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
+  trimmed_ml_tree_df$tree_UnconstrainedLogL <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "ULL"))
+  trimmed_ml_tree_df$tree_NumFreeParams <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "NFP"))
+  trimmed_ml_tree_df$tree_BIC <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "BIC"))
+  trimmed_ml_tree_df$tree_length <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "TrLen"))
+  trimmed_ml_tree_df$tree_SumInternalBranch <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "SIBL"))
   
   # Extract the best model for each combination of matrix and model
-  ml_tree_df$best_model <- unlist(lapply(all_iqtree_files, extract.best.model))
+  trimmed_ml_tree_df$best_model <- unlist(lapply(complete_iqtree_files, extract.best.model))
   
   # Extract the BIC value and log likelihood value for the best model
-  ml_tree_df$best_model_LogL <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "LogL"))
-  ml_tree_df$best_model_BIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "BIC"))
-  ml_tree_df$best_model_wBIC <- unlist(lapply(all_iqtree_files, extract.model.log.likelihood, var = "wBIC"))
+  trimmed_ml_tree_df$best_model_LogL <- unlist(lapply(complete_iqtree_files, extract.model.log.likelihood, var = "LogL"))
+  trimmed_ml_tree_df$best_model_BIC <- unlist(lapply(complete_iqtree_files, extract.model.log.likelihood, var = "BIC"))
+  trimmed_ml_tree_df$best_model_wBIC <- unlist(lapply(complete_iqtree_files, extract.model.log.likelihood, var = "wBIC"))
   
   # Extract details about the model
-  ml_tree_df$alisim_model <- unlist(lapply(all_log_files, extract.alisim.model))
+  trimmed_ml_tree_df$alisim_model <- unlist(lapply(complete_log_files, extract.alisim.model))
+  
+  # Update data frame to include maximum likelihood trees
+  trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(trimmed_ml_tree_df, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
+  
+  # Trim unneeded columns
+  output_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_mset", "model_m", "model_mrate", "sequence_format", "matrix_name",
+                                             "prefix", "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC", "tree_length",
+                                             "tree_SumInternalBranch", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                             "alisim_model", "maximum_likelihood_tree")]
   
   # Save dataframe
-  write.table(ml_tree_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
+  write.table(output_ml_tree_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
 }
 
 
@@ -251,10 +250,8 @@ setwd(c_tree_dir)
 
 # Prepare constraint trees to estimate hypothesis trees
 if (prepare.hypothesis.trees == TRUE){
-  # Open ml_tree_df file (if it exists)
-  if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_df <- read.table(df_op_01_01, header = T)
-  }
+  # Open ml_tree_df file
+  ml_tree_df <- read.table(df_op_01_01, header = T)
   
   # Create a constraint df for each row in the ml_tree_df
   constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir,
@@ -267,15 +264,13 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_df$model_mrate <- NA
   
   # Save the constraint tree dataframe
-  write.table(constraint_df, file = df_op_01_04, row.names = FALSE, sep = "\t")
+  write.table(constraint_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
 }
 
 # Estimate hypothesis trees
 if (estimate.hypothesis.trees == TRUE){
-  # Open ml_tree_df file (if it exists)
-  if (file.exists(df_op_01_04) == TRUE){
-    constraint_df <- read.table(df_op_01_04, header = T)
-  }
+  # Open constraint tree dataframe file
+    constraint_df <- read.table(df_op_01_03, header = T)
   
   # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
@@ -285,6 +280,7 @@ if (estimate.hypothesis.trees == TRUE){
 }
 
 # Extract hypothesis trees from output and save into a tsv
+#### THIS NEEDS TESTING ####
 if (collate.hypothesis.logs == TRUE){
   # Open ml_tree_df file (if it exists)
   if (file.exists(df_op_01_01) == TRUE){
@@ -295,7 +291,7 @@ if (collate.hypothesis.logs == TRUE){
   ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
                                              outgroup_taxa = NA)
   # Save dataframe
-  write.table(ml_tree_df, file = df_op_01_05, row.names = FALSE, sep = "\t")
+  write.table(ml_tree_df, file = df_op_01_04, row.names = FALSE, sep = "\t")
 }
 
 
