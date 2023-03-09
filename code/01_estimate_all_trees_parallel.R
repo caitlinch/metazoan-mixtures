@@ -82,9 +82,9 @@ hypothesis_tree_bootstraps <- 1000
 # Set control parameters
 estimate.ML.trees <- FALSE
 extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- TRUE
+prepare.hypothesis.trees <- FALSE
 estimate.hypothesis.trees <- TRUE
-collate.hypothesis.logs <- FALSE
+collate.hypothesis.logs <- TRUE
 
 
 
@@ -295,6 +295,10 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_df$model_mrate <- NA
   # Add the number of ultrafast bootstraps to perform for the hypothesis trees (constrained maximum likelihood trees with fixed model)
   constraint_df$num_bootstraps <- hypothesis_tree_bootstraps
+  
+  # Prepare iqtree commands for each of the hypothesis trees
+  constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = FALSE))
+  
   # Save the constraint tree dataframe
   write.table(constraint_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
 }
@@ -303,9 +307,6 @@ if (prepare.hypothesis.trees == TRUE){
 if (estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
   constraint_df <- read.table(df_op_01_03, header = T)
-  
-  # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
-  constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
   
   # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
   mclapply(constraint_df$iqtree2_call, system, mc.cores = number_parallel_processes)
