@@ -276,11 +276,13 @@ if (prepare.hypothesis.trees == TRUE){
   
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
-  # Create a constraint df for each row in the selected_models_df
+  # Create the constraint trees and determine what parameters to use for each hypothesis tree
+  #     Hypothesis tree = constrained maximum likelihood tree estimated in IQ-Tree with best model from ML run (for each constraint tree for each dataset/model combination)
+  # Create a constraint dataframe for each row in the selected_models_df
   constraint_list <- lapply(1:nrow(selected_models_df), constraint.tree.wrapper, output_directory = c_tree_dir,
                             iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads,
                             dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
-                            df = selected_models_df)
+                            ml_output_df = selected_models_df)
   # Collate the constraints into a single dataframe
   constraint_df <- do.call(rbind, constraint_list)
   # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
