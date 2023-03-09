@@ -271,6 +271,8 @@ if (prepare.hypothesis.trees == TRUE){
   # Want to extract ModelFinder model, and the model with the best BIC
   # If the ModelFinder model has the best BIC, return just the ModelFinder model
   selected_models_list <- lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, ML_output_df = trimmed_ml_tree_df) 
+  # Convert lapply output to a nice dataframe
+  selected_models_df <- do.call(rbind, selected_models_list)
   
   ## Prepare parameters for the constraint trees
   # Create a constraint df for each row in the ml_tree_df
