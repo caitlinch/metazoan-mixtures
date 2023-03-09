@@ -504,9 +504,11 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
 
 
 #### Estimating ML trees using a constraint tree ####
-run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
-                                            iqtree_path = "iqtree2", prefix = NA, best_model = NA, num_threads = 1, run.iqtree = TRUE){
-  # Function to apply IQ-Tree to a series of alignments with a constraint tree
+run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, constraint_tree_file,
+                                            best_model = NA, free_rate_categories = NA, gamma = NA, state_frequencies = NA,
+                                            iqtree_path = "iqtree2", num_threads = 1, run.iqtree = FALSE,
+                                            partitioned_check = FALSE, partition_file = NA){
+  # Function estimate a constrained maximum likelihood tree; given an alignment, a model, and a constraint/guide tree
   
   # Set best_model as model for IQ-Tree run
   if (is.na(best_model) == TRUE){
@@ -525,12 +527,12 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   } 
   
   # Add prefix if present
-  if (is.na(prefix) == TRUE){
+  if (is.na(output_prefix) == TRUE){
     # If prefix is NA, do nothing
     prefix_call <- ""
-  } else if (is.na(prefix) == FALSE){
+  } else if (is.na(output_prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" -pre ", prefix, " ")
+    prefix_call <- paste0(" -pre ", output_prefix, " ")
   } 
   
   # Collate iqtree command
@@ -546,19 +548,19 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
 } # end function
 
 
-run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
+run.one.constraint.tree <- function(index, constraint_df, run.iqtree = TRUE){
   # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
   
   # Identify row
-  row <- df[index, ]
+  row <- constraint_df[index, ]
   
   # Feed row information into function call
   # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
   #   either way, want to run function to print iqtree command line
-  run.iqtree.with.constraint.tree(alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths, 
-                                  partitioned_check = FALSE, partition_file = row$partition_file, 
-                                  iqtree_path = row$iqtree_path, prefix = row$constraint_prefixes, best_model = row$best_model,
-                                  num_threads = row$num_threads, run.iqtree = run.iqtree)
+  run.iqtree.with.constraint.tree(output_prefix = row$hypothesis_tree_prefixes, alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths,
+                                  best_model = row$best_model, free_rate_categories = row$estimated_rates, gamma = row$estimated_gamma, state_frequencies = row$estimated_state_frequencies,
+                                  iqtree_path = row$iqtree_path, num_threads = row$num_threads, run.iqtree = run.iqtree,
+                                  partitioned_check = FALSE, partition_file = row$partition_file)
 }
 
 
@@ -566,11 +568,11 @@ run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
   # Quick function to take in a dataframe, and estimate hypothesis trees by feeding it row by row into the run.one.constraint.tree function
   
   # Open the dataframe
-  df <- read.csv(csv_file)
+  constraint_df <- read.csv(csv_file)
   # Estimate an ML tree in IQ-Tree for each constraint tree
   # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
   #   either way, want to run function to print iqtree command line
-  lapply(1:nrow(df), run.one.constraint.tree, df, run.iqtree = run.iqtree)
+  lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = run.iqtree)
 }
 
 
