@@ -11,26 +11,29 @@
 #### 1. Input parameters ####
 ## Specify parameters:
 # alignment_dir       <- Directory containing alignments for all data sets
-#                       Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
-#                       E.g. Cherryh2022.alignment1.aa.fa
+#                           Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                           E.g. Cherryh2022.alignment1.aa.fa
 # output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
 # iqtree2             <- Location of IQ-Tree2 stable release
 
-# iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
-# iqtree_mrate <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
-#                 We set iqtree_mrate = "E,I,G,I+G,R,I+R"
-#                 See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
-# ml_tree_bootstraps <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
-# number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
-#                               If 1, then all processes will run sequentially
+# iqtree_num_threads          <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
+# iqtree_mrate                <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
+#                                   We set iqtree_mrate = "E,I,G,I+G,R,I+R"
+#                                   See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
+# ml_tree_bootstraps          <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
+# hypothesis_tree_bootstraps  <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree when estimating constrained maximum likelihood trees
+# number_parallel_processes   <- The number of simultaneous processes to run at once using mclapply(). 
+#                                   If 1, then all processes will run sequentially
+
+
 ## Specify control parameters (all take logical values TRUE or FALSE:
-# estimate.ML.trees <- TRUE to estimate all maximum likelihood trees (each combination of model and alignment). FALSE to skip.
-# extract.ML.tree.information <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
-# prepare.hypothesis.trees <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
-# estimate.hypothesis.trees <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
-# collate.hypothesis.logs <- TRUE tto extract information from hypothesis tree log file and iqtree file. FALSE to skip.
+# estimate.ML.trees             <- TRUE to estimate all maximum likelihood trees (each combination of model and alignment). FALSE to skip.
+# extract.ML.tree.information   <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
+# prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
+# estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
+# collate.hypothesis.logs       <- TRUE to extract information from hypothesis tree log file and iqtree file. FALSE to skip.
 
 location = "local"
 if (location == "local"){
@@ -74,6 +77,7 @@ if (location == "local"){
 iqtree_mrate <- "E,I,G,I+G,R,I+R"
 iqtree_num_threads <- 5
 ml_tree_bootstraps <- 1000
+hypothesis_tree_bootstraps <- 1000
 
 # Set control parameters
 estimate.ML.trees <- FALSE
@@ -289,6 +293,8 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_df <- do.call(rbind, constraint_list)
   # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
   constraint_df$model_mrate <- NA
+  # Add the number of ultrafast bootstraps to perform for the hypothesis trees (constrained maximum likelihood trees with fixed model)
+  constraint_df$num_bootstraps <- hypothesis_tree_bootstraps
   # Save the constraint tree dataframe
   write.table(constraint_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
 }
@@ -300,7 +306,6 @@ if (estimate.hypothesis.trees == TRUE){
   
   # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
-
   
   # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
   mclapply(constraint_df$iqtree2_call, system, mc.cores = number_parallel_processes)
