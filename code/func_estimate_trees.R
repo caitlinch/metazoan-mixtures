@@ -229,15 +229,23 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, tree_id = 
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
   # Does not include Placozoa - Placozoa is not relevant to the question I am investigating (and is only ~1 taxa in most data sets)
   
-  ### Prepare to estimate constraint trees
+  ### Prepare to construct constraint trees
   # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
   if (is.na(tree_id) == FALSE){
     # If a tree_id is provided, use it in the file names
-    output_id = tree_id
+    tree_id = tree_id
   } else if (is.na(tree_id) == TRUE){
     # If no tree_id is provided, create one
-    output_id <- paste0(dataset, ".", matrix_name, ".", model_code)
+    tree_id <- paste0(dataset, ".", matrix_name, ".", model_code)
   }
+  
+  ### Construct constraint trees
+  # Generate file names for all 5 constraint trees
+  constraint_tree_1_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "1", ".nex")
+  constraint_tree_2_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "2", ".nex")
+  constraint_tree_3_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "3", ".nex")
+  constraint_tree_4_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "4", ".nex")
+  constraint_tree_5_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "5", ".nex")
   
   # Split the taxa into clades
   outgroup_taxa = constraint_clades$Outgroup
@@ -248,140 +256,158 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, tree_id = 
   cnidaria_taxa = constraint_clades$Cnidaria
   bilateria_taxa = constraint_clades$Bilateria
   
+  
+  
+  # Only need to create one set of hypothesis trees per dataset/matrix combination - create constraint tree if it doesn't exist
   ### Hypothesis 1: Ctenophora-sister
   # Tree: (outgroup_taxa, (ctenophora_taxa, (porifera_taxa, (cnidaria_taxa, bilateria_taxa))));
-  ## Construct constraint tree
-  constraint_tree_1 <- paste0("((", 
-                              paste(outgroup_taxa, collapse = ", "), 
-                              "),((", 
-                              paste(ctenophora_taxa, collapse = ", "), 
-                              "),((", 
-                              paste(porifera_taxa, collapse = ", "),
-                              "), (",
-                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "),
-                              "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "1", ".nex")
-  write(constraint_tree_1, file = constraint_tree_file_name)
+  if (file.exists(constraint_tree_1_file_name) == FALSE){
+    ## Construct constraint tree
+    constraint_tree_1 <- paste0("((", 
+                                paste(outgroup_taxa, collapse = ", "), 
+                                "),((", 
+                                paste(ctenophora_taxa, collapse = ", "), 
+                                "),((", 
+                                paste(porifera_taxa, collapse = ", "),
+                                "), (",
+                                paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "),
+                                "))));")
+    write(constraint_tree_1, file = constraint_tree_1_file_name)
+  } else if (file.exists(constraint_tree_1_file_name) == TRUE){ 
+    constraint_tree_1 <- readLines(constraint_tree_1_file_name)
+  }
   
   ### Hypothesis 2: Porifera-sister
   # Tree: (outgroup_taxa, (porifera_taxa, (ctenophora_taxa, (cnidaria_taxa, bilateria_taxa))));
-  ## Construct constraint tree
-  constraint_tree_2 <- paste0("((", 
-                              paste(outgroup_taxa, collapse = ", "), 
-                              "),((", 
-                              paste(porifera_taxa, collapse = ", "), 
-                              "),((", 
-                              paste(ctenophora_taxa, collapse = ", "),
-                              "),(",
-                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
-                              "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "2", ".nex")
-  write(constraint_tree_2, file = constraint_tree_file_name)
+  if (file.exists(constraint_tree_2_file_name) == FALSE){
+    ## Construct constraint tree
+    constraint_tree_2 <- paste0("((", 
+                                paste(outgroup_taxa, collapse = ", "), 
+                                "),((", 
+                                paste(porifera_taxa, collapse = ", "), 
+                                "),((", 
+                                paste(ctenophora_taxa, collapse = ", "),
+                                "),(",
+                                paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                                "))));")
+    write(constraint_tree_2, file = constraint_tree_2_file_name)
+  } else if (file.exists(constraint_tree_2_file_name) == TRUE){ 
+    constraint_tree_2 <- readLines(constraint_tree_2_file_name)
+  }
   
   ### Hypothesis 3: (Ctenophore+Porifera)-sister
   # Tree: (outgroup_taxa, ((porifera_taxa, ctenophora_taxa), (cnidaria_taxa, bilateria_taxa))));
-  ## Construct constraint tree
-  constraint_tree_3 <- paste0("((", 
-                              paste(outgroup_taxa, collapse = ", "), 
-                              "),((", 
-                              paste(c(porifera_taxa, ctenophora_taxa), collapse = ", "), 
-                              "),(",
-                              paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
-                              ")));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "3", ".nex")
-  write(constraint_tree_3, file = constraint_tree_file_name)
+  if (file.exists(constraint_tree_3_file_name) == FALSE){
+    ## Construct constraint tree
+    constraint_tree_3 <- paste0("((", 
+                                paste(outgroup_taxa, collapse = ", "), 
+                                "),((", 
+                                paste(c(porifera_taxa, ctenophora_taxa), collapse = ", "), 
+                                "),(",
+                                paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), 
+                                ")));")
+    write(constraint_tree_3, file = constraint_tree_3_file_name)
+  } else if (file.exists(constraint_tree_3_file_name) == TRUE){ 
+    constraint_tree_3 <- readLines(constraint_tree_3_file_name)
+  }
   
   ### Hypothesis 4: Paraphyletic sponges, Porifera-sister
   # Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, (cnidaria_taxa, bilateria_taxa)))));
-  ## Construct constraint tree
-  # Will depend on whether both sponges_1 and sponges_2 clades are present
-  if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
-    # If both sponges_1_taxa and sponges_2_taxa are present:
-    constraint_tree_4 <- paste0("(",
-                                paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
-                                ", (", 
-                                paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
-                                ", (", 
-                                paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
-                                ")))));")
-  } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
-    # If only sponges_2_taxa are present (0 sponges_1_taxa):
-    constraint_tree_4 <- paste0("(",
-                                paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
-                                "))));")
-  } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
-    # If only sponges_1_taxa are present (0 sponges_2_taxa):
-    constraint_tree_4 <- paste0("(",
-                                paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
-                                "))));")
+  if (file.exists(constraint_tree_4_file_name) == FALSE){
+    ## Construct constraint tree
+    # Will depend on whether both sponges_1 and sponges_2 clades are present
+    if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
+      # If both sponges_1_taxa and sponges_2_taxa are present:
+      constraint_tree_4 <- paste0("(",
+                                  paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
+                                  ", (", 
+                                  paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
+                                  ", (", 
+                                  paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
+                                  ")))));")
+    } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
+      # If only sponges_2_taxa are present (0 sponges_1_taxa):
+      constraint_tree_4 <- paste0("(",
+                                  paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
+                                  "))));")
+    } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
+      # If only sponges_1_taxa are present (0 sponges_2_taxa):
+      constraint_tree_4 <- paste0("(",
+                                  paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
+                                  "))));")
+    }
+    write(constraint_tree_4, file = constraint_tree_4_file_name)
+  } else if (file.exists(constraint_tree_4_file_name) == TRUE){ 
+    constraint_tree_4 <- readLines(constraint_tree_4_file_name)
   }
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "4", ".nex")
-  write(constraint_tree_4, file = constraint_tree_file_name)
   
   ### Hypothesis 5: Paraphyletic sponges, Ctenophora-sister
   # Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, (cnidaria_taxa, bilateria_taxa)))));
-  ## Construct constraint tree
-  # Will depend on whether both sponges_1 and sponges_2 clades are present
-  if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
-    # If both sponges_1_taxa and sponges_2_taxa are present:
-    constraint_tree_5 <- paste0("(",
-                                paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
-                                ", (", 
-                                paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
-                                ", (", 
-                                paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
-                                ")))));")
-  } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
-    # If only sponges_2_taxa are present (0 sponges_1_taxa):
-    constraint_tree_5 <- paste0("(",
-                                paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
-                                "))));")
-  } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
-    # If only sponges_1_taxa are present (0 sponges_2_taxa):
-    constraint_tree_5 <- paste0("(",
-                                paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
-                                ", (",
-                                paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
-                                "))));")
+  if (file.exists(constraint_tree_5_file_name) == FALSE){
+    ## Construct constraint tree
+    # Will depend on whether both sponges_1 and sponges_2 clades are present
+    if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
+      # If both sponges_1_taxa and sponges_2_taxa are present:
+      constraint_tree_5 <- paste0("(",
+                                  paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
+                                  ", (", 
+                                  paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
+                                  ", (", 
+                                  paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
+                                  ")))));")
+    } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
+      # If only sponges_2_taxa are present (0 sponges_1_taxa):
+      constraint_tree_5 <- paste0("(",
+                                  paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(sponges_2_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
+                                  "))));")
+    } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
+      # If only sponges_1_taxa are present (0 sponges_2_taxa):
+      constraint_tree_5 <- paste0("(",
+                                  paste0("(", paste(outgroup_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(ctenophora_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(sponges_1_taxa, collapse = ", "), ")"),
+                                  ", (",
+                                  paste0("(", paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "), ")"),
+                                  "))));")
+    }
+    write(constraint_tree_5, file = constraint_tree_5_file_name)
+  } else if (file.exists(constraint_tree_5_file_name) == TRUE){ 
+    constraint_tree_5 <- readLines(constraint_tree_5_file_name)
   }
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "5", ".nex")
-  write(constraint_tree_5, file = constraint_tree_file_name)
   
   # Assemble dataframe of information about the constraint trees
   constraint_df <- data.frame(dataset = dataset,
                               matrix_name = matrix_name,
                               model_code = model_code,
-                              output_id = output_id,
+                              tree_id = tree_id,
                               best_model = best_model,
                               estimated_rates = estimated_rates,
                               estimated_gamma = estimated_gamma,
