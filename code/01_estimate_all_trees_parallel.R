@@ -250,7 +250,7 @@ setwd(c_tree_dir)
 # Prepare constraint trees to estimate hypothesis trees
 if (prepare.hypothesis.trees == TRUE){
   # Open ml_tree_df file
-  ml_tree_df <- read.table(df_op_01_01, header = T)
+  trimmed_ml_tree_df <- read.table(df_op_01_02, header = T)
   
   # Create a constraint df for each row in the ml_tree_df
   constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir,
