@@ -112,7 +112,7 @@ ml.iqtree.wrapper <- function(i, iqtree_path, df){
   
   # Return the command line for iqtree
   return(iqtree_call)
-}
+} # end function
 
 
 
@@ -131,7 +131,7 @@ determine.best.ML.model.wrapper <- function(row_id, completed_runs_df, ML_output
   dataset_best_model_df <- determine.best.ML.model(dataset = row$dataset, matrix = row$matrix_name, dataset_output_df = dataset_output_df)
   # Return the best model(s) for the dataset
   return(dataset_best_model_df)
-} 
+} # end function
 
 
 determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
@@ -154,7 +154,7 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
   }
   # Return the dataframe of information from the best model(s)
   return(best_model_df)
-}
+} # end function
 
 
 
@@ -218,7 +218,7 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
                                            number_parallel_threads = iqtree_num_threads)
   # Return the constraint tree dataframe
   return(constraint_df)
-}
+} # end function
 
 
 create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = NA, dataset_constraint_tree_dir, 
@@ -427,7 +427,7 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
   
   # Return the constraint tree dataframe
   return(constraint_df)
-}
+} # end function
 
 
 create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_constraint_tree_dir, best_model, model_code, outgroup_taxa, ctenophora_taxa, 
@@ -497,7 +497,7 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
   
   # Return the constraint tree dataframe
   return(constraint_df)
-}
+} #end function
 
 
 
@@ -508,16 +508,8 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
                                             best_model = NA, free_rate_categories = NA, gamma = NA,
                                             iqtree_path = "iqtree2", num_bootstraps = NA, num_threads = 1, run.iqtree = FALSE,
                                             partitioned_check = FALSE, partition_file = NA){
-  # Function estimate a constrained maximum likelihood tree; given an alignment, a model, and a constraint/guide tree
+  # Function estimate a constrained maximum likelihood tree: requires an alignment, a model, a constraint/guide tree, and the iqtree2 location
   
-  ### Set best_model as model for IQ-Tree run
-  if (is.na(best_model) == TRUE){
-    # If no best_model specified for IQ-Tree, use model finder (-m MFP) command
-    model_call = " -m MFP "
-  } else {
-    # Otherwise, use best_model specified in function call
-    model_call = paste0(" -m ", best_model, " ")
-  }
   
   ### Add partition file if present
   if (partitioned_check == FALSE){
@@ -526,25 +518,34 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
     partition_call <- paste0(" -p ", partition_file, " ") # should this be spp? See doco: http://www.iqtree.org/doc/Command-Reference
   } 
   
-  ### Add prefix (to label the hypothesis tree files) if present
-  if (is.na(output_prefix) == TRUE){
-    # If prefix is NA, do nothing
-    prefix_call <- ""
-  } else if (is.na(output_prefix) == FALSE){
-    # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" -pre ", output_prefix, " ")
-  } 
-  
-  ### Check for free-rate categories call
-  
+  ### Set best_model as model for IQ-Tree run, including free-rate categories if necessary
+  # Check whether the best model and free-rate categories are included
+  best.model.provided = !is.na(best_model)
+  rate.categories.provided = !is.na(free_rate_categories)
+  # Assemble the call for the model
+  if (best.model.provided == FALSE){
+    # If no best_model specified for IQ-Tree, use model finder (-m MFP) command
+    model_call = " -m MFP "
+  } else if (best.model.provided == TRUE & rate.categories.provided == FALSE){
+    # Best model provided, but no rate categories
+    # Use only the best model in the IQ-Tree call
+    model_call = paste0(" -m ", best_model, " ")
+  } else if (best.model.provided == TRUE & rate.categories.provided == TRUE){
+    # Both the best model and the rate categories are provided
+    # Check the number of rate categories in the model and in the rate categories
+    num_cats_rate_categories <- length(strsplit(free_rate_categories, ",")[[1]])/2
+    num_cats_model <- as.numeric(gsub("R", "", grep("R", strsplit(best_model, "\\+")[[1]], value = T)))
+    # Create a nice model with both the best model and the free rate category (weights and rates)
+    model_call = paste0(" -m ", best_model, "{", free_rate_categories, "}", " ")
+  }
   
   ### Check for a gamma shape parameter (alpha) call
-  # Make sure gamma is a character vector
-  if (class(gamma) != "character"){
-    gamma <- as.character(gamma)
-  }
   # Determine whether the gamma variable is present (or is NA)
   if (is.na(gamma) == FALSE){
+    # Make sure gamma is a character vector
+    if (class(gamma) != "character"){
+      gamma <- as.character(gamma)
+    }
     # Check whether the gamma variable is an alpha parameter (by checking if there are any commas present)
     gamma_split <- strsplit(gamma, split = ",")[[1]]
     if (length(gamma) == length(gamma_split)){
@@ -570,7 +571,16 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
     bootstraps_call <- paste0(" -bb ", num_bootstraps, " ")
   }
   
-  # Assemble the remaining parts of the command
+  ### Add prefix (to label the hypothesis tree files) if present
+  if (is.na(output_prefix) == TRUE){
+    # If prefix is NA, do nothing
+    prefix_call <- ""
+  } else if (is.na(output_prefix) == FALSE){
+    # If prefix is NA, add prefix to command line 
+    prefix_call <- paste0(" -pre ", output_prefix, " ")
+  } 
+  
+  ### Assemble the remaining parts of the command
   alignment_call <- paste0(" -s ", alignment_path, " ")
   constraint_tree_call <- paste0(" -g ", constraint_tree_file, " ")
   num_threads_call <- paste0(" -nt ", num_threads, " ")
@@ -605,11 +615,11 @@ run.one.constraint.tree <- function(index, constraint_df, run.iqtree = TRUE){
   #   either way, want to run function to print iqtree command line
   iqtree_command <- run.iqtree.with.constraint.tree(output_prefix = row$hypothesis_tree_prefixes, alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths,
                                                     best_model = row$best_model, free_rate_categories = row$estimated_rates, gamma = row$estimated_gamma,
-                                                    iqtree_path = row$iqtree_path, num_bootstraps = NA, num_threads = row$num_threads, run.iqtree = run.iqtree,
+                                                    iqtree_path = row$iqtree_path, num_bootstraps = row$num_bootstraps, num_threads = row$num_threads, run.iqtree = run.iqtree,
                                                     partitioned_check = FALSE, partition_file = row$partition_file)
   # Return the iqtree_command as output
   return(iqtree_command)
-}
+} # end function
 
 
 run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
@@ -621,7 +631,7 @@ run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
   # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
   #   either way, want to run function to print iqtree command line
   lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = run.iqtree)
-}
+} # end function
 
 
 
@@ -672,7 +682,7 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
   
   # Return the file names
   return(op_vec)
-}
+} # end function
 
 
 
