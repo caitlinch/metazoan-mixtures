@@ -77,9 +77,9 @@ ml_tree_bootstraps <- 1000
 
 # Set control parameters
 estimate.ML.trees <- FALSE
-extract.ML.tree.information <- TRUE
+extract.ML.tree.information <- FALSE
 prepare.hypothesis.trees <- TRUE
-estimate.hypothesis.trees <- FALSE
+estimate.hypothesis.trees <- TRUE
 collate.hypothesis.logs <- FALSE
 
 
@@ -236,14 +236,8 @@ if (extract.ML.tree.information == TRUE){
   # Update data frame to include maximum likelihood trees
   trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
   
-  # Trim unneeded columns
-  output_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_mset", "model_m", "model_mrate", "sequence_format", "matrix_name",
-                                             "prefix", "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC", "tree_length",
-                                             "tree_SumInternalBranch", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
-                                             "estimated_rates", "estimated_gamma", "estimated_state_frequencies", "maximum_likelihood_tree")]
-  
   # Save dataframe
-  write.table(output_ml_tree_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
+  write.table(trimmed_ml_tree_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
 }
 
 
