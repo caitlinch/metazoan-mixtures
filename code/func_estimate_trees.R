@@ -166,7 +166,6 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
   
   # Extract the relevant row
   row <- df[i, ]
-  
   # Extract the relevant list of taxa for this dataframe
   # First, check whether this matrix is included in the keys of the matrix_taxa list
   row_dataset <- row$dataset
@@ -203,7 +202,7 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
   constraint_df <- create.constraint.trees(dataset = row$dataset, 
                                            matrix_name = row$matrix_name,
                                            model_code = row$model_code,
-                                           tree_id = row$prefix, 
+                                           prefix = row$prefix, 
                                            dataset_constraint_tree_dir = output_directory,
                                            best_model = row$best_model,
                                            estimated_rates = row$estimated_rates,
@@ -215,14 +214,12 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
                                            partition_file = NA, 
                                            iqtree_path = iqtree_path, 
                                            number_parallel_threads = iqtree_num_threads)
-  
   # Return the constraint tree dataframe
   return(constraint_df)
-  
 }
 
 
-create.constraint.trees <- function(dataset, matrix_name, model_code, tree_id = NA, dataset_constraint_tree_dir, 
+create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = NA, dataset_constraint_tree_dir, 
                                     best_model, estimated_rates = NA, estimated_gamma = NA, estimated_state_frequencies = NA, 
                                     constraint_clades, alignment_file, partitioned_check = FALSE, partition_file = NA, 
                                     iqtree_path, number_parallel_threads = 1){
@@ -231,12 +228,12 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, tree_id = 
   
   ### Prepare to construct constraint trees
   # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
-  if (is.na(tree_id) == FALSE){
-    # If a tree_id is provided, use it in the file names
-    tree_id = tree_id
-  } else if (is.na(tree_id) == TRUE){
-    # If no tree_id is provided, create one
-    tree_id <- paste0(dataset, ".", matrix_name, ".", model_code)
+  if (is.na(prefix) == FALSE){
+    # If a prefix is provided, use it in the file names
+    prefix = prefix
+  } else if (is.na(prefix) == TRUE){
+    # If no prefix is provided, create one
+    prefix <- paste0(dataset, ".", matrix_name, ".", model_code)
   }
   
   ### Construct constraint trees
@@ -405,7 +402,7 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, tree_id = 
   constraint_df <- data.frame(dataset = dataset,
                               matrix_name = matrix_name,
                               model_code = model_code,
-                              tree_id = tree_id,
+                              prefix = prefix,
                               best_model = best_model,
                               estimated_rates = estimated_rates,
                               estimated_gamma = estimated_gamma,
@@ -431,19 +428,19 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, tree_id = 
 }
 
 
-create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_constraint_tree_dir, best_model, model_code, outgroup_taxa, ctenophora_taxa, 
+create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_constraint_tree_dir, best_model, model_code, outgroup_taxa, ctenophora_taxa, 
                                              porifera_taxa, sponges_1_taxa, sponges_2_taxa, placozoa_taxa, cnidaria_taxa, bilateria_taxa,
                                              alignment_file, partitioned_check, partition_file, iqtree_path, number_parallel_threads){
   # Function to create the constraint trees and constraint tree information data frame, for a given dataset and model
   # Includes Placozoa
   
   # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
-  if (is.na(tree_id) == FALSE){
-    # If a tree_id is provided, use it in the file names
-    output_id = tree_id
+  if (is.na(prefix) == FALSE){
+    # If a prefix is provided, use it in the file names
+    output_id = prefix
   }
-  else if (is.na(tree_id) == TRUE){
-    # If no tree_id is provided, create one
+  else if (is.na(prefix) == TRUE){
+    # If no prefix is provided, create one
     output_id <- paste0(dataset, "_", model_code)
   }
   
@@ -479,6 +476,7 @@ create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_cons
   
   # Assemble dataframe of information about the constraint trees
   constraint_df <- data.frame(dataset = dataset,
+                              prefix = prefix,
                               model_code = model_code,
                               constraint_tree_id = 1:2,
                               constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:2, ".nex"),
@@ -544,6 +542,7 @@ run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file
   # Return the IQ-Tree command
   return(iqtree_call)
 } # end function
+
 
 run.one.constraint.tree <- function(index, df, run.iqtree = TRUE){
   # Quick function to take in a dataframe, take relevant variables, and call the run.iqtree.with.constraint.tree function
