@@ -294,7 +294,6 @@ if (prepare.hypothesis.trees == TRUE){
 }
 
 # Estimate hypothesis trees
-### START HERE: CHECK AND UPDATE ####
 if (estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
   constraint_df <- read.table(df_op_01_03, header = T)
@@ -304,7 +303,7 @@ if (estimate.hypothesis.trees == TRUE){
 
   
   # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
-  mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
+  mclapply(constraint_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 }
 
 # Extract hypothesis trees from output and save into a tsv
