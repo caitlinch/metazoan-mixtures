@@ -245,7 +245,6 @@ if (extract.ML.tree.information == TRUE){
 
 
 #### 5. Estimate constraint and hypothesis trees for each combination of model and dataset ####
-### START HERE: CHECK AND UPDATE ####
 # Move to the folder for the constraint trees
 setwd(c_tree_dir)
 
@@ -295,6 +294,7 @@ if (prepare.hypothesis.trees == TRUE){
 }
 
 # Estimate hypothesis trees
+### START HERE: CHECK AND UPDATE ####
 if (estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
   constraint_df <- read.table(df_op_01_03, header = T)
