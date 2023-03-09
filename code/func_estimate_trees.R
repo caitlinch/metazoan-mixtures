@@ -5,6 +5,9 @@
 #     and for running the Mixture of Trees and Sites (MAST) model in iqtree2
 
 
+
+
+
 #### Estimating an ML tree in IQ-Tree with a specified model ####
 estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, mrate = NA, partition_file = NA, 
                                prefix = NA, number_parallel_threads = "AUTO", number_of_bootstraps = NA,
@@ -110,6 +113,51 @@ ml.iqtree.wrapper <- function(i, iqtree_path, df){
   # Return the command line for iqtree
   return(iqtree_call)
 }
+
+
+
+
+
+#### Prepare to estimate constraint trees ####
+determine.best.ML.model.wrapper <- function(row_id, completed_runs_df, ML_output_df){
+  # Function to take in a row number, the dataframe of which runs have completed, and the data frame of output from the
+  #     maximum likelihood runs, and feed that information into another function to pick the best ML models
+  
+  # Find the row
+  row <- completed_runs_df[row_id, ]
+  # Reduce the output dataframe to just the dataset/matrix in that row
+  dataset_output_df <- ML_output_df[ML_output_df$dataset == row$dataset & ML_output_df$matrix_name == row$matrix_name,]
+  # Input information from the row into the determine.best.ML.model function
+  dataset_best_model_df <- determine.best.ML.model(dataset = row$dataset, matrix = row$matrix_name, dataset_output_df = dataset_output_df)
+  # Return the best model(s) for the dataset
+  return(dataset_best_model_df)
+} 
+
+
+determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
+  # Function to determine the best substitution model (by BIC) for a particular dataset and alignment combination,
+  #     using the output from the maximum likelihood runs
+  
+  # Sort the dataset by BIC (lowest to highest - remember lower is better)
+  dataset_output_df <- dataset_output_df[order(dataset_output_df$best_model_BIC, decreasing = FALSE),]
+  # Determine which model has the lowest BIC
+  model_lowest_BIC <- dataset_output_df$model_code[1]
+  # Check whether ModelFinder has the lowest BIC
+  is.ModelFinder.BIC.best <- (model_lowest_BIC == "ModelFinder")
+  # Prepare the output
+  if (is.ModelFinder.BIC.best == TRUE){
+    # If ModelFinder has the best BIC, return the ModelFinder row only
+    best_model_df <- dataset_output_df[which(dataset_output_df$model_code == "ModelFinder"),]
+  } else if (is.ModelFinder.BIC.best == FALSE){
+    # If ModelFinder does not have the best BIC, return both the ModelFinder row and the row for the model with the best BIC
+    best_model_df <- dataset_output_df[c(1, which(dataset_output_df$model_code == "ModelFinder")),]
+  }
+  # Return the dataframe of information from the best model(s)
+  return(best_model_df)
+}
+
+
+
 
 
 #### Creating constraint trees ####
@@ -313,6 +361,9 @@ create.constraint.trees.Placozoa <- function(dataset, tree_id = NA, dataset_cons
 }
 
 
+
+
+
 #### Estimating ML trees using a constraint tree ####
 run.iqtree.with.constraint.tree <- function(alignment_path, constraint_tree_file, partitioned_check = FALSE, partition_file = NA, 
                                             iqtree_path = "iqtree2", prefix = NA, best_model = NA, num_threads = 1, run.iqtree = TRUE){
@@ -383,6 +434,9 @@ run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
 }
 
 
+
+
+
 #### Collating multiple trees into a single file ####
 combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgroup_taxa = NA){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
@@ -429,6 +483,9 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
   # Return the file names
   return(op_vec)
 }
+
+
+
 
 
 #### Applying the mixture of trees model ####
