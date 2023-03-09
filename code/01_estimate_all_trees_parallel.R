@@ -142,6 +142,7 @@ df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
 df_op_01_03 <- paste0(output_dir, "01_03_constraint_tree_estimation_parameters.tsv")
 df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_results.tsv")
 df_op_completion_freq <- paste0(output_dir, "01_03_dataset_completion_frequency.tsv")
+df_op_best_models <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
 
 
 
@@ -273,6 +274,8 @@ if (prepare.hypothesis.trees == TRUE){
   selected_models_list <- lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, ML_output_df = trimmed_ml_tree_df) 
   # Convert lapply output to a nice dataframe
   selected_models_df <- do.call(rbind, selected_models_list)
+  # Save the dataframe of best models
+  write.table(selected_models_df, file = df_op_best_models, row.names = FALSE, sep = "\t")
   
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
