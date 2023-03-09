@@ -162,10 +162,12 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
 
 #### Creating constraint trees ####
 constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num_threads = 1, 
-                                    dataset_info = all_datasets, matrix_taxa_info = matrix_taxa, df){
+                                    dataset_info = all_datasets, matrix_taxa_info = matrix_taxa, ml_output_df){
+  
+  # Function to take a row from the ML output dataframe and create the constraint trees plus parameters to estimate the hypothesis trees
   
   # Extract the relevant row
-  row <- df[i, ]
+  row <- ml_output_df[i, ]
   # Extract the relevant list of taxa for this dataframe
   # First, check whether this matrix is included in the keys of the matrix_taxa list
   row_dataset <- row$dataset
@@ -198,7 +200,7 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
     constraint_clades$Sponges_Demospongiae <- dataset_taxa_clades$Sponges_Demospongiae[which(dataset_taxa_clades$Sponges_Demospongiae %in% keep_taxa)]
   }
   
-  # Create the constraint tree dataframe
+  # Create the constraint tree dataframe by calling the create.constraint.trees function
   constraint_df <- create.constraint.trees(dataset = row$dataset, 
                                            matrix_name = row$matrix_name,
                                            model_code = row$model_code,
