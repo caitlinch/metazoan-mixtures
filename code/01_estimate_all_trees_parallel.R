@@ -141,6 +141,7 @@ df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_para
 df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
 df_op_01_03 <- paste0(output_dir, "01_03_constraint_tree_estimation_parameters.tsv")
 df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_results.tsv")
+df_op_completion_freq <- paste0(output_dir, "01_03_dataset_completion_frequency.tsv")
 
 
 
@@ -249,9 +250,29 @@ setwd(c_tree_dir)
 
 # Prepare constraint trees to estimate hypothesis trees
 if (prepare.hypothesis.trees == TRUE){
+  ## Retrieve results from previous steps
   # Open ml_tree_df file
   trimmed_ml_tree_df <- read.table(df_op_01_02, header = T)
   
+  ## Select completed datasets to estimate constraint trees
+  # Determine which datasets have all alignments completed
+  completion_df <- as.data.frame(table(trimmed_ml_tree_df$dataset, trimmed_ml_tree_df$matrix_name), stringsAsFactors = FALSE)
+  names(completion_df) <- c("dataset", "matrix_name", "frequency")
+  # Remove all entries with 0 frequency (either an alignment that was not run, or an artefact of the method for making the table 
+  #   i.e. a combination of dataset and alignment name that is incorrect)
+  completion_df <- completion_df[completion_df$frequency != 0,]
+  row.names(completion_df) <- 1:nrow(completion_df)
+  # Output the frequency dataframe
+  write.table(completion_df, file = df_op_completion_freq, row.names = FALSE, sep = "\t")
+  # Extract the names of the datasets/alignment combinations with all 24 models completed
+  completed_df <- completion_df[completion_df$frequency == 24,]
+  
+  ## Determine which models to use for each completed dataset
+  # Want to extract ModelFinder model, and the model with the best BIC
+  # If the ModelFinder model has the best BIC, return just the ModelFinder model
+  selected_models_list <- lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, ML_output_df = trimmed_ml_tree_df) 
+  
+  ## Prepare parameters for the constraint trees
   # Create a constraint df for each row in the ml_tree_df
   constraint_list <- lapply(1:nrow(ml_tree_df), constraint.tree.wrapper, output_directory = c_tree_dir,
                             iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads,
@@ -261,7 +282,6 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_df <- do.call(rbind, constraint_list)
   # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
   constraint_df$model_mrate <- NA
-  
   # Save the constraint tree dataframe
   write.table(constraint_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
 }
@@ -269,10 +289,11 @@ if (prepare.hypothesis.trees == TRUE){
 # Estimate hypothesis trees
 if (estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
-    constraint_df <- read.table(df_op_01_03, header = T)
+  constraint_df <- read.table(df_op_01_03, header = T)
   
   # Estimate hypothesis trees for each of the constraint trees (call one row of the dataframe at a time)
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, df = constraint_df, run.iqtree = FALSE))
+
   
   # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
   mclapply(ml_tree_df$iqtree2_call, system, mc.cores = number_parallel_processes)
