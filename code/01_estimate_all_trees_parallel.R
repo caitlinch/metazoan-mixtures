@@ -90,7 +90,7 @@ library(parallel)
 library(ape)
 
 # Source functions
-source(paste0(repo_dir, "code/func_constraint_trees.R"))
+source(paste0(repo_dir, "code/func_estimate_trees.R"))
 source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # Source information about datasets

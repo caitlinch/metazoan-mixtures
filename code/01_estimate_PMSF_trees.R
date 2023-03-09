@@ -80,7 +80,7 @@ library(ape)
 
 # Source functions
 source(paste0(repo_dir, "code/func_pmsf_trees.R"))
-source(paste0(repo_dir, "code/func_constraint_trees.R"))
+source(paste0(repo_dir, "code/func_estimate_trees.R"))
 source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # Extract the list of all files from the folder containing alignments/models/partition files
