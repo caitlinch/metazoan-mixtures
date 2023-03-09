@@ -411,9 +411,9 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
                               estimated_state_frequencies = estimated_state_frequencies,
                               constraint_tree_hypothesis = c("Ctenophora-sister", "Porifera-sister", "(Ctenophora+Porifera)-sister", "Ctenophora-sister (Paraphyletic sponges)", "Porifera-sister (Paraphyletic sponges)"), 
                               constraint_tree_number = 1:5,
-                              constraint_tree_id = paste0(output_id, "_ML_C", 1:5),
-                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:5, ".nex"),
-                              constraint_prefixes = paste0(output_id, "_ML_H", 1:5),
+                              constraint_tree_id = paste0(prefix, "_ML_C", 1:5),
+                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_", 1:5, ".nex"),
+                              constraint_prefixes = paste0(prefix, "_ML_H", 1:5),
                               alignment_path = alignment_file,
                               iqtree_path = iqtree_path,
                               constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, constraint_tree_4, constraint_tree_5),
@@ -422,7 +422,7 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
                               partition_file = partition_file)
   
   # Write dataframe of information about constraint trees
-  constraint_df_path <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_parameters.csv")
+  constraint_df_path <- paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_parameters.csv")
   write.csv(constraint_df, constraint_df_path, row.names = FALSE)
   
   # Return the constraint tree dataframe
@@ -439,11 +439,11 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
   # Make sure you have an output id, which is a unique identifier for each dataset/alignment/model combination.
   if (is.na(prefix) == FALSE){
     # If a prefix is provided, use it in the file names
-    output_id = prefix
+    prefix = prefix
   }
   else if (is.na(prefix) == TRUE){
     # If no prefix is provided, create one
-    output_id <- paste0(dataset, "_", model_code)
+    prefix <- paste0(dataset, ".", model_code)
   }
   
   ## Hypothesis 1: Ctenophora-sister
@@ -458,7 +458,7 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
                               "), (",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "),
                               "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "1", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_", "1", ".nex")
   write(constraint_tree_1, file = constraint_tree_file_name)
   
   ## Hypothesis 2: Porifera-sister
@@ -473,7 +473,7 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
                               "),(",
                               paste(c(placozoa_taxa, cnidaria_taxa, bilateria_taxa), collapse = ", "), 
                               "))));")
-  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", "2", ".nex")
+  constraint_tree_file_name <- paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_", "2", ".nex")
   write(constraint_tree_2, file = constraint_tree_file_name)
   
   # Assemble dataframe of information about the constraint trees
@@ -481,8 +481,8 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
                               prefix = prefix,
                               model_code = model_code,
                               constraint_tree_id = 1:2,
-                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_", 1:2, ".nex"),
-                              constraint_prefixes = paste0(output_id, "_ML_H", 1:2),
+                              constraint_tree_paths = paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_", 1:2, ".nex"),
+                              constraint_prefixes = paste0(prefix, "_ML_H", 1:2),
                               alignment_path = alignment_file,
                               best_model = best_model,
                               iqtree_path = iqtree_path,
@@ -492,7 +492,7 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
                               partition_file = partition_file)
   
   # Write dataframe of information about constraint trees
-  constraint_df_path <- paste0(dataset_constraint_tree_dir, output_id, "_constraint_tree_parameters.csv")
+  constraint_df_path <- paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_parameters.csv")
   write.csv(constraint_df, constraint_df_path, row.names = FALSE)
   
   # Return the constraint tree dataframe
