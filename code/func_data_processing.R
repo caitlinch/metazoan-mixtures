@@ -964,12 +964,21 @@ extract.best.model.from.dataframe <- function(unique_id, best_models_df){
   uid_df <- best_models_df[best_models_df$dataset == uid_dataset & best_models_df$matrix_name == uid_matrix_name,]
   # Order matrix from highest to lowest BIC value
   uid_df <- uid_df[order(uid_df$best_model_BIC),]
-  # Create a vector of output values
-  op_vec <- c(uid_dataset, uid_matrix_name, 
-              uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], uid_df$best_model_wBIC[[1]], 
-              uid_df$tree_LogL[[1]], uid_df$tree_NumFreeParams[[1]], uid_df$tree_BIC[[1]], uid_df$tree_length[[1]], uid_df$tree_SumInternalBranch[[1]],
-              uid_df$model_code[[2]], uid_df$best_model[[2]], uid_df$best_model_LogL[[2]], uid_df$best_model_BIC[[2]], uid_df$best_model_wBIC[[2]],
-              uid_df$tree_LogL[[2]], uid_df$tree_NumFreeParams[[2]], uid_df$tree_BIC[[2]], uid_df$tree_length[[2]], uid_df$tree_SumInternalBranch[[2]])
+  # Check whether there is an independent best model (2 rows) or whether MFP is the best model (1 row)
+  if (nrow(uid_df) == 2){
+    # Create a vector of output values
+    op_vec <- c(uid_dataset, uid_matrix_name, 
+                uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], uid_df$best_model_wBIC[[1]], 
+                uid_df$tree_LogL[[1]], uid_df$tree_NumFreeParams[[1]], uid_df$tree_BIC[[1]], uid_df$tree_length[[1]], uid_df$tree_SumInternalBranch[[1]],
+                uid_df$model_code[[2]], uid_df$best_model[[2]], uid_df$best_model_LogL[[2]], uid_df$best_model_BIC[[2]], uid_df$best_model_wBIC[[2]],
+                uid_df$tree_LogL[[2]], uid_df$tree_NumFreeParams[[2]], uid_df$tree_BIC[[2]], uid_df$tree_length[[2]], uid_df$tree_SumInternalBranch[[2]])
+  } else if (nrow(uid_df) == 1){
+    op_vec <- c(uid_dataset, uid_matrix_name, 
+                uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], uid_df$best_model_wBIC[[1]], 
+                uid_df$tree_LogL[[1]], uid_df$tree_NumFreeParams[[1]], uid_df$tree_BIC[[1]], uid_df$tree_length[[1]], uid_df$tree_SumInternalBranch[[1]],
+                NA, NA, NA, NA, NA,
+                NA, NA, NA, NA, NA)
+  }
   # Return the output values
   return(op_vec)
 }
