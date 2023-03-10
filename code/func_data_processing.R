@@ -962,8 +962,8 @@ check.ModelFinder.models <- function(best_model, iqtree_file){
     mfp_lines_split <- strsplit(mfp_lines, " ")
     # Remove any empty characters, or any elements that are just "+" or "-"
     mfp_lines_split <- lapply(1:length(mfp_lines_split), function(i){mfp_lines_split[[i]][mfp_lines_split[[i]] != ""]})
-    mfp_lines_split <- lapply(1:length(mfp_lines_split_2), function(i){mfp_lines_split_2[[i]][mfp_lines_split_2[[i]] != "-"]})
-    mfp_lines_split <- lapply(1:length(mfp_lines_split_3), function(i){mfp_lines_split_3[[i]][mfp_lines_split_3[[i]] != "+"]})
+    mfp_lines_split <- lapply(1:length(mfp_lines_split), function(i){mfp_lines_split[[i]][mfp_lines_split[[i]] != "-"]})
+    mfp_lines_split <- lapply(1:length(mfp_lines_split), function(i){mfp_lines_split[[i]][mfp_lines_split[[i]] != "+"]})
     # Bind the second element of the list onwards into a nice dataframe
     mfp_df <- as.data.frame(do.call(rbind, mfp_lines_split[2:length(mfp_lines_split)]))
     # Use the first element of the list as the row names
@@ -971,7 +971,6 @@ check.ModelFinder.models <- function(best_model, iqtree_file){
     # There's an output issue that sometimes means some models have "+I+I+", where it should be "+I+"
     #   Correct this issue in the mfp_df$Model column
     mfp_df$Model <- gsub("\\+I\\+I\\+", "+I+", mfp_df$Model)
-    
     
     ## Investigate the models checked during model selection
     # Check whether the best_model was tested during model selection
@@ -1066,10 +1065,10 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
   model_comparison_df$modelfinder_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
   
   # Apply the function to one dataset at a time
-  model_comparison_df$did.ModelFinder.test.best.model <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
+  check_mfp_list <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
   
   # Reorder the columns of the dataframe
-  model_comparison_df <- model_comparison_df[c("dataset", "matrix_name", "best.model.is.ModelFinder","did.ModelFinder.test.best.model",
+  model_comparison_df <- model_comparison_df[c("dataset", "matrix_name", "best.model.is.ModelFinder","did.ModelFinder.test.best.model", "did.ModelFinder.test.best.model.code",
                                                "best_model_code", "best_model_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
                                                "best_model_tree_LogL", "best_model_tree_NumFreeParams", "best_model_tree_BIC", "best_model_tree_length", "best_model_tree_SumInternalBranch",
                                                "mfp_model_code", "mfp_model_model", "mfp_model_LogL", "mfp_model_BIC", "mfp_model_wBIC",
