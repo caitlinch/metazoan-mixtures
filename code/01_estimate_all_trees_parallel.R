@@ -263,8 +263,11 @@ setwd(c_tree_dir)
 # Prepare constraint trees to estimate hypothesis trees
 if (prepare.hypothesis.trees == TRUE){
   ## Retrieve results from previous steps
-  # Open ml_tree_df file
+  # Open trimmed_ml_tree_df file (output from ML tree runs)
   trimmed_ml_tree_df <- read.table(df_op_01_02, header = T)
+  # Open alignment_taxa_df file (list of taxa in ML trees for each alignment)
+  alignment_taxa_df <- read.table(df_op_alignment_taxa, header = T)
+  
   
   ## Select completed datasets to estimate constraint trees
   # Determine which datasets have all alignments completed
