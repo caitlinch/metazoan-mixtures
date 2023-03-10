@@ -1066,6 +1066,11 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
   
   # Apply the function to one dataset at a time
   check_mfp_list <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
+  # Change output into a nince dataframe
+  check_mfp_df <- as.data.frame(do.call(rbind,check_mfp_list))
+  names(check_mfp_df) <- c("did.ModelFinder.test.best.model", "did.ModelFinder.test.best.model.code")
+  # Bind the columns to the big dataframe
+  model_comparison_df <- cbind(model_comparison_df, check_mfp_df)
   
   # Reorder the columns of the dataframe
   model_comparison_df <- model_comparison_df[c("dataset", "matrix_name", "best.model.is.ModelFinder","did.ModelFinder.test.best.model", "did.ModelFinder.test.best.model.code",
