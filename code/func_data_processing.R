@@ -1016,7 +1016,7 @@ dataset.check.tree.taxa <- function(tree_files){
 }
 
 
-wrapper.check.taxa.function <- function(unique_ids, tree_folder){
+dataset.check.tree.taxa.wrapper <- function(unique_ids, tree_folder){
   # Wrapper function for dataset.check.tree.taxa that operates on the completed maximum likelihood output dataframe
   
   # Each unique output id refers to an alignment: they are created by pasting the dataset and matrix name together (separated by a "." character)
