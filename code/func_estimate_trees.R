@@ -340,66 +340,93 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
     constraint_tree_3 <- readLines(constraint_tree_3_file_name)
   }
   
-  ### Hypothesis 4: Paraphyletic sponges, Ctenophora-sister
-  # Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, (cnidaria_taxa, bilateria_taxa)))));
-  if ((file.exists(constraint_tree_4_file_name) == FALSE) | (force.update.constraint.trees == TRUE)){
-    ## Construct constraint tree
-    # Will depend on whether both sponges_1 and sponges_2 clades are present
-    if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
-      # If both sponges_1_taxa and sponges_2_taxa are present:
-      constraint_tree_4 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", sponges_1_taxa_formatted, ", (", sponges_2_taxa_formatted,  ", ", cnidaria_bilateria_taxa_formatted, "))));")
-    } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
-      # If only sponges_2_taxa are present (0 sponges_1_taxa):
-      constraint_tree_4 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", sponges_2_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
-    } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
-      # If only sponges_1_taxa are present (0 sponges_2_taxa):
-      constraint_tree_4 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", sponges_1_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
+  # Only create a constraint tree for Hypothesis 4 and 5 IF there is at least one taxa in each sponge group (sponges_1 and sponges_2)
+  if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
+    # There is >1 taxa in each sponge group (sponges_1 and sponges_2). Estimate constraint trees 4 and 5.
+    
+    ### Hypothesis 4: Paraphyletic sponges, Ctenophora-sister
+    # Tree: (outgroup_taxa, (ctenophora_taxa, (sponges_1_taxa, (sponges_2_taxa, (cnidaria_taxa, bilateria_taxa)))));
+    if ((file.exists(constraint_tree_4_file_name) == FALSE) | (force.update.constraint.trees == TRUE)){
+      ## Construct constraint tree
+      # Will depend on whether both sponges_1 and sponges_2 clades are present
+      if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
+        # If both sponges_1_taxa and sponges_2_taxa are present:
+        constraint_tree_4 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", sponges_1_taxa_formatted, ", (", sponges_2_taxa_formatted,  ", ", cnidaria_bilateria_taxa_formatted, "))));")
+      } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
+        # If only sponges_2_taxa are present (0 sponges_1_taxa):
+        constraint_tree_4 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", sponges_2_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
+      } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
+        # If only sponges_1_taxa are present (0 sponges_2_taxa):
+        constraint_tree_4 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", sponges_1_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
+      }
+      write(constraint_tree_4, file = constraint_tree_4_file_name)
+    } else if (file.exists(constraint_tree_4_file_name) == TRUE){ 
+      constraint_tree_4 <- readLines(constraint_tree_4_file_name)
     }
-    write(constraint_tree_4, file = constraint_tree_4_file_name)
-  } else if (file.exists(constraint_tree_4_file_name) == TRUE){ 
-    constraint_tree_4 <- readLines(constraint_tree_4_file_name)
-  }
-  
-  ### Hypothesis 5: Paraphyletic sponges, Porifera-sister
-  # Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, (cnidaria_taxa, bilateria_taxa)))));
-  if ((file.exists(constraint_tree_5_file_name) == FALSE) | (force.update.constraint.trees == TRUE)){
-    ## Construct constraint tree
-    # Will depend on whether both sponges_1 and sponges_2 clades are present
-    if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
-      # If both sponges_1_taxa and sponges_2_taxa are present:
-      constraint_tree_5 <- paste0("(", outgroup_taxa_formatted, ", (", sponges_1_taxa_formatted, ", (", sponges_2_taxa_formatted, ", (", ctenophora_taxa_formatted,  ", ", cnidaria_bilateria_taxa_formatted, "))));")
-    } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
-      # If only sponges_2_taxa are present (0 sponges_1_taxa):
-      constraint_tree_5 <- paste0("(", outgroup_taxa_formatted, ", (", sponges_2_taxa_formatted, ", (", ctenophora_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
-    } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
-      # If only sponges_1_taxa are present (0 sponges_2_taxa):
-      constraint_tree_5 <- paste0("(", outgroup_taxa_formatted, ", (", sponges_1_taxa_formatted, ", (", ctenophora_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
+    
+    ### Hypothesis 5: Paraphyletic sponges, Porifera-sister
+    # Tree: (outgroup_taxa, (sponges_1_taxa, (sponges_2_taxa, (ctenophora_taxa, (cnidaria_taxa, bilateria_taxa)))));
+    if ((file.exists(constraint_tree_5_file_name) == FALSE) | (force.update.constraint.trees == TRUE)){
+      ## Construct constraint tree
+      # Will depend on whether both sponges_1 and sponges_2 clades are present
+      if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) > 0){
+        # If both sponges_1_taxa and sponges_2_taxa are present:
+        constraint_tree_5 <- paste0("(", outgroup_taxa_formatted, ", (", sponges_1_taxa_formatted, ", (", sponges_2_taxa_formatted, ", (", ctenophora_taxa_formatted,  ", ", cnidaria_bilateria_taxa_formatted, "))));")
+      } else if (length(sponges_1_taxa) == 0 & length(sponges_2_taxa) > 0){
+        # If only sponges_2_taxa are present (0 sponges_1_taxa):
+        constraint_tree_5 <- paste0("(", outgroup_taxa_formatted, ", (", sponges_2_taxa_formatted, ", (", ctenophora_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
+      } else if (length(sponges_1_taxa) > 0 & length(sponges_2_taxa) == 0){
+        # If only sponges_1_taxa are present (0 sponges_2_taxa):
+        constraint_tree_5 <- paste0("(", outgroup_taxa_formatted, ", (", sponges_1_taxa_formatted, ", (", ctenophora_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
+      }
+      write(constraint_tree_5, file = constraint_tree_5_file_name)
+    } else if (file.exists(constraint_tree_5_file_name) == TRUE){ 
+      constraint_tree_5 <- readLines(constraint_tree_5_file_name)
     }
-    write(constraint_tree_5, file = constraint_tree_5_file_name)
-  } else if (file.exists(constraint_tree_5_file_name) == TRUE){ 
-    constraint_tree_5 <- readLines(constraint_tree_5_file_name)
+    
+    # Assemble dataframe of information about the 5 constraint trees
+    constraint_df <- data.frame(dataset = dataset,
+                                matrix_name = matrix_name,
+                                model_code = model_code,
+                                prefix = prefix,
+                                best_model = best_model,
+                                estimated_rates = estimated_rates,
+                                estimated_gamma = estimated_gamma,
+                                estimated_state_frequencies = estimated_state_frequencies,
+                                constraint_tree_hypothesis = c("Ctenophora-sister", "Porifera-sister", "(Ctenophora+Porifera)-sister", "Ctenophora-sister (Paraphyletic sponges)", "Porifera-sister (Paraphyletic sponges)"), 
+                                constraint_tree_number = 1:5,
+                                constraint_tree_id = paste0(prefix, ".ML_C", 1:5),
+                                constraint_tree_paths = c(constraint_tree_1_file_name, constraint_tree_2_file_name, constraint_tree_3_file_name, constraint_tree_4_file_name, constraint_tree_5_file_name),
+                                hypothesis_tree_prefixes = paste0(prefix, ".ML_H", 1:5),
+                                alignment_path = alignment_file,
+                                iqtree_path = iqtree_path,
+                                constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, constraint_tree_4, constraint_tree_5),
+                                num_threads = number_parallel_threads,
+                                partitioned = partitioned_check,
+                                partition_file = partition_file)
+  } else {
+    # There is not >1 taxa in each sponge group (sponges_1 and sponges_2), so skip constraint trees 4 and 5
+    # Assemble dataframe of information about the 3 constraint trees
+    constraint_df <- data.frame(dataset = dataset,
+                                matrix_name = matrix_name,
+                                model_code = model_code,
+                                prefix = prefix,
+                                best_model = best_model,
+                                estimated_rates = estimated_rates,
+                                estimated_gamma = estimated_gamma,
+                                estimated_state_frequencies = estimated_state_frequencies,
+                                constraint_tree_hypothesis = c("Ctenophora-sister", "Porifera-sister", "(Ctenophora+Porifera)-sister"), 
+                                constraint_tree_number = 1:5,
+                                constraint_tree_id = paste0(prefix, ".ML_C", 1:3),
+                                constraint_tree_paths = c(constraint_tree_1_file_name, constraint_tree_2_file_name, constraint_tree_3_file_name),
+                                hypothesis_tree_prefixes = paste0(prefix, ".ML_H", 1:3),
+                                alignment_path = alignment_file,
+                                iqtree_path = iqtree_path,
+                                constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3),
+                                num_threads = number_parallel_threads,
+                                partitioned = partitioned_check,
+                                partition_file = partition_file)
   }
-  
-  # Assemble dataframe of information about the constraint trees
-  constraint_df <- data.frame(dataset = dataset,
-                              matrix_name = matrix_name,
-                              model_code = model_code,
-                              prefix = prefix,
-                              best_model = best_model,
-                              estimated_rates = estimated_rates,
-                              estimated_gamma = estimated_gamma,
-                              estimated_state_frequencies = estimated_state_frequencies,
-                              constraint_tree_hypothesis = c("Ctenophora-sister", "Porifera-sister", "(Ctenophora+Porifera)-sister", "Ctenophora-sister (Paraphyletic sponges)", "Porifera-sister (Paraphyletic sponges)"), 
-                              constraint_tree_number = 1:5,
-                              constraint_tree_id = paste0(prefix, ".ML_C", 1:5),
-                              constraint_tree_paths = c(constraint_tree_1_file_name, constraint_tree_2_file_name, constraint_tree_3_file_name, constraint_tree_4_file_name, constraint_tree_5_file_name),
-                              hypothesis_tree_prefixes = paste0(prefix, ".ML_H", 1:5),
-                              alignment_path = alignment_file,
-                              iqtree_path = iqtree_path,
-                              constraint_trees = c(constraint_tree_1, constraint_tree_2, constraint_tree_3, constraint_tree_4, constraint_tree_5),
-                              num_threads = number_parallel_threads,
-                              partitioned = partitioned_check,
-                              partition_file = partition_file)
   
   # Write dataframe of information about constraint trees
   constraint_df_path <- paste0(dataset_constraint_tree_dir, prefix, "_constraint_tree_parameters.csv")
