@@ -955,7 +955,7 @@ check.tree.taxa <- function(tree_file){
 }
 
 
-dataset.check.tree.taxa <- function(dataset, tree_files){
+dataset.check.tree.taxa <- function(tree_files){
   # Function to take a list of tree files, check what taxa are in each tree, and determine whether the trees have the same taxa
   
   # Trim any tree files that don't exist
