@@ -1005,7 +1005,7 @@ dataset.check.tree.taxa <- function(tree_files){
   }
   
   # Return the output (either a list of the taxa in all the trees, or an error message)
-  return(df_check_op)
+  return(ds_check_op)
 }
 
 
