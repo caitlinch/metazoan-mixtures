@@ -966,8 +966,10 @@ extract.best.model.from.dataframe <- function(unique_id, best_models_df){
   uid_df <- uid_df[order(uid_df$best_model_BIC),]
   # Create a vector of output values
   op_vec <- c(uid_dataset, uid_matrix_name, 
-              uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], 
-              uid_df$model_code[[2]], uid_df$best_model[[2]], uid_df$best_model_LogL[[2]], uid_df$best_model_BIC[[2]])
+              uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], uid_df$best_model_wBIC[[1]], 
+              uid_df$tree_LogL[[1]], uid_df$tree_NumFreeParams[[1]], uid_df$tree_BIC[[1]], uid_df$tree_length[[1]], uid_df$tree_SumInternalBranch[[1]],
+              uid_df$model_code[[2]], uid_df$best_model[[2]], uid_df$best_model_LogL[[2]], uid_df$best_model_BIC[[2]], uid_df$best_model_wBIC[[2]],
+              uid_df$tree_LogL[[2]], uid_df$tree_NumFreeParams[[2]], uid_df$tree_BIC[[2]], uid_df$tree_length[[2]], uid_df$tree_SumInternalBranch[[2]])
   # Return the output values
   return(op_vec)
 }
@@ -978,6 +980,16 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
   
   # Create the list of unique ids
   unique_ids <- unique(paste0(best_models_df$dataset, ".", best_models_df$matrix_name))
+  
+  # Extract information about best models, log likelihood, and BIC
+  model_comparison_list <- lapply(unique_ids, extract.best.model.from.dataframe, best_models_df = best_models_df)
+  # Convert list to dataframe
+  model_comparison_df <- as.data.frame(do.call(rbind, model_comparison_list))
+  names(model_comparison_df) <- c("dataset", "matrix_name",
+                                  "best_model_code", "best_model_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                  "best_model_tree_LogL", "best_model_tree_NumFreeParams", "best_model_tree_BIC", "best_model_tree_length", "best_model_tree_SumInternalBranch",
+                                  "mfp_model_code", "mfp_model_model", "mfp_model_LogL", "mfp_model_BIC", "mfp_model_wBIC",
+                                  "mfp_model_tree_LogL", "mfp_model_tree_NumFreeParams", "mfp_model_tree_BIC", "mfp_model_tree_length", "mfp_model_tree_SumInternalBranch")
   
   # Iterate through each dataset and extract the .iqtree file for the MFP run
   extracted_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
