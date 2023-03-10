@@ -933,7 +933,7 @@ extract.model.details <- function(iqtree_file){
 }
 
 
-check.ModelFinder.models <- function(unique_id, best_model, iqtree_file){
+check.ModelFinder.models <- function(best_model, iqtree_file){
   # Function to take the best model by BIC for an alignment and check whether that model was tested by ModelFinder in IQ-Tree
 }
 
@@ -1006,12 +1006,10 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
                                   "mfp_model_tree_LogL", "mfp_model_tree_NumFreeParams", "mfp_model_tree_BIC", "mfp_model_tree_length", "mfp_model_tree_SumInternalBranch")
   
   # Iterate through each dataset and extract the .iqtree file for the MFP run
-  extracted_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
-  
-  # Extract the best model for each 
-  
+  model_comparison_df$modelfinder_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
+
   # Apply the function to one dataset at a time
-  op <- lapply(1:nrow(nonMFP_models_df), function(i){check.ModelFinder.models(unique_ids[[i]], best_models[[i]], extracted_iqtree_files[[i]])})
+  op <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
 }
 
 
