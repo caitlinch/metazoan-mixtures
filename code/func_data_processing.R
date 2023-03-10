@@ -933,18 +933,47 @@ extract.model.details <- function(iqtree_file){
 }
 
 
-check.ModelFinder.models <- function(best_model, log_file){
+check.ModelFinder.models <- function(unique_id, best_model, iqtree_file){
   # Function to take the best model by BIC for an alignment and check whether that model was tested by ModelFinder in IQ-Tree
+}
+
+
+extract.iqtree.file <- function(unique_id, IQTree_output_dir){
+  # Small function to extract the relevant iqtree_file for a given alignment
+  
+  # Extract list of all files from the ML tree estimation 
+  all_files <- list.files(IQTree_output_dir)
+  # Extract the list of .iqtree files for this unique id
+  iqtree_files <- grep(unique_id, grep("\\.iqtree", all_files, value = TRUE), value = TRUE)
+  # Attach the full file path to the iqtree files
+  iqtree_files <- paste0(IQTree_output_dir, iqtree_files)
+  # Extract the MFP iqtree file
+  mfp_iqtree_file <- grep("ModelFinder", iqtree_files, value = T)
+  # Return the ModelFinder .iqtree file for this alignment
+  return(mfp_iqtree_file)
+}
+
+
+extract.best.model.from.dataframe <- function(unique_id, best_models_df){
+  # Small function to extract the relevant best_model for a given alignment
+  
+  
 }
 
 
 check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
   # Function to take in a single dataframe, and apply the check.ModelFinder.models function
   
+  # Create the list of unique ids
+  unique_ids <- unique(paste0(best_models_df$dataset, ".", best_models_df$matrix_name))
   
+  # Iterate through each dataset and extract the .iqtree file for the MFP run
+  extracted_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
+  
+  # Extract the best model for each 
   
   # Apply the function to one dataset at a time
-  op <- lapply(1:nrow(nonMFP_models_df), function(i){check.ModelFinder.models(best_model_vector[[i]], log_file[[i]])})
+  op <- lapply(1:nrow(nonMFP_models_df), function(i){check.ModelFinder.models(unique_ids[[i]], best_models[[i]], extracted_iqtree_files[[i]])})
 }
 
 
