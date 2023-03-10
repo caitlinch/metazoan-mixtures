@@ -966,14 +966,19 @@ extract.best.model.from.dataframe <- function(unique_id, best_models_df){
   uid_df <- uid_df[order(uid_df$best_model_BIC),]
   # Check whether there is an independent best model (2 rows) or whether MFP is the best model (1 row)
   if (nrow(uid_df) == 2){
+    # Check whether the best model is from the ModelFinder run
+    check_bool <- (uid_df$model_code[[1]] == "ModelFinder")
     # Create a vector of output values
-    op_vec <- c(uid_dataset, uid_matrix_name, 
+    op_vec <- c(uid_dataset, uid_matrix_name, check_bool,
                 uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], uid_df$best_model_wBIC[[1]], 
                 uid_df$tree_LogL[[1]], uid_df$tree_NumFreeParams[[1]], uid_df$tree_BIC[[1]], uid_df$tree_length[[1]], uid_df$tree_SumInternalBranch[[1]],
                 uid_df$model_code[[2]], uid_df$best_model[[2]], uid_df$best_model_LogL[[2]], uid_df$best_model_BIC[[2]], uid_df$best_model_wBIC[[2]],
                 uid_df$tree_LogL[[2]], uid_df$tree_NumFreeParams[[2]], uid_df$tree_BIC[[2]], uid_df$tree_length[[2]], uid_df$tree_SumInternalBranch[[2]])
   } else if (nrow(uid_df) == 1){
-    op_vec <- c(uid_dataset, uid_matrix_name, 
+    # Check whether the best model is from the ModelFinder run
+    check_bool <- (uid_df$model_code[[1]] == "ModelFinder")
+    # Create a vector of output values
+    op_vec <- c(uid_dataset, uid_matrix_name, check_bool,
                 uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], uid_df$best_model_wBIC[[1]], 
                 uid_df$tree_LogL[[1]], uid_df$tree_NumFreeParams[[1]], uid_df$tree_BIC[[1]], uid_df$tree_length[[1]], uid_df$tree_SumInternalBranch[[1]],
                 NA, NA, NA, NA, NA,
@@ -994,7 +999,7 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
   model_comparison_list <- lapply(unique_ids, extract.best.model.from.dataframe, best_models_df = best_models_df)
   # Convert list to dataframe
   model_comparison_df <- as.data.frame(do.call(rbind, model_comparison_list))
-  names(model_comparison_df) <- c("dataset", "matrix_name",
+  names(model_comparison_df) <- c("dataset", "matrix_name", "best.model.is.ModelFinder",
                                   "best_model_code", "best_model_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
                                   "best_model_tree_LogL", "best_model_tree_NumFreeParams", "best_model_tree_BIC", "best_model_tree_length", "best_model_tree_SumInternalBranch",
                                   "mfp_model_code", "mfp_model_model", "mfp_model_LogL", "mfp_model_BIC", "mfp_model_wBIC",
