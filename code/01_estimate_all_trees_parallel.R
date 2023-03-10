@@ -149,6 +149,7 @@ df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_results.tsv")
 df_op_completion_freq <- paste0(output_dir, "01_03_dataset_completion_frequency.tsv")
 df_op_best_models <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
 df_op_alignment_taxa <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
+df_op_mfp_model_check <- paste0(output_dir, "01_03_best_model_comparison.tsv")
 
 
 
@@ -291,9 +292,10 @@ if (prepare.hypothesis.trees == TRUE){
   write.table(selected_models_df, file = df_op_best_models, row.names = FALSE, sep = "\t")
   
   ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
-  best_models_df <- selected_models_df
-  IQTree_output_dir <- ml_tree_dir
-  
+  mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = selected_models_df, IQTree_output_dir = ml_tree_dir)
+  # Save the dataframe you just created
+  write.table(mfp_check_df, file = df_op_mfp_model_check, row.names = FALSE, sep = "\t")
+
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
   # Create the constraint trees and determine what parameters to use for each hypothesis tree
