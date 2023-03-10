@@ -243,6 +243,26 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
 } # end function
 
 
+format.constraint.tree.clade <- function(clade){
+  # Function to take in a vector of species and return a nicely formatted character object to paste into a constraint tree
+  
+  # Check how many taxa are in the clade
+  clade_size <- length(clade)
+  
+  # Format the clade
+  if (clade_size == 1){
+    clade_formatted = clade
+  } else if (clade_size > 1){
+    clade_formatted = paste0("(", paste(clade, collapse = ", "), ")")
+  } else if (clade_size < 1){
+    clade_formatted <- ""
+  }
+  
+  # Return the nicely formatted clade
+  return(clade_formatted)
+}
+
+
 create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = NA, dataset_constraint_tree_dir, 
                                     best_model, estimated_rates = NA, estimated_gamma = NA, estimated_state_frequencies = NA, 
                                     constraint_clades, alignment_file, partitioned_check = FALSE, partition_file = NA, 
@@ -276,6 +296,50 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
   sponges_2_taxa = as.character(unlist(constraint_clades[c(constraint_clades$Sponges_2)])) 
   cnidaria_taxa = constraint_clades$Cnidaria
   bilateria_taxa = constraint_clades$Bilateria
+  
+  # Format the outgroup clades nicely
+  # Outgroup taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
+  # Ctenophora taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
+  # Porifera taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
+  # Sponges_1 taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
+  # Sponges_2 taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
+  # Cnidaria taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
+  # Bilateria taxa
+  if (length(outgroup_taxa) == 1){
+    outgroup_taxa_formatted = outgroup_taxa
+  } else {
+    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
+  }
   
   # Only need to create one set of hypothesis trees per dataset/matrix combination - create constraint tree if it doesn't exist
   ### Hypothesis 1: Ctenophora-sister
