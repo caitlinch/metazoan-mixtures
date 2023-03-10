@@ -82,7 +82,7 @@ hypothesis_tree_bootstraps <- 1000
 # Set control parameters
 estimate.ML.trees <- FALSE
 extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- FALSE
+prepare.hypothesis.trees <- TRUE
 estimate.hypothesis.trees <- TRUE
 collate.hypothesis.logs <- TRUE
 
@@ -268,12 +268,11 @@ if (prepare.hypothesis.trees == TRUE){
   # Open alignment_taxa_df file (list of taxa in ML trees for each alignment)
   alignment_taxa_df <- read.table(df_op_alignment_taxa, header = T)
   
-  
   ## Select completed datasets to estimate constraint trees
   # Determine which datasets have all alignments completed
   completion_df <- as.data.frame(table(trimmed_ml_tree_df$dataset, trimmed_ml_tree_df$matrix_name), stringsAsFactors = FALSE)
   names(completion_df) <- c("dataset", "matrix_name", "frequency")
-  # Remove all entries with 0 frequency (either an alignment that was not run, or an artefact of the method for making the table 
+  # Remove all entries with 0 frequency (either an alignment that was not run, or an artifact of the method for making the table 
   #   i.e. a combination of dataset and alignment name that is incorrect)
   completion_df <- completion_df[completion_df$frequency != 0,]
   row.names(completion_df) <- 1:nrow(completion_df)
@@ -290,6 +289,9 @@ if (prepare.hypothesis.trees == TRUE){
   selected_models_df <- do.call(rbind, selected_models_list)
   # Save the dataframe of best models
   write.table(selected_models_df, file = df_op_best_models, row.names = FALSE, sep = "\t")
+  
+  ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
+  
   
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
