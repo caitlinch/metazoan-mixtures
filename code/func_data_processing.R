@@ -1016,11 +1016,12 @@ dataset.check.tree.taxa <- function(tree_files){
 }
 
 
-wrapper.check.taxa.function <- function(ML_output_df, tree_folder){
+wrapper.check.taxa.function <- function(unique_ids, tree_folder){
   # Wrapper function for dataset.check.tree.taxa that operates on the completed maximum likelihood output dataframe
   
-  # Create the unique output ids for treefiles by pasting the dataset and matrix name together
-  unique_ids <- unique(paste0(ML_output_df$dataset, ".", ML_output_df$matrix_name))
+  # Each unique output id refers to an alignment: they are created by pasting the dataset and matrix name together (separated by a "." character)
+  # Check that the unique ids are unique
+  unique_ids <- unique(unique_ids)
   
   # Get the list of all ML trees from the maximim_likelihood_trees directory
   all_dir_files <- list.files(tree_folder)
