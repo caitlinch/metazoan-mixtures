@@ -938,6 +938,10 @@ check.ModelFinder.models <- function(best_model, iqtree_file){
   
   # Extract the mfp best model
   mfp_best_model <- extract.best.model(iqtree_file)
+  # There's an output issue that sometimes means some models have "+I+I+", where it should be "+I+"
+  #   Correct this in the best model and best model from ModelFinder, if applicable
+  best_model <- gsub("\\+I\\+I\\+", "+I+", best_model)
+  mfp_best_model <- gsub("\\+I\\+I\\+", "+I+", mfp_best_model)
   
   # Check if the iqtree file exists
   if (file.exists(iqtree_file) == TRUE){
@@ -968,13 +972,26 @@ check.ModelFinder.models <- function(best_model, iqtree_file){
     #   Correct this issue in the mfp_df$Model column
     mfp_df$Model <- gsub("\\+I\\+I\\+", "+I+", mfp_df$Model)
     
-    ## Check whether the best_model was tested during model selection
     
+    ## Investigate the models checked during model selection
+    # Check whether the best_model was tested during model selection
+    best_model_checked_bool <- (best_model %in% mfp_df$Model)
+    # Get the model code from the best model (the first section of the model, e.g. "LG" for "LG+I+G4")
+    best_model_code <- strsplit(best_model, "\\+")[[1]][1]
+    # Check whether the model code from the best model was used at all 
+    #     Reason for structure of logic: check whether any individual model in the dataframe contains that model_code 
+    #     (i.e. if TRUE is present 1 or more times when we check "Is the model code in this model? True or false?")
+    best_model_code_checked_bool <- (TRUE %in% (grepl(best_model_code, mfp_df$Model)))
+    # Create the output vector
+    mfp_check_op <- c(best_model_checked_bool, best_model_code_checked_bool)
     
   } else if (file.exists(iqtree_file) == FALSE){
-    # If the iqtree_file doesn't exist, return NA
-    best_model = NA
+    # If the iqtree_file doesn't exist, return NA for all entries in output vector
+    mfp_check_op <- c(NA, NA)
   }
+  
+  # Return the output vector
+  return(mfp_check_op)
 }
 
 
