@@ -252,13 +252,6 @@ if (extract.ML.tree.information == TRUE){
                                                        tree_folder = ml_tree_dir)
   # Save dataframe
   write.table(alignment_taxa_df, file = df_op_alignment_taxa, row.names = FALSE, sep = "\t")
-  
-  # For each dataset, determine which species are in the maximum likelihood tree for that alignment
-  tree_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_trees/"
-  all_tree_files <- list.files("/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_trees/")
-  borowiec_tree_files <- paste0("/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_trees/", grep("treefile", grep("Borowiec2015.Best108", all_tree_files, value = T), value = T))
-  
-  dataset.check.tree.taxa(borowiec_tree_files)
 }
 
 
