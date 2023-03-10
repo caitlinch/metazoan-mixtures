@@ -291,7 +291,8 @@ if (prepare.hypothesis.trees == TRUE){
   write.table(selected_models_df, file = df_op_best_models, row.names = FALSE, sep = "\t")
   
   ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
-  
+  best_models_df <- selected_models_df
+  IQTree_output_dir <- ml_tree_dir
   
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
