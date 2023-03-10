@@ -536,7 +536,7 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
     num_cats_rate_categories <- length(strsplit(free_rate_categories, ",")[[1]])/2
     num_cats_model <- as.numeric(gsub("R", "", grep("R", strsplit(best_model, "\\+")[[1]], value = T)))
     # Create a nice model with both the best model and the free rate category (weights and rates)
-    model_call = paste0(" -m ", best_model, "{", free_rate_categories, "}", " ")
+    model_call = paste0(" -m '", best_model, "{", free_rate_categories, "}'", " ")
   }
   
   ### Check for a gamma shape parameter (alpha) call
