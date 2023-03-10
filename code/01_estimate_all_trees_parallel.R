@@ -148,6 +148,7 @@ df_op_01_03 <- paste0(output_dir, "01_03_constraint_tree_estimation_parameters.t
 df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_results.tsv")
 df_op_completion_freq <- paste0(output_dir, "01_03_dataset_completion_frequency.tsv")
 df_op_best_models <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
+df_op_alignment_taxa <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
 
 
 
@@ -246,11 +247,18 @@ if (extract.ML.tree.information == TRUE){
   # Save dataframe
   write.table(trimmed_ml_tree_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
   
+  # Determine which taxa are included in the ML trees for each alignment (each value dataset/matrix name combination)
+  alignment_taxa_df <- dataset.check.tree.taxa.wrapper(unique_ids = unique(paste0(trimmed_ml_tree_df$dataset, ".", trimmed_ml_tree_df$matrix_name)),
+                                                       tree_folder = ml_tree_dir)
+  # Save dataframe
+  write.table(alignment_taxa_df, file = df_op_alignment_taxa, row.names = FALSE, sep = "\t")
+  
   # For each dataset, determine which species are in the maximum likelihood tree for that alignment
+  tree_folder <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_trees/"
   all_tree_files <- list.files("/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_trees/")
   borowiec_tree_files <- paste0("/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/maximum_likelihood_trees/", grep("treefile", grep("Borowiec2015.Best108", all_tree_files, value = T), value = T))
   
-  
+  dataset.check.tree.taxa(borowiec_tree_files)
 }
 
 
