@@ -5,6 +5,7 @@
 
 #### Packages ####
 library(stringr) # Used in extract.model.details for detecting presence/absence of a pattern in a string (using str_detect) 
+library(ape) # Used in check.tree.taxa to read in a phylogenetic tree from file (using read.tree)
 
 
 #### Process models to prepare for IQ-Tree runs ####
@@ -930,6 +931,83 @@ extract.model.details <- function(iqtree_file){
   # make the output dataframe
   return(params)
 }
+
+
+
+#### Extract information from maximum likelihood trees ####
+# Functions to extract data from maximum likelihood trees estimated in IQ-Tree2 (from the .treefile output file)
+
+check.tree.taxa <- function(tree_file){
+  # Function to take a phylogenetic tree and return the list of taxa in that tree
+  
+  # Check whether the tree exists
+  if (file.exists(tree_file) == TRUE){
+    # Open the tree
+    tree <- read.tree(file = tree_file)
+    # Extract the list of taxa
+    tree_tips <- tree$tip.label
+  } else if (file.exists(tree_file) == FALSE){
+    tree_tips <- NA
+  }
+  
+  # Return the vector of tree tips
+  return(tree_tips)
+}
+
+
+dataset.check.tree.taxa <- function(dataset, tree_files){
+  # Function to take a list of tree files, check what taxa are in each tree, and determine whether the trees have the same taxa
+  
+  # Trim any tree files that don't exist
+  tree_files_exist <- tree_files[file.exists(tree_files)]
+  
+  # Apply the check.tree.taxa to each tree sequentially
+  taxa_list <- lapply(tree_files_exist, check.tree.taxa)
+  
+  # Check whether all taxa have the same number of tips
+  num_tree_tips <- unlist(lapply(taxa_list,length))
+  num_taxa_lengths <- length(unique(num_tree_tips))
+  
+  # Check whether all trees have the same number of taxa
+  if (num_taxa_lengths == 1){
+    # All trees have the same number of taxa
+    # Check whether the list of taxa is identical 
+    # Sort each vector within the taxa_list so it is in alphabetical order
+    taxa_list_alphabetical <- lapply(1:length(taxa_list), function(i){sort(taxa_list[[i]])})
+    # Bind all tips into a dataframe (each row is a different tree)
+    taxa_df <- as.data.frame(do.call(rbind, taxa_list_alphabetical))
+    # Check whether all columns are identical
+    #     FALSE = first originals; TRUE = duplicated 
+    duplicated_check <- duplicated(taxa_df)
+    # Count the number of TRUE and FALSE
+    #   If all the `n` rows are identical, there should be 1 FALSE and (`n`-1) TRUE
+    duplicated_check_table <- table(duplicated_check)
+    num_original <- duplicated_check_table[["FALSE"]]
+    num_copy <- duplicated_check_table[["TRUE"]]
+    num_trees <- length(tree_files)
+    
+    # Check whether all trees have identical taxa
+    if (num_original == 1 & num_copy == (num_trees - 1)){
+      # There is one unique row (and all other rows are copies)
+      # Therefore, all trees have identical taxa
+      # Return the vector of taxa (by taking the first row of the dataframe as a character vector)
+      ds_check_op <- as.character(taxa_df[1,])
+    } else if (num_original > 1){
+      # More than one one row is unique - different trees have different taxa
+      # Return an error message
+      ds_check_op <- "ERROR: different trees have different taxa"
+    }
+    
+  } else if (num_taxa_lengths > 1){
+    # Trees have different numbers of taxa      
+    # Return an error message
+    ds_check_op <- "ERROR: trees do not all have same number of taxa"
+  }
+  
+  # Return the output (either a list of the taxa in all the trees, or an error message)
+  return(df_check_op)
+}
+
 
 
 #### Extract information from tree mixture results ####
