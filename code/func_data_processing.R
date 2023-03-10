@@ -933,6 +933,20 @@ extract.model.details <- function(iqtree_file){
 }
 
 
+check.ModelFinder.models <- function(best_model, log_file){
+  # Function to take the best model by BIC for an alignment and check whether that model was tested by ModelFinder in IQ-Tree
+}
+
+
+check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
+  # Function to take in a single dataframe, and apply the check.ModelFinder.models function
+  
+  
+  
+  # Apply the function to one dataset at a time
+  op <- lapply(1:nrow(nonMFP_models_df), function(i){check.ModelFinder.models(best_model_vector[[i]], log_file[[i]])})
+}
+
 
 #### Extract information from maximum likelihood trees ####
 # Functions to extract data from maximum likelihood trees estimated in IQ-Tree2 (from the .treefile output file)
