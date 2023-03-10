@@ -1035,6 +1035,19 @@ wrapper.check.taxa.function <- function(ML_output_df, tree_folder){
   
   # Determine if the trees for each unique_id have the same taxa
   dataset_taxa_lists <- lapply(1:length(dataset_tree_path_lists), function(i){dataset.check.tree.taxa(dataset_tree_path_lists[[i]])})
+  
+  # Change the output into a nice dataframe
+  # Get the length of the longest element in the list 
+  largest_length <- max(unlist(lapply(dataset_taxa_lists, length)))
+  # Set lengths of all elements to the largest_length
+  dataset_taxa_lists <- lapply(dataset_taxa_lists, function(v){ c(v, rep(NA, largest_length-length(v)))})
+  # Bind list into a dataframe (each unique_id will be one column)
+  dataset_taxa_df <- as.data.frame(do.call(cbind, dataset_taxa_lists))
+  # Add names for each column
+  names(dataset_taxa_df) <- unique_ids
+  
+  # Return the dataframe of names in each dataset/matrix combination
+  return(dataset_taxa_df)
 }
 
 
