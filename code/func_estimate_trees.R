@@ -298,48 +298,16 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
   bilateria_taxa = constraint_clades$Bilateria
   
   # Format the outgroup clades nicely
-  # Outgroup taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
-  # Ctenophora taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
-  # Porifera taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
-  # Sponges_1 taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
-  # Sponges_2 taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
-  # Cnidaria taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
-  # Bilateria taxa
-  if (length(outgroup_taxa) == 1){
-    outgroup_taxa_formatted = outgroup_taxa
-  } else {
-    outgroup_taxa_formatted = paste0("(", paste(outgroup_taxa, collapse = ", "), ")")
-  }
+  outgroup_taxa_formatted <- format.constraint.tree.clade(outgroup_taxa)
+  ctenophora_taxa_formatted <- format.constraint.tree.clade(ctenophora_taxa)
+  porifera_taxa_formatted <- format.constraint.tree.clade(porifera_taxa)
+  ctenophora_porifera_taxa_formatted <- format.constraint.tree.clade(c(ctenophora_taxa, porifera_taxa))
+  sponges_1_taxa_formatted <- format.constraint.tree.clade(sponges_1_taxa)
+  sponges_2_taxa_formatted <- format.constraint.tree.clade(sponges_2_taxa)
+  cnidaria_taxa_formatted <- format.constraint.tree.clade(cnidaria_taxa)
+  bilateria_taxa_formatted <- format.constraint.tree.clade(bilateria_taxa)
+  cnidaria_bilateria_taxa_formatted <- format.constraint.tree.clade(c(cnidaria_taxa, bilateria_taxa))
+  
   
   # Only need to create one set of hypothesis trees per dataset/matrix combination - create constraint tree if it doesn't exist
   ### Hypothesis 1: Ctenophora-sister
@@ -355,6 +323,7 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
                                 "), (",
                                 paste(c(cnidaria_taxa, bilateria_taxa), collapse = ", "),
                                 "))));")
+    constraint_tree_1 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_taxa_formatted, ", (", porifera_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, ")));")
     write(constraint_tree_1, file = constraint_tree_1_file_name)
   } else if (file.exists(constraint_tree_1_file_name) == TRUE){ 
     constraint_tree_1 <- readLines(constraint_tree_1_file_name)
