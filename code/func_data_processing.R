@@ -958,54 +958,83 @@ check.tree.taxa <- function(tree_file){
 dataset.check.tree.taxa <- function(tree_files){
   # Function to take a list of tree files, check what taxa are in each tree, and determine whether the trees have the same taxa
   
-  # Trim any tree files that don't exist
-  tree_files_exist <- tree_files[file.exists(tree_files)]
-  
-  # Apply the check.tree.taxa to each tree sequentially
-  taxa_list <- lapply(tree_files_exist, check.tree.taxa)
-  
-  # Check whether all taxa have the same number of tips
-  num_tree_tips <- unlist(lapply(taxa_list,length))
-  num_taxa_lengths <- length(unique(num_tree_tips))
-  
-  # Check whether all trees have the same number of taxa
-  if (num_taxa_lengths == 1){
-    # All trees have the same number of taxa
-    # Check whether the list of taxa is identical 
-    # Sort each vector within the taxa_list so it is in alphabetical order
-    taxa_list_alphabetical <- lapply(1:length(taxa_list), function(i){sort(taxa_list[[i]])})
-    # Bind all tips into a dataframe (each row is a different tree)
-    taxa_df <- as.data.frame(do.call(rbind, taxa_list_alphabetical))
-    # Check whether all columns are identical
-    #     FALSE = first originals; TRUE = duplicated 
-    duplicated_check <- duplicated(taxa_df)
-    # Count the number of TRUE and FALSE
-    #   If all the `n` rows are identical, there should be 1 FALSE and (`n`-1) TRUE
-    duplicated_check_table <- table(duplicated_check)
-    num_original <- duplicated_check_table[["FALSE"]]
-    num_copy <- duplicated_check_table[["TRUE"]]
-    num_trees <- length(tree_files)
+  # Check how many tree files there are
+  if (length(tree_files) > 1){
+    # If there are multiple tree files, check if all the tree files have identical taxa
     
-    # Check whether all trees have identical taxa
-    if (num_original == 1 & num_copy == (num_trees - 1)){
-      # There is one unique row (and all other rows are copies)
-      # Therefore, all trees have identical taxa
-      # Return the vector of taxa (by taking the first row of the dataframe as a character vector)
-      ds_check_op <- as.character(taxa_df[1,])
-    } else if (num_original > 1){
-      # More than one one row is unique - different trees have different taxa
+    # Trim any tree files that don't exist
+    tree_files_exist <- tree_files[file.exists(tree_files)]
+    
+    # Apply the check.tree.taxa to each tree sequentially
+    taxa_list <- lapply(tree_files_exist, check.tree.taxa)
+    
+    # Check whether all taxa have the same number of tips
+    num_tree_tips <- unlist(lapply(taxa_list,length))
+    num_taxa_lengths <- length(unique(num_tree_tips))
+    
+    # Check whether all trees have the same number of taxa
+    if (num_taxa_lengths == 1){
+      # All trees have the same number of taxa
+      # Check whether the list of taxa is identical 
+      # Sort each vector within the taxa_list so it is in alphabetical order
+      taxa_list_alphabetical <- lapply(1:length(taxa_list), function(i){sort(taxa_list[[i]])})
+      # Bind all tips into a dataframe (each row is a different tree)
+      taxa_df <- as.data.frame(do.call(rbind, taxa_list_alphabetical))
+      # Check whether all columns are identical
+      #     FALSE = first originals; TRUE = duplicated 
+      duplicated_check <- duplicated(taxa_df)
+      # Count the number of TRUE and FALSE
+      #   If all the `n` rows are identical, there should be 1 FALSE and (`n`-1) TRUE
+      duplicated_check_table <- table(duplicated_check)
+      num_original <- duplicated_check_table[["FALSE"]]
+      num_copy <- duplicated_check_table[["TRUE"]]
+      num_trees <- length(tree_files)
+      
+      # Check whether all trees have identical taxa
+      if ((num_original == 1 & num_copy == (num_trees - 1)) | (num_original == 1 & num_copy == 0)){
+        # There is one unique row (and all other rows are copies)
+        # Therefore, all trees have identical taxa
+        # Return the vector of taxa (by taking the first row of the dataframe as a character vector)
+        ds_check_op <- as.character(taxa_df[1,])
+      } else if (num_original > 1){
+        # More than one one row is unique - different trees have different taxa
+        # Return an error message
+        ds_check_op <- "ERROR: different trees have different taxa"
+      }
+      
+    } else if (num_taxa_lengths > 1){
+      # Trees have different numbers of taxa      
       # Return an error message
-      ds_check_op <- "ERROR: different trees have different taxa"
+      ds_check_op <- "ERROR: trees do not all have same number of taxa"
     }
-    
-  } else if (num_taxa_lengths > 1){
-    # Trees have different numbers of taxa      
-    # Return an error message
-    ds_check_op <- "ERROR: trees do not all have same number of taxa"
+  } else if (length(tree_files) == 1){
+    # If there is a single tree file, return the taxa from that tree
+    ds_check_op <- read.tree(file = tree_files)$tip.label
   }
-  
   # Return the output (either a list of the taxa in all the trees, or an error message)
   return(ds_check_op)
+}
+
+
+wrapper.check.taxa.function <- function(ML_output_df, tree_folder){
+  # Wrapper function for dataset.check.tree.taxa that operates on the completed maximum likelihood output dataframe
+  
+  # Create the unique output ids for treefiles by pasting the dataset and matrix name together
+  unique_ids <- unique(paste0(ML_output_df$dataset, ".", ML_output_df$matrix_name))
+  
+  # Get the list of all ML trees from the maximim_likelihood_trees directory
+  all_dir_files <- list.files(tree_folder)
+  all_tree_files <- grep("treefile", all_dir_files, value = TRUE)
+  # Paste the full directory path onto the basenames
+  if (length(all_tree_files) > 0){
+    all_tree_files <- paste0(tree_folder, all_tree_files)
+  }
+  
+  # Iterate through the unique_ids and extract all tree files with that id
+  dataset_tree_path_lists <- lapply(unique_ids, function(run_id){grep(run_id, all_tree_files, value = T)})
+  
+  # Determine if the trees for each unique_id have the same taxa
+  dataset_taxa_lists <- lapply(1:length(dataset_tree_path_lists), function(i){dataset.check.tree.taxa(dataset_tree_path_lists[[i]])})
 }
 
 
