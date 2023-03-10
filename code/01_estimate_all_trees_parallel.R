@@ -301,7 +301,8 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_list <- lapply(1:nrow(selected_models_df), constraint.tree.wrapper, output_directory = c_tree_dir,
                             iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads,
                             dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
-                            ml_output_df = selected_models_df)
+                            ml_output_df = selected_models_df, ml_tree_tips_df = alignment_taxa_df, 
+                            force.update.constraint.trees = TRUE)
   # Collate the constraints into a single dataframe
   constraint_df <- do.call(rbind, constraint_list)
   # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)

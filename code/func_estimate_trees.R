@@ -163,7 +163,7 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
 #### Creating constraint trees ####
 constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num_threads = 1, 
                                     dataset_info = all_datasets, matrix_taxa_info = matrix_taxa, 
-                                    ml_output_df, alignment_taxa_df, force.update.constraint.trees = TRUE){
+                                    ml_output_df, ml_tree_tips_df, force.update.constraint.trees = TRUE){
   
   # Function to take a row from the ML output dataframe and create the constraint trees plus parameters to estimate the hypothesis trees
   
@@ -205,8 +205,8 @@ constraint.tree.wrapper <- function(i, output_directory, iqtree_path, iqtree_num
   ## Remove any taxa from the constraint_clades that are not included in the ML tree for the alignment
   # Create the unique identifier for this row
   unique_id <- paste0(row$dataset, ".", row$matrix_name)
-  # Extract the column of tip labels from the relevant unique_id column of the alignment_taxa_df
-  tree_tips_raw <- alignment_taxa_df[[c(unique_id)]]
+  # Extract the column of tip labels from the relevant unique_id column of the ml_tree_tips_df
+  tree_tips_raw <- ml_tree_tips_df[[c(unique_id)]]
   tree_tips_cleaned <- na.omit(tree_tips_raw)
   tree_tips <- as.character(tree_tips_cleaned)
   # Check each of the clades and remove any tips not in the list of tree tips
