@@ -1062,7 +1062,7 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
                                   "mfp_model_tree_LogL", "mfp_model_tree_NumFreeParams", "mfp_model_tree_BIC", "mfp_model_tree_length", "mfp_model_tree_SumInternalBranch")
   
   # Iterate through each dataset and extract the .iqtree file for the MFP run
-  model_comparison_df$modelfinder_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
+  model_comparison_df$modelfinder_iqtree_files <- unlist(lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir))
   
   # Apply the function to one dataset at a time
   check_mfp_list <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
@@ -1079,6 +1079,11 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
                                                "mfp_model_code", "mfp_model_model", "mfp_model_LogL", "mfp_model_BIC", "mfp_model_wBIC",
                                                "mfp_model_tree_LogL", "mfp_model_tree_NumFreeParams", "mfp_model_tree_BIC", "mfp_model_tree_length", "mfp_model_tree_SumInternalBranch",
                                                "modelfinder_iqtree_files")]
+  
+  # Ensure all logical columns are logical class
+  model_comparison_df$best.model.is.ModelFinder             <- as.logical(model_comparison_df$best.model.is.ModelFinder)
+  model_comparison_df$did.ModelFinder.test.best.model       <- as.logical(model_comparison_df$did.ModelFinder.test.best.model)
+  model_comparison_df$did.ModelFinder.test.best.model.code  <- as.logical(model_comparison_df$did.ModelFinder.test.best.model.code)
   
   # Return the dataframe of model information
   return(model_comparison_df)
