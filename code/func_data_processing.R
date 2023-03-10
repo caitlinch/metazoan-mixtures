@@ -968,6 +968,8 @@ check.ModelFinder.models <- function(best_model, iqtree_file){
     #   Correct this issue in the mfp_df$Model column
     mfp_df$Model <- gsub("\\+I\\+I\\+", "+I+", mfp_df$Model)
     
+    ## Check whether the best_model was tested during model selection
+    
     
   } else if (file.exists(iqtree_file) == FALSE){
     # If the iqtree_file doesn't exist, return NA
