@@ -1007,9 +1007,20 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
   
   # Iterate through each dataset and extract the .iqtree file for the MFP run
   model_comparison_df$modelfinder_iqtree_files <- lapply(unique_ids, extract.iqtree.file, IQTree_output_dir = IQTree_output_dir)
-
+  
   # Apply the function to one dataset at a time
-  op <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
+  model_comparison_df$did.ModelFinder.test.best.model <- lapply(1:nrow(model_comparison_df), function(i){check.ModelFinder.models(model_comparison_df$best_model_model[[i]], model_comparison_df$modelfinder_iqtree_files[[i]])})
+  
+  # Reorder the columns of the dataframe
+  model_comparison_df <- model_comparison_df[c("dataset", "matrix_name", "best.model.is.ModelFinder","did.ModelFinder.test.best.model",
+                                               "best_model_code", "best_model_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                               "best_model_tree_LogL", "best_model_tree_NumFreeParams", "best_model_tree_BIC", "best_model_tree_length", "best_model_tree_SumInternalBranch",
+                                               "mfp_model_code", "mfp_model_model", "mfp_model_LogL", "mfp_model_BIC", "mfp_model_wBIC",
+                                               "mfp_model_tree_LogL", "mfp_model_tree_NumFreeParams", "mfp_model_tree_BIC", "mfp_model_tree_length", "mfp_model_tree_SumInternalBranch",
+                                               "modelfinder_iqtree_files")]
+  
+  # Return the dataframe of model information
+  return(model_comparison_df)
 }
 
 
