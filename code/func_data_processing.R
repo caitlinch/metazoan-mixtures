@@ -957,7 +957,19 @@ extract.iqtree.file <- function(unique_id, IQTree_output_dir){
 extract.best.model.from.dataframe <- function(unique_id, best_models_df){
   # Small function to extract the relevant best_model for a given alignment
   
-  
+  # Extract dataset and matrix names from uid
+  uid_dataset <- strsplit(unique_id, "\\.")[[1]][1]
+  uid_matrix_name <- strsplit(unique_id, "\\.")[[1]][2]
+  # Reduce dataframe to just rows containing the unique id
+  uid_df <- best_models_df[best_models_df$dataset == uid_dataset & best_models_df$matrix_name == uid_matrix_name,]
+  # Order matrix from highest to lowest BIC value
+  uid_df <- uid_df[order(uid_df$best_model_BIC),]
+  # Create a vector of output values
+  op_vec <- c(uid_dataset, uid_matrix_name, 
+              uid_df$model_code[[1]], uid_df$best_model[[1]], uid_df$best_model_LogL[[1]], uid_df$best_model_BIC[[1]], 
+              uid_df$model_code[[2]], uid_df$best_model[[2]], uid_df$best_model_LogL[[2]], uid_df$best_model_BIC[[2]])
+  # Return the output values
+  return(op_vec)
 }
 
 
