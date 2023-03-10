@@ -935,6 +935,44 @@ extract.model.details <- function(iqtree_file){
 
 check.ModelFinder.models <- function(best_model, iqtree_file){
   # Function to take the best model by BIC for an alignment and check whether that model was tested by ModelFinder in IQ-Tree
+  
+  # Extract the mfp best model
+  mfp_best_model <- extract.best.model(iqtree_file)
+  
+  # Check if the iqtree file exists
+  if (file.exists(iqtree_file) == TRUE){
+    # If the iqtree_file does exist:
+    ## Open the .iqtree file:
+    iq_lines <- readLines(iqtree_file)
+    
+    ## Extract and format the ModelFinder section
+    # Determine starting point of ModelFinder table
+    start_line <- Reduce(intersect, list(grep("Model", iq_lines), grep("LogL", iq_lines), grep("AIC", iq_lines), grep("AICc", iq_lines), grep("BIC", iq_lines)))
+    # Determine the end point of Modelfinder table
+    # Find all the empty lines
+    empty_lines <- which(iq_lines == "")
+    end_line <- empty_lines[(which(empty_lines > start_line)[[1]])] - 1
+    # Get the section containing ModelFinder lines
+    mfp_lines <- iq_lines[start_line:end_line]
+    # Split each line at the spaces
+    mfp_lines_split <- strsplit(mfp_lines, " ")
+    # Remove any empty characters, or any elements that are just "+" or "-"
+    mfp_lines_split <- lapply(1:length(mfp_lines_split), function(i){mfp_lines_split[[i]][mfp_lines_split[[i]] != ""]})
+    mfp_lines_split <- lapply(1:length(mfp_lines_split_2), function(i){mfp_lines_split_2[[i]][mfp_lines_split_2[[i]] != "-"]})
+    mfp_lines_split <- lapply(1:length(mfp_lines_split_3), function(i){mfp_lines_split_3[[i]][mfp_lines_split_3[[i]] != "+"]})
+    # Bind the second element of the list onwards into a nice dataframe
+    mfp_df <- as.data.frame(do.call(rbind, mfp_lines_split[2:length(mfp_lines_split)]))
+    # Use the first element of the list as the row names
+    names(mfp_df) <- mfp_lines_split[[1]]
+    # There's an output issue that sometimes means some models have "+I+I+", where it should be "+I+"
+    #   Correct this issue in the mfp_df$Model column
+    mfp_df$Model <- gsub("\\+I\\+I\\+", "+I+", mfp_df$Model)
+    
+    
+  } else if (file.exists(iqtree_file) == FALSE){
+    # If the iqtree_file doesn't exist, return NA
+    best_model = NA
+  }
 }
 
 
