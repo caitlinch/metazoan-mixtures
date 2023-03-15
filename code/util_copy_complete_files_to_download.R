@@ -5,7 +5,7 @@ old_dir <- "/home/u5348329/metazoan-mixtures/output/maximum_likelihood_trees/"
 new_dir <- "/home/u5348329/metazoan-mixtures/output/ml_tree_output_files/"
 
 # Open parameters dataframe
-df <- read.csv("/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/maximum_likelihood_tree_estimation_parameters.csv", stringsAsFactors = FALSE)
+df <- read.table("/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/01_01_maximum_likelihood_tree_estimation_parameters.tsv", header = TRUE, stringsAsFactors = FALSE)
 all_iqfiles <- df$iqtree_file
 # Get the list of which iqtree files exists
 existing_iqfiles <- all_iqfiles[which(file.exists(paste0(old_dir, all_iqfiles)) == TRUE)]
