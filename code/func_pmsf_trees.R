@@ -9,6 +9,12 @@ library(phylotools) # Functions: read.fasta, dat2phylip
 
 
 #### Functions for estimating trees with PMSF model in IQ-Tree ####
+estimate.PMSF.tree.wrapper <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, pmsf_dir, run.iqtree = FALSE){
+  # Function to apply the estimate.PMSF.tree function to multiple datasets
+  
+}
+
+
 estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, pmsf_dir, run.iqtree = FALSE){
   # Function to estimate a ML tree using the PMSF (posterior mean site frequency) model, from start to finish
   
@@ -121,7 +127,7 @@ estimate.tree.with.inferred.PMSF.model <- function(alignment_path, sitefreq_path
   # IQ-Tree command: iqtree -s <alignment> -m LG+C20+F+G -fs <file.sitefreq> -b 100
   
   # Create the prefix for the final output tree 
-  pmsf_prefix <- paste0(alignment_prefix, ".pmsf")
+  pmsf_prefix <- paste0(alignment_prefix, ".complete")
   
   # Assemble the command to estimate a guide tree
   iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -fs ", sitefreq_path, " -b 100 -pre ", pmsf_prefix)
