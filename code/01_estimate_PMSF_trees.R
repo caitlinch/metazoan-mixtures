@@ -3,44 +3,40 @@
 # Caitlin Cherryh, 2022
 
 ## This script:
-# 1. Estimates ML trees for empirical data sets under the PMSF and CAT-PMSF models
-# 2. Estimates ML trees using a constraint tree for empirical data sets under the PMSF and CAT-PMSF models
-# 3. Applies the MAST (Mixtures Across Sites and Trees) method
+# 1. Estimates ML trees for empirical data sets under the PMSF model (and eventually under the CAT-PMSF models)
+# 2. Estimates ML trees using a constraint tree for empirical data sets under the PMSF model (and eventually under the CAT-PMSF models)
 
-# In this script, MAST refers to the Mixtures Across Sites and Trees model
-#   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 
-#   "MAST: Phylogenetic Inference with Mixtures Across Sites and Trees", bioRxiv 2022.10.06.511210; 
-#   doi: https://doi.org/10.1101/2022.10.06.511210
+# When using the posterior mean site frequency model (PMSF model), cite the following:
+#   H.C. Wang, B.Q. Minh, S. Susko and A.J. Roger (2018), 
+#     Modeling site heterogeneity with posterior mean site frequency profiles
+#     accelerates accurate phylogenomic estimation. Syst. Biol., 67:216-235.
+#     https://doi.org/10.1093/sysbio/syx068
 
 
 
 #### 1. Input parameters ####
 ## Specify parameters:
 # alignment_dir       <- Directory containing alignments for all data sets
-#                       Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
-#                       E.g. Cherryh2022.alignment1.aa.fa
+#                           Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                           E.g. Cherryh2022.alignment1.aa.fa
 # output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
-
 # iqtree2             <- Location of IQ-Tree2 stable release
-# iqtree_tm           <- Location of IQ-Tree2 MAST release
 
-# iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
-# iqtree_mrate <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
-#                 We set iqtree_mrate = "E,I,G,I+G,R,I+R"
-#                 See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
-# ml_tree_bootstraps <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
+# iqtree_num_threads        <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
+# iqtree_mrate              <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
+#                                 We set iqtree_mrate = "E,I,G,I+G,R,I+R"
+#                                 See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
+# ml_tree_bootstraps        <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
-#                               If 1, then all processes will run sequentially
+#                                 If 1, then all processes will run sequentially
 
 location = "local"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
-  
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  iqtree2_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.7.mix-MacOSX/bin/iqtree2"
   
   number_parallel_processes <- 1
   
@@ -48,9 +44,7 @@ if (location == "local"){
   alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
   output_dir <- "/data/caitlin/metazoan-mixtures/output/"
   repo_dir <- "/data/caitlin/metazoan-mixtures/"
-  
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree2_tm <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
   number_parallel_processes <- 20
   
@@ -58,9 +52,7 @@ if (location == "local"){
   alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
   output_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
-  
   iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree2_tm <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.7.mix-Linux/bin/iqtree2"
   
   number_parallel_processes <- 1
   
