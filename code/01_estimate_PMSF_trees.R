@@ -55,6 +55,14 @@ if (location == "local"){
   
   number_parallel_processes <- 1
   
+} else if (location == "rona"){
+  alignment_dir <- "/home/caitlin/metazoan-mixtures/data_all/"
+  output_dir <- "/home/caitlin/metazoan-mixtures/output/"
+  repo_dir <- "/home/caitlin/metazoan-mixtures/"
+  iqtree2 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  
+  number_parallel_processes <- 1
+  
 }
 
 # Set parameters that are identical for all run locations
