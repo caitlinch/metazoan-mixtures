@@ -23,10 +23,9 @@
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 # iqtree2             <- Location of IQ-Tree2 stable release
 
+# pmsf_initial_model        <- Model used to estimate guide tree for the site-specific frequency model (we use pmsf_initial_model = "'LG+C60+F+G'")
+#                                 Place model inside two different types of quotes so it can be pasted into an IQ-Tree command line properly, e.g. "'model+R6'"
 # iqtree_num_threads        <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
-# iqtree_mrate              <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
-#                                 We set iqtree_mrate = "E,I,G,I+G,R,I+R"
-#                                 See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
 # ml_tree_bootstraps        <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                                 If 1, then all processes will run sequentially
@@ -59,7 +58,7 @@ if (location == "local"){
 }
 
 # Set parameters that are identical for all run locations
-iqtree_mrate <- "E,I,G,I+G,R,I+R"
+pmsf_initial_model <- "'LG+C60+F+G'"
 iqtree_num_threads <- 5
 ml_tree_bootstraps <- 1000
 
@@ -74,6 +73,9 @@ library(ape)
 source(paste0(repo_dir, "code/func_pmsf_trees.R"))
 # source(paste0(repo_dir, "code/func_estimate_trees.R"))
 # source(paste0(repo_dir, "code/func_data_processing.R"))
+
+# Prepare file paths for tsv files
+df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir)
@@ -94,9 +96,20 @@ pmsf_dir = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02
 
 
 #### 3. Estimate a tree for each alignment using the PMSF model in IQ-Tree ####
+# Open the maximum likelihood tree estimation parameters tsv
+pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
+# Reduce only to the MFP rows
+pmsf_df <- pmsf_df[pmsf_df$model_code == "ModelFinder", ]
+# Update columns for PMSF run
+pmsf_df$model_code <- "PMSF"
+pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
+pmsf_df$guide_tree_model <- pmsf_initial_model
+pmsf_df$iqtree_num_bootstraps <- ml_tree_bootstraps
+pmsf_df$iqtree_num_threads <- iqtree_num_threads
 
-
-
+# Remove unnecessary columns
+pmsf_df <- pmsf_df[, c("dataset", "model_code", "model_mset", "model_m", "model_mrate", "sequence_format", "matrix_name", 
+                               "prefix", "iqtree_num_threads", "iqtree_num_bootstraps", "alignment_file")]
 
 
 
