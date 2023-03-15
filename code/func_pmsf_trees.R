@@ -9,21 +9,31 @@ library(phylotools) # Functions: read.fasta, dat2phylip
 
 
 #### Functions for estimating trees with PMSF model in IQ-Tree ####
-estimate.PMSF.tree.wrapper <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, pmsf_dir, run.iqtree = FALSE){
+estimate.PMSF.tree.wrapper <- function(row_id, pmsf_parameter_dataframe, run.iqtree = FALSE){
   # Function to apply the estimate.PMSF.tree function to multiple datasets
   
+  # Take one row from the dataframe
+  row <- pmsf_parameter_dataframe[row_id, ]
+  
+  # Apply the PMSF function
+  row_pmsf_output <- estimate.PMSF.tree(alignment_path = row$alignment_file, alignment_prefix = row$prefix, simple_model = row$guide_tree_model,
+                                        iqtree_path = row$iqtree_path, num_threads = row$iqtree_num_threads, num_bootstraps = row$iqtree_num_bootstraps,
+                                        pmsf_dir = row$pmsf_dir, run.iqtree = FALSE)
+  
+  # Return the output
+  return(row_pmsf_output)
 }
 
 
-estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, pmsf_dir, run.iqtree = FALSE){
+estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, num_threads, num_bootstraps, pmsf_dir, run.iqtree = FALSE){
   # Function to estimate a ML tree using the PMSF (posterior mean site frequency) model, from start to finish
   
   # Change working location to output directory
   setwd(pmsf_dir)
   
   # 1. Estimate guide tree under simple model
-  guide_tree_command <- estimate.guide.tree(alignment_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE)[[1]]
-  guide_tree_prefix <- estimate.guide.tree(alignment_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE)[[2]]
+  guide_tree_command <- estimate.guide.tree(alignment_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE)[[1]]
+  guide_tree_prefix <- estimate.guide.tree(alignment_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE)[[2]]
   # List all files in the PMSF directory
   all_files_pmsf_dir <- list.files(pmsf_dir)
   # Find the guide tree file
@@ -38,8 +48,8 @@ estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, i
   
   # 2. Perform the first phase of the PMSF model: estimate mixture model parameters given the guide tree and infer site-specific 
   #   frequency profile (printed to .sitefreq file)
-  sitefreq_command <- output.site.frequency.file(alignment_path, guide_tree_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE)[[1]]
-  sitefreq_prefix <- output.site.frequency.file(alignment_path, guide_tree_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE)[[2]]
+  sitefreq_command <- output.site.frequency.file(alignment_path, guide_tree_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE)[[1]]
+  sitefreq_prefix <- output.site.frequency.file(alignment_path, guide_tree_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE)[[2]]
   # List all files in the PMSF directory
   all_files_pmsf_dir <- list.files(pmsf_dir)
   # Find the sitefreq file
@@ -54,8 +64,8 @@ estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, i
   
   # 3. Perform the second phase of the PMSF model: conduct typical analysis using the inferred frequency model (instead of the mixture model) 
   #   to save RAM and running time.
-  pmsf_command <- estimate.tree.with.inferred.PMSF.model(alignment_path, sitefreq_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE)[[1]]
-  pmsf_prefix <- estimate.tree.with.inferred.PMSF.model(alignment_path, sitefreq_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE)[[2]]
+  pmsf_command <- estimate.tree.with.inferred.PMSF.model(alignment_path, sitefreq_path, alignment_prefix, simple_model, iqtree_path, num_threads, num_bootstraps, run.iqtree = FALSE)[[1]]
+  pmsf_prefix <- estimate.tree.with.inferred.PMSF.model(alignment_path, sitefreq_path, alignment_prefix, simple_model, iqtree_path, num_threads, num_bootstraps, run.iqtree = FALSE)[[2]]
   # List all files in the PMSF directory
   all_files_pmsf_dir <- list.files(pmsf_dir)
   # Find the pmsf tree files
@@ -74,16 +84,16 @@ estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, i
   }
   
   # Create a little output vector of all the information
-  output_vector <- c(alignment_prefix, alignment_path, "PMSF", simple_model, guide_tree_command, guide_tree_path, 
-                     sitefreq_command, sitefreq_path, pmsf_command, pmsf_iqfile, pmsf_logfile, pmsf_treefile)
-  names(output_vector) =c("prefix", "alignment_path", "model_code", "input_model", "IQTree_command_1", "guide_tree_path", 
-                          "IQTree_command_2", "site_frequencies_path", "IQTree_command_3", "pmsf_iqtree_file", "pmsf_log_file", "pmsf_tree_file")
+  output_vector <- c(alignment_prefix, alignment_path, "PMSF", simple_model, num_threads, num_bootstraps, guide_tree_command, guide_tree_path, 
+                     sitefreq_command, sitefreq_path, pmsf_command, pmsf_iqfile, pmsf_logfile, pmsf_treefile, pmsf_dir)
+  names(output_vector) =c("prefix", "alignment_path", "model_code", "input_model", "num_threads", "num_bootstraps", "IQTree_command_1", "guide_tree_path", 
+                          "IQTree_command_2", "site_frequencies_path", "IQTree_command_3", "pmsf_iqtree_file", "pmsf_log_file", "pmsf_tree_file", "pmsf_directory")
   # Return the output vector
   return(output_vector)
 }
 
 
-estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE){
+estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE){
   # Function to estimate a guide tree for the PMSF model
   # IQ-Tree command: iqtree -s <alignment> -m 'LG+C20+F+G' -pre guidetree
   
@@ -91,7 +101,7 @@ estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, 
   guide_prefix <- paste0(alignment_prefix, ".guidetree")
   
   # Assemble the command to estimate a guide tree
-  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -pre ", guide_prefix)
+  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -nt ", num_threads, " -pre ", guide_prefix)
   
   # Run IQ-Tree2 (if "run.iqtree" == TRUE)
   if (run.iqtree == TRUE){
@@ -103,7 +113,7 @@ estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, 
 }
 
 
-output.site.frequency.file <- function(alignment_path, guide_tree_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE){
+output.site.frequency.file <- function(alignment_path, guide_tree_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE){
   # Function to estimate a site frequency file for the PMSF model, given a guide tree
   # IQ-Tree command: iqtree -s <alignment> -m 'LG+C20+F+G' -ft <guide_tree> -n 0 -pre ssfp
   
@@ -111,7 +121,7 @@ output.site.frequency.file <- function(alignment_path, guide_tree_path, alignmen
   ssfp_prefix <- paste0(alignment_prefix, ".ssfp")
   
   # Assemble the command to estimate a guide tree
-  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -ft ", guide_tree_path, " -n 0 -pre ", ssfp_prefix)
+  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -ft ", guide_tree_path, " -n 0 -nt ", num_threads, " -pre ", ssfp_prefix)
   
   # Run IQ-Tree2 (if "run.iqtree" == TRUE)
   if (run.iqtree == TRUE){
@@ -122,7 +132,7 @@ output.site.frequency.file <- function(alignment_path, guide_tree_path, alignmen
   return(c(iqtree_command, ssfp_prefix))
 }
 
-estimate.tree.with.inferred.PMSF.model <- function(alignment_path, sitefreq_path, alignment_prefix, simple_model, iqtree_path, run.iqtree = FALSE){
+estimate.tree.with.inferred.PMSF.model <- function(alignment_path, sitefreq_path, alignment_prefix, simple_model, iqtree_path, num_threads, num_bootstraps, run.iqtree = FALSE){
   # Function to estimate a tree with the PMSF model, using the site frequency file inferred from a guide tree
   # IQ-Tree command: iqtree -s <alignment> -m LG+C20+F+G -fs <file.sitefreq> -b 100
   
@@ -130,7 +140,7 @@ estimate.tree.with.inferred.PMSF.model <- function(alignment_path, sitefreq_path
   pmsf_prefix <- paste0(alignment_prefix, ".complete")
   
   # Assemble the command to estimate a guide tree
-  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -fs ", sitefreq_path, " -b 100 -pre ", pmsf_prefix)
+  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -fs ", sitefreq_path, " -b ", num_bootstraps, " -nt ", num_threads," -pre ", pmsf_prefix)
   
   # Run IQ-Tree2 (if "run.iqtree" == TRUE)
   if (run.iqtree == TRUE){
