@@ -74,8 +74,14 @@ source(paste0(repo_dir, "code/func_pmsf_trees.R"))
 # source(paste0(repo_dir, "code/func_estimate_trees.R"))
 # source(paste0(repo_dir, "code/func_data_processing.R"))
 
+# Create a new folder to store the pmsf trees in
+pmsf_dir <- paste0(output_dir, "pmsf_trees/")
+if (dir.exists(pmsf_dir) == FALSE){dir.create(pmsf_dir)}
+
 # Prepare file paths for tsv files
 df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
+df_op_pmsf_params <- paste0(output_dir, "01_05_PMSF_tree_estimation_parameters.tsv")
+df_op_pmsf_commands <- paste0(output_dir, "01_06_PMSF_iqtree_commands.tsv")
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir)
@@ -96,6 +102,7 @@ pmsf_dir = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02
 
 
 #### 3. Estimate a tree for each alignment using the PMSF model in IQ-Tree ####
+## Prepare the parameters to estimate the PMSF trees
 # Open the maximum likelihood tree estimation parameters tsv
 pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
 # Reduce only to the MFP rows
@@ -106,11 +113,19 @@ pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df
 pmsf_df$guide_tree_model <- pmsf_initial_model
 pmsf_df$iqtree_num_bootstraps <- ml_tree_bootstraps
 pmsf_df$iqtree_num_threads <- iqtree_num_threads
-
+pmsf_df$iqtree_path <- iqtree2
+pmsf_df$pmsf_dir <- pmsf_dir
 # Remove unnecessary columns
-pmsf_df <- pmsf_df[, c("dataset", "model_code", "model_mset", "model_m", "model_mrate", "sequence_format", "matrix_name", 
-                               "prefix", "iqtree_num_threads", "iqtree_num_bootstraps", "alignment_file")]
+pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
+                       "alignment_file", "iqtree_path", "pmsf_dir")]
+# Save dataframe as output
+write.table(pmsf_df, file = df_op_pmsf_params, row.names = FALSE, sep = "\t")
 
+## Apply the PMSF wrapper function to determine the iqtree calls for tree estimation
+pmsf_command_list <- lapply(1:nrow(pmsf_dir), estimate.PMSF.tree.wrapper, pmsf_df, run.iqtree = FALSE)
+pmsf_command_df <- as.data.frame(do.call(rbind, pmsf_command_list))
+# Save dataframe as output
+write.table(pmsf_command_df, file = df_op_pmsf_commands, row.names = FALSE, sep = "\t")
 
 
 
