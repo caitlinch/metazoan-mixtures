@@ -80,16 +80,17 @@ library(ape)
 
 # Source functions
 source(paste0(repo_dir, "code/func_pmsf_trees.R"))
-source(paste0(repo_dir, "code/func_estimate_trees.R"))
-source(paste0(repo_dir, "code/func_data_processing.R"))
+# source(paste0(repo_dir, "code/func_estimate_trees.R"))
+# source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir)
 if (length(all_files) > 0){
   all_files <- paste0(alignment_dir, all_files)
 }
+
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
-alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/example.phy"
 alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/Philippe2011.UPDUNN_MB_FixedNames.aa.alignment.nex"
+alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/example.phy"
