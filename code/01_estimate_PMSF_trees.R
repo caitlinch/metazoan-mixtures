@@ -66,7 +66,8 @@ if (location == "local"){
 }
 
 # Set parameters that are identical for all run locations
-pmsf_initial_model <- "'C60+F+G'"
+pmsf_initial_model <- "'LG+F+G'"
+pmsf_model <- "'LG+C60+F+R4'"
 iqtree_num_threads <- 5
 ml_tree_bootstraps <- 1000
 
@@ -112,7 +113,7 @@ pmsf_dir = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02
 
 #### 3. Estimate a tree for each alignment using the PMSF model in IQ-Tree ####
 # Construct the model code based on which CAT model is being used (C10-C60)
-cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit("'LG+'C60'+G+F", "\\+")[[1]], value = TRUE))
+cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit(pmsf_model, "\\+")[[1]], value = TRUE))
 cat_model_code <- paste0("PMSF", ".", cat_model_check)
 ## Prepare the parameters to estimate the PMSF trees
 # Open the maximum likelihood tree estimation parameters tsv
@@ -123,6 +124,7 @@ pmsf_df <- pmsf_df[pmsf_df$model_code == "ModelFinder", ]
 pmsf_df$model_code <- cat_model_check
 pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
 pmsf_df$guide_tree_model <- pmsf_initial_model
+pmsf_df$pmsf_model <- pmsf_model
 pmsf_df$iqtree_num_bootstraps <- ml_tree_bootstraps
 pmsf_df$iqtree_num_threads <- iqtree_num_threads
 pmsf_df$iqtree_path <- iqtree2
