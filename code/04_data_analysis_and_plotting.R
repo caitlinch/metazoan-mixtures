@@ -35,3 +35,51 @@ source(paste0(repo_dir,"code/func_plotting.R"))
 trees_file <- paste0(repo_dir, "trees/alternative_phylogenetic_hypotheses.nex")
 trees <- read.tree(trees_file)
 
+# Plot one tree at a time
+hyp1_plot <- ggplot(trees[[1]]) + geom_tree() + 
+  geom_tiplab(geom = "text", size = 10) +
+  theme_tree2(plot.margin=margin(6, 145, 6, 6)) +
+  coord_cartesian(clip = 'off') +
+  theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
+
+hyp2_plot <- ggplot(trees[[2]]) + geom_tree() + 
+  geom_tiplab(geom = "text", size = 10) +
+  theme_tree2(plot.margin=margin(6, 145, 6, 6)) +
+  coord_cartesian(clip = 'off') +
+  theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
+
+hyp3_plot <- ggplot(trees[[3]]) + geom_tree() + 
+  geom_tiplab(geom = "text", size = 10) +
+  theme_tree2(plot.margin=margin(6, 145, 6, 6)) +
+  coord_cartesian(clip = 'off') +
+  theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
+
+hyp4_plot <- ""
+
+ggplot(trees[[4]]) + geom_tree() + 
+  geom_tiplab(geom = "text", size = 9) +
+  theme_tree2(plot.margin=margin(6, 80, 6, 6)) +
+  coord_cartesian(clip = 'off') +
+  geom_hilight(node = 11, fill = "gold") +
+  geom_hilight(node = 13, fill = "gold") +
+  geom_cladelab(node=11, label="Porifera", color="blue", offset=8, geom = "text", align=TRUE, fontsize = 7) +
+  geom_cladelab(node=13, label="Porifera", color="blue", offset=8, geom = "text", align=TRUE, fontsize = 7) +
+  theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
+
+
+hyp5_plot <- ggplot(trees[[5]]) + geom_tree() + 
+  geom_tiplab(geom = "text", size = 10) +
+  theme_tree2(plot.margin=margin(6, 250, 6, 6)) +
+  coord_cartesian(clip = 'off') +
+  geom_hilight(node = 14, fill = "gold") +
+  geom_hilight(node = 12, fill = "gold") +
+  theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
+
+
+
+
+
+
+
+
+
