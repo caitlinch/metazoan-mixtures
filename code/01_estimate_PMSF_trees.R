@@ -30,7 +30,7 @@
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                                 If 1, then all processes will run sequentially
 
-location = "local"
+location = "soma"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
@@ -45,7 +45,7 @@ if (location == "local"){
   repo_dir <- "/data/caitlin/metazoan-mixtures/"
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 20
+  number_parallel_processes <- 15
   
 } else if (location == "dayhoff"){
   alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
@@ -53,7 +53,7 @@ if (location == "local"){
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 1
+  number_parallel_processes <- 15
   
 } else if (location == "rona"){
   alignment_dir <- "/home/caitlin/metazoan-mixtures/data_all/"
@@ -61,7 +61,7 @@ if (location == "local"){
   repo_dir <- "/home/caitlin/metazoan-mixtures/"
   iqtree2 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 1
+  number_parallel_processes <- 15
   
 }
 
@@ -80,8 +80,6 @@ library(ape)
 
 # Source functions
 source(paste0(repo_dir, "code/func_pmsf_trees.R"))
-# source(paste0(repo_dir, "code/func_estimate_trees.R"))
-# source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # Create a new folder to store the pmsf trees in
 pmsf_dir <- paste0(output_dir, "pmsf_trees/")
