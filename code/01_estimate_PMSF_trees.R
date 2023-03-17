@@ -68,7 +68,7 @@ if (location == "local"){
 # Set parameters that are identical for all run locations
 pmsf_initial_model <- "'LG+F+G'"
 pmsf_model <- "'LG+C60+F+R4'"
-iqtree_num_threads <- 5
+iqtree_num_threads <- 15
 ml_tree_bootstraps <- 1000
 
 
