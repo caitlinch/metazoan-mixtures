@@ -1,5 +1,6 @@
 (Outgroup, (Ctenophora, (Porifera, (Cnidaria, Bilateria))));
 (Outgroup, (Porifera, (Ctenophora, (Cnidaria, Bilateria))));
 (Outgroup, ((Porifera, Ctenophora), (Cnidaria, Bilateria)));
-(Outgroup, ((Calcarea, Homoscleromorpha), ((Hexactinellida, Demospongiae), (Ctenophora, (Cnidaria, Bilateria)))));
 (Outgroup, (Ctenophora, ((Calcarea, Homoscleromorpha), ((Hexactinellida, Demospongiae), (Cnidaria, Bilateria)))));
+(Outgroup, ((Calcarea, Homoscleromorpha), ((Hexactinellida, Demospongiae), (Ctenophora, (Cnidaria, Bilateria)))));
+
