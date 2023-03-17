@@ -93,19 +93,15 @@ pmsf_iqtree_command_files <- paste0(output_dir, "01_05_PMSF_iqtree_commands_", 1
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir, recursive = TRUE)
+# Remove any folder with "00" in the name (extra files associated with alignments)
+all_files <- grep("00_", all_files, value = TRUE, invert = TRUE)
+# Add full file path
 if (length(all_files) > 0){
   all_files <- paste0(alignment_dir, all_files)
 }
 
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("\\.alignment\\.", all_files, value = T)
-
-alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/Philippe2011.UPDUNN_MB_FixedNames.aa.alignment.nex"
-alignment_path <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/Dunn2008.Dunn2008_FixedNames.aa.alignment.fasta"
-simple_model = "'LG+C20+F+G'"
-alignment_prefix = "Dunn2008"
-iqtree_path = iqtree2
-pmsf_dir = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/00_pmsf_tests/"
 
 
 
