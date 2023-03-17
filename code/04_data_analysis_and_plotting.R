@@ -58,8 +58,8 @@ hyp4_plot <- ggtree(trees[4]) + geom_tree() +
   geom_tiplab(geom = "text", size = 8) +
   theme_tree2(plot.margin=margin(6, 70, 6, 6)) +
   coord_cartesian(clip = 'off') +
-  geom_cladelab(node=11, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
-  geom_cladelab(node=13, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
+  geom_cladelab(node=12, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
+  geom_cladelab(node=14, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
   theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
 
 
@@ -67,8 +67,8 @@ hyp5_plot <- ggtree(trees[[5]]) + geom_tree() +
   geom_tiplab(geom = "text", size = 8) +
   theme_tree2(plot.margin=margin(6, 70, 6, 6)) +
   coord_cartesian(clip = 'off') +
-  geom_cladelab(node=14, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
-  geom_cladelab(node=12, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
+  geom_cladelab(node=11, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
+  geom_cladelab(node=13, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
   theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
 
 # Combine the four hypothesis trees into one 
