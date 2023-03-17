@@ -13,7 +13,7 @@
 # results_dir         <- Directory for results and plots
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
-output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/05_plotting/"
 repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 
 
@@ -23,6 +23,9 @@ repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 library(ggplot2)
 library(ggtree)
 library(patchwork)
+
+# Open function files
+source(paste0(repo_dir,"code/func_plotting.R"))
 
 
 
