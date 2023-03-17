@@ -30,7 +30,7 @@ source(paste0(repo_dir,"code/func_plotting.R"))
 
 
 #### 3. Plot figures for introduction and methods sections of manuscript ####
-## Plotting the alternative phylogenetic hypotheses
+## Plotting the alternative phylogenetic hypotheses ##
 # Open the trees
 trees_file <- paste0(repo_dir, "trees/alternative_phylogenetic_hypotheses.nex")
 trees <- read.tree(trees_file)
@@ -56,26 +56,30 @@ hyp3_plot <- ggtree(trees[[3]]) + geom_tree() +
 
 hyp4_plot <- ggtree(trees[4]) + geom_tree() +
   geom_tiplab(geom = "text", size = 8) +
-  theme_tree2(plot.margin=margin(6, 80, 6, 6)) +
+  theme_tree2(plot.margin=margin(6, 70, 6, 6)) +
   coord_cartesian(clip = 'off') +
-  geom_cladelab(node=11, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=6, geom = "text", align=TRUE, fontsize = 8, hjust = -0.1) +
-  geom_cladelab(node=13, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=6, geom = "text", align=TRUE, fontsize = 8, hjust = -0.1) +
+  geom_cladelab(node=11, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
+  geom_cladelab(node=13, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
   theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
 
 
 hyp5_plot <- ggtree(trees[[5]]) + geom_tree() + 
   geom_tiplab(geom = "text", size = 8) +
-  theme_tree2(plot.margin=margin(6, 80, 6, 6)) +
+  theme_tree2(plot.margin=margin(6, 70, 6, 6)) +
   coord_cartesian(clip = 'off') +
-  geom_cladelab(node=14, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=6, geom = "text", align=TRUE, fontsize = 8, hjust = -0.1) +
-  geom_cladelab(node=12, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=6, geom = "text", align=TRUE, fontsize = 8, hjust = -0.1) +
+  geom_cladelab(node=14, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
+  geom_cladelab(node=12, label="Porifera", textcolor="grey50", barcolor = "grey50", offset=7, geom = "text", align=TRUE, fontsize = 7, hjust = -0.1) +
   theme(axis.text.x = element_text(color = "white"), axis.ticks.x = element_line(color = "white"), axis.line.x = element_line(color = "white"))
 
+# Combine the four hypothesis trees into one 
+patchwork_hyps <- (hyp1_plot | hyp2_plot | hyp3_plot)/(hyp4_plot | hyp5_plot) + 
+  plot_annotation(tag_levels = 'a', tag_suffix = ".") & theme(plot.tag = element_text(size = 20))
 
-
-
-
-
+# Export hypothesis plots 
+hypothesis_plot_file <- paste0(output_dir, "hypothesis_tree_example_plot.png")
+png(filename = hypothesis_plot_file, width = 1090, height = 723, units = "px", pointsize = 12, bg = "white")
+patchwork_hyps
+dev.off()
 
 
 
