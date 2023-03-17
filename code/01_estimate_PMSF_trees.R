@@ -130,7 +130,7 @@ pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "matrix_name
 write.table(pmsf_df, file = df_op_pmsf_params, row.names = FALSE, sep = "\t")
 
 ## Apply the PMSF wrapper function to determine the iqtree calls for tree estimation
-pmsf_command_list <- lapply(1:nrow(pmsf_dir), estimate.PMSF.tree.wrapper, pmsf_df, run.iqtree = FALSE)
+pmsf_command_list <- lapply(1:nrow(pmsf_df), estimate.PMSF.tree.wrapper, pmsf_df, run.iqtree = FALSE)
 pmsf_command_df <- as.data.frame(do.call(rbind, pmsf_command_list))
 # Save dataframe as output
 write.table(pmsf_command_df, file = df_op_pmsf_commands, row.names = FALSE, sep = "\t")
