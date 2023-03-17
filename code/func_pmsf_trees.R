@@ -93,6 +93,31 @@ estimate.PMSF.tree <- function(alignment_path, alignment_prefix, simple_model, i
 }
 
 
+find.pmsf.files <- function(pmsf_prefix, pmsf_dir){
+  # Quick function to return the PMSF output files for a single run, using the alignment prefix
+  
+  # List all files in the PMSF directory
+  all_files_pmsf_dir <- list.files(pmsf_dir)
+  # Find the pmsf tree files
+  # Find the sitefreq file
+  pmsf_check <- grep("iqtree", grep(pmsf_prefix, all_files_pmsf_dir, value = T), value = T)
+  if (length(sitefreq_check) == 0){
+    # No PMSF tree file: return NA for output files with PMSF prefix
+    pmsf_treefile <- NA
+    pmsf_iqfile <- NA
+    pmsf_logfile <- NA
+  } else if (length(sitefreq_check) == 1){
+    # PMSF tree file exists: return output files with PMSF prefix
+    pmsf_treefile <- paste0(pmsf_dir, grep("treefile", grep(pmsf_prefix, all_files_pmsf_dir, value = T), value = T))
+    pmsf_iqfile <- paste0(pmsf_dir, grep("iqtree", grep(pmsf_prefix, all_files_pmsf_dir, value = T), value = T))
+    pmsf_logfile <- paste0(pmsf_dir, grep("log", grep(pmsf_prefix, all_files_pmsf_dir, value = T), value = T))
+  }
+  
+  # Return the three output files
+  return(c(pmsf_treefile, pmsf_iqfile, pmsf_logfile))
+}
+
+
 estimate.guide.tree.wrapper <- function(row_id, pmsf_parameter_dataframe, run.iqtree = FALSE){
   # Function to apply the estimate.guide.tree function to multiple datasets
   
