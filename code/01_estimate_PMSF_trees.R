@@ -124,7 +124,7 @@ pmsf_df$iqtree_num_threads <- iqtree_num_threads
 pmsf_df$iqtree_path <- iqtree2
 pmsf_df$pmsf_dir <- pmsf_dir
 # Remove unnecessary columns
-pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
+pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "pmsf_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
                        "alignment_file", "iqtree_path", "pmsf_dir")]
 # Save dataframe as output
 write.table(pmsf_df, file = df_op_pmsf_params, row.names = FALSE, sep = "\t")
