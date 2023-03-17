@@ -1,8 +1,6 @@
 name: tree_mixtures
 channels:
   - conda-forge
-  - bioconda
-  - default
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
@@ -12,7 +10,7 @@ dependencies:
   - bwidget=1.9.14=ha770c72_1
   - bzip2=1.0.8=h7f98852_4
   - c-ares=1.18.1=h7f98852_0
-  - ca-certificates=2022.9.24=ha878542_0
+  - ca-certificates=2022.12.7=ha878542_0
   - cairo=1.16.0=ha61ee94_1014
   - curl=7.85.0=h2283fc2_0
   - expat=2.4.9=h27087fc_0
@@ -71,7 +69,7 @@ dependencies:
   - libzlib=1.2.12=h166bdaf_4
   - make=4.3=hd18ef5c_1
   - ncurses=6.3=h27087fc_1
-  - openssl=3.0.5=h166bdaf_2
+  - openssl=3.1.0=h0b41bf4_0
   - pango=1.50.11=h382ae3d_0
   - pcre2=10.37=hc3806b6_1
   - pixman=0.40.0=h36c2ea0_0
@@ -117,6 +115,8 @@ dependencies:
   - r-rlang=1.0.6=r41h7525677_0
   - r-rpart=4.1.16=r41hcfec24a_0
   - r-spatial=7.3_15=r41hcfec24a_0
+  - r-stringi=1.7.12=r41h1ae9187_0
+  - r-stringr=1.4.1=r41hc72bb7e_1
   - r-survival=3.4_0=r41h06615bd_0
   - r-treetools=1.8.0=r41h7525677_0
   - r-xml2=1.3.3=r41h7525677_1
@@ -140,6 +140,4 @@ dependencies:
   - xz=5.2.6=h166bdaf_0
   - zlib=1.2.12=h166bdaf_4
   - zstd=1.5.2=h6239696_4
-prefix: /home/u5348329/.conda/envs/tree_mixtures
-# Conda enviroment tree_mixtures from Dayhoff server, as of 06/10/2022
-# Installed R version 4.1. and the packages ape, phangorn, phylotools and TreeTools
+prefix: /home/caitlin/.conda/envs/tree_mixtures
