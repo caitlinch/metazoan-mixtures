@@ -115,7 +115,7 @@ pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALS
 # Reduce only to the MFP rows
 pmsf_df <- pmsf_df[pmsf_df$model_code == "ModelFinder", ]
 # Update columns for PMSF run
-pmsf_df$model_code <- cat_model_check
+pmsf_df$model_code <- cat_model_code
 pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
 pmsf_df$guide_tree_model <- pmsf_initial_model
 pmsf_df$pmsf_model <- pmsf_model
