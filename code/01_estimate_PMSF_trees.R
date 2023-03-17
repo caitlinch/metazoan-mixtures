@@ -92,7 +92,7 @@ df_op_pmsf_params <- paste0(output_dir, "01_05_PMSF_tree_estimation_parameters.t
 df_op_pmsf_commands <- paste0(output_dir, "01_06_PMSF_iqtree_commands.tsv")
 
 # Extract the list of all files from the folder containing alignments/models/partition files
-all_files <- list.files(alignment_dir)
+all_files <- list.files(alignment_dir, recursive = TRUE)
 if (length(all_files) > 0){
   all_files <- paste0(alignment_dir, all_files)
 }
