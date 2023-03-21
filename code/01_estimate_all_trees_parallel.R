@@ -52,7 +52,7 @@ if (location == "local"){
   
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 20
+  number_parallel_processes <- 2
   
 } else if (location == "dayhoff"){
   alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
