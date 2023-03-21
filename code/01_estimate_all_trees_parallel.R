@@ -82,7 +82,7 @@ hypothesis_tree_bootstraps <- 1000
 # Set control parameters
 estimate.ML.trees <- FALSE
 extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- TRUE
+prepare.hypothesis.trees <- FALSE # Completed this step for Borowiec2015, Nosenko2013 nonribo, Philippe2009
 estimate.hypothesis.trees <- TRUE
 collate.hypothesis.logs <- TRUE
 
