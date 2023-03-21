@@ -139,8 +139,10 @@ setwd(pmsf_dir)
 # 1. Estimate guide tree under simple model
 guide_list <- lapply(1:nrow(pmsf_df), estimate.guide.tree.wrapper, pmsf_parameter_dataframe = pmsf_df, run.iqtree = FALSE)
 guide_df <- as.data.frame(do.call(rbind, guide_list))
-names(guide_df) <- c("IQTree_command_1", "guide_tree_path")
+names(guide_df) <- c("IQTree_command_1", "guide_tree_suffix")
 pmsf_command_df <- cbind(pmsf_df, guide_df)
+# Paste the pmsf directory to the guide tree suffix
+pmsf_command_df$guide_tree_path <- paste0(pmsf_dir, pmsf_command_df$guide_tree_suffix, ".treefile")
 # Write the IQ-Tree commands out to a file
 write(pmsf_command_df$IQTree_command_1, file = pmsf_iqtree_command_files[1])
 
@@ -148,8 +150,10 @@ write(pmsf_command_df$IQTree_command_1, file = pmsf_iqtree_command_files[1])
 #   frequency profile (printed to .sitefreq file)
 sitefreq_list <- lapply(1:nrow(pmsf_command_df), output.site.frequency.file.wrapper, pmsf_parameter_dataframe = pmsf_command_df, run.iqtree = FALSE)
 sitefreq_df <- as.data.frame(do.call(rbind, sitefreq_list))
-names(sitefreq_df) <- c( "IQTree_command_2", "site_frequencies_path")
+names(sitefreq_df) <- c( "IQTree_command_2", "site_frequencies_suffix")
 pmsf_command_df <- cbind(pmsf_command_df, sitefreq_df)
+# Paste the pmsf directory to the site tree suffix
+pmsf_command_df$site_frequencies_path <- paste0(pmsf_dir, pmsf_command_df$site_frequencies_suffix, ".sitefreq")
 # Write the IQ-Tree commands out to a file
 write(pmsf_command_df$IQTree_command_2, file = pmsf_iqtree_command_files[2])
 
@@ -170,6 +174,5 @@ pmsf_command_df <- cbind(pmsf_command_df, op_files_df)
 
 # Save the dataframe of completed PMSF tree information
 write.table(pmsf_command_df, file = df_op_pmsf_commands, row.names = FALSE, sep = "\t")
-
 
 
