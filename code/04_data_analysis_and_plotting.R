@@ -139,7 +139,7 @@ hyp5_plot <- ggtree(trees[[5]]) %<+% metazoan_clade_labs +
 plot_list <- list(hyp1_plot, hyp2_plot, hyp3_plot, hyp4_plot, hyp5_plot)
 
 # Output plot
-for (i in 1:5){
+for (i in 1:3){
   hypothesis_plot_file <- paste0(output_dir, "hypothesis_tree_", i, "_plot_color.png")
   png(filename = hypothesis_plot_file, width = 974, height = 723, units = "px", pointsize = 12, bg = "white")
   plot_list[[i]]
@@ -151,10 +151,17 @@ for (i in 1:5){
   dev.off()
 }
 
-# Export hypothesis plots 
-hypothesis_plot_file <- paste0(output_dir, "hypothesis_tree_example_plot.png")
-png(filename = hypothesis_plot_file, width = 1090, height = 723, units = "px", pointsize = 12, bg = "white")
-patchwork_hyps
-dev.off()
+for (i in 4:5){
+  # Make plots longer due to the extra substitution event
+  hypothesis_plot_file <- paste0(output_dir, "hypothesis_tree_", i, "_plot_color.png")
+  png(filename = hypothesis_plot_file, width = 1364, height = 723, units = "px", pointsize = 12, bg = "white")
+  plot_list[[i]]
+  dev.off()
+  
+  hypothesis_plot_file <- paste0(output_dir, "hypothesis_tree_", i, "_plot_color.svg")
+  svg(filename = hypothesis_plot_file, width = 7, height = 3.5, bg = "white")
+  plot_list[[i]]
+  dev.off()
+}
 
 
