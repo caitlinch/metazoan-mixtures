@@ -45,7 +45,7 @@ if (location == "local"){
   repo_dir <- "/data/caitlin/metazoan-mixtures/"
   iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 15
+  number_parallel_processes <- 2
   
 } else if (location == "dayhoff"){
   alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
@@ -53,7 +53,7 @@ if (location == "local"){
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 15
+  number_parallel_processes <- 3
   
 } else if (location == "rona"){
   alignment_dir <- "/home/caitlin/metazoan-mixtures/data_all/"
@@ -61,7 +61,7 @@ if (location == "local"){
   repo_dir <- "/home/caitlin/metazoan-mixtures/"
   iqtree2 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
-  number_parallel_processes <- 15
+  number_parallel_processes <- 3
   
 }
 
@@ -106,28 +106,32 @@ all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 
 #### 3. Estimate a tree for each alignment using the PMSF model in IQ-Tree ####
-# Construct the model code based on which CAT model is being used (C10-C60)
-cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit(pmsf_model, "\\+")[[1]], value = TRUE))
-cat_model_code <- paste0("PMSF", ".", cat_model_check)
-## Prepare the parameters to estimate the PMSF trees
-# Open the maximum likelihood tree estimation parameters tsv
-pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
-# Reduce only to the MFP rows
-pmsf_df <- pmsf_df[pmsf_df$model_code == "ModelFinder", ]
-# Update columns for PMSF run
-pmsf_df$model_code <- cat_model_code
-pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
-pmsf_df$guide_tree_model <- pmsf_initial_model
-pmsf_df$pmsf_model <- pmsf_model
-pmsf_df$iqtree_num_bootstraps <- ml_tree_bootstraps
-pmsf_df$iqtree_num_threads <- iqtree_num_threads
-pmsf_df$iqtree_path <- iqtree2
-pmsf_df$pmsf_dir <- pmsf_dir
-# Remove unnecessary columns
-pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "pmsf_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
-                       "alignment_file", "iqtree_path", "pmsf_dir")]
-# Save dataframe as output
-write.table(pmsf_df, file = df_op_pmsf_params, row.names = FALSE, sep = "\t")
+if (file.exists(df_op_pmsf_params) == TRUE){
+  pmsf_df <- read.table(file = df_op_pmsf_params, header = TRUE, sep = "\t")
+} else if (file.exists(df_op_pmsf_params) == FALSE){
+  # Construct the model code based on which CAT model is being used (C10-C60)
+  cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit(pmsf_model, "\\+")[[1]], value = TRUE))
+  cat_model_code <- paste0("PMSF", ".", cat_model_check)
+  ## Prepare the parameters to estimate the PMSF trees
+  # Open the maximum likelihood tree estimation parameters tsv
+  pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
+  # Reduce only to the MFP rows
+  pmsf_df <- pmsf_df[pmsf_df$model_code == "ModelFinder", ]
+  # Update columns for PMSF run
+  pmsf_df$model_code <- cat_model_code
+  pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
+  pmsf_df$guide_tree_model <- pmsf_initial_model
+  pmsf_df$pmsf_model <- pmsf_model
+  pmsf_df$iqtree_num_bootstraps <- ml_tree_bootstraps
+  pmsf_df$iqtree_num_threads <- iqtree_num_threads
+  pmsf_df$iqtree_path <- iqtree2
+  pmsf_df$pmsf_dir <- pmsf_dir
+  # Remove unnecessary columns
+  pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "pmsf_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
+                         "alignment_file", "iqtree_path", "pmsf_dir")]
+  # Save dataframe as output
+  write.table(pmsf_df, file = df_op_pmsf_params, row.names = FALSE, sep = "\t")
+}
 
 # Change to the PMSF tree directory
 setwd(pmsf_dir)
