@@ -113,19 +113,23 @@ if (length(all_files) > 0){
 all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 
 # Sort and categorise models of sequence evolution 
-all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks))))
+all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks)))) 
 # Identify unique matrices within the models
 model_components <- sort(unique(unlist(strsplit(all_models, "\\+"))))
 # Remove components that do not correspond to a matrix or model (e.g. remove "I", "F", "G4")
 model_components <- model_components[!model_components %in% c("F", "FO", "G", "G4", "I", "R", "R4")]
 # Create a vector of models to exclude from analysis
-#   PMSF: PMSF is more complex to run than other models - requires separate function/multiple steps
+#   PMSF: PMSF is more complex to run than other models - requires separate function/multiple steps (see separate PMSF file)
 #   CAT: CAT is not a model in IQ-Tree. Use C10:C60 instead.
 #   GTR: GTR is a DNA model
 #   F81: F81 is a DNA model
-exclude_models <- c("PMSF", "CAT", "GTR", "F81")
+exclude_models <- c("PMSF", "CAT", "GTR", "F81", "C10", "C30", "C40", "C50")
 # Remove the models to exclude from the list of models
 model_components <- model_components[which(!model_components %in% exclude_models)]
+# Add the newer models 
+model_components <- c(model_components, "'LG+C20'", "'LG+C60'")
+# Sort the mode components
+model_components <- sort(model_components)
 # Move ModelFinder to the end of the list (will take the longest as has to test all possible models, so run last)
 model_components <- model_components[!model_components == "ModelFinder"]
 model_components <- c(model_components, "ModelFinder")
@@ -163,7 +167,14 @@ if (estimate.ML.trees == TRUE){
   ml_tree_df <- expand.grid(dataset = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 1)),
                             model_code = model_components,
                             stringsAsFactors = FALSE)
+  
+  # Copy the models across to input into IQ-Tree
   ml_tree_df$model_mset <- ml_tree_df$model_code
+  
+  # Tidy up the model codes for the models with multiple input parameters (e.g. C20+LG)
+  ml_tree_df$model_code <- gsub("\\+", "_", gsub("'", "", ml_tree_df$model_code))
+  
+  # Add other columns
   ml_tree_df$model_m <- NA
   ml_tree_df$model_mrate <- iqtree_mrate
   ml_tree_df$sequence_format = unlist(lapply(strsplit(basename(all_alignments), "\\."), "[[", 3))
@@ -174,6 +185,7 @@ if (estimate.ML.trees == TRUE){
   ml_tree_df$alignment_file <- all_alignments
   ml_tree_df$iqtree_file <- paste0(ml_tree_df$prefix, ".iqtree")
   ml_tree_df$ml_tree_file <- paste0(ml_tree_df$prefix, ".treefile")
+  
   
   # Fix model specification for rows with ModelFinder
   ml_tree_df[ml_tree_df$model_mset == "ModelFinder",]$model_m <- "MFP"
