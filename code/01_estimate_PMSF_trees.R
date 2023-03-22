@@ -110,8 +110,8 @@ if (file.exists(df_op_pmsf_params) == TRUE){
   pmsf_df <- read.table(file = df_op_pmsf_params, header = TRUE, sep = "\t")
 } else if (file.exists(df_op_pmsf_params) == FALSE){
   # Construct the model code based on which CAT model is being used (C10-C60)
-  cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit(pmsf_model, "\\+")[[1]], value = TRUE))
-  cat_model_code <- paste0("PMSF", ".", cat_model_check)
+  cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit(pmsf_model, "\\+")[[1]], value = TRUE)) # add LG models here
+  cat_model_code <- paste0("PMSF", "_", cat_model_check)
   ## Prepare the parameters to estimate the PMSF trees
   # Open the maximum likelihood tree estimation parameters tsv
   pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
