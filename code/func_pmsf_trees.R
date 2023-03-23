@@ -137,8 +137,11 @@ estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, 
   # Function to estimate a guide tree for the PMSF model
   # IQ-Tree command: iqtree -s <alignment> -m 'LG+C20+F+G' -pre guidetree
   
-  # Create the prefix for a guide tree
-  guide_prefix <- paste0(alignment_prefix, ".guidetree")
+  # Create the prefix for a guide tree by removing the model prefix and attaching ".guidetree"
+  # The model prefix can be removed because the guide tree will be estimated from the same model each time
+  alignment_prefix_nomodel <- paste(head(strsplit(alignment_prefix, "\\.")[[1]],2), collapse = ".")
+  simple_model_prefix <- gsub("'", "", strsplit(simple_model, "\\+")[[1]][1])
+  guide_prefix <- paste0(alignment_prefix_nomodel, ".", simple_model_prefix, ".", "guidetree")
   
   # Assemble the command to estimate a guide tree
   iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -nt ", num_threads, " -pre ", guide_prefix)
