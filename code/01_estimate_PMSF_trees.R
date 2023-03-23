@@ -91,6 +91,7 @@ df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_para
 df_op_pmsf_params <- paste0(output_dir, "01_05_PMSF_tree_estimation_parameters.tsv")
 df_op_pmsf_commands <- paste0(output_dir, "01_06_PMSF_output.tsv")
 pmsf_iqtree_command_files <- paste0(output_dir, "01_05_PMSF_iqtree_commands_", 1:3, ".txt")
+pmsf_test_output_files <- paste0(output_dir, "01_06_PMSF_output_step",1:3,".tsv")
 
 # Extract the list of all files from the folder containing alignments/models/partition files
 all_files <- list.files(alignment_dir, recursive = TRUE)
@@ -120,6 +121,8 @@ if (file.exists(df_op_pmsf_params) == TRUE){
   # Construct a grid of the alignments and the four model codes
   pmsf_df <- expand.grid(ml_df$dataset, pmsf_model_code)
   names(pmsf_df) <- c("dataset", "model_code")
+  pmsf_df$dataset <- as.character(pmsf_df$dataset)
+  pmsf_df$model_code <- as.character(pmsf_df$model_code)
   # Add actual models as column
   pmsf_df$guide_tree_model <- pmsf_initial_model
   pmsf_df$pmsf_model <- rep(pmsf_model, each = length(all_alignments))
@@ -137,6 +140,8 @@ if (file.exists(df_op_pmsf_params) == TRUE){
   # Reorder columns
   pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "pmsf_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
                          "alignment_file", "iqtree_path", "pmsf_dir")]
+  # Redo row names
+  row.names(pmsf_df) <- 1:nrow(pmsf_df)
   # Save dataframe as output
   write.table(pmsf_df, file = df_op_pmsf_params, row.names = FALSE, sep = "\t")
 }
@@ -152,7 +157,9 @@ pmsf_command_df <- cbind(pmsf_df, guide_df)
 # Paste the pmsf directory to the guide tree suffix
 pmsf_command_df$guide_tree_path <- paste0(pmsf_dir, pmsf_command_df$guide_tree_suffix, ".treefile")
 # Write the IQ-Tree commands out to a file
-write(pmsf_command_df$IQTree_command_1, file = pmsf_iqtree_command_files[1])
+write(unique(pmsf_command_df$IQTree_command_1), file = pmsf_iqtree_command_files[1])
+# Write the IQ-Tree commands out to a file (to capture the output at this step)
+write.table(pmsf_command_df, file = pmsf_test_output_files[1], row.names = FALSE, sep = "\t")
 
 # 2. Perform the first phase of the PMSF model: estimate mixture model parameters given the guide tree and infer site-specific 
 #   frequency profile (printed to .sitefreq file)
@@ -163,7 +170,9 @@ pmsf_command_df <- cbind(pmsf_command_df, sitefreq_df)
 # Paste the pmsf directory to the site tree suffix
 pmsf_command_df$site_frequencies_path <- paste0(pmsf_dir, pmsf_command_df$site_frequencies_suffix, ".sitefreq")
 # Write the IQ-Tree commands out to a file
-write(pmsf_command_df$IQTree_command_2, file = pmsf_iqtree_command_files[2])
+write(unique(pmsf_command_df$IQTree_command_2), file = pmsf_iqtree_command_files[2])
+# Write the IQ-Tree commands out to a file (to capture the output at this step)
+write.table(pmsf_command_df, file = pmsf_test_output_files[2], row.names = FALSE, sep = "\t")
 
 # 3. Perform the second phase of the PMSF model: conduct typical analysis using the inferred frequency model (instead of the mixture model) 
 #   to save RAM and running time.
@@ -172,7 +181,9 @@ tree_df <- as.data.frame(do.call(rbind, tree_list))
 names(tree_df) <- c("IQTree_command_3", "pmsf_prefix")
 pmsf_command_df <- cbind(pmsf_command_df, tree_df)
 # Write the IQ-Tree commands out to a file
-write(pmsf_command_df$IQTree_command_3, file = pmsf_iqtree_command_files[3])
+write(unique(pmsf_command_df$IQTree_command_3), file = pmsf_iqtree_command_files[3])
+# Write the IQ-Tree commands out to a file (to capture the output at this step)
+write.table(pmsf_command_df, file = pmsf_test_output_files[3], row.names = FALSE, sep = "\t")
 
 # 4. Extract the PMSF files for each run
 op_files_list <- lapply(pmsf_command_df$pmsf_prefix, find.pmsf.files, pmsf_dir)
