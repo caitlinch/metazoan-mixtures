@@ -119,7 +119,7 @@ ml.iqtree.wrapper <- function(i, iqtree_path, df){
 
 
 #### Prepare to estimate constraint trees ####
-determine.best.ML.model.wrapper <- function(row_id, completed_runs_df, ML_output_df){
+determine.best.ML.model.wrapper <- function(row_id, completed_runs_df, ML_output_df, include.ModelFinder = FALSE){
   # Function to take in a row number, the dataframe of which runs have completed, and the data frame of output from the
   #     maximum likelihood runs, and feed that information into another function to pick the best ML models
   
@@ -128,13 +128,13 @@ determine.best.ML.model.wrapper <- function(row_id, completed_runs_df, ML_output
   # Reduce the output dataframe to just the dataset/matrix in that row
   dataset_output_df <- ML_output_df[ML_output_df$dataset == row$dataset & ML_output_df$matrix_name == row$matrix_name,]
   # Input information from the row into the determine.best.ML.model function
-  dataset_best_model_df <- determine.best.ML.model(dataset = row$dataset, matrix = row$matrix_name, dataset_output_df = dataset_output_df)
+  dataset_best_model_df <- determine.best.ML.model(dataset = row$dataset, matrix = row$matrix_name, dataset_output_df = dataset_output_df, include.ModelFinder)
   # Return the best model(s) for the dataset
   return(dataset_best_model_df)
 } # end function
 
 
-determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
+determine.best.ML.model <- function(dataset, matrix, dataset_output_df, include.ModelFinder = FALSE){
   # Function to determine the best substitution model (by BIC) for a particular dataset and alignment combination,
   #     using the output from the maximum likelihood runs
   
@@ -145,13 +145,26 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df){
   # Check whether ModelFinder has the lowest BIC
   is.ModelFinder.BIC.best <- (model_lowest_BIC == "ModelFinder")
   # Prepare the output
-  if (is.ModelFinder.BIC.best == TRUE){
-    # If ModelFinder has the best BIC, return the ModelFinder row only
-    best_model_df <- dataset_output_df[which(dataset_output_df$model_code == "ModelFinder"),]
-  } else if (is.ModelFinder.BIC.best == FALSE){
-    # If ModelFinder does not have the best BIC, return both the ModelFinder row and the row for the model with the best BIC
-    best_model_df <- dataset_output_df[c(1, which(dataset_output_df$model_code == "ModelFinder")),]
+  if (include.ModelFinder == TRUE){
+    # If include.ModelFinder = TRUE, return both the best model (determined by BIC score) and the ModelFinder model
+    if (is.ModelFinder.BIC.best == TRUE){
+      # If ModelFinder has the best BIC, return the ModelFinder row only
+      best_model_df <- dataset_output_df[which(dataset_output_df$model_code == "ModelFinder"),]
+    } else if (is.ModelFinder.BIC.best == FALSE){
+      # If ModelFinder does not have the best BIC, return both the ModelFinder row and the row for the model with the best BIC
+      best_model_df <- dataset_output_df[c(1, which(dataset_output_df$model_code == "ModelFinder")),]
+    }
+  } else if (include.ModelFinder == FALSE){
+    # If include.ModelFinder = FALSE, return only the best model (determined by BIC score)
+    if (is.ModelFinder.BIC.best == TRUE){
+      # If ModelFinder has the best BIC, return the ModelFinder row only
+      best_model_df <- dataset_output_df[which(dataset_output_df$model_code == "ModelFinder"),]
+    } else if (is.ModelFinder.BIC.best == FALSE){
+      # If ModelFinder does not have the best BIC, return both the ModelFinder row and the row for the model with the best BIC
+      best_model_df <- dataset_output_df[c(1),]
+    }
   }
+  
   # Return the dataframe of information from the best model(s)
   return(best_model_df)
 } # end function
