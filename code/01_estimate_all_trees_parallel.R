@@ -297,17 +297,20 @@ if (prepare.hypothesis.trees == TRUE){
   ## Determine which models to use for each completed dataset
   # Want to extract ModelFinder model, and the model with the best BIC
   # If the ModelFinder model has the best BIC, return just the ModelFinder model
-  selected_models_list <- lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, ML_output_df = trimmed_ml_tree_df) 
+  selected_models_list <- lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
+                                 ML_output_df = trimmed_ml_tree_df, include.ModelFinder = FALSE) 
   # Convert lapply output to a nice dataframe
   selected_models_df <- do.call(rbind, selected_models_list)
   # Save the dataframe of best models
   write.table(selected_models_df, file = df_op_best_models, row.names = FALSE, sep = "\t")
   
   ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
-  mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = selected_models_df, IQTree_output_dir = ml_tree_dir)
+  check_modelfinder_df <- selected_models_list <- do.call(rbind, lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
+                                                                        ML_output_df = trimmed_ml_tree_df, include.ModelFinder = TRUE))
+  mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = check_modelfinder_df, IQTree_output_dir = ml_tree_dir)
   # Save the dataframe you just created
   write.table(mfp_check_df, file = df_op_mfp_model_check, row.names = FALSE, sep = "\t")
-
+  
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
   # Create the constraint trees and determine what parameters to use for each hypothesis tree
