@@ -67,7 +67,8 @@ if (location == "local"){
 
 # Set parameters that are identical for all run locations
 pmsf_initial_model <- "'LG+F+G'" # select guide tree from the C20, C60, LG+C20 and LG+C60 runs
-pmsf_model <- c("'C20+F+R4'", "'C60+F+R4'", "'LG+C20+F+R4'", "'LG+C60+F+R4'") # extract best model from the C20, C60, LG+C20 and LG+C60 runs
+pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'") # extract best model from the C20, C60, LG+C20 and LG+C60 runs
+pmsf_model_code <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 iqtree_num_threads <- 15
 ml_tree_bootstraps <- 1000
 
@@ -109,24 +110,31 @@ all_alignments <- grep("\\.alignment\\.", all_files, value = T)
 if (file.exists(df_op_pmsf_params) == TRUE){
   pmsf_df <- read.table(file = df_op_pmsf_params, header = TRUE, sep = "\t")
 } else if (file.exists(df_op_pmsf_params) == FALSE){
-  # Construct the model code based on which CAT model is being used (C10-C60)
-  cat_model_check <- gsub("'", "", grep("C10|C20|C30|C40|C50|C60", strsplit(pmsf_model, "\\+")[[1]], value = TRUE)) # add LG models here
-  cat_model_code <- paste0("PMSF", "_", cat_model_check)
   ## Prepare the parameters to estimate the PMSF trees
   # Open the maximum likelihood tree estimation parameters tsv
-  pmsf_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
+  ml_df <- read.table(file = df_op_01_01, header = TRUE, stringsAsFactors = FALSE)
   # Reduce only to the MFP rows
-  pmsf_df <- pmsf_df[pmsf_df$model_code == "ModelFinder", ]
-  # Update columns for PMSF run
-  pmsf_df$model_code <- cat_model_code
-  pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
+  ml_df <- ml_df[ml_df$model_code == "ModelFinder", ]
+  # Sort maximum likelihood df by alignment name
+  ml_df <- ml_df[order(ml_df$dataset),]
+  # Construct a grid of the alignments and the four model codes
+  pmsf_df <- expand.grid(ml_df$dataset, pmsf_model_code)
+  names(pmsf_df) <- c("dataset", "model_code")
+  # Add actual models as column
   pmsf_df$guide_tree_model <- pmsf_initial_model
-  pmsf_df$pmsf_model <- pmsf_model
+  pmsf_df$pmsf_model <- rep(pmsf_model, each = length(all_alignments))
+  # Sort pmsf_df by dataset name
+  pmsf_df <- pmsf_df[order(pmsf_df$dataset),]
+  # Update columns for PMSF run
+  pmsf_df$matrix_name <- rep(unique(ml_df$matrix_name), each = length(pmsf_model_code))
+  pmsf_df$sequence_format <- rep(unique(ml_df$sequence_format), each = length(pmsf_model_code))
+  pmsf_df$alignment_file <- rep(sort(all_alignments), each = length(pmsf_model_code))
+  pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
   pmsf_df$iqtree_num_bootstraps <- ml_tree_bootstraps
   pmsf_df$iqtree_num_threads <- iqtree_num_threads
   pmsf_df$iqtree_path <- iqtree2
   pmsf_df$pmsf_dir <- pmsf_dir
-  # Remove unnecessary columns
+  # Reorder columns
   pmsf_df <- pmsf_df[, c("dataset", "model_code", "guide_tree_model", "pmsf_model", "matrix_name", "prefix", "sequence_format", "iqtree_num_threads", "iqtree_num_bootstraps", 
                          "alignment_file", "iqtree_path", "pmsf_dir")]
   # Save dataframe as output
