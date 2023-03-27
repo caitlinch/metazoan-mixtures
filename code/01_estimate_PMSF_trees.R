@@ -71,6 +71,7 @@ pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'") # 
 pmsf_model_code <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 iqtree_num_threads <- 15
 ml_tree_bootstraps <- 1000
+run_IQTREE <- FALSE
 
 
 
@@ -168,6 +169,9 @@ write.table(pmsf_command_df, file = pmsf_test_output_files[1], row.names = FALSE
 unrun_guide_trees <- unique(pmsf_command_df$IQTree_command_1[!file.exists(pmsf_command_df$guide_tree_path)])
 # Write the unrun IQ-Tree commands out to a file
 write(unrun_guide_trees, file = pmsf_unrun_iqtree_command_files[1])
+if (run_IQTREE == TRUE){
+  mclapply(unrun_guide_trees, system, mc.cores = number_parallel_processes)
+}
 
 # 2. Perform the first phase of the PMSF model: estimate mixture model parameters given the guide tree and infer site-specific 
 #   frequency profile (printed to .sitefreq file)
@@ -181,6 +185,9 @@ pmsf_command_df$site_frequencies_path <- paste0(pmsf_dir, pmsf_command_df$site_f
 write(unique(pmsf_command_df$IQTree_command_2), file = pmsf_iqtree_command_files[2])
 # Write the dataframe out to a file (to capture the output at this step)
 write.table(pmsf_command_df, file = pmsf_test_output_files[2], row.names = FALSE, sep = "\t")
+if (run_IQTREE == TRUE){
+  mclapply(unique(pmsf_command_df$IQTree_command_2), system, mc.cores = number_parallel_processes)
+}
 
 # 3. Perform the second phase of the PMSF model: conduct typical analysis using the inferred frequency model (instead of the mixture model) 
 #   to save RAM and running time.
@@ -192,6 +199,9 @@ pmsf_command_df <- cbind(pmsf_command_df, tree_df)
 write(unique(pmsf_command_df$IQTree_command_3), file = pmsf_iqtree_command_files[3])
 # Write the dataframe out to a file (to capture the output at this step)
 write.table(pmsf_command_df, file = pmsf_test_output_files[3], row.names = FALSE, sep = "\t")
+if (run_IQTREE == TRUE){
+  mclapply(unique(pmsf_command_df$IQTree_command_3), system, mc.cores = number_parallel_processes)
+}
 
 # 4. Extract the PMSF files for each run
 op_files_list <- lapply(pmsf_command_df$pmsf_prefix, find.pmsf.files, pmsf_dir)
