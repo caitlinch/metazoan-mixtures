@@ -5,7 +5,7 @@
 cd /home/u5348329/metazoan-mixtures/slurm_files/ML_tree_iqtree_runs_individual/
 
 # Create a .sh file for each tree
-for i in {1..384} 
+for i in {1..352} 
 do
 	# Copy the template file to a new file where the name includes the row number
 	# cp /Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/slurm_scripts/iqtree_format.sh iqtree_run_$i.sh
@@ -30,7 +30,7 @@ sed -i'.bak' 's/^/sbatch /' iqtree_individual_job_runs.sh
 rm iqtree_individual_job_runs.sh.bak
 
 # Convert file line endings from dos format to unix format using dos2unix
-for i in {1..384}
+for i in {1..352}
 do 
 	dos2unix iqtree_run_$i.sh
 done
