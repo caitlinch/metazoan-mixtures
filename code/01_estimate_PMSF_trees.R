@@ -30,7 +30,7 @@
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                                 If 1, then all processes will run sequentially
 
-location = "soma"
+location = "dayhoff"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
