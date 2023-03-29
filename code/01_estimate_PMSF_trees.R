@@ -168,9 +168,11 @@ write.table(pmsf_command_df, file = pmsf_test_output_files[1], row.names = FALSE
 # Get the unrun pmsf_commands for estimating guide trees
 unrun_guide_trees <- unique(pmsf_command_df$IQTree_command_1[!file.exists(pmsf_command_df$guide_tree_path)])
 # Write the unrun IQ-Tree commands out to a file
-write(unrun_guide_trees, file = pmsf_unrun_iqtree_command_files[1])
-if (run_IQTREE == TRUE){
-  mclapply(unrun_guide_trees, system, mc.cores = number_parallel_processes)
+if (length(unrun_guide_trees) > 0){
+  write(unrun_guide_trees, file = pmsf_unrun_iqtree_command_files[1])
+  if (run_IQTREE == TRUE){
+    mclapply(unrun_guide_trees, system, mc.cores = number_parallel_processes)
+  }
 }
 
 # 2. Perform the first phase of the PMSF model: estimate mixture model parameters given the guide tree and infer site-specific 
@@ -185,9 +187,16 @@ pmsf_command_df$site_frequencies_path <- paste0(pmsf_dir, pmsf_command_df$site_f
 write(unique(pmsf_command_df$IQTree_command_2), file = pmsf_iqtree_command_files[2])
 # Write the dataframe out to a file (to capture the output at this step)
 write.table(pmsf_command_df, file = pmsf_test_output_files[2], row.names = FALSE, sep = "\t")
-if (run_IQTREE == TRUE){
-  mclapply(unique(pmsf_command_df$IQTree_command_2), system, mc.cores = number_parallel_processes)
+# Get the unrun pmsf_commands for estimating guide trees
+unrun_ssfp <- unique(pmsf_command_df$IQTree_command_2[!file.exists(pmsf_command_df$site_frequencies_path)])
+# Write the unrun IQ-Tree commands out to a file
+if (length(unrun_ssfp) > 0){
+  write(unrun_ssfp, file = pmsf_unrun_iqtree_command_files[2])
+  if (run_IQTREE == TRUE){
+    mclapply(unique(pmsf_command_df$IQTree_command_2), system, mc.cores = number_parallel_processes)
+  }
 }
+
 
 # 3. Perform the second phase of the PMSF model: conduct typical analysis using the inferred frequency model (instead of the mixture model) 
 #   to save RAM and running time.
