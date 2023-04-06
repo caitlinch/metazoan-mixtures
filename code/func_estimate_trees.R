@@ -798,4 +798,8 @@ run.phyloHMM <- function(tree_file, alignment_file, MAST_model, output_prefix = 
 }
 
 
+extract.phyloHMM.output <- function(output_prefix, output_directory){
+  # Function to take an output prefix and directory, and return the results of the phyloHMM model
+  
+}
 
