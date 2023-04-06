@@ -765,6 +765,37 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, prefix,
 } # end function
 
 
+run.phyloHMM <- function(tree_file, alignment_file, model, output_prefix = NA, iqtree_phyloHMM, iqtree_num_threads = "AUTO", run.iqtree = FALSE){
+  # Function to apply the phyloHMM for the MAST model with multiple trees
+  # iqtree_phyloHMM = the IQ-Tree2 implementation of the phyloHMM model (currently IQ-Tree version 2.2.0.8.mix.1.hmm)
+  
+  # Example command line:
+  #     Running PhyloHMM for a MAST model on a data set simulated under the same MAST model
+  #     $ iqtree2 -m "TMIX{GTR+FO+G,GTR+FO+G}+T" -hmm -te data1.all.top.txt -s data1.fa
+  #         where -te denotes the file containing one or more trees
+  #             and -s denotes the alignment file
+  #         Here, the model fed in is the BEST model, i.e. the model that the hypothesis trees were estimated under
+  
+  if (is.na(output_prefix) == TRUE){
+    prefix_call <- ""
+  } else {
+    prefix_call <- paste0(" -pre ", output_prefix)
+  }
+  
+  # Assemble the command line
+  command <- paste0(iqtree_phyloHMM, " -m '", model, "' -hmm -te ", tree_file, " -s ", alignment_file, " -nt ", iqtree_num_threads, prefix_call)
+  
+  # Call IQ-Tree, if required
+  if (run.iqtree == TRUE){
+    system(command)
+  }
+  
+  # Collect the output vector
+  output_vector <- c(command)
+  
+  # Return the output vector
+  return(output_vector)
+}
 
 
 
