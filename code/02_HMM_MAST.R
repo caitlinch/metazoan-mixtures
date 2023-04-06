@@ -45,8 +45,8 @@ tree_file <- test_trees_file
 alignment_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/Nosenko2013.nonribosomal_9187_smatrix.aa.alignment.phy"
 output_prefix <- "test.Nosenko2013.nonribo.LG.HMM"
 model <- "LG"
-
-
+MAST_model <- paste0(model, "+TR") # branch-length restricted MAST model: where a branch occurs in multiple treesm it is constrained to have the same length in each tree
+ 
 #### 3. Apply mixtures across trees and sites (MAST model) ####
 # Create a folder for the ml trees and move to that folder
 m_tree_dir <- paste0(output_dir, "tree_mixtures/")
