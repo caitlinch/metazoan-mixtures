@@ -27,14 +27,14 @@
 
 location = "local"
 if (location == "local"){
-alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
-repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
-
-iqtree2 <- "iqtree2"
-iqtree_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
-
-iqtree_num_threads = 3
+  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
+  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+  repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+  
+  iqtree2 <- "iqtree2"
+  iqtree_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
+  
+  iqtree_num_threads = 3
 }
 
 
@@ -46,7 +46,15 @@ alignment_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Da
 output_prefix <- "test.Nosenko2013.nonribo.LG.HMM"
 model <- "LG"
 MAST_model <- paste0(model, "+TR") # branch-length restricted MAST model: where a branch occurs in multiple treesm it is constrained to have the same length in each tree
- 
+
+# To run phyloHMM for the toy example
+iqtree_hmm_command <- run.phyloHMM(tree_file = tree_file, alignment_file = alignment_file, MAST_model = MAST_model, output_prefix = output_prefix, 
+                                   iqtree_phyloHMM = iqtree_tm, iqtree_num_threads = "AUTO", run.iqtree = FALSE)
+# To extract information from the completed HMM run:
+hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
+
+
+
 #### 3. Apply mixtures across trees and sites (MAST model) ####
 # Create a folder for the ml trees and move to that folder
 m_tree_dir <- paste0(output_dir, "tree_mixtures/")
