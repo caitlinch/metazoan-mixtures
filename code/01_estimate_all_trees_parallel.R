@@ -355,11 +355,12 @@ if (collate.hypothesis.logs == TRUE){
     ml_tree_df <- read.table(df_op_01_01, header = T)
   }
   
-  # Combine hypothesis trees into one file and save
+  # Combine hypothesis trees into one file per unique identifier and save
   ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
                                              outgroup_taxa = NA)
   # Save dataframe
   write.table(ml_tree_df, file = df_op_01_04, row.names = FALSE, sep = "\t")
+  
 }
 
 
