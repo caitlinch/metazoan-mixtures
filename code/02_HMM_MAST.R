@@ -40,7 +40,7 @@ iqtree_num_threads = 3
 
 
 #### 2. Prepare variables, open packages and source functions ####
-test_trees_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/Test.Nosenko2013.nonribosomal_9187_smatrix.LG.ML_Hypothesis_trees.treefile"
+test_trees_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/Test.Nosenko2013.nonribosomal_9187_smatrix.LG.ML_Hypothesis_trees.treefile"
 tree_file <- test_trees_file
 alignment_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/Nosenko2013.nonribosomal_9187_smatrix.aa.alignment.phy"
 output_prefix <- "test.Nosenko2013.nonribo.LG.HMM"
