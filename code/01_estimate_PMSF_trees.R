@@ -30,6 +30,10 @@
 # number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
 #                                 If 1, then all processes will run sequentially
 
+# run_IQTREE        <- FALSE to output IQ-Tree command lines only, TRUE to output IQ-Tree command lines and run IQ-Tree 
+# trim_incomplete   <- TRUE to remove dataframe rows without a site frequency file before estimating tree in IQ-Tree
+#                         (tree cannot be estimated using the PMSF model without the site frequencies file)
+
 location = "dayhoff"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
@@ -72,6 +76,7 @@ pmsf_model_code <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 iqtree_num_threads <- 15
 ml_tree_bootstraps <- 1000
 run_IQTREE <- FALSE
+trim_incomplete <- TRUE
 
 
 
@@ -153,6 +158,8 @@ setwd(pmsf_dir)
 
 # Exclude Simion 2017 from the runs
 pmsf_df <- pmsf_df[pmsf_df$dataset != "Simion2017", ]
+# Renumber rows 
+rownames(pmsf_df) <- 1:nrow(pmsf_df)
 
 # 1. Estimate guide tree under simple model
 guide_list <- lapply(1:nrow(pmsf_df), estimate.guide.tree.wrapper, pmsf_parameter_dataframe = pmsf_df, run.iqtree = FALSE)
@@ -200,7 +207,11 @@ if (length(unrun_ssfp) > 0){
 
 # 3. Perform the second phase of the PMSF model: conduct typical analysis using the inferred frequency model (instead of the mixture model) 
 #   to save RAM and running time.
-tree_list <- lapply(1:nrow(pmsf_command_df), output.site.frequency.file.wrapper, pmsf_parameter_dataframe = pmsf_command_df, run.iqtree = FALSE)
+if (trim_incomplete == TRUE){
+  trimmed_pcdf <- pmsf_command_df[file.exists(pmsf_command_df$site_frequencies_path),]
+  pmsf_command_df <- trimmed_pcdf
+}
+tree_list <- lapply(1:nrow(pmsf_command_df), estimate.tree.with.inferred.PMSF.model.wrapper, pmsf_parameter_dataframe = pmsf_command_df, run.iqtree = FALSE)
 tree_df <- as.data.frame(do.call(rbind, tree_list))
 names(tree_df) <- c("IQTree_command_3", "pmsf_prefix")
 pmsf_command_df <- cbind(pmsf_command_df, tree_df)
