@@ -1,4 +1,4 @@
-# metazoan-mixtures/code/02_HMM_MAST_model.R
+# metazoan-mixtures/code/02_HMM_MAST.R
 ## This script applies the HMM MAST model to empirical phylogenetic datasets
 # Caitlin Cherryh, 2022
 
@@ -20,19 +20,31 @@
 # output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
-# iqtree2             <- Location of IQ-Tree2 stable release
-# iqtree_tm           <- Location of IQ-Tree2 MAST release
+# iqtree2             <- Location of IQ-Tree2 stable release (version 2.2.2)
+# iqtree_tm           <- Location of IQ-Tree2 MAST release (currently: version 2.2.0.8.mix.1.hmm)
 
 # iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
-# iqtree_mrate <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
-#                 We set iqtree_mrate = "E,I,G,I+G,R,I+R"
-#                 See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
-# ml_tree_bootstraps <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
-# number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
-#                               If 1, then all processes will run sequentially
+
+location = "local"
+if (location == "local"){
+alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
+output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+
+iqtree2 <- "iqtree2"
+iqtree_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
+
+iqtree_num_threads = 3
+}
 
 
-#### 1. Apply mixtures across trees and sites (MAST model) ####
+
+#### 2. Prepare variables, open packages and source functions ####
+
+
+
+
+#### 3. Apply mixtures across trees and sites (MAST model) ####
 # Create a folder for the ml trees and move to that folder
 m_tree_dir <- paste0(output_dir, "tree_mixtures/")
 if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
