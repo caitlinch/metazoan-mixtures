@@ -133,18 +133,20 @@ estimate.guide.tree.wrapper <- function(row_id, pmsf_parameter_dataframe, run.iq
 }
 
 
-estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, num_threads, run.iqtree = FALSE){
+estimate.guide.tree <- function(alignment_path, alignment_prefix, simple_model, iqtree_path, num_threads = "AUTO", run.iqtree = FALSE){
   # Function to estimate a guide tree for the PMSF model
-  # IQ-Tree command: iqtree -s <alignment> -m 'LG+C20+F+G' -pre guidetree
+  # IQ-Tree command: iqtree -s <alignment> -m 'LG+F+G' -pre guidetree
   
   # Create the prefix for a guide tree by removing the model prefix and attaching ".guidetree"
   # The model prefix can be removed because the guide tree will be estimated from the same model each time
   alignment_prefix_nomodel <- paste(head(strsplit(alignment_prefix, "\\.")[[1]],2), collapse = ".")
   simple_model_prefix <- gsub("'", "", strsplit(simple_model, "\\+")[[1]][1])
   guide_prefix <- paste0(alignment_prefix_nomodel, ".", simple_model_prefix, ".", "guidetree")
+  # Format the simple model to ensure it is surrounded by quotation marks (')
+  simple_model_formatted <- paste0("'", gsub("'", "", simple_model), "'")
   
   # Assemble the command to estimate a guide tree
-  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model, " -nt ", num_threads, " -pre ", guide_prefix)
+  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", simple_model_formatted, " -nt ", num_threads, " -pre ", guide_prefix)
   
   # Run IQ-Tree2 (if "run.iqtree" == TRUE)
   if (run.iqtree == TRUE){
@@ -178,8 +180,11 @@ output.site.frequency.file <- function(alignment_path, guide_tree_path, alignmen
   # Create the prefix for a sitefreq file (site-specific frequency profile or ssfp)
   ssfp_prefix <- paste0(alignment_prefix, ".ssfp")
   
+  # Format the full model to ensure it is surrounded by quotation marks (')
+  full_model_formatted <- paste0("'", gsub("'", "", full_model), "'")
+  
   # Assemble the command to estimate a guide tree
-  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", full_model, " -ft ", guide_tree_path, " -n 0 -nt ", num_threads, " -pre ", ssfp_prefix)
+  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", full_model_formatted, " -ft ", guide_tree_path, " -n 0 -nt ", num_threads, " -pre ", ssfp_prefix)
   
   # Run IQ-Tree2 (if "run.iqtree" == TRUE)
   if (run.iqtree == TRUE){
@@ -213,8 +218,11 @@ estimate.tree.with.inferred.PMSF.model <- function(alignment_path, sitefreq_path
   # Create the prefix for the final output tree 
   pmsf_prefix <- paste0(alignment_prefix, ".complete")
   
+  # Format the full model to ensure it is surrounded by quotation marks (')
+  full_model_formatted <- paste0("'", gsub("'", "", full_model), "'")
+  
   # Assemble the command to estimate a guide tree
-  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", full_model, " -fs ", sitefreq_path, " -b ", num_bootstraps, " -nt ", num_threads," -pre ", pmsf_prefix)
+  iqtree_command <- paste0(iqtree_path, " -s ", alignment_path, " -m ", full_model_formatted, " -fs ", sitefreq_path, " -b ", num_bootstraps, " -nt ", num_threads," -pre ", pmsf_prefix)
   
   # Run IQ-Tree2 (if "run.iqtree" == TRUE)
   if (run.iqtree == TRUE){
