@@ -1,5 +1,6 @@
 # Copy complete files to download
 
+## FOR ML TREES
 # Establish file paths
 old_dir <- "/home/u5348329/metazoan-mixtures/output/maximum_likelihood_trees/"
 new_dir <- "/home/u5348329/metazoan-mixtures/output/ml_tree_output_files/"
@@ -22,3 +23,28 @@ for (iqf in existing_iqfiles){
     file.copy(from = paste0(old_dir, gsub("\\.iqtree", "\\.log", iqf)), to = paste0(new_dir, gsub("\\.iqtree", "\\.log", iqf)), copy.date = T)
   }
 }
+
+
+## FOR PMSF TREES
+# Establish file paths
+old_dir <- "/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
+new_dir <- "/home/u5348329/metazoan-mixtures/output/ml_tree_output_files/"
+
+# Get the list of all files
+all_files <- list.files(old_dir)
+# Get the list of which iqtree files exists
+existing_iqfiles <- grep("\\.complete", grep("\\.iqtree", all_files, value = TRUE), value = TRUE)
+
+# Copy all files that do not exist in the new directory
+for (iqf in existing_iqfiles){
+  if (file.exists(paste0(new_dir, iqf)) == FALSE){
+    file.copy(from = paste0(old_dir, iqf), to = paste0(new_dir, iqf), copy.date = T)
+  }
+  if (file.exists(paste0(new_dir, gsub("\\.iqtree", "\\.treefile", iqf))) == FALSE){
+    file.copy(from = paste0(old_dir, gsub("\\.iqtree", "\\.treefile", iqf)), to = paste0(new_dir, gsub("\\.iqtree", "\\.treefile", iqf)), copy.date = T)
+  }
+  if (file.exists(paste0(new_dir, gsub("\\.iqtree", "\\.log", iqf))) == FALSE){
+    file.copy(from = paste0(old_dir, gsub("\\.iqtree", "\\.log", iqf)), to = paste0(new_dir, gsub("\\.iqtree", "\\.log", iqf)), copy.date = T)
+  }
+}
+
