@@ -35,7 +35,7 @@
 # estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # collate.hypothesis.logs       <- TRUE to extract information from hypothesis tree log file and iqtree file. FALSE to skip.
 
-location = "local"
+location = "rona"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
@@ -69,6 +69,14 @@ if (location == "local"){
   repo_dir <- "/Users/caitlin/Repositories/metazoan-mixtures/"
   
   iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
+  
+  number_parallel_processes <- 1
+} else if (location == "rona"){
+  alignment_dir <- "/home/caitlin/metazoan-mixtures/data_all/"
+  output_dir <- "/home/caitlin/metazoan-mixtures/output/"
+  repo_dir <- "/home/caitlin/metazoan-mixtures/"
+  
+  iqtree2 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   
   number_parallel_processes <- 1
 }
