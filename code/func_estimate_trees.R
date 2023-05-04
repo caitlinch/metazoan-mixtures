@@ -347,7 +347,7 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
   # Tree: (outgroup_taxa, ((porifera_taxa, ctenophora_taxa), (cnidaria_taxa, bilateria_taxa)));
   if ((file.exists(constraint_tree_3_file_name) == FALSE) | (force.update.constraint.trees == TRUE)){
     ## Construct constraint tree
-    constraint_tree_3 <- paste0("(", outgroup_taxa_formatted, ", (", ctenophora_porifera_taxa_formatted, ", ", cnidaria_bilateria_taxa_formatted, "));")
+    constraint_tree_3 <- paste0("(", outgroup_taxa_formatted, ", ((", ctenophora_taxa_formatted, ", ", porifera_taxa_formatted, "), ", cnidaria_bilateria_taxa_formatted, "));")
     write(constraint_tree_3, file = constraint_tree_3_file_name)
   } else if (file.exists(constraint_tree_3_file_name) == TRUE){ 
     constraint_tree_3 <- readLines(constraint_tree_3_file_name)
@@ -515,7 +515,7 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
   if (partitioned_check == FALSE){
     partition_call <- ""
   } else if (partitioned_check == TRUE){
-    partition_call <- paste0(" -p ", partition_file, " ") # should this be spp? See doco: http://www.iqtree.org/doc/Command-Reference
+    partition_call <- paste0(" -p ", partition_file, " ")
   } 
   
   ### Set best_model as model for IQ-Tree run, including free-rate categories if necessary
