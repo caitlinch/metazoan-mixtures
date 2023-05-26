@@ -130,6 +130,7 @@ if (extract.ML.tree.information == TRUE){
   trimmed_ml_tree_df$tree_BIC <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "BIC"))
   trimmed_ml_tree_df$tree_length <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "TrLen"))
   trimmed_ml_tree_df$tree_SumInternalBranch <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "SIBL"))
+  trimmed_ml_tree_df$tree_PercentInternalBranch <- round(((as.numeric(trimmed_ml_tree_df$tree_SumInternalBranch)/as.numeric(trimmed_ml_tree_df$tree_length)) * 100), digits = 2)
   
   # Extract the best model for each combination of matrix and model
   trimmed_ml_tree_df$best_model <- unlist(lapply(complete_iqtree_files, extract.best.model))
