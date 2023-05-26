@@ -233,57 +233,75 @@ extract.model.log.likelihood <- function(iqtree_file, var = "LogL"){
   # Can extract either the log likelihood (var = "LogL), the BIC (var = "BIC),
   #   the weighted BIC (var = "wBIC") or all three (var = "All")
   
-  # Check if the iqtree file exists
-  if (file.exists(iqtree_file) == TRUE){
-    # If the iqtree_file does exist:
-    ## Open the .iqtree file:
-    iq_lines <- readLines(iqtree_file)
-    
-    ## Extract the table of models sorted by BIC scores
-    # Find the line detailing the best model
-    table_ind <- grep("List of models sorted by BIC scores: ", iq_lines)
-    # Check whether the table is present
-    if (identical(table_ind, integer(0)) == TRUE){
-      # No table of models present
-      # Therefore no model log likelihood or BIC scores to return
-      # Return NA for all outputs
-      if (var == "All"){
-        output = c("BestModel" = NA, "LogL" = NA, "BIC" = NA, "w-BIC" = NA)
-      } else {
-        output = NA
-      } # end if (var == "All"){
-    } else if (identical(table_ind, integer(0)) == FALSE){
-      # Table of models is present
-      # Add two to the table ind to get the start of the table
-      table_start<- table_ind + 2
-      table_end <- grep("AIC, w-AIC   : Akaike information criterion scores and weights.", iq_lines) - 2
-      # Extract the table lines
-      table_lines <- iq_lines[table_start:table_end]
-      # Split table into rows using " "
-      split_table_lines <- strsplit(table_lines, " ")
-      # Remove empty strings from table lines
-      split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != ""]})
-      # Remove "+" from table lines
-      split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != "+"]})
-      # Remove "-" from table lines
-      split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != "-"]})
-      # Make table lines into data frame
-      table_df <- as.data.frame(do.call(rbind, split_table_lines[2:length(split_table_lines)]))
-      names(table_df) <- split_table_lines[[1]]
+  
+  # Check if the file is a PMSF file
+  # The PMSF models do not include a model search or a BIC score for the model
+  pmsf_check <- grepl("PMSF", iqtree_file)
+  if (pmsf_check == FALSE){
+    # The model is not a PMSF model. Continue to extract model parameters
+    # Check if the iqtree file exists
+    if (file.exists(iqtree_file) == TRUE){
+      # If the iqtree_file does exist:
+      ## Open the .iqtree file:
+      iq_lines <- readLines(iqtree_file)
       
-      ## Extract the log likelihood, BIC and wBIC for the best model
-      # Prepare output for return
-      if (var == "LogL"){
-        output = table_df$LogL[1]
-      } else if (var == "BIC"){
-        output = table_df$BIC[1]
-      } else if (var == "wBIC"){
-        output = table_df$`w-BIC`[1]
-      } else if (var == "All"){
-        output = c("BestModel" = table_df$Model[1], "LogL" = table_df$LogL[1], "BIC" = table_df$BIC[1], "w-BIC" = table_df$`w-BIC`[1])
-      } # end if (var == "LogL")
-    } # end if (identical(table_ind, integer(0)) == TRUE){
-  } # end if (file.exists(iqtree_file) == TRUE)
+      ## Extract the table of models sorted by BIC scores
+      # Find the line detailing the best model
+      table_ind <- grep("List of models sorted by BIC scores: ", iq_lines)
+      # Check whether the table is present
+      if (identical(table_ind, integer(0)) == TRUE){
+        # No table of models present
+        # Therefore no model log likelihood or BIC scores to return
+        # Return NA for all outputs
+        if (var == "All"){
+          output = c("BestModel" = NA, "LogL" = NA, "BIC" = NA, "w-BIC" = NA)
+        } else {
+          output = NA
+        } # end if (var == "All"){
+      } else if (identical(table_ind, integer(0)) == FALSE){
+        # Table of models is present
+        # Add two to the table ind to get the start of the table
+        table_start<- table_ind + 2
+        table_end <- grep("AIC, w-AIC   : Akaike information criterion scores and weights.", iq_lines) - 2
+        # Extract the table lines
+        table_lines <- iq_lines[table_start:table_end]
+        # Split table into rows using " "
+        split_table_lines <- strsplit(table_lines, " ")
+        # Remove empty strings from table lines
+        split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != ""]})
+        # Remove "+" from table lines
+        split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != "+"]})
+        # Remove "-" from table lines
+        split_table_lines <- lapply(1:length(split_table_lines), function(i){split_table_lines[[i]][split_table_lines[[i]] != "-"]})
+        # Make table lines into data frame
+        table_df <- as.data.frame(do.call(rbind, split_table_lines[2:length(split_table_lines)]))
+        names(table_df) <- split_table_lines[[1]]
+        
+        ## Extract the log likelihood, BIC and wBIC for the best model
+        # Prepare output for return
+        if (var == "LogL"){
+          output = table_df$LogL[1]
+        } else if (var == "BIC"){
+          output = table_df$BIC[1]
+        } else if (var == "wBIC"){
+          output = table_df$`w-BIC`[1]
+        } else if (var == "All"){
+          output = c("BestModel" = table_df$Model[1], "LogL" = table_df$LogL[1], "BIC" = table_df$BIC[1], "w-BIC" = table_df$`w-BIC`[1])
+        } # end if (var == "LogL")
+      } # end if (identical(table_ind, integer(0)) == TRUE){
+    } # end if (file.exists(iqtree_file) == TRUE)
+  } else if (pmsf_check == TRUE){
+    # If the PMSF model was used, there is no modelfinder output to search and no output value
+    # Return NA
+    # Prepare output for return
+    if (var == "All"){
+      # If output is named vector, return NA for each value in the vector
+      output = c("BestModel" = NA, "LogL" = NA, "BIC" = NA, "w-BIC" = NA)
+    } else {
+      # If output is a single value - return NA
+      output = NA
+    } # end if (var == "All"){
+  }# end if if (pmsf_check == FALSE){
   
   # Return the output
   return(output)
