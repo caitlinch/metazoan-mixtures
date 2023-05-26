@@ -85,8 +85,8 @@ if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 ml_tree_df_file             <- paste0(repo_dir, "output/01_01_maximum_likelihood_tree_estimation_parameters.tsv")
 all_tree_df_file            <- paste0(repo_dir, "output/01_01_all_tree_estimation_parameters.tsv")
 ml_extracted_df_file        <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
-alignment_taxa_df_file      <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
-completion_freq_df_file     <- paste0(output_dir, "01_02_dataset_completion_frequency.tsv")
+alignment_taxa_df_file      <- paste0(repo_dir, "01_02_maximum_likelihood_included_taxa.tsv")
+completion_freq_df_file     <- paste0(repo_dir, "01_02_dataset_completion_frequency.tsv")
 
 
 
