@@ -1,0 +1,481 @@
+﻿dataset,model_code,matrix_name,model_BIC,sister_group,UFB_support,PORI_topology,CTEN+CNID_monophyletic,PLAC_present,tree_BIC,ML_tree_name
+Borowiec2015,C10,Best108,2847462.115,Ctenophora,100,One taxon,No,Yes,2846512.738,Borowiec2015.Best108.C10
+Borowiec2015,C20,Best108,2823269.476,Ctenophora,100,One taxon,No,Yes,2821870.709,Borowiec2015.Best108.C20
+Borowiec2015,C30,Best108,2815908.532,Ctenophora,100,One taxon,No,Yes,2814521.275,Borowiec2015.Best108.C30
+Borowiec2015,C40,Best108,2811047.384,Ctenophora,100,One taxon,No,Yes,2809676.964,Borowiec2015.Best108.C40
+Borowiec2015,C50,Best108,2808356.745,Ctenophora,100,One taxon,No,Yes,2807033.965,Borowiec2015.Best108.C50
+Borowiec2015,C60,Best108,2805419.695,Ctenophora,100,One taxon,No,Yes,2804056.608,Borowiec2015.Best108.C60
+Borowiec2015,LG_C20,Best108,2796220.487,Ctenophora,100,One taxon,No,Yes,2794337.942,Borowiec2015.Best108.LG_C20
+Borowiec2015,LG_C60,Best108,2788152.021,Ctenophora,100,One taxon,No,Yes,2786318.702,Borowiec2015.Best108.LG_C60
+Borowiec2015,PMSF_C20,Best108,NA,Ctenophora,100,One taxon,No,Yes,2588122.723,Borowiec2015.Best108.PMSF_C20
+Borowiec2015,PMSF_C60,Best108,NA,Ctenophora,100,One taxon,No,Yes,2521486.554,Borowiec2015.Best108.PMSF_C60
+Borowiec2015,PMSF_LG_C20,Best108,NA,Ctenophora,100,One taxon,No,Yes,2631094.214,Borowiec2015.Best108.PMSF_LG_C20
+Borowiec2015,PMSF_LG_C60,Best108,NA,Ctenophora,100,One taxon,No,Yes,2587552.944,Borowiec2015.Best108.PMSF_LG_C60
+Borowiec2015,CF4,Best108,2990028.134,Ctenophora,100,One taxon,No,Yes,2988609.123,Borowiec2015.Best108.CF4
+Borowiec2015,EHO,Best108,2832809.746,Ctenophora,100,One taxon,No,Yes,2832021.011,Borowiec2015.Best108.EHO
+Borowiec2015,EX_EHO,Best108,2819992.95,Ctenophora,100,One taxon,No,Yes,2818454.947,Borowiec2015.Best108.EX_EHO
+Borowiec2015,EX2,Best108,2831204.021,Ctenophora,100,One taxon,No,Yes,2829023.268,Borowiec2015.Best108.EX2
+Borowiec2015,EX3,Best108,2828479.74,Ctenophora,100,One taxon,No,Yes,2826231.646,Borowiec2015.Best108.EX3
+Borowiec2015,GTR20,Best108,2838047.793,Ctenophora,100,One taxon,No,Yes,2836628.865,Borowiec2015.Best108.GTR20
+Borowiec2015,JTT,Best108,2874088.961,Ctenophora,100,One taxon,No,Yes,2872161.271,Borowiec2015.Best108.JTT
+Borowiec2015,JTTDCMut,Best108,2872941.581,Ctenophora,100,One taxon,No,Yes,2871563.05,Borowiec2015.Best108.JTTDCMut
+Borowiec2015,LG,Best108,2843009.711,Ctenophora,100,One taxon,No,Yes,2841615.944,Borowiec2015.Best108.LG
+Borowiec2015,LG4M,Best108,2818189.865,Ctenophora,100,One taxon,No,Yes,2815975.123,Borowiec2015.Best108.LG4M
+Borowiec2015,mtZOA,Best108,2885444.479,Ctenophora,100,One taxon,No,Yes,2883621.526,Borowiec2015.Best108.mtZOA
+Borowiec2015,PMB,Best108,2893074.004,Ctenophora,100,One taxon,No,Yes,2891129.569,Borowiec2015.Best108.PMB
+Borowiec2015,Poisson,Best108,3149426.531,Ctenophora,100,One taxon,No,Yes,3147528.672,Borowiec2015.Best108.Poisson
+Borowiec2015,rtREV,Best108,2855553.101,Ctenophora,100,One taxon,No,Yes,2853649.374,Borowiec2015.Best108.rtREV
+Borowiec2015,UL2,Best108,2827937.433,Ctenophora,100,One taxon,No,Yes,2825730.691,Borowiec2015.Best108.UL2
+Borowiec2015,UL3,Best108,2820603.476,Ctenophora,100,One taxon,No,Yes,2818477.436,Borowiec2015.Best108.UL3
+Borowiec2015,WAG,Best108,2864721.351,Ctenophora,100,One taxon,No,Yes,2862873.716,Borowiec2015.Best108.WAG
+Borowiec2015,ModelFinder,Best108,2841330.969,Ctenophora,100,One taxon,No,Yes,2839398.03,Borowiec2015.Best108.ModelFinder
+Chang2015,C10,Chang_AA,4627924.8,Ctenophora,100,Monophyletic,No,Yes,4627906.041,Chang2015.Chang_AA.C10
+Chang2015,C20,Chang_AA,4562429.891,Ctenophora,100,Monophyletic,No,Yes,4562424.581,Chang2015.Chang_AA.C20
+Chang2015,C30,Chang_AA,4543628.789,Ctenophora,100,Monophyletic,No,Yes,4543624.515,Chang2015.Chang_AA.C30
+Chang2015,C40,Chang_AA,NA,NA,NA,NA,NA,Yes,NA,Chang2015.Chang_AA.C40
+Chang2015,C50,Chang_AA,NA,NA,NA,NA,NA,Yes,NA,Chang2015.Chang_AA.C50
+Chang2015,C60,Chang_AA,,,,,,Yes,,Chang2015.Chang_AA.C60
+Chang2015,LG_C20,Chang_AA,4478908.382,Ctenophora,100,Monophyletic,No,Yes,4478411.743,Chang2015.Chang_AA.LG_C20
+Chang2015,LG_C60,Chang_AA,4453771.034,Ctenophora,100,Monophyletic,No,Yes,4453315.918,Chang2015.Chang_AA.LG_C60
+Chang2015,PMSF_C20,Chang_AA,NA,Ctenophora,100,Monophyletic,No,Yes,4296616.957,Chang2015.Chang_AA.PMSF_C20
+Chang2015,PMSF_C60,Chang_AA,NA,Ctenophora,100,Monophyletic,No,Yes,4178590.556,Chang2015.Chang_AA.PMSF_C60
+Chang2015,PMSF_LG_C20,Chang_AA,NA,Ctenophora,100,Monophyletic,No,Yes,4254154.908,Chang2015.Chang_AA.PMSF_LG_C20
+Chang2015,PMSF_LG_C60,Chang_AA,NA,Ctenophora,100,Monophyletic,No,Yes,4177901.868,Chang2015.Chang_AA.PMSF_LG_C60
+Chang2015,CF4,Chang_AA,4911271.745,Ctenophora,100,Monophyletic,No,Yes,4911225.807,Chang2015.Chang_AA.CF4
+Chang2015,EHO,Chang_AA,4593838.846,Ctenophora,100,Monophyletic,No,Yes,4593832.723,Chang2015.Chang_AA.EHO
+Chang2015,EX_EHO,Chang_AA,4564454.244,Ctenophora,100,Monophyletic,No,Yes,4564441.959,Chang2015.Chang_AA.EX_EHO
+Chang2015,EX2,Chang_AA,4590433.232,Ctenophora,100,Monophyletic,No,Yes,4589979.516,Chang2015.Chang_AA.EX2
+Chang2015,EX3,Chang_AA,4582131.647,Ctenophora,100,Monophyletic,No,Yes,4582107.337,Chang2015.Chang_AA.EX3
+Chang2015,GTR20,Chang_AA,4600887.28,Ctenophora,100,Monophyletic,No,Yes,4600871.616,Chang2015.Chang_AA.GTR20
+Chang2015,JTT,Chang_AA,4700727.381,Ctenophora,100,Monophyletic,No,Yes,4700704.813,Chang2015.Chang_AA.JTT
+Chang2015,JTTDCMut,Chang_AA,4698421.849,Ctenophora,100,Monophyletic,No,Yes,4698398.331,Chang2015.Chang_AA.JTTDCMut
+Chang2015,LG,Chang_AA,4634647.117,Ctenophora,100,Monophyletic,No,Yes,4634634.082,Chang2015.Chang_AA.LG
+Chang2015,LG4M,Chang_AA,4548680.758,Ctenophora,100,Monophyletic,No,Yes,4548672.054,Chang2015.Chang_AA.LG4M
+Chang2015,mtZOA,Chang_AA,4696154.375,Ctenophora,100,Monophyletic,No,Yes,4696153.065,Chang2015.Chang_AA.mtZOA
+Chang2015,PMB,Chang_AA,4751063.568,Ctenophora,100,Monophyletic,No,Yes,4751012.766,Chang2015.Chang_AA.PMB
+Chang2015,Poisson,Chang_AA,5280275.468,Ctenophora,100,Monophyletic,No,Yes,5279986.735,Chang2015.Chang_AA.Poisson
+Chang2015,rtREV,Chang_AA,4655982.027,Ctenophora,100,Monophyletic,No,Yes,4655482.335,Chang2015.Chang_AA.rtREV
+Chang2015,UL2,Chang_AA,4580207.464,Ctenophora,100,Monophyletic,No,Yes,4580183.733,Chang2015.Chang_AA.UL2
+Chang2015,UL3,Chang_AA,4545504.488,Ctenophora,100,Monophyletic,No,Yes,4545498.608,Chang2015.Chang_AA.UL3
+Chang2015,WAG,Chang_AA,4686648.55,Ctenophora,100,Monophyletic,No,Yes,4686216.292,Chang2015.Chang_AA.WAG
+Chang2015,ModelFinder,Chang_AA,4620264.906,Ctenophora,100,Monophyletic,No,Yes,4620254.588,Chang2015.Chang_AA.ModelFinder
+Dunn2008,C10,Dunn2008_FixedNames,NA,NA,NA,One taxon,NA,No,NA,Dunn2008.Dunn2008_FixedNames.C10
+Dunn2008,C20,Dunn2008_FixedNames,1365642.401,Ctenophora,100,One taxon,No,No,1365597.763,Dunn2008.Dunn2008_FixedNames.C20
+Dunn2008,C30,Dunn2008_FixedNames,NA,NA,NA,One taxon,NA,No,NA,Dunn2008.Dunn2008_FixedNames.C30
+Dunn2008,C40,Dunn2008_FixedNames,NA,NA,NA,One taxon,NA,No,NA,Dunn2008.Dunn2008_FixedNames.C40
+Dunn2008,C50,Dunn2008_FixedNames,NA,NA,NA,One taxon,NA,No,NA,Dunn2008.Dunn2008_FixedNames.C50
+Dunn2008,C60,Dunn2008_FixedNames,1355354.677,Ctenophora,100,One taxon,No,No,1355316.496,Dunn2008.Dunn2008_FixedNames.C60
+Dunn2008,LG_C20,Dunn2008_FixedNames,1357401.347,Ctenophora,100,One taxon,No,No,1357270.8,Dunn2008.Dunn2008_FixedNames.LG_C20
+Dunn2008,LG_C60,Dunn2008_FixedNames,1352273.801,Ctenophora,100,One taxon,No,No,1351965.064,Dunn2008.Dunn2008_FixedNames.LG_C60
+Dunn2008,PMSF_C20,Dunn2008_FixedNames,NA,Ctenophora,100,One taxon,No,No,1250077.199,Dunn2008.Dunn2008_FixedNames.PMSF_C20
+Dunn2008,PMSF_C60,Dunn2008_FixedNames,NA,Ctenophora,100,One taxon,No,No,1215415.307,Dunn2008.Dunn2008_FixedNames.PMSF_C60
+Dunn2008,PMSF_LG_C20,Dunn2008_FixedNames,NA,Ctenophora,100,One taxon,No,No,1271602.918,Dunn2008.Dunn2008_FixedNames.PMSF_LG_C20
+Dunn2008,PMSF_LG_C60,Dunn2008_FixedNames,NA,Ctenophora,100,One taxon,No,No,1246997.05,Dunn2008.Dunn2008_FixedNames.PMSF_LG_C60
+Dunn2008,CF4,Dunn2008_FixedNames,1451186.151,Ctenophora,100,One taxon,No,No,1451149.544,Dunn2008.Dunn2008_FixedNames.CF4
+Dunn2008,EHO,Dunn2008_FixedNames,1382210.447,Ctenophora,100,One taxon,No,No,1382208.865,Dunn2008.Dunn2008_FixedNames.EHO
+Dunn2008,EX_EHO,Dunn2008_FixedNames,1374582.726,Ctenophora,100,One taxon,No,No,1374581.883,Dunn2008.Dunn2008_FixedNames.EX_EHO
+Dunn2008,EX2,Dunn2008_FixedNames,1381004.582,Ctenophora,100,One taxon,No,No,1381003.536,Dunn2008.Dunn2008_FixedNames.EX2
+Dunn2008,EX3,Dunn2008_FixedNames,1379265.356,Ctenophora,100,One taxon,No,No,1379262.45,Dunn2008.Dunn2008_FixedNames.EX3
+Dunn2008,GTR20,Dunn2008_FixedNames,1386817.86,Ctenophora,100,One taxon,No,No,1386813.54,Dunn2008.Dunn2008_FixedNames.GTR20
+Dunn2008,JTT,Dunn2008_FixedNames,1408303.419,Ctenophora,100,One taxon,No,No,1408207.546,Dunn2008.Dunn2008_FixedNames.JTT
+Dunn2008,JTTDCMut,Dunn2008_FixedNames,1407783.76,Ctenophora,100,One taxon,No,No,1407772.547,Dunn2008.Dunn2008_FixedNames.JTTDCMut
+Dunn2008,LG,Dunn2008_FixedNames,1389724.963,Ctenophora,100,One taxon,No,No,1389722.427,Dunn2008.Dunn2008_FixedNames.LG
+Dunn2008,LG4M,Dunn2008_FixedNames,1371645.298,Ctenophora,100,One taxon,No,No,1371575.273,Dunn2008.Dunn2008_FixedNames.LG4M
+Dunn2008,mtZOA,Dunn2008_FixedNames,1410366.326,Ctenophora,100,One taxon,No,No,1410350.719,Dunn2008.Dunn2008_FixedNames.mtZOA
+Dunn2008,PMB,Dunn2008_FixedNames,1410722.878,Ctenophora,100,One taxon,No,No,1410703.055,Dunn2008.Dunn2008_FixedNames.PMB
+Dunn2008,Poisson,Dunn2008_FixedNames,1537658.143,Ctenophora,100,One taxon,No,No,1537548.145,Dunn2008.Dunn2008_FixedNames.Poisson
+Dunn2008,rtREV,Dunn2008_FixedNames,1395344.038,Ctenophora,100,One taxon,No,No,1395336.394,Dunn2008.Dunn2008_FixedNames.rtREV
+Dunn2008,UL2,Dunn2008_FixedNames,1378617.219,Ctenophora,100,One taxon,No,No,1378611.982,Dunn2008.Dunn2008_FixedNames.UL2
+Dunn2008,UL3,Dunn2008_FixedNames,1371030.961,Ctenophora,100,One taxon,No,No,1371025.01,Dunn2008.Dunn2008_FixedNames.UL3
+Dunn2008,WAG,Dunn2008_FixedNames,1399278.868,Ctenophora,100,One taxon,No,No,1399264.165,Dunn2008.Dunn2008_FixedNames.WAG
+Dunn2008,ModelFinder,Dunn2008_FixedNames,1389725.069,Ctenophora,100,One taxon,No,No,1389722.374,Dunn2008.Dunn2008_FixedNames.ModelFinder
+Hejnol2009,C10,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.C10
+Hejnol2009,C20,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.C20
+Hejnol2009,C30,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.C30
+Hejnol2009,C40,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.C40
+Hejnol2009,C50,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.C50
+Hejnol2009,C60,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.C60
+Hejnol2009,LG_C20,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.LG_C20
+Hejnol2009,LG_C60,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.LG_C60
+Hejnol2009,PMSF_C20,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.PMSF_C20
+Hejnol2009,PMSF_C60,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.PMSF_C60
+Hejnol2009,PMSF_LG_C20,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.PMSF_LG_C20
+Hejnol2009,PMSF_LG_C60,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.PMSF_LG_C60
+Hejnol2009,CF4,Hejnol_etal_2009_FixedNames,12700580.47,Ctenophora,100,Paraphyletic,No,Yes,12699338.38,Hejnol2009.Hejnol_etal_2009_FixedNames.CF4
+Hejnol2009,EHO,Hejnol_etal_2009_FixedNames,12172345.67,Ctenophora,100,Paraphyletic,No,Yes,12170250.02,Hejnol2009.Hejnol_etal_2009_FixedNames.EHO
+Hejnol2009,EX_EHO,Hejnol_etal_2009_FixedNames,12122352.87,Ctenophora,100,Paraphyletic,No,Yes,12119606.88,Hejnol2009.Hejnol_etal_2009_FixedNames.EX_EHO
+Hejnol2009,EX2,Hejnol_etal_2009_FixedNames,12160891.14,Ctenophora,100,Paraphyletic,No,Yes,12159903.99,Hejnol2009.Hejnol_etal_2009_FixedNames.EX2
+Hejnol2009,EX3,Hejnol_etal_2009_FixedNames,12156546.52,Ctenophora,100,Paraphyletic,No,Yes,12150723.43,Hejnol2009.Hejnol_etal_2009_FixedNames.EX3
+Hejnol2009,GTR20,Hejnol_etal_2009_FixedNames,1386817.86,Ctenophora,100,Paraphyletic,No,Yes,1386813.54,Hejnol2009.Hejnol_etal_2009_FixedNames.GTR20
+Hejnol2009,JTT,Hejnol_etal_2009_FixedNames,12310789.2,Ctenophora,100,Paraphyletic,No,Yes,12309064.56,Hejnol2009.Hejnol_etal_2009_FixedNames.JTT
+Hejnol2009,JTTDCMut,Hejnol_etal_2009_FixedNames,12308819.19,Ctenophora,100,Paraphyletic,No,Yes,12306442.2,Hejnol2009.Hejnol_etal_2009_FixedNames.JTTDCMut
+Hejnol2009,LG,Hejnol_etal_2009_FixedNames,12184085.79,Ctenophora,100,Paraphyletic,No,Yes,12182022.53,Hejnol2009.Hejnol_etal_2009_FixedNames.LG
+Hejnol2009,LG4M,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.LG4M
+Hejnol2009,mtZOA,Hejnol_etal_2009_FixedNames,12368042.99,Ctenophora,100,Paraphyletic,No,Yes,12360529.71,Hejnol2009.Hejnol_etal_2009_FixedNames.mtZOA
+Hejnol2009,PMB,Hejnol_etal_2009_FixedNames,12338187.13,Ctenophora,100,Paraphyletic,No,Yes,12326572.76,Hejnol2009.Hejnol_etal_2009_FixedNames.PMB
+Hejnol2009,Poisson,Hejnol_etal_2009_FixedNames,13274873.73,Ctenophora,100,Paraphyletic,No,Yes,13273372.66,Hejnol2009.Hejnol_etal_2009_FixedNames.Poisson
+Hejnol2009,rtREV,Hejnol_etal_2009_FixedNames,12246095.44,Ctenophora,100,Paraphyletic,No,Yes,12244165.74,Hejnol2009.Hejnol_etal_2009_FixedNames.rtREV
+Hejnol2009,UL2,Hejnol_etal_2009_FixedNames,1378617.219,Ctenophora,100,Paraphyletic,No,Yes,1378611.982,Hejnol2009.Hejnol_etal_2009_FixedNames.UL2
+Hejnol2009,UL3,Hejnol_etal_2009_FixedNames,12133696.74,Ctenophora,100,Paraphyletic,No,Yes,12131422.21,Hejnol2009.Hejnol_etal_2009_FixedNames.UL3
+Hejnol2009,WAG,Hejnol_etal_2009_FixedNames,12252627.13,Ctenophora,100,Paraphyletic,No,Yes,12250952.78,Hejnol2009.Hejnol_etal_2009_FixedNames.WAG
+Hejnol2009,ModelFinder,Hejnol_etal_2009_FixedNames,NA,NA,NA,NA,NA,Yes,NA,Hejnol2009.Hejnol_etal_2009_FixedNames.ModelFinder
+Laumer2018,C10,Tplx_phylo_d1,NA,NA,NA,NA,NA,Yes,NA,Laumer2018.Tplx_phylo_d1.C10
+Laumer2018,C20,Tplx_phylo_d1,,,,,,Yes,,Laumer2018.Tplx_phylo_d1.C20
+Laumer2018,C30,Tplx_phylo_d1,NA,NA,NA,NA,NA,Yes,NA,Laumer2018.Tplx_phylo_d1.C30
+Laumer2018,C40,Tplx_phylo_d1,NA,NA,NA,NA,NA,Yes,NA,Laumer2018.Tplx_phylo_d1.C40
+Laumer2018,C50,Tplx_phylo_d1,NA,NA,NA,NA,NA,Yes,NA,Laumer2018.Tplx_phylo_d1.C50
+Laumer2018,C60,Tplx_phylo_d1,,,,,,Yes,,Laumer2018.Tplx_phylo_d1.C60
+Laumer2018,LG_C20,Tplx_phylo_d1,5932683.532,Ctenophora,100,Monophyletic,No,Yes,5932130.03,Laumer2018.Tplx_phylo_d1.LG_C20
+Laumer2018,LG_C60,Tplx_phylo_d1,,,,,,Yes,,Laumer2018.Tplx_phylo_d1.LG_C60
+Laumer2018,PMSF_C20,Tplx_phylo_d1,NA,Ctenophora,100,Monophyletic,No,Yes,5598993.13,Laumer2018.Tplx_phylo_d1.PMSF_C20
+Laumer2018,PMSF_C60,Tplx_phylo_d1,NA,Ctenophora,100,Monophyletic,No,Yes,5470461.84,Laumer2018.Tplx_phylo_d1.PMSF_C60
+Laumer2018,PMSF_LG_C20,Tplx_phylo_d1,NA,Ctenophora,100,Monophyletic,No,Yes,5650297.85,Laumer2018.Tplx_phylo_d1.PMSF_LG_C20
+Laumer2018,PMSF_LG_C60,Tplx_phylo_d1,NA,Ctenophora,100,Monophyletic,No,Yes,5567851.889,Laumer2018.Tplx_phylo_d1.PMSF_LG_C60
+Laumer2018,CF4,Tplx_phylo_d1,6361580.391,Ctenophora,100,Monophyletic,No,Yes,6361283.257,Laumer2018.Tplx_phylo_d1.CF4
+Laumer2018,EHO,Tplx_phylo_d1,6002870.309,Ctenophora,100,Monophyletic,No,Yes,6002495.971,Laumer2018.Tplx_phylo_d1.EHO
+Laumer2018,EX_EHO,Tplx_phylo_d1,5974654.621,Ctenophora,100,Monophyletic,No,Yes,5974238.496,Laumer2018.Tplx_phylo_d1.EX_EHO
+Laumer2018,EX2,Tplx_phylo_d1,5997521.474,Ctenophora,100,Monophyletic,No,Yes,5997163.219,Laumer2018.Tplx_phylo_d1.EX2
+Laumer2018,EX3,Tplx_phylo_d1,5991759.88,Ctenophora,100,Monophyletic,No,Yes,5991346.221,Laumer2018.Tplx_phylo_d1.EX3
+Laumer2018,GTR20,Tplx_phylo_d1,6004170.02,Ctenophora,100,Monophyletic,No,Yes,6003897.935,Laumer2018.Tplx_phylo_d1.GTR20
+Laumer2018,JTT,Tplx_phylo_d1,6072874.124,Ctenophora,100,Monophyletic,No,Yes,6072636.467,Laumer2018.Tplx_phylo_d1.JTT
+Laumer2018,JTTDCMut,Tplx_phylo_d1,6072157.646,Ctenophora,100,Monophyletic,No,Yes,6071924.749,Laumer2018.Tplx_phylo_d1.JTTDCMut
+Laumer2018,LG,Tplx_phylo_d1,6019095.186,Ctenophora,100,Monophyletic,No,Yes,6018877.454,Laumer2018.Tplx_phylo_d1.LG
+Laumer2018,LG4M,Tplx_phylo_d1,5971226.056,Ctenophora,100,Monophyletic,No,Yes,5970762.446,Laumer2018.Tplx_phylo_d1.LG4M
+Laumer2018,mtZOA,Tplx_phylo_d1,6104228.993,Ctenophora,100,Monophyletic,No,Yes,6103933.692,Laumer2018.Tplx_phylo_d1.mtZOA
+Laumer2018,PMB,Tplx_phylo_d1,6121916.262,Ctenophora,100,Monophyletic,No,Yes,6121808.987,Laumer2018.Tplx_phylo_d1.PMB
+Laumer2018,Poisson,Tplx_phylo_d1,6693690.428,Ctenophora,100,Monophyletic,No,Yes,6693465.964,Laumer2018.Tplx_phylo_d1.Poisson
+Laumer2018,rtREV,Tplx_phylo_d1,6048841.716,Ctenophora,100,Monophyletic,No,Yes,6048673.032,Laumer2018.Tplx_phylo_d1.rtREV
+Laumer2018,UL2,Tplx_phylo_d1,5992834.49,Ctenophora,100,Monophyletic,No,Yes,5992476.844,Laumer2018.Tplx_phylo_d1.UL2
+Laumer2018,UL3,Tplx_phylo_d1,5979370.392,Ctenophora,100,Monophyletic,No,Yes,5978954.896,Laumer2018.Tplx_phylo_d1.UL3
+Laumer2018,WAG,Tplx_phylo_d1,6064975.616,Ctenophora,100,Monophyletic,No,Yes,6064897.689,Laumer2018.Tplx_phylo_d1.WAG
+Laumer2018,ModelFinder,Tplx_phylo_d1,6013002.754,Ctenophora,100,Monophyletic,No,Yes,6010701.064,Laumer2018.Tplx_phylo_d1.ModelFinder
+Laumer2019,C10,nonbilateria_MARE_BMGE,NA,NA,NA,NA,NA,Yes,NA,Laumer2019.nonbilateria_MARE_BMGE.C10
+Laumer2019,C20,nonbilateria_MARE_BMGE,,,,,,Yes,,Laumer2019.nonbilateria_MARE_BMGE.C20
+Laumer2019,C30,nonbilateria_MARE_BMGE,NA,NA,NA,NA,NA,Yes,NA,Laumer2019.nonbilateria_MARE_BMGE.C30
+Laumer2019,C40,nonbilateria_MARE_BMGE,NA,NA,NA,NA,NA,Yes,NA,Laumer2019.nonbilateria_MARE_BMGE.C40
+Laumer2019,C50,nonbilateria_MARE_BMGE,NA,NA,NA,NA,NA,Yes,NA,Laumer2019.nonbilateria_MARE_BMGE.C50
+Laumer2019,C60,nonbilateria_MARE_BMGE,,,,,,Yes,,Laumer2019.nonbilateria_MARE_BMGE.C60
+Laumer2019,LG_C20,nonbilateria_MARE_BMGE,4179606.244,Ctenophora,100,Monophyletic,No,Yes,4179519.026,Laumer2019.nonbilateria_MARE_BMGE.LG_C20
+Laumer2019,LG_C60,nonbilateria_MARE_BMGE,,,,,,Yes,,Laumer2019.nonbilateria_MARE_BMGE.LG_C60
+Laumer2019,PMSF_C20,nonbilateria_MARE_BMGE,NA,Ctenophora,100,Monophyletic,No,Yes,3891686.842,Laumer2019.nonbilateria_MARE_BMGE.PMSF_C20
+Laumer2019,PMSF_C60,nonbilateria_MARE_BMGE,NA,Ctenophora,100,Monophyletic,No,Yes,3789666.914,Laumer2019.nonbilateria_MARE_BMGE.PMSF_C60
+Laumer2019,PMSF_LG_C20,nonbilateria_MARE_BMGE,NA,Ctenophora,100,Monophyletic,No,Yes,3941955.848,Laumer2019.nonbilateria_MARE_BMGE.PMSF_LG_C20
+Laumer2019,PMSF_LG_C60,nonbilateria_MARE_BMGE,NA,Ctenophora,100,Monophyletic,No,Yes,3874680.357,Laumer2019.nonbilateria_MARE_BMGE.PMSF_LG_C60
+Laumer2019,CF4,nonbilateria_MARE_BMGE,4483813.819,Ctenophora,100,Monophyletic,No,Yes,4483795.693,Laumer2019.nonbilateria_MARE_BMGE.CF4
+Laumer2019,EHO,nonbilateria_MARE_BMGE,4236787.009,Ctenophora,100,Monophyletic,No,Yes,4236687.579,Laumer2019.nonbilateria_MARE_BMGE.EHO
+Laumer2019,EX_EHO,nonbilateria_MARE_BMGE,4215257.423,Ctenophora,100,Monophyletic,No,Yes,4215166.19,Laumer2019.nonbilateria_MARE_BMGE.EX_EHO
+Laumer2019,EX2,nonbilateria_MARE_BMGE,4230772.829,Ctenophora,100,Monophyletic,No,Yes,4230646.908,Laumer2019.nonbilateria_MARE_BMGE.EX2
+Laumer2019,EX3,nonbilateria_MARE_BMGE,4227187.123,Ctenophora,100,Monophyletic,No,Yes,4227105.717,Laumer2019.nonbilateria_MARE_BMGE.EX3
+Laumer2019,GTR20,nonbilateria_MARE_BMGE,4241334.426,Ctenophora,100,Monophyletic,No,Yes,4241315.573,Laumer2019.nonbilateria_MARE_BMGE.GTR20
+Laumer2019,JTT,nonbilateria_MARE_BMGE,4301846.506,Ctenophora,100,Monophyletic,No,Yes,4301768.405,Laumer2019.nonbilateria_MARE_BMGE.JTT
+Laumer2019,JTTDCMut,nonbilateria_MARE_BMGE,4300971.37,Ctenophora,100,Monophyletic,No,Yes,4300970.794,Laumer2019.nonbilateria_MARE_BMGE.JTTDCMut
+Laumer2019,LG,nonbilateria_MARE_BMGE,4252324.382,Ctenophora,100,Monophyletic,No,Yes,4252253.91,Laumer2019.nonbilateria_MARE_BMGE.LG
+Laumer2019,LG4M,nonbilateria_MARE_BMGE,4210020.005,Ctenophora,100,Monophyletic,No,Yes,4209922.742,Laumer2019.nonbilateria_MARE_BMGE.LG4M
+Laumer2019,mtZOA,nonbilateria_MARE_BMGE,4309913.781,Ctenophora,100,Monophyletic,No,Yes,4309855.824,Laumer2019.nonbilateria_MARE_BMGE.mtZOA
+Laumer2019,PMB,nonbilateria_MARE_BMGE,4328657.572,Ctenophora,100,Monophyletic,No,Yes,4328653.226,Laumer2019.nonbilateria_MARE_BMGE.PMB
+Laumer2019,Poisson,nonbilateria_MARE_BMGE,4743869.302,Ctenophora,100,Monophyletic,No,Yes,4743773.025,Laumer2019.nonbilateria_MARE_BMGE.Poisson
+Laumer2019,rtREV,nonbilateria_MARE_BMGE,4271819.522,Ctenophora,100,Monophyletic,No,Yes,4271190.303,Laumer2019.nonbilateria_MARE_BMGE.rtREV
+Laumer2019,UL2,nonbilateria_MARE_BMGE,4225849.585,Ctenophora,100,Monophyletic,No,Yes,4225761.888,Laumer2019.nonbilateria_MARE_BMGE.UL2
+Laumer2019,UL3,nonbilateria_MARE_BMGE,4213400.073,Ctenophora,100,Monophyletic,No,Yes,4213286.443,Laumer2019.nonbilateria_MARE_BMGE.UL3
+Laumer2019,WAG,nonbilateria_MARE_BMGE,4285418.876,Ctenophora,100,Monophyletic,No,Yes,4285417.475,Laumer2019.nonbilateria_MARE_BMGE.WAG
+Laumer2019,ModelFinder,nonbilateria_MARE_BMGE,4251261.134,Ctenophora,100,Monophyletic,No,Yes,4251171.806,Laumer2019.nonbilateria_MARE_BMGE.ModelFinder
+Moroz2014,C10,ED3d,1009243.732,Porifera,100,Paraphyletic,No,Yes,1009199.675,Moroz2014.ED3d.C10
+Moroz2014,C20,ED3d,1001027.271,Porifera,100,Paraphyletic,No,Yes,1000993.309,Moroz2014.ED3d.C20
+Moroz2014,C30,ED3d,NA,NA,NA,NA,NA,Yes,NA,Moroz2014.ED3d.C30
+Moroz2014,C40,ED3d,NA,NA,NA,NA,NA,Yes,NA,Moroz2014.ED3d.C40
+Moroz2014,C50,ED3d,NA,NA,NA,NA,NA,Yes,NA,Moroz2014.ED3d.C50
+Moroz2014,C60,ED3d,995483.846,Porifera,100,Paraphyletic,No,Yes,995467.5263,Moroz2014.ED3d.C60
+Moroz2014,LG_C20,ED3d,992902.865,Porifera,100,Paraphyletic,No,Yes,992857.0482,Moroz2014.ED3d.LG_C20
+Moroz2014,LG_C60,ED3d,990921.729,Porifera,100,Paraphyletic,No,Yes,990899.215,Moroz2014.ED3d.LG_C60
+Moroz2014,PMSF_C20,ED3d,NA,Porifera,100,Monophyletic,No,Yes,884943.5389,Moroz2014.ED3d.PMSF_C20
+Moroz2014,PMSF_C60,ED3d,NA,Porifera,100,Monophyletic,No,Yes,855936.0334,Moroz2014.ED3d.PMSF_C60
+Moroz2014,PMSF_LG_C20,ED3d,NA,Ctenophora,100,Monophyletic,No,Yes,920792.1796,Moroz2014.ED3d.PMSF_LG_C20
+Moroz2014,PMSF_LG_C60,ED3d,NA,Porifera,100,Paraphyletic,No,Yes,901776.7526,Moroz2014.ED3d.PMSF_LG_C60
+Moroz2014,CF4,ED3d,1053287.625,Porifera,100,Paraphyletic,No,Yes,1053009.936,Moroz2014.ED3d.CF4
+Moroz2014,EHO,ED3d,1003772.741,Porifera,100,Paraphyletic,No,Yes,1003737.725,Moroz2014.ED3d.EHO
+Moroz2014,EX_EHO,ED3d,998772.477,Porifera,100,Paraphyletic,No,Yes,998750.2782,Moroz2014.ED3d.EX_EHO
+Moroz2014,EX2,ED3d,1001964.029,Porifera,100,Paraphyletic,No,Yes,1001942.266,Moroz2014.ED3d.EX2
+Moroz2014,EX3,ED3d,1001383.474,Porifera,100,Paraphyletic,No,Yes,1001271.295,Moroz2014.ED3d.EX3
+Moroz2014,GTR20,ED3d,1004556.49,Ctenophora,100,Monophyletic,No,Yes,1004446.073,Moroz2014.ED3d.GTR20
+Moroz2014,JTT,ED3d,1015380.654,Ctenophora,100,Monophyletic,No,Yes,1015371.58,Moroz2014.ED3d.JTT
+Moroz2014,JTTDCMut,ED3d,1015167.654,Ctenophora,100,Paraphyletic,No,Yes,1015158.5,Moroz2014.ED3d.JTTDCMut
+Moroz2014,LG,ED3d,1004640.375,Porifera,100,Paraphyletic,No,Yes,1004631.978,Moroz2014.ED3d.LG
+Moroz2014,LG4M,ED3d,997593.125,Porifera,100,Paraphyletic,No,Yes,997558.2054,Moroz2014.ED3d.LG4M
+Moroz2014,mtZOA,ED3d,1017371.288,Ctenophora,100,Paraphyletic,No,Yes,1017362.626,Moroz2014.ED3d.mtZOA
+Moroz2014,PMB,ED3d,1018369.348,Ctenophora,100,Monophyletic,No,Yes,1018348.328,Moroz2014.ED3d.PMB
+Moroz2014,Poisson,ED3d,1106174.955,Ctenophora,100,Monophyletic,No,Yes,1106145.816,Moroz2014.ED3d.Poisson
+Moroz2014,rtREV,ED3d,1008842.12,Ctenophora,100,Monophyletic,No,Yes,1008835.203,Moroz2014.ED3d.rtREV
+Moroz2014,UL2,ED3d,1001080.445,Porifera,100,Paraphyletic,No,Yes,1000972.037,Moroz2014.ED3d.UL2
+Moroz2014,UL3,ED3d,1000349.728,Ctenophora,100,Monophyletic,No,Yes,999271.701,Moroz2014.ED3d.UL3
+Moroz2014,WAG,ED3d,1010666.61,Ctenophora,100,Monophyletic,No,Yes,1010598.166,Moroz2014.ED3d.WAG
+Moroz2014,ModelFinder,ED3d,1004644.086,Ctenophora,100,Monophyletic,No,Yes,1004638.216,Moroz2014.ED3d.ModelFinder
+Nosenko2013,C10,nonribosomal_9187_smatrix,576525.951,Ctenophora,100,Monophyletic,No,Yes,576445.3942,Nosenko2013.nonribosomal_9187_smatrix.C10
+Nosenko2013,C20,nonribosomal_9187_smatrix,569876.186,Ctenophora,100,Monophyletic,No,Yes,569703.1215,Nosenko2013.nonribosomal_9187_smatrix.C20
+Nosenko2013,C30,nonribosomal_9187_smatrix,568356.464,Ctenophora,100,Monophyletic,No,Yes,567747.9954,Nosenko2013.nonribosomal_9187_smatrix.C30
+Nosenko2013,C40,nonribosomal_9187_smatrix,566125.708,Ctenophora,100,Monophyletic,No,Yes,566110.201,Nosenko2013.nonribosomal_9187_smatrix.C40
+Nosenko2013,C50,nonribosomal_9187_smatrix,565428.263,Ctenophora,100,Monophyletic,No,Yes,565395.1565,Nosenko2013.nonribosomal_9187_smatrix.C50
+Nosenko2013,C60,nonribosomal_9187_smatrix,564571.809,Ctenophora,100,Monophyletic,No,Yes,564557.7361,Nosenko2013.nonribosomal_9187_smatrix.C60
+Nosenko2013,LG_C20,nonribosomal_9187_smatrix,567979.426,Ctenophora,100,Monophyletic,No,Yes,567928.5687,Nosenko2013.nonribosomal_9187_smatrix.LG_C20
+Nosenko2013,LG_C60,nonribosomal_9187_smatrix,565419.525,Ctenophora,100,Monophyletic,No,Yes,565332.4604,Nosenko2013.nonribosomal_9187_smatrix.LG_C60
+Nosenko2013,PMSF_C20,nonribosomal_9187_smatrix,NA,Ctenophora,100,Monophyletic,No,Yes,524840.2433,Nosenko2013.nonribosomal_9187_smatrix.PMSF_C20
+Nosenko2013,PMSF_C60,nonribosomal_9187_smatrix,NA,Ctenophora,100,Monophyletic,No,Yes,509050.2881,Nosenko2013.nonribosomal_9187_smatrix.PMSF_C60
+Nosenko2013,PMSF_LG_C20,nonribosomal_9187_smatrix,NA,Ctenophora,100,Monophyletic,No,Yes,531829.2725,Nosenko2013.nonribosomal_9187_smatrix.PMSF_LG_C20
+Nosenko2013,PMSF_LG_C60,nonribosomal_9187_smatrix,NA,Ctenophora,100,Monophyletic,No,Yes,520957.1907,Nosenko2013.nonribosomal_9187_smatrix.PMSF_LG_C60
+Nosenko2013,CF4,nonribosomal_9187_smatrix,608032.405,Ctenophora,100,Monophyletic,No,Yes,607978.2715,Nosenko2013.nonribosomal_9187_smatrix.CF4
+Nosenko2013,EHO,nonribosomal_9187_smatrix,581648.621,Ctenophora,100,Monophyletic,No,Yes,581622.7028,Nosenko2013.nonribosomal_9187_smatrix.EHO
+Nosenko2013,EX_EHO,nonribosomal_9187_smatrix,577939.823,Ctenophora,100,Monophyletic,No,Yes,577783.4513,Nosenko2013.nonribosomal_9187_smatrix.EX_EHO
+Nosenko2013,EX2,nonribosomal_9187_smatrix,581107.634,Ctenophora,100,Monophyletic,No,Yes,580787.6328,Nosenko2013.nonribosomal_9187_smatrix.EX2
+Nosenko2013,EX3,nonribosomal_9187_smatrix,580140.485,Ctenophora,100,Monophyletic,No,Yes,579620.8379,Nosenko2013.nonribosomal_9187_smatrix.EX3
+Nosenko2013,GTR20,nonribosomal_9187_smatrix,584822.978,Ctenophora,100,Monophyletic,No,Yes,584717.0973,Nosenko2013.nonribosomal_9187_smatrix.GTR20
+Nosenko2013,JTT,nonribosomal_9187_smatrix,594622.734,Ctenophora,100,Monophyletic,No,Yes,594302.2381,Nosenko2013.nonribosomal_9187_smatrix.JTT
+Nosenko2013,JTTDCMut,nonribosomal_9187_smatrix,594103.109,Ctenophora,100,Monophyletic,No,Yes,594063.8997,Nosenko2013.nonribosomal_9187_smatrix.JTTDCMut
+Nosenko2013,LG,nonribosomal_9187_smatrix,585198.602,Ctenophora,100,Monophyletic,No,Yes,585121.1975,Nosenko2013.nonribosomal_9187_smatrix.LG
+Nosenko2013,LG4M,nonribosomal_9187_smatrix,576811.383,Ctenophora,100,Monophyletic,No,Yes,576336.9586,Nosenko2013.nonribosomal_9187_smatrix.LG4M
+Nosenko2013,mtZOA,nonribosomal_9187_smatrix,597046.222,Ctenophora,100,Monophyletic,No,Yes,596702.9745,Nosenko2013.nonribosomal_9187_smatrix.mtZOA
+Nosenko2013,PMB,nonribosomal_9187_smatrix,593831.474,Ctenophora,100,Monophyletic,No,Yes,593811.4125,Nosenko2013.nonribosomal_9187_smatrix.PMB
+Nosenko2013,Poisson,nonribosomal_9187_smatrix,648014.804,Ctenophora,100,Monophyletic,No,Yes,647880.0947,Nosenko2013.nonribosomal_9187_smatrix.Poisson
+Nosenko2013,rtREV,nonribosomal_9187_smatrix,587558.801,Ctenophora,100,Monophyletic,No,Yes,587438.6481,Nosenko2013.nonribosomal_9187_smatrix.rtREV
+Nosenko2013,UL2,nonribosomal_9187_smatrix,579753.02,Ctenophora,100,Monophyletic,No,Yes,579212.9546,Nosenko2013.nonribosomal_9187_smatrix.UL2
+Nosenko2013,UL3,nonribosomal_9187_smatrix,575798.094,Ctenophora,100,Monophyletic,No,Yes,575653.8867,Nosenko2013.nonribosomal_9187_smatrix.UL3
+Nosenko2013,WAG,nonribosomal_9187_smatrix,588520.318,Ctenophora,100,Monophyletic,No,Yes,588198.8376,Nosenko2013.nonribosomal_9187_smatrix.WAG
+Nosenko2013,ModelFinder,nonribosomal_9187_smatrix,585159.363,Ctenophora,100,Monophyletic,No,Yes,585120.7647,Nosenko2013.nonribosomal_9187_smatrix.ModelFinder
+Nosenko2013,C10,ribosomal_14615_smatrix,1034160.915,Ctenophora,100,Monophyletic,No,Yes,1033942.076,Nosenko2013.ribosomal_14615_smatrix.C10
+Nosenko2013,C20,ribosomal_14615_smatrix,1019690.195,Ctenophora,100,Paraphyletic,No,Yes,1019438.779,Nosenko2013.ribosomal_14615_smatrix.C20
+Nosenko2013,C30,ribosomal_14615_smatrix,1015582.059,Ctenophora,100,Paraphyletic,No,Yes,1015349.637,Nosenko2013.ribosomal_14615_smatrix.C30
+Nosenko2013,C40,ribosomal_14615_smatrix,1013027.762,Ctenophora,100,Paraphyletic,No,Yes,1012826.804,Nosenko2013.ribosomal_14615_smatrix.C40
+Nosenko2013,C50,ribosomal_14615_smatrix,NA,NA,NA,NA,NA,Yes,NA,Nosenko2013.ribosomal_14615_smatrix.C50
+Nosenko2013,C60,ribosomal_14615_smatrix,1008774.453,Ctenophora,100,Paraphyletic,No,Yes,1008664.85,Nosenko2013.ribosomal_14615_smatrix.C60
+Nosenko2013,LG_C20,ribosomal_14615_smatrix,1010700.956,Radiata,100,Paraphyletic,Yes,Yes,1010487.724,Nosenko2013.ribosomal_14615_smatrix.LG_C20
+Nosenko2013,LG_C60,ribosomal_14615_smatrix,1005627.597,Radiata,100,Paraphyletic,Yes,Yes,1005435.698,Nosenko2013.ribosomal_14615_smatrix.LG_C60
+Nosenko2013,PMSF_C20,ribosomal_14615_smatrix,NA,Ctenophora,100,Paraphyletic,No,Yes,945349.9947,Nosenko2013.ribosomal_14615_smatrix.PMSF_C20
+Nosenko2013,PMSF_C60,ribosomal_14615_smatrix,NA,Ctenophora,100,Paraphyletic,No,Yes,917540.1439,Nosenko2013.ribosomal_14615_smatrix.PMSF_C60
+Nosenko2013,PMSF_LG_C20,ribosomal_14615_smatrix,NA,Ctenophora,100,Paraphyletic,No,Yes,951327.6821,Nosenko2013.ribosomal_14615_smatrix.PMSF_LG_C20
+Nosenko2013,PMSF_LG_C60,ribosomal_14615_smatrix,NA,Ctenophora,100,Paraphyletic,No,Yes,933011.0803,Nosenko2013.ribosomal_14615_smatrix.PMSF_LG_C60
+Nosenko2013,CF4,ribosomal_14615_smatrix,1092192.665,Ctenophora+Porifera,100,Paraphyletic,No,Yes,1092054.689,Nosenko2013.ribosomal_14615_smatrix.CF4
+Nosenko2013,EHO,ribosomal_14615_smatrix,1034215.903,Ctenophora+Porifera,100,Paraphyletic,No,Yes,1034083.052,Nosenko2013.ribosomal_14615_smatrix.EHO
+Nosenko2013,EX_EHO,ribosomal_14615_smatrix,1029189.731,Ctenophora+Porifera,100,Paraphyletic,No,Yes,1028725.227,Nosenko2013.ribosomal_14615_smatrix.EX_EHO
+Nosenko2013,EX2,ribosomal_14615_smatrix,1034365.152,Ctenophora,100,Paraphyletic,No,Yes,1034184.877,Nosenko2013.ribosomal_14615_smatrix.EX2
+Nosenko2013,EX3,ribosomal_14615_smatrix,1032717.82,Ctenophora,100,Paraphyletic,No,Yes,1032544.594,Nosenko2013.ribosomal_14615_smatrix.EX3
+Nosenko2013,GTR20,ribosomal_14615_smatrix,1034969.249,Ctenophora,100,Paraphyletic,No,Yes,1034796.669,Nosenko2013.ribosomal_14615_smatrix.GTR20
+Nosenko2013,JTT,ribosomal_14615_smatrix,1056949.888,Ctenophora,100,Paraphyletic,No,Yes,1056779.447,Nosenko2013.ribosomal_14615_smatrix.JTT
+Nosenko2013,JTTDCMut,ribosomal_14615_smatrix,1056973.067,Ctenophora,100,Paraphyletic,No,Yes,1056243.198,Nosenko2013.ribosomal_14615_smatrix.JTTDCMut
+Nosenko2013,LG,ribosomal_14615_smatrix,1042854.131,Ctenophora,100,Paraphyletic,No,Yes,1042714.758,Nosenko2013.ribosomal_14615_smatrix.LG
+Nosenko2013,LG4M,ribosomal_14615_smatrix,1024127.803,Ctenophora,100,Monophyletic,No,Yes,1023886.363,Nosenko2013.ribosomal_14615_smatrix.LG4M
+Nosenko2013,mtZOA,ribosomal_14615_smatrix,1061877.969,Ctenophora,100,Paraphyletic,No,Yes,1061411.349,Nosenko2013.ribosomal_14615_smatrix.mtZOA
+Nosenko2013,PMB,ribosomal_14615_smatrix,1061737.635,Ctenophora,100,Paraphyletic,No,Yes,1061616.193,Nosenko2013.ribosomal_14615_smatrix.PMB
+Nosenko2013,Poisson,ribosomal_14615_smatrix,1167775.97,Ctenophora,100,Paraphyletic,No,Yes,1167649.526,Nosenko2013.ribosomal_14615_smatrix.Poisson
+Nosenko2013,rtREV,ribosomal_14615_smatrix,1046280.107,Ctenophora,100,Paraphyletic,No,Yes,1046144.332,Nosenko2013.ribosomal_14615_smatrix.rtREV
+Nosenko2013,UL2,ribosomal_14615_smatrix,1031841.054,Ctenophora+Porifera,100,Paraphyletic,No,Yes,1031723.76,Nosenko2013.ribosomal_14615_smatrix.UL2
+Nosenko2013,UL3,ribosomal_14615_smatrix,1022879.51,Ctenophora,100,Paraphyletic,No,Yes,1022680.92,Nosenko2013.ribosomal_14615_smatrix.UL3
+Nosenko2013,WAG,ribosomal_14615_smatrix,1051311.287,Ctenophora,100,Paraphyletic,No,Yes,1051175.207,Nosenko2013.ribosomal_14615_smatrix.WAG
+Nosenko2013,ModelFinder,ribosomal_14615_smatrix,1040246.264,Ctenophora,100,Paraphyletic,No,Yes,1040096.506,Nosenko2013.ribosomal_14615_smatrix.ModelFinder
+Philippe2009,C10,Philippe_etal_superalignment_FixedNames,1672208.809,Ctenophora,100,Monophyletic,No,Yes,1672174.358,Philippe2009.Philippe_etal_superalignment_FixedNames.C10
+Philippe2009,C20,Philippe_etal_superalignment_FixedNames,1646939.199,Ctenophora,100,Monophyletic,No,Yes,1646895.662,Philippe2009.Philippe_etal_superalignment_FixedNames.C20
+Philippe2009,C30,Philippe_etal_superalignment_FixedNames,1640199.434,Ctenophora,100,Monophyletic,No,Yes,1640151,Philippe2009.Philippe_etal_superalignment_FixedNames.C30
+Philippe2009,C40,Philippe_etal_superalignment_FixedNames,1635300.004,Ctenophora,100,Monophyletic,No,Yes,1635241.874,Philippe2009.Philippe_etal_superalignment_FixedNames.C40
+Philippe2009,C50,Philippe_etal_superalignment_FixedNames,1631290.357,Ctenophora,100,Monophyletic,No,Yes,1631226.809,Philippe2009.Philippe_etal_superalignment_FixedNames.C50
+Philippe2009,C60,Philippe_etal_superalignment_FixedNames,1627470.757,Ctenophora,100,Monophyletic,No,Yes,1627407.692,Philippe2009.Philippe_etal_superalignment_FixedNames.C60
+Philippe2009,LG_C20,Philippe_etal_superalignment_FixedNames,1623429.712,Ctenophora,100,Monophyletic,No,Yes,1623356.222,Philippe2009.Philippe_etal_superalignment_FixedNames.LG_C20
+Philippe2009,LG_C60,Philippe_etal_superalignment_FixedNames,1614486.98,Ctenophora,100,Monophyletic,No,Yes,1614459.18,Philippe2009.Philippe_etal_superalignment_FixedNames.LG_C60
+Philippe2009,PMSF_C20,Philippe_etal_superalignment_FixedNames,NA,Ctenophora,100,Monophyletic,No,Yes,1506241.216,Philippe2009.Philippe_etal_superalignment_FixedNames.PMSF_C20
+Philippe2009,PMSF_C60,Philippe_etal_superalignment_FixedNames,NA,Ctenophora,100,Monophyletic,No,Yes,1454921.347,Philippe2009.Philippe_etal_superalignment_FixedNames.PMSF_C60
+Philippe2009,PMSF_LG_C20,Philippe_etal_superalignment_FixedNames,NA,Ctenophora,100,Monophyletic,No,Yes,1503613.977,Philippe2009.Philippe_etal_superalignment_FixedNames.PMSF_LG_C20
+Philippe2009,PMSF_LG_C60,Philippe_etal_superalignment_FixedNames,NA,Ctenophora,100,Monophyletic,No,Yes,1469817.243,Philippe2009.Philippe_etal_superalignment_FixedNames.PMSF_LG_C60
+Philippe2009,CF4,Philippe_etal_superalignment_FixedNames,1771128.506,Ctenophora,100,Paraphyletic,No,Yes,1771127.585,Philippe2009.Philippe_etal_superalignment_FixedNames.CF4
+Philippe2009,EHO,Philippe_etal_superalignment_FixedNames,1667702.584,Ctenophora,100,Paraphyletic,No,Yes,1667687.739,Philippe2009.Philippe_etal_superalignment_FixedNames.EHO
+Philippe2009,EX_EHO,Philippe_etal_superalignment_FixedNames,1658302.614,Ctenophora,100,Paraphyletic,No,Yes,1658284.961,Philippe2009.Philippe_etal_superalignment_FixedNames.EX_EHO
+Philippe2009,EX2,Philippe_etal_superalignment_FixedNames,1666385.16,Ctenophora,100,Paraphyletic,No,Yes,1666382.412,Philippe2009.Philippe_etal_superalignment_FixedNames.EX2
+Philippe2009,EX3,Philippe_etal_superalignment_FixedNames,1664063.347,Ctenophora,100,Paraphyletic,No,Yes,1664051.501,Philippe2009.Philippe_etal_superalignment_FixedNames.EX3
+Philippe2009,GTR20,Philippe_etal_superalignment_FixedNames,1668462.373,Ctenophora,100,Paraphyletic,No,Yes,1668446.39,Philippe2009.Philippe_etal_superalignment_FixedNames.GTR20
+Philippe2009,JTT,Philippe_etal_superalignment_FixedNames,1708829.798,Ctenophora,100,Paraphyletic,No,Yes,1708825.025,Philippe2009.Philippe_etal_superalignment_FixedNames.JTT
+Philippe2009,JTTDCMut,Philippe_etal_superalignment_FixedNames,1707947.545,Ctenophora,100,Paraphyletic,No,Yes,1707942.035,Philippe2009.Philippe_etal_superalignment_FixedNames.JTTDCMut
+Philippe2009,LG,Philippe_etal_superalignment_FixedNames,1682692.34,Ctenophora,100,Paraphyletic,No,Yes,1682687.938,Philippe2009.Philippe_etal_superalignment_FixedNames.LG
+Philippe2009,LG4M,Philippe_etal_superalignment_FixedNames,1651080.745,Ctenophora,100,Monophyletic,No,Yes,1651063.602,Philippe2009.Philippe_etal_superalignment_FixedNames.LG4M
+Philippe2009,mtZOA,Philippe_etal_superalignment_FixedNames,1707413.473,Ctenophora,100,Monophyletic,No,Yes,1707399.241,Philippe2009.Philippe_etal_superalignment_FixedNames.mtZOA
+Philippe2009,PMB,Philippe_etal_superalignment_FixedNames,1723359.826,Ctenophora,100,Monophyletic,No,Yes,1723353.52,Philippe2009.Philippe_etal_superalignment_FixedNames.PMB
+Philippe2009,Poisson,Philippe_etal_superalignment_FixedNames,1907739.62,Ctenophora,100,Paraphyletic,No,Yes,1907738.71,Philippe2009.Philippe_etal_superalignment_FixedNames.Poisson
+Philippe2009,rtREV,Philippe_etal_superalignment_FixedNames,1689162.599,Ctenophora,100,Paraphyletic,No,Yes,1689159.457,Philippe2009.Philippe_etal_superalignment_FixedNames.rtREV
+Philippe2009,UL2,Philippe_etal_superalignment_FixedNames,1662238.749,Ctenophora,100,Paraphyletic,No,Yes,1662226.783,Philippe2009.Philippe_etal_superalignment_FixedNames.UL2
+Philippe2009,UL3,Philippe_etal_superalignment_FixedNames,1649243.321,Ctenophora,100,Monophyletic,No,Yes,1649232.08,Philippe2009.Philippe_etal_superalignment_FixedNames.UL3
+Philippe2009,WAG,Philippe_etal_superalignment_FixedNames,1701144.371,Ctenophora,100,Paraphyletic,No,Yes,1701138.846,Philippe2009.Philippe_etal_superalignment_FixedNames.WAG
+Philippe2009,ModelFinder,Philippe_etal_superalignment_FixedNames,1679162.85,Ctenophora,100,Paraphyletic,No,Yes,1679158.582,Philippe2009.Philippe_etal_superalignment_FixedNames.ModelFinder
+Philippe2011,C10,UPDUNN_MB_FixedNames,NA,NA,NA,NA,NA,No,NA,Philippe2011.UPDUNN_MB_FixedNames.C10
+Philippe2011,C20,UPDUNN_MB_FixedNames,,,,,,No,,Philippe2011.UPDUNN_MB_FixedNames.C20
+Philippe2011,C30,UPDUNN_MB_FixedNames,NA,NA,NA,NA,NA,No,NA,Philippe2011.UPDUNN_MB_FixedNames.C30
+Philippe2011,C40,UPDUNN_MB_FixedNames,NA,NA,NA,NA,NA,No,NA,Philippe2011.UPDUNN_MB_FixedNames.C40
+Philippe2011,C50,UPDUNN_MB_FixedNames,NA,NA,NA,NA,NA,No,NA,Philippe2011.UPDUNN_MB_FixedNames.C50
+Philippe2011,C60,UPDUNN_MB_FixedNames,,,,,,No,,Philippe2011.UPDUNN_MB_FixedNames.C60
+Philippe2011,LG_C20,UPDUNN_MB_FixedNames,1631327.633,Radiata,100,Monophyletic,No,No,1630869.098,Philippe2011.UPDUNN_MB_FixedNames.LG_C20
+Philippe2011,LG_C60,UPDUNN_MB_FixedNames,,,,,,No,,Philippe2011.UPDUNN_MB_FixedNames.LG_C60
+Philippe2011,PMSF_C20,UPDUNN_MB_FixedNames,NA,Porifera,100,Monophyletic,Yes,No,1544494.516,Philippe2011.UPDUNN_MB_FixedNames.PMSF_C20
+Philippe2011,PMSF_C60,UPDUNN_MB_FixedNames,NA,Porifera,100,Monophyletic,Yes,No,1502207.691,Philippe2011.UPDUNN_MB_FixedNames.PMSF_C60
+Philippe2011,PMSF_LG_C20,UPDUNN_MB_FixedNames,NA,Radiata,100,Monophyletic,No,No,1546758.239,Philippe2011.UPDUNN_MB_FixedNames.PMSF_LG_C20
+Philippe2011,PMSF_LG_C60,UPDUNN_MB_FixedNames,NA,Radiata,100,Monophyletic,No,No,1516155.374,Philippe2011.UPDUNN_MB_FixedNames.PMSF_LG_C60
+Philippe2011,CF4,UPDUNN_MB_FixedNames,1771675.528,Ctenophora+Porifera,100,Monophyletic,No,No,1770808.244,Philippe2011.UPDUNN_MB_FixedNames.CF4
+Philippe2011,EHO,UPDUNN_MB_FixedNames,1675235.792,Ctenophora+Porifera,100,Monophyletic,No,No,1674806.146,Philippe2011.UPDUNN_MB_FixedNames.EHO
+Philippe2011,EX_EHO,UPDUNN_MB_FixedNames,1662455.758,Ctenophora+Porifera,100,Monophyletic,No,No,1662063.652,Philippe2011.UPDUNN_MB_FixedNames.EX_EHO
+Philippe2011,EX2,UPDUNN_MB_FixedNames,1672097.074,Ctenophora+Porifera,100,Monophyletic,No,No,1671653.241,Philippe2011.UPDUNN_MB_FixedNames.EX2
+Philippe2011,EX3,UPDUNN_MB_FixedNames,1669095.146,Ctenophora+Porifera,100,Monophyletic,No,No,1668992.625,Philippe2011.UPDUNN_MB_FixedNames.EX3
+Philippe2011,GTR20,UPDUNN_MB_FixedNames,1681884.606,Ctenophora+Porifera,100,Monophyletic,No,No,1681006.72,Philippe2011.UPDUNN_MB_FixedNames.GTR20
+Philippe2011,JTT,UPDUNN_MB_FixedNames,1713584.649,Ctenophora+Porifera,100,Monophyletic,No,No,1713482.121,Philippe2011.UPDUNN_MB_FixedNames.JTT
+Philippe2011,JTTDCMut,UPDUNN_MB_FixedNames,1713118.885,Ctenophora+Porifera,100,Monophyletic,No,No,1712801.242,Philippe2011.UPDUNN_MB_FixedNames.JTTDCMut
+Philippe2011,LG,UPDUNN_MB_FixedNames,1687666.728,Ctenophora+Porifera,100,Monophyletic,No,No,1687449.503,Philippe2011.UPDUNN_MB_FixedNames.LG
+Philippe2011,LG4M,UPDUNN_MB_FixedNames,1656963.797,Ctenophora+Porifera,100,Monophyletic,No,No,1656617.2,Philippe2011.UPDUNN_MB_FixedNames.LG4M
+Philippe2011,mtZOA,UPDUNN_MB_FixedNames,1708925.969,Ctenophora,100,Monophyletic,No,No,1708611.939,Philippe2011.UPDUNN_MB_FixedNames.mtZOA
+Philippe2011,PMB,UPDUNN_MB_FixedNames,1719068.611,Ctenophora+Porifera,100,Monophyletic,No,No,1718964.129,Philippe2011.UPDUNN_MB_FixedNames.PMB
+Philippe2011,Poisson,UPDUNN_MB_FixedNames,1899148.007,Ctenophora+Porifera,100,Monophyletic,No,No,1896211.142,Philippe2011.UPDUNN_MB_FixedNames.Poisson
+Philippe2011,rtREV,UPDUNN_MB_FixedNames,1695619.224,Ctenophora+Porifera,100,Monophyletic,No,No,1695001.997,Philippe2011.UPDUNN_MB_FixedNames.rtREV
+Philippe2011,UL2,UPDUNN_MB_FixedNames,1668564.385,Ctenophora+Porifera,100,Monophyletic,No,No,1667899.3,Philippe2011.UPDUNN_MB_FixedNames.UL2
+Philippe2011,UL3,UPDUNN_MB_FixedNames,1656520.389,Ctenophora,100,Monophyletic,No,No,1656250.5,Philippe2011.UPDUNN_MB_FixedNames.UL3
+Philippe2011,WAG,UPDUNN_MB_FixedNames,1704977.932,Ctenophora+Porifera,100,Monophyletic,No,No,1704049.353,Philippe2011.UPDUNN_MB_FixedNames.WAG
+Philippe2011,ModelFinder,UPDUNN_MB_FixedNames,1686653.775,Ctenophora+Porifera,100,Monophyletic,No,No,1686414.659,Philippe2011.UPDUNN_MB_FixedNames.ModelFinder
+Pick2010,C10,Pick2010,NA,NA,NA,NA,NA,Yes,NA,Pick2010.Pick2010.C10
+Pick2010,C20,Pick2010,,,,,,Yes,,Pick2010.Pick2010.C20
+Pick2010,C30,Pick2010,NA,NA,NA,NA,NA,Yes,NA,Pick2010.Pick2010.C30
+Pick2010,C40,Pick2010,NA,NA,NA,NA,NA,Yes,NA,Pick2010.Pick2010.C40
+Pick2010,C50,Pick2010,NA,NA,NA,NA,NA,Yes,NA,Pick2010.Pick2010.C50
+Pick2010,C60,Pick2010,,,,,,Yes,,Pick2010.Pick2010.C60
+Pick2010,LG_C20,Pick2010,1642917.231,Ctenophora,100,Monophyletic,No,Yes,1642506.835,Pick2010.Pick2010.LG_C20
+Pick2010,LG_C60,Pick2010,,,,,,Yes,,Pick2010.Pick2010.LG_C60
+Pick2010,PMSF_C20,Pick2010,NA,Ctenophora,100,Monophyletic,No,Yes,1554508.413,Pick2010.Pick2010.PMSF_C20
+Pick2010,PMSF_C60,Pick2010,NA,Ctenophora,100,Monophyletic,No,Yes,1511931.118,Pick2010.Pick2010.PMSF_C60
+Pick2010,PMSF_LG_C20,Pick2010,NA,Ctenophora,100,Monophyletic,No,Yes,1556964.797,Pick2010.Pick2010.PMSF_LG_C20
+Pick2010,PMSF_LG_C60,Pick2010,NA,Ctenophora,100,Monophyletic,No,Yes,1526834.312,Pick2010.Pick2010.PMSF_LG_C60
+Pick2010,CF4,Pick2010,1781524.65,Ctenophora,100,Paraphyletic,No,Yes,1781298.735,Pick2010.Pick2010.CF4
+Pick2010,EHO,Pick2010,1684131.522,Ctenophora,100,Paraphyletic,No,Yes,1683824.111,Pick2010.Pick2010.EHO
+Pick2010,EX_EHO,Pick2010,1671921.466,Ctenophora,100,Paraphyletic,No,Yes,1671631.843,Pick2010.Pick2010.EX_EHO
+Pick2010,EX2,Pick2010,1681114.533,Ctenophora,100,Paraphyletic,No,Yes,1680863.23,Pick2010.Pick2010.EX2
+Pick2010,EX3,Pick2010,1678576.717,Ctenophora,100,Monophyletic,No,Yes,1678280.014,Pick2010.Pick2010.EX3
+Pick2010,GTR20,Pick2010,1690146.478,Ctenophora,100,Paraphyletic,No,Yes,1689920.731,Pick2010.Pick2010.GTR20
+Pick2010,JTT,Pick2010,1721453.136,Ctenophora,100,Paraphyletic,No,Yes,1721352.408,Pick2010.Pick2010.JTT
+Pick2010,JTTDCMut,Pick2010,1720847.688,Ctenophora,100,Paraphyletic,No,Yes,1720718.905,Pick2010.Pick2010.JTTDCMut
+Pick2010,LG,Pick2010,1696646.066,Ctenophora,100,Paraphyletic,No,Yes,1696376.109,Pick2010.Pick2010.LG
+Pick2010,LG4M,Pick2010,1666435.578,Ctenophora,100,Monophyletic,No,Yes,1666203.41,Pick2010.Pick2010.LG4M
+Pick2010,mtZOA,Pick2010,1718606.807,Ctenophora,100,Paraphyletic,No,Yes,1718327.09,Pick2010.Pick2010.mtZOA
+Pick2010,PMB,Pick2010,1728572.527,Porifera,100,Paraphyletic,No,Yes,1728510.431,Pick2010.Pick2010.PMB
+Pick2010,Poisson,Pick2010,1907912.036,Ctenophora,100,Monophyletic,No,Yes,1907599.095,Pick2010.Pick2010.Poisson
+Pick2010,rtREV,Pick2010,1704903.981,Ctenophora,100,Paraphyletic,No,Yes,1704650.414,Pick2010.Pick2010.rtREV
+Pick2010,UL2,Pick2010,1677557.516,Ctenophora,100,Monophyletic,No,Yes,1677387.165,Pick2010.Pick2010.UL2
+Pick2010,UL3,Pick2010,1665967.016,Ctenophora,100,Monophyletic,No,Yes,1665716.094,Pick2010.Pick2010.UL3
+Pick2010,WAG,Pick2010,1713016.751,Porifera,100,Paraphyletic,No,Yes,1712797.243,Pick2010.Pick2010.WAG
+Pick2010,ModelFinder,Pick2010,1694915.051,Ctenophora,100,Paraphyletic,No,Yes,1694663.847,Pick2010.Pick2010.ModelFinder
+Ryan2013,C10,REA_EST_includingXenoturbella,NA,NA,NA,NA,NA,Yes,NA,Ryan2013.REA_EST_includingXenoturbella.C10
+Ryan2013,C20,REA_EST_includingXenoturbella,,,,,,Yes,,Ryan2013.REA_EST_includingXenoturbella.C20
+Ryan2013,C30,REA_EST_includingXenoturbella,NA,NA,NA,NA,NA,Yes,NA,Ryan2013.REA_EST_includingXenoturbella.C30
+Ryan2013,C40,REA_EST_includingXenoturbella,NA,NA,NA,NA,NA,Yes,NA,Ryan2013.REA_EST_includingXenoturbella.C40
+Ryan2013,C50,REA_EST_includingXenoturbella,NA,NA,NA,NA,NA,Yes,NA,Ryan2013.REA_EST_includingXenoturbella.C50
+Ryan2013,C60,REA_EST_includingXenoturbella,,,,,,Yes,,Ryan2013.REA_EST_includingXenoturbella.C60
+Ryan2013,LG_C20,REA_EST_includingXenoturbella,,,,,,Yes,,Ryan2013.REA_EST_includingXenoturbella.LG_C20
+Ryan2013,LG_C60,REA_EST_includingXenoturbella,,,,,,Yes,,Ryan2013.REA_EST_includingXenoturbella.LG_C60
+Ryan2013,PMSF_C20,REA_EST_includingXenoturbella,NA,Ctenophora,100,Monophyletic,No,Yes,4122163.897,Ryan2013.REA_EST_includingXenoturbella.PMSF_C20
+Ryan2013,PMSF_C60,REA_EST_includingXenoturbella,NA,Ctenophora,100,Monophyletic,No,Yes,3997147.768,Ryan2013.REA_EST_includingXenoturbella.PMSF_C60
+Ryan2013,PMSF_LG_C20,REA_EST_includingXenoturbella,NA,Ctenophora,100,Monophyletic,No,Yes,4222461.918,Ryan2013.REA_EST_includingXenoturbella.PMSF_LG_C20
+Ryan2013,PMSF_LG_C60,REA_EST_includingXenoturbella,NA,Ctenophora,100,Monophyletic,No,Yes,4140932.79,Ryan2013.REA_EST_includingXenoturbella.PMSF_LG_C60
+Ryan2013,CF4,REA_EST_includingXenoturbella,4842671.555,Ctenophora,100,Monophyletic,No,Yes,4842005.851,Ryan2013.REA_EST_includingXenoturbella.CF4
+Ryan2013,EHO,REA_EST_includingXenoturbella,4608050.825,Ctenophora,100,Monophyletic,No,Yes,4607376.76,Ryan2013.REA_EST_includingXenoturbella.EHO
+Ryan2013,EX_EHO,REA_EST_includingXenoturbella,4586595.978,Ctenophora,100,Monophyletic,No,Yes,4585855.811,Ryan2013.REA_EST_includingXenoturbella.EX_EHO
+Ryan2013,EX2,REA_EST_includingXenoturbella,4603803.668,Ctenophora,100,Monophyletic,No,Yes,4602673.999,Ryan2013.REA_EST_includingXenoturbella.EX2
+Ryan2013,EX3,REA_EST_includingXenoturbella,4599008.92,Ctenophora,100,Monophyletic,No,Yes,4598506.538,Ryan2013.REA_EST_includingXenoturbella.EX3
+Ryan2013,GTR20,REA_EST_includingXenoturbella,4614076.273,Ctenophora,100,Monophyletic,No,Yes,4613443.95,Ryan2013.REA_EST_includingXenoturbella.GTR20
+Ryan2013,JTT,REA_EST_includingXenoturbella,4675978.76,Ctenophora,100,Monophyletic,No,Yes,4675260.202,Ryan2013.REA_EST_includingXenoturbella.JTT
+Ryan2013,JTTDCMut,REA_EST_includingXenoturbella,4675186.778,Ctenophora,100,Monophyletic,No,Yes,4674094.486,Ryan2013.REA_EST_includingXenoturbella.JTTDCMut
+Ryan2013,LG,REA_EST_includingXenoturbella,4624320.15,Ctenophora,100,Monophyletic,No,Yes,4623214.915,Ryan2013.REA_EST_includingXenoturbella.LG
+Ryan2013,LG4M,REA_EST_includingXenoturbella,4579065.347,Ctenophora,100,Monophyletic,No,Yes,4578332.085,Ryan2013.REA_EST_includingXenoturbella.LG4M
+Ryan2013,mtZOA,REA_EST_includingXenoturbella,4691119.063,Ctenophora,100,Monophyletic,No,Yes,4690436.381,Ryan2013.REA_EST_includingXenoturbella.mtZOA
+Ryan2013,PMB,REA_EST_includingXenoturbella,4700306.6,Ctenophora,100,Monophyletic,No,Yes,4699724.241,Ryan2013.REA_EST_includingXenoturbella.PMB
+Ryan2013,Poisson,REA_EST_includingXenoturbella,5117633.065,Ctenophora,100,Monophyletic,No,Yes,5116996.133,Ryan2013.REA_EST_includingXenoturbella.Poisson
+Ryan2013,rtREV,REA_EST_includingXenoturbella,4642180.324,Ctenophora,100,Monophyletic,No,Yes,4641533.172,Ryan2013.REA_EST_includingXenoturbella.rtREV
+Ryan2013,UL2,REA_EST_includingXenoturbella,4597038.017,Ctenophora,100,Monophyletic,No,Yes,4596286.029,Ryan2013.REA_EST_includingXenoturbella.UL2
+Ryan2013,UL3,REA_EST_includingXenoturbella,4580171.015,Ctenophora,100,Monophyletic,No,Yes,4579156.304,Ryan2013.REA_EST_includingXenoturbella.UL3
+Ryan2013,WAG,REA_EST_includingXenoturbella,4656877.92,Ctenophora,100,Monophyletic,No,Yes,4656275.321,Ryan2013.REA_EST_includingXenoturbella.WAG
+Ryan2013,ModelFinder,REA_EST_includingXenoturbella,4622422.307,Ctenophora,100,Monophyletic,No,Yes,4621930.547,Ryan2013.REA_EST_includingXenoturbella.ModelFinder
+Simion2017,C10,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.C10
+Simion2017,C20,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.C20
+Simion2017,C30,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.C30
+Simion2017,C40,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.C40
+Simion2017,C50,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.C50
+Simion2017,C60,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.C60
+Simion2017,LG_C20,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.LG_C20
+Simion2017,LG_C60,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.LG_C60
+Simion2017,PMSF_C20,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.PMSF_C20
+Simion2017,PMSF_C60,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.PMSF_C60
+Simion2017,PMSF_LG_C20,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.PMSF_LG_C20
+Simion2017,PMSF_LG_C60,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.PMSF_LG_C60
+Simion2017,CF4,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.CF4
+Simion2017,EHO,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.EHO
+Simion2017,EX_EHO,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.EX_EHO
+Simion2017,EX2,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.EX2
+Simion2017,EX3,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.EX3
+Simion2017,GTR20,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.GTR20
+Simion2017,JTT,supermatrix_97sp_401632pos_1719genes,40586291.59,Ctenophora,100,Monophyletic,No,Yes,40586242.47,Simion2017.supermatrix_97sp_401632pos_1719genes.JTT
+Simion2017,JTTDCMut,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.JTTDCMut
+Simion2017,LG,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.LG
+Simion2017,LG4M,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.LG4M
+Simion2017,mtZOA,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.mtZOA
+Simion2017,PMB,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.PMB
+Simion2017,Poisson,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.Poisson
+Simion2017,rtREV,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.rtREV
+Simion2017,UL2,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.UL2
+Simion2017,UL3,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.UL3
+Simion2017,WAG,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.WAG
+Simion2017,ModelFinder,supermatrix_97sp_401632pos_1719genes,NA,NA,NA,NA,NA,Yes,NA,Simion2017.supermatrix_97sp_401632pos_1719genes.ModelFinder
+Whelan2015,C10,Dataset10,NA,NA,NA,NA,NA,Yes,NA,Whelan2015.Dataset10.C10
+Whelan2015,C20,Dataset10,,,,,,Yes,,Whelan2015.Dataset10.C20
+Whelan2015,C30,Dataset10,NA,NA,NA,NA,NA,Yes,NA,Whelan2015.Dataset10.C30
+Whelan2015,C40,Dataset10,NA,NA,NA,NA,NA,Yes,NA,Whelan2015.Dataset10.C40
+Whelan2015,C50,Dataset10,NA,NA,NA,NA,NA,Yes,NA,Whelan2015.Dataset10.C50
+Whelan2015,C60,Dataset10,,,,,,Yes,,Whelan2015.Dataset10.C60
+Whelan2015,LG_C20,Dataset10,5696052.044,Ctenophora,100,Monophyletic,No,Yes,5696047.824,Whelan2015.Dataset10.LG_C20
+Whelan2015,LG_C60,Dataset10,,,,,,Yes,,Whelan2015.Dataset10.LG_C60
+Whelan2015,PMSF_C20,Dataset10,NA,Ctenophora,100,Monophyletic,No,Yes,5410107.292,Whelan2015.Dataset10.PMSF_C20
+Whelan2015,PMSF_C60,Dataset10,NA,Ctenophora,100,Monophyletic,No,Yes,5294304.103,Whelan2015.Dataset10.PMSF_C60
+Whelan2015,PMSF_LG_C20,Dataset10,NA,Ctenophora,100,Monophyletic,No,Yes,5446712.299,Whelan2015.Dataset10.PMSF_LG_C20
+Whelan2015,PMSF_LG_C60,Dataset10,NA,Ctenophora,100,Monophyletic,No,Yes,5368069.448,Whelan2015.Dataset10.PMSF_LG_C60
+Whelan2015,CF4,Dataset10,6104644.598,Ctenophora,100,Monophyletic,No,Yes,6104614.057,Whelan2015.Dataset10.CF4
+Whelan2015,EHO,Dataset10,5771548.034,Ctenophora,100,Monophyletic,No,Yes,5771542.504,Whelan2015.Dataset10.EHO
+Whelan2015,EX_EHO,Dataset10,5736752.051,Ctenophora,100,Monophyletic,No,Yes,5736740.065,Whelan2015.Dataset10.EX_EHO
+Whelan2015,EX2,Dataset10,5759404.075,Ctenophora,100,Monophyletic,No,Yes,5759386.035,Whelan2015.Dataset10.EX2
+Whelan2015,EX3,Dataset10,5753270.21,Ctenophora,100,Monophyletic,No,Yes,5753257.581,Whelan2015.Dataset10.EX3
+Whelan2015,GTR20,Dataset10,5783884.412,Ctenophora,100,Monophyletic,No,Yes,5783867.155,Whelan2015.Dataset10.GTR20
+Whelan2015,JTT,Dataset10,5849910.949,Ctenophora,100,Monophyletic,No,Yes,5849898.368,Whelan2015.Dataset10.JTT
+Whelan2015,JTTDCMut,Dataset10,5849162.309,Ctenophora,100,Monophyletic,No,Yes,5849148.752,Whelan2015.Dataset10.JTTDCMut
+Whelan2015,LG,Dataset10,5790373.5,Ctenophora,100,Monophyletic,No,Yes,5790372.805,Whelan2015.Dataset10.LG
+Whelan2015,LG4M,Dataset10,5735317.173,Ctenophora,100,Monophyletic,No,Yes,5735297.041,Whelan2015.Dataset10.LG4M
+Whelan2015,mtZOA,Dataset10,5872520.456,Ctenophora,100,Monophyletic,No,Yes,5872501.546,Whelan2015.Dataset10.mtZOA
+Whelan2015,PMB,Dataset10,5884515.564,Ctenophora,100,Monophyletic,No,Yes,5884500.774,Whelan2015.Dataset10.PMB
+Whelan2015,Poisson,Dataset10,6416800.223,Ctenophora,100,Monophyletic,No,Yes,6416774.326,Whelan2015.Dataset10.Poisson
+Whelan2015,rtREV,Dataset10,5819654.145,Ctenophora,100,Monophyletic,No,Yes,5819652.892,Whelan2015.Dataset10.rtREV
+Whelan2015,UL2,Dataset10,5753662.546,Ctenophora,100,Monophyletic,No,Yes,5753644.443,Whelan2015.Dataset10.UL2
+Whelan2015,UL3,Dataset10,5741999.306,Ctenophora,100,Monophyletic,No,Yes,5741989.437,Whelan2015.Dataset10.UL3
+Whelan2015,WAG,Dataset10,5829724.542,Ctenophora,100,Monophyletic,No,Yes,5829722.843,Whelan2015.Dataset10.WAG
+Whelan2015,ModelFinder,Dataset10,5790372.393,Ctenophora,100,Monophyletic,No,Yes,5790369.529,Whelan2015.Dataset10.ModelFinder
+Whelan2017,C10,Metazoa_Choano_RCFV_strict,3572740.183,Ctenophora,100,Monophyletic,No,Yes,3572727.034,Whelan2017.Metazoa_Choano_RCFV_strict.C10
+Whelan2017,C20,Metazoa_Choano_RCFV_strict,3543702.962,Ctenophora,100,Monophyletic,No,Yes,3543692.797,Whelan2017.Metazoa_Choano_RCFV_strict.C20
+Whelan2017,C30,Metazoa_Choano_RCFV_strict,NA,NA,NA,NA,NA,Yes,NA,Whelan2017.Metazoa_Choano_RCFV_strict.C30
+Whelan2017,C40,Metazoa_Choano_RCFV_strict,NA,NA,NA,NA,NA,Yes,NA,Whelan2017.Metazoa_Choano_RCFV_strict.C40
+Whelan2017,C50,Metazoa_Choano_RCFV_strict,NA,NA,NA,NA,NA,Yes,NA,Whelan2017.Metazoa_Choano_RCFV_strict.C50
+Whelan2017,C60,Metazoa_Choano_RCFV_strict,3522784.732,Ctenophora,100,Monophyletic,No,Yes,3522780.928,Whelan2017.Metazoa_Choano_RCFV_strict.C60
+Whelan2017,LG_C20,Metazoa_Choano_RCFV_strict,3490680.189,Ctenophora,100,Monophyletic,No,Yes,3490668.494,Whelan2017.Metazoa_Choano_RCFV_strict.LG_C20
+Whelan2017,LG_C60,Metazoa_Choano_RCFV_strict,3482263.063,Ctenophora,100,Monophyletic,No,Yes,3482246.337,Whelan2017.Metazoa_Choano_RCFV_strict.LG_C60
+Whelan2017,PMSF_C20,Metazoa_Choano_RCFV_strict,NA,Ctenophora,100,Monophyletic,No,Yes,3268284.34,Whelan2017.Metazoa_Choano_RCFV_strict.PMSF_C20
+Whelan2017,PMSF_C60,Metazoa_Choano_RCFV_strict,NA,Ctenophora,100,Monophyletic,No,Yes,3189305.2,Whelan2017.Metazoa_Choano_RCFV_strict.PMSF_C60
+Whelan2017,PMSF_LG_C20,Metazoa_Choano_RCFV_strict,NA,Ctenophora,100,Monophyletic,No,Yes,3304409.464,Whelan2017.Metazoa_Choano_RCFV_strict.PMSF_LG_C20
+Whelan2017,PMSF_LG_C60,Metazoa_Choano_RCFV_strict,NA,Ctenophora,100,Monophyletic,No,Yes,3255560.301,Whelan2017.Metazoa_Choano_RCFV_strict.PMSF_LG_C60
+Whelan2017,CF4,Metazoa_Choano_RCFV_strict,3743236.824,Ctenophora,100,Monophyletic,No,Yes,3743231.976,Whelan2017.Metazoa_Choano_RCFV_strict.CF4
+Whelan2017,EHO,Metazoa_Choano_RCFV_strict,3532261.532,Ctenophora,100,Monophyletic,No,Yes,3532167.089,Whelan2017.Metazoa_Choano_RCFV_strict.EHO
+Whelan2017,EX_EHO,Metazoa_Choano_RCFV_strict,3514587.309,Ctenophora,100,Monophyletic,No,Yes,3514584.661,Whelan2017.Metazoa_Choano_RCFV_strict.EX_EHO
+Whelan2017,EX2,Metazoa_Choano_RCFV_strict,3526297.793,Ctenophora,100,Monophyletic,No,Yes,3526294.252,Whelan2017.Metazoa_Choano_RCFV_strict.EX2
+Whelan2017,EX3,Metazoa_Choano_RCFV_strict,3522906.44,Ctenophora,100,Monophyletic,No,Yes,3522904.388,Whelan2017.Metazoa_Choano_RCFV_strict.EX3
+Whelan2017,GTR20,Metazoa_Choano_RCFV_strict,3536246.108,Ctenophora,100,Monophyletic,No,Yes,3536220.721,Whelan2017.Metazoa_Choano_RCFV_strict.GTR20
+Whelan2017,JTT,Metazoa_Choano_RCFV_strict,3574601.444,Ctenophora,100,Monophyletic,No,Yes,3574591.681,Whelan2017.Metazoa_Choano_RCFV_strict.JTT
+Whelan2017,JTTDCMut,Metazoa_Choano_RCFV_strict,3573922.809,Ctenophora,100,Monophyletic,No,Yes,3573903.35,Whelan2017.Metazoa_Choano_RCFV_strict.JTTDCMut
+Whelan2017,LG,Metazoa_Choano_RCFV_strict,3543457.038,Ctenophora,100,Monophyletic,No,Yes,3543440.783,Whelan2017.Metazoa_Choano_RCFV_strict.LG
+Whelan2017,LG4M,Metazoa_Choano_RCFV_strict,3513200.487,Ctenophora,100,Monophyletic,No,Yes,3513188.295,Whelan2017.Metazoa_Choano_RCFV_strict.LG4M
+Whelan2017,mtZOA,Metazoa_Choano_RCFV_strict,3593242.06,Ctenophora,100,Monophyletic,No,Yes,3593229.186,Whelan2017.Metazoa_Choano_RCFV_strict.mtZOA
+Whelan2017,PMB,Metazoa_Choano_RCFV_strict,3607036.322,Ctenophora,100,Monophyletic,No,Yes,3607025.442,Whelan2017.Metazoa_Choano_RCFV_strict.PMB
+Whelan2017,Poisson,Metazoa_Choano_RCFV_strict,3928127.852,Ctenophora,100,Monophyletic,No,Yes,3928121.433,Whelan2017.Metazoa_Choano_RCFV_strict.Poisson
+Whelan2017,rtREV,Metazoa_Choano_RCFV_strict,3559832.192,Ctenophora,100,Monophyletic,No,Yes,3559829.081,Whelan2017.Metazoa_Choano_RCFV_strict.rtREV
+Whelan2017,UL2,Metazoa_Choano_RCFV_strict,3522493.149,Ctenophora,100,Monophyletic,No,Yes,3522488.858,Whelan2017.Metazoa_Choano_RCFV_strict.UL2
+Whelan2017,UL3,Metazoa_Choano_RCFV_strict,3516870.93,Ctenophora,100,Monophyletic,No,Yes,3516867.914,Whelan2017.Metazoa_Choano_RCFV_strict.UL3
+Whelan2017,WAG,Metazoa_Choano_RCFV_strict,3568184.95,Ctenophora,100,Monophyletic,No,Yes,3568179.803,Whelan2017.Metazoa_Choano_RCFV_strict.WAG
+Whelan2017,ModelFinder,Metazoa_Choano_RCFV_strict,3539148.876,Ctenophora,100,Monophyletic,No,Yes,3539134.716,Whelan2017.Metazoa_Choano_RCFV_strict.ModelFinder
