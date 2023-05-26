@@ -223,11 +223,9 @@ if (prepare.hypothesis.trees == TRUE){
   row.names(completion_df) <- 1:nrow(completion_df)
   # Add another column
   completion_df$remaining_trees_to_run <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
-                                                        input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3])
-  )[c(TRUE,FALSE)]
+                                                        input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3]))[c(TRUE,FALSE)]
   completion_df$only_CXX_runs_remaining <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
-                                                         input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3])
-  )[c(FALSE,TRUE)]
+                                                         input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3]))[c(FALSE,TRUE)]
   # Output the frequency dataframe
   write.table(completion_df, file = output_file_paths[5], row.names = FALSE, sep = "\t")
   # Extract the names of the datasets/alignment combinations with all 24 models completed
