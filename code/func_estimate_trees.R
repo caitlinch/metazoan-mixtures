@@ -505,7 +505,7 @@ create.constraint.trees.Placozoa <- function(dataset, prefix = NA, dataset_const
 
 #### Estimating ML trees using a constraint tree ####
 run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, constraint_tree_file,
-                                            best_model = NA, free_rate_categories = NA, gamma = NA,
+                                            best_model = NA, sitefreq_file = NA, free_rate_categories = NA, gamma = NA,
                                             iqtree_path = "iqtree2", num_bootstraps = NA, num_threads = 1, run.iqtree = FALSE,
                                             partitioned_check = FALSE, partition_file = NA){
   # Function estimate a constrained maximum likelihood tree: requires an alignment, a model, a constraint/guide tree, and the iqtree2 location
@@ -610,11 +610,25 @@ run.one.constraint.tree <- function(index, constraint_df, run.iqtree = TRUE){
   # Identify row
   row <- constraint_df[index, ]
   
+  # Set model parameters
+  pmsf_check <- grepl("PMSF", row$best_model)
+  # Check whether the best model is a PMSF model
+  if (pmsf_check == TRUE){
+    # If the model is not a PMSF model, send the sitefreqs file through to be used for tree estimation
+    split_best_model <- unlist(strsplit(row$best_model, ":"))
+    row_best_model <- split_best_model[[1]]
+    row_sitefreq_file <- split_best_model[[2]]
+  } else if (pmsf_check == FALSE){
+    # If the model is not a PMSF model, send the best model through to be used for tree estimation
+    row_best_model <- row$best_model
+    row_sitefreq_file <- NA
+  }
+  
   # Feed row information into function call
   # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
   #   either way, want to run function to print iqtree command line
   iqtree_command <- run.iqtree.with.constraint.tree(output_prefix = row$hypothesis_tree_prefixes, alignment_path = row$alignment_path, constraint_tree_file = row$constraint_tree_paths,
-                                                    best_model = row$best_model, free_rate_categories = row$estimated_rates, gamma = row$estimated_gamma,
+                                                    best_model = row_best_model, sitefreq_file = row_sitefreq_file, free_rate_categories = row$estimated_rates, gamma = row$estimated_gamma,
                                                     iqtree_path = row$iqtree_path, num_bootstraps = row$num_bootstraps, num_threads = row$num_threads, run.iqtree = run.iqtree,
                                                     partitioned_check = FALSE, partition_file = row$partition_file)
   # Return the iqtree_command as output
