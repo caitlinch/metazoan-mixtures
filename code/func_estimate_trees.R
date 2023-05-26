@@ -510,12 +510,11 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
                                             partitioned_check = FALSE, partition_file = NA){
   # Function estimate a constrained maximum likelihood tree: requires an alignment, a model, a constraint/guide tree, and the iqtree2 location
   
-  
   ### Add partition file if present
   if (partitioned_check == FALSE){
     partition_call <- ""
   } else if (partitioned_check == TRUE){
-    partition_call <- paste0(" -p ", partition_file, " ")
+    partition_call <- paste0("-p ", partition_file)
   } 
   
   ### Set best_model as model for IQ-Tree run, including free-rate categories if necessary
@@ -525,18 +524,27 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
   # Assemble the call for the model
   if (best.model.provided == FALSE){
     # If no best_model specified for IQ-Tree, use model finder (-m MFP) command
-    model_call = " -m MFP "
+    model_call = "-m MFP"
   } else if (best.model.provided == TRUE & rate.categories.provided == FALSE){
     # Best model provided, but no rate categories
     # Use only the best model in the IQ-Tree call
-    model_call = paste0(" -m ", best_model, " ")
+    # Remove then replace ' around model - to make sure you don't end up with two sets
+    model_call = paste0("-m '", gsub("'", "", best_model), "'")
   } else if (best.model.provided == TRUE & rate.categories.provided == TRUE){
     # Both the best model and the rate categories are provided
-    # Check the number of rate categories in the model and in the rate categories
-    num_cats_rate_categories <- length(strsplit(free_rate_categories, ",")[[1]])/2
-    num_cats_model <- as.numeric(gsub("R", "", grep("R", strsplit(best_model, "\\+")[[1]], value = T)))
     # Create a nice model with both the best model and the free rate category (weights and rates)
-    model_call = paste0(" -m '", best_model, "{", free_rate_categories, "}'", " ")
+    # Remove ' around model and replace around free rate categories
+    model_call = paste0("-m '", gsub("'", "", best_model), "{", free_rate_categories, "}'")
+  }
+  
+  ### Check for a site frequency file - meaning the best model is a PMSF model
+  # Determine whether the sitefreq variable is present (or is NA)
+  if (is.na(sitefreq_file) == FALSE){
+    # The sitefreq variable is present - this iqtree run uses a PMSF model
+    sitefreq_call <- paste0("-fs ", sitefreq_file)
+  } else if (is.na(sitefreq_file) == TRUE){
+    # No sitefreq variable is present - do not use a PMSF model
+    sitefreq_call <- ""
   }
   
   ### Check for a gamma shape parameter (alpha) call
@@ -553,7 +561,7 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
       # Strip any spaces from the gamma value
       gamma_clean <- gsub(" ", "", gamma)
       # Create an IQ-Tree command for gamma
-      gamma_call <- paste0(" -a ",gamma_clean, " ")
+      gamma_call <- paste0("-a ",gamma_clean)
     } else if (length(gamma) < length(gamma_split)){
       # There are multiple values within gamma: gamma here is a list of the rates, not an alpha parameter
       # Do not create an IQ-Tree command for gamma
@@ -568,30 +576,30 @@ run.iqtree.with.constraint.tree <- function(output_prefix, alignment_path, const
   if (is.na(num_bootstraps) == TRUE){
     bootstraps_call <- ""
   } else if (is.na(num_bootstraps) == FALSE){
-    bootstraps_call <- paste0(" -bb ", num_bootstraps, " ")
+    bootstraps_call <- paste0("-bb ", num_bootstraps)
   }
   
   ### Add prefix (to label the hypothesis tree files) if present
   if (is.na(output_prefix) == TRUE){
-    # If prefix is NA, do nothing
-    prefix_call <- ""
+    # If prefix is NA, make a default one
+    split_constraint_tree_file <- unlist(strsplit(basename(constraint_tree_file), "\\."))
+    prefix_call <- paste0("-pre ", paste(split_constraint_tree_file[1:(length(split_constraint_tree_file)-1)], collapse = "."),
+                          ".", gsub("\\+", "_", gsub("'","",best_model)))
   } else if (is.na(output_prefix) == FALSE){
     # If prefix is NA, add prefix to command line 
-    prefix_call <- paste0(" -pre ", output_prefix, " ")
+    prefix_call <- paste0("-pre ", output_prefix)
   } 
   
   ### Assemble the remaining parts of the command
-  alignment_call <- paste0(" -s ", alignment_path, " ")
-  constraint_tree_call <- paste0(" -g ", constraint_tree_file, " ")
-  num_threads_call <- paste0(" -nt ", num_threads, " ")
-  
+  alignment_call <- paste0("-s ", alignment_path)
+  constraint_tree_call <- paste0("-g ", constraint_tree_file)
+  num_threads_call <- paste0("-nt ", num_threads)
   
   #### Collate iqtree command
-  iqtree_call <- paste0(iqtree_path, alignment_call,  partition_call, model_call, gamma_call, bootstraps_call, constraint_tree_call, num_threads_call, prefix_call)
-  # Remove any double or triple spaces from the call
+  iqtree_call <- paste(c(iqtree_path, alignment_call,  partition_call, model_call, sitefreq_call, gamma_call, 
+                         bootstraps_call, constraint_tree_call, num_threads_call, prefix_call), collapse = " ")
+  # Remove any double spaces from the call
   iqtree_call <- gsub("   ", " ", iqtree_call)
-  iqtree_call <- gsub("  ", " ", iqtree_call)
-  
   
   ### Run IQ-Tree, if desired
   if (run.iqtree == TRUE){
