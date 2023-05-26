@@ -57,7 +57,7 @@ names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 control_parameters <- list(extract.ML.tree.information = FALSE,
                            prepare.hypothesis.trees = FALSE,
                            estimate.hypothesis.trees = FALSE,
-                           collate.hypothesis.logs = FALSE)
+                           collate.hypothesis.logs = TRUE)
 
 
 
