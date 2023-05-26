@@ -91,6 +91,7 @@ ml_extracted_df_file        <- paste0(output_dir, "01_02_maximum_likelihood_resu
 alignment_taxa_df_file      <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
 completion_freq_df_file     <- paste0(output_dir, "01_02_dataset_completion_frequency.tsv")
 best_model_df_file          <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
+check_ModelFinder_df_file   <- paste0(output_dir, "01_03_check_ModelFinder_best_models.tsv")
 
 
 
@@ -245,7 +246,7 @@ if (prepare.hypothesis.trees == TRUE){
                                                                         ML_output_df = trimmed_ml_tree_df, include.ModelFinder = TRUE))
   mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = check_modelfinder_df, IQTree_output_dir = ml_tree_dir)
   # Save the dataframe you just created
-  write.table(mfp_check_df, file = df_op_mfp_model_check, row.names = FALSE, sep = "\t")
+  write.table(mfp_check_df, file = check_ModelFinder_df_file, row.names = FALSE, sep = "\t")
   
   ## Prepare parameters for the constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
