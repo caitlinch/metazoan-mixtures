@@ -85,11 +85,12 @@ h_tree_dir <- paste0(output_dir, "hypothesis_trees/")
 if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 
 # Create file paths for output files
-ml_tree_df_file             <- paste0(repo_dir, "output/01_01_maximum_likelihood_tree_estimation_parameters.tsv")
-all_tree_df_file            <- paste0(repo_dir, "output/01_01_all_tree_estimation_parameters.tsv")
-ml_extracted_df_file        <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
-alignment_taxa_df_file      <- paste0(repo_dir, "01_02_maximum_likelihood_included_taxa.tsv")
-completion_freq_df_file     <- paste0(repo_dir, "01_02_dataset_completion_frequency.tsv")
+ml_tree_df_file             <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
+all_tree_df_file            <- paste0(output_dir, "01_01_all_tree_estimation_parameters.tsv")
+ml_extracted_df_file        <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
+alignment_taxa_df_file      <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
+completion_freq_df_file     <- paste0(output_dir, "01_02_dataset_completion_frequency.tsv")
+best_model_df_file          <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
 
 
 
@@ -165,6 +166,9 @@ if (extract.ML.tree.information == TRUE){
   # Update data frame to include maximum likelihood trees
   trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
   
+  # Reorder by dataset, then matrix name, then best tree by BIC
+  trimmed_ml_tree_df <- trimmed_ml_tree_df[order(trimmed_ml_tree_df$dataset, trimmed_ml_tree_df$matrix_name, trimmed_ml_tree_df$tree_BIC),]
+  
   # Remove unwanted columns from the trimmed_ml_tree_df
   trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "matrix_name", "sequence_format", "prefix", 
                                               "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
@@ -214,13 +218,17 @@ if (prepare.hypothesis.trees == TRUE){
   # Reset row names 
   row.names(completion_df) <- 1:nrow(completion_df)
   # Add another column
-  completion_df$remaining_runs <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs,
-                                                input_parameter_file = all_tree_df_file, output_parameter_file = trimmed_ml_tree_df))
+  completion_df$remaining_trees_to_run <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
+                                                        input_parameter_file = all_tree_df_file, output_parameter_file = ml_extracted_df_file)
+                                                 )[c(TRUE,FALSE)]
+  completion_df$only_CXX_runs_remaining <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
+                                                         input_parameter_file = all_tree_df_file, output_parameter_file = ml_extracted_df_file)
+                                                  )[c(FALSE,TRUE)]
   # Output the frequency dataframe
   write.table(completion_df, file = completion_freq_df_file, row.names = FALSE, sep = "\t")
   # Extract the names of the datasets/alignment combinations with all 24 models completed
   complete_inds <- unique(c(which(completion_df$frequency == 26)))
-  completed_df <- completion_df[completion_df$frequency == 26,]
+  completed_df <- completion_df[complete_inds,]
   
   ## Determine which models to use for each completed dataset
   # Want to extract ModelFinder model, and the model with the best BIC
@@ -230,7 +238,7 @@ if (prepare.hypothesis.trees == TRUE){
   # Convert lapply output to a nice dataframe
   selected_models_df <- do.call(rbind, selected_models_list)
   # Save the dataframe of best models
-  write.table(selected_models_df, file = df_op_best_models, row.names = FALSE, sep = "\t")
+  write.table(selected_models_df, file = best_model_df_file, row.names = FALSE, sep = "\t")
   
   ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
   check_modelfinder_df <- selected_models_list <- do.call(rbind, lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
