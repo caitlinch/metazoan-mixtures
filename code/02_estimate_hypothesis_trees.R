@@ -68,7 +68,7 @@ source(paste0(repo_dir, "code/data_dataset_info.R"))
 
 # Remove the individual dataset lists (only need collated lists) (yes it is a bit cheeky to hard code the removal)
 rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018_list, laumer2019_list, moroz2014_list, nosenko2013_list, philippe2009_list,
-   philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, models_list, all_taxa)
+   philippe2011_list, pick2010_list, ryan2013_list, simion2017_list, whelan2015_list, whelan2017_list, models_list, all_taxa, all_models)
 
 
 
@@ -145,6 +145,10 @@ if (extract.ML.tree.information == TRUE){
   
   # Extract the best model for each combination of matrix and model
   trimmed_ml_tree_df$best_model <- unlist(lapply(complete_iqtree_files, extract.best.model))
+  # Update best model for PMSF models
+  pmsf_rows <- which(grepl("PMSF", trimmed_ml_tree_df$model_code))
+  trimmed_ml_tree_df$best_model[pmsf_rows] <- paste0(trimmed_ml_tree_df$prefix[pmsf_rows], ".ssfp.sitefreq")
+  
   # Update the best model column to remove "+I+I+" values (should be "+I+" - output error from IQ-Tree)
   trimmed_ml_tree_df$best_model <- gsub("\\+I\\+I\\+", "+I+", trimmed_ml_tree_df$best_model)
   
@@ -163,9 +167,9 @@ if (extract.ML.tree.information == TRUE){
   
   # Remove unwanted columns from the trimmed_ml_tree_df
   trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "matrix_name", "sequence_format", "prefix", 
+                                              "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
                                               "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
                                               "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
-                                              "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
                                               "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
                                               "maximum_likelihood_tree")]
   # Save dataframe
