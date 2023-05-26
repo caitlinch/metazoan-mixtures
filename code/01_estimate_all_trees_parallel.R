@@ -140,15 +140,7 @@ if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 
 # Create file paths for output files
 txt_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_iqtree2_calls.txt")
-txt_op_01_03 <- paste0(output_dir, "01_03_hypothesis_tree_iqtree2_calls.txt")
 df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
-df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
-df_op_01_03 <- paste0(output_dir, "01_03_constraint_tree_estimation_parameters.tsv")
-df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_results.tsv")
-df_op_completion_freq <- paste0(output_dir, "01_03_dataset_completion_frequency.tsv")
-df_op_best_models <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
-df_op_alignment_taxa <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
-df_op_mfp_model_check <- paste0(output_dir, "01_03_best_model_comparison.tsv")
 
 
 
