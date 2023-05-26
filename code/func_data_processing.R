@@ -1303,3 +1303,47 @@ extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, mod
   return(op_df)
 }
 
+
+
+#### Extract information from dataframes ####
+check.remaining.runs <- function(dataset, input_parameter_file, output_parameter_file){
+  ## Small function to check which (if any) runs are remaining for a single model
+  
+  # Open the input and output dataframes
+  in_df <- read.table(input_parameter_file, header = TRUE, sep = "\t")
+  out_df <- read.table(output_parameter_file, header = TRUE, sep = "\t")
+  # Trim both dataframes to just the dataset of interest
+  in_df <- in_df[grep(dataset, in_df$prefix),]
+  out_df <- out_df[grep(dataset, out_df$prefix),]
+  # Compare model codes
+  in_model_codes <- in_df$model_code
+  out_model_codes <- out_df$model_code
+  # Check whether the model_code objects are identical
+  if (setequal(in_model_codes, out_model_codes) == TRUE){
+    # If the model_codes are identical, all runs are complete
+    remaining_models = NA
+    cat_only = NA
+  } else {
+    # If the model_codes are not identical, work out which models are missing
+    missing_model_codes <- setdiff(in_model_codes, out_model_codes)
+    # Collect missing model codes for output
+    remaining_models <- paste(missing_model_codes, collapse = ",")
+    # Check which of the remaining models are cat models
+    detect_cat_models <- grep("C20|C60", grep("PMSF", missing_model_codes, value = T, invert = T), value = T)
+    # Check whether all remaining models are CAT models
+    if (identical(missing_model_codes, detect_cat_models)){
+      # If all models are cat models, return cat_only = TRUE
+      cat_only = TRUE
+    } else {
+      # If some/all remaining models are NOT cat models, return cat_only = FALSE
+      cat_only = FALSE
+    }
+  }
+  
+  # Assemble and return output
+  check_runs_op <- c(remaining_models, cat_only)
+  names(check_runs_op) <- c("remaining_trees_to_run", "only_CXX_runs_remaining")
+  return(check_runs_op)
+}
+
+
