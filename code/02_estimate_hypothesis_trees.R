@@ -73,6 +73,9 @@ rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018
 
 
 #### 2. Prepare variables ####
+# Extend the number of digits allowed (so BIC and logL can be extracted properly from iqtree files)
+options(digits = 12)
+
 # Create output folders
 # Create a folder for the constraint trees
 c_tree_dir <- paste0(output_dir, "constraint_trees/")
