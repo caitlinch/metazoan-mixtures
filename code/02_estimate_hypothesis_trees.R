@@ -19,7 +19,7 @@
 #                                     See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
 # hypothesis_tree_bootstraps  <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree when estimating constrained maximum likelihood trees
 
-## Specify control parameters (all take logical values TRUE or FALSE:
+## Specify control parameter values (all take logical values TRUE or FALSE):
 # extract.ML.tree.information   <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
 # prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
@@ -45,6 +45,9 @@ if (location == "local"){
 # Set parameters that are identical for all run locations
 iqtree_num_threads <- 15
 hypothesis_tree_bootstraps <- 1000
+
+pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'")
+names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 
 # Set control parameters
 control_parameters <- list(extract.ML.tree.information = FALSE,
@@ -152,7 +155,8 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   trimmed_ml_tree_df$best_model <- unlist(lapply(complete_iqtree_files, extract.best.model))
   # Update best model for PMSF models
   pmsf_rows <- which(grepl("PMSF", trimmed_ml_tree_df$model_code))
-  trimmed_ml_tree_df$best_model[pmsf_rows] <- paste0(trimmed_ml_tree_df$prefix[pmsf_rows], ".ssfp.sitefreq")
+  trimmed_ml_tree_df$best_model[pmsf_rows] <- paste0(unlist(lapply(trimmed_ml_tree_df$model_code[pmsf_rows], function(x){pmsf_model[x]})),
+                                                     ":", paste0(trimmed_ml_tree_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
   
   # Update the best model column to remove "+I+I+" values (should be "+I+" - output error from IQ-Tree)
   trimmed_ml_tree_df$best_model <- gsub("\\+I\\+I\\+", "+I+", trimmed_ml_tree_df$best_model)
@@ -270,6 +274,11 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
   constraint_df$model_mrate <- NA
   # Add the number of ultrafast bootstraps to perform for the hypothesis trees (constrained maximum likelihood trees with fixed model)
   constraint_df$num_bootstraps <- hypothesis_tree_bootstraps
+  
+  # Update best_model column
+  pmsf_rows <- which(grepl("PMSF", constraint_df$model_code))
+  constraint_df$best_model <- paste0(unlist(lapply(constraint_df$model_code, function(x){pmsf_model[x]})), 
+                                     ":", paste0(constraint_df$prefix, ".ssfp.sitefreq"))
   
   # Prepare iqtree commands for each of the hypothesis trees
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = FALSE))
