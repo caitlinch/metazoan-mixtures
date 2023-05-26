@@ -85,16 +85,16 @@ h_tree_dir <- paste0(output_dir, "hypothesis_trees/")
 if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 
 # Create file paths for output files
-ml_tree_df_file             <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
-all_tree_df_file            <- paste0(output_dir, "01_01_all_tree_estimation_parameters.tsv")
-ml_extracted_df_file        <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
-alignment_taxa_df_file      <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
-completion_freq_df_file     <- paste0(output_dir, "01_02_dataset_completion_frequency.tsv")
-best_model_df_file          <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
-check_ModelFinder_df_file   <- paste0(output_dir, "01_03_check_ModelFinder_best_models.tsv")
-constraint_tree_df_file     <- paste0(output_dir, "01_04_constraint_tree_estimation_parameters.tsv")
-constraint_tree_text_file   <- paste0(output_dir, "01_04_constraint_tree_iqtree2_command_paths.txt")
-collated_hypothesis_df_file <- paste0(output_dir, "01_05_collated_hypothesis_tree_runs.tsv")
+output_file_paths <- paste0(output_dir, c("01_01_maximum_likelihood_tree_estimation_parameters.tsv",
+                                          "01_01_all_tree_estimation_parameters.tsv",
+                                          "01_02_maximum_likelihood_results.tsv",
+                                          "01_02_maximum_likelihood_included_taxa.tsv",
+                                          "01_02_dataset_completion_frequency.tsv",
+                                          "01_03_best_models_per_alignment.tsv",
+                                          "01_03_check_ModelFinder_best_models.tsv",
+                                          "01_04_constraint_tree_estimation_parameters.tsv",
+                                          "01_04_constraint_tree_iqtree2_command_paths.txt",
+                                          "01_05_collated_hypothesis_tree_runs.tsv"))
 
 
 
@@ -102,7 +102,7 @@ collated_hypothesis_df_file <- paste0(output_dir, "01_05_collated_hypothesis_tre
 # Extract information about each run from the IQ-Tree output and log files
 if (extract.ML.tree.information == TRUE){
   # Open ml_tree_df file 
-  ml_tree_df <- read.table(ml_tree_df_file, header = T)
+  ml_tree_df <- read.table(output_file_paths[1], header = T)
   
   # Add the PMSF runs
   pmsf_ids <- grep("LG_C20|LG_C60|C20|C60", ml_tree_df$model_code)
@@ -120,7 +120,7 @@ if (extract.ML.tree.information == TRUE){
   # Sort by dataset then by model
   tree_df <- tree_df[order(tree_df$dataset, tree_df$matrix_name, tree_df$model_code),]
   # Write the combined table out
-  write.table(tree_df, file = all_tree_df_file, row.names = FALSE, sep = "\t")
+  write.table(tree_df, file = output_file_paths[2], row.names = FALSE, sep = "\t")
   
   # Make a list of .iqtree files (and .log files)
   all_iqtree_files <- paste0(ml_tree_dir, tree_df$iqtree_file)
@@ -181,15 +181,15 @@ if (extract.ML.tree.information == TRUE){
                                               "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
                                               "maximum_likelihood_tree")]
   # Save dataframe
-  write.table(trimmed_ml_tree_df, file = ml_extracted_df_file, row.names = FALSE, sep = "\t")
+  write.table(trimmed_ml_tree_df, file = output_file_paths[3], row.names = FALSE, sep = "\t")
   
   # Create a dataframe listing the taxa included in trees for each dataset
-  if (file.exists(alignment_taxa_df_file) == FALSE){
+  if (file.exists(output_file_paths[4]) == FALSE){
     # Determine which taxa are included in the ML trees for each alignment (each value dataset/matrix name combination)
     alignment_taxa_df <- dataset.check.tree.taxa.wrapper(unique_ids = unique(paste0(trimmed_ml_tree_df$dataset, ".", trimmed_ml_tree_df$matrix_name)),
                                                          tree_folder = ml_tree_dir)
     # Save dataframe
-    write.table(alignment_taxa_df, file = alignment_taxa_df_file, row.names = FALSE, sep = "\t")
+    write.table(alignment_taxa_df, file = output_file_paths[4], row.names = FALSE, sep = "\t")
   }
 }
 
@@ -202,13 +202,13 @@ setwd(c_tree_dir)
 # Prepare constraint trees to estimate hypothesis trees
 if (prepare.hypothesis.trees == TRUE){
   ## Retrieve results from previous steps
-  # Open all_tree_df_file (input parameters to estimate trees in IQ-Tree)
+  # Open output_file_paths[2] (input parameters to estimate trees in IQ-Tree)
   # Open trimmed_ml_tree_df file (output from ML tree runs)
-  tree_df <- read.table(all_tree_df_file, header = T)
+  tree_df <- read.table(output_file_paths[2], header = T)
   # Open trimmed_ml_tree_df file (output from ML tree runs)
-  trimmed_ml_tree_df <- read.table(ml_extracted_df_file, header = T)
+  trimmed_ml_tree_df <- read.table(output_file_paths[3], header = T)
   # Open alignment_taxa_df file (list of taxa in ML trees for each alignment)
-  alignment_taxa_df <- read.table(alignment_taxa_df_file, header = T)
+  alignment_taxa_df <- read.table(output_file_paths[4], header = T)
   
   ## Select completed datasets to estimate constraint trees
   # Determine which datasets have all alignments completed
@@ -223,13 +223,13 @@ if (prepare.hypothesis.trees == TRUE){
   row.names(completion_df) <- 1:nrow(completion_df)
   # Add another column
   completion_df$remaining_trees_to_run <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
-                                                        input_parameter_file = all_tree_df_file, output_parameter_file = ml_extracted_df_file)
+                                                        input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3])
   )[c(TRUE,FALSE)]
   completion_df$only_CXX_runs_remaining <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
-                                                         input_parameter_file = all_tree_df_file, output_parameter_file = ml_extracted_df_file)
+                                                         input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3])
   )[c(FALSE,TRUE)]
   # Output the frequency dataframe
-  write.table(completion_df, file = completion_freq_df_file, row.names = FALSE, sep = "\t")
+  write.table(completion_df, file = output_file_paths[5], row.names = FALSE, sep = "\t")
   # Extract the names of the datasets/alignment combinations with all 24 models completed
   complete_inds <- unique(c(which(completion_df$frequency == 26)))
   completed_df <- completion_df[complete_inds,]
@@ -242,14 +242,14 @@ if (prepare.hypothesis.trees == TRUE){
   # Convert lapply output to a nice dataframe
   selected_models_df <- do.call(rbind, selected_models_list)
   # Save the dataframe of best models
-  write.table(selected_models_df, file = best_model_df_file, row.names = FALSE, sep = "\t")
+  write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
   
   ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
   check_modelfinder_df <- selected_models_list <- do.call(rbind, lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
                                                                         ML_output_df = trimmed_ml_tree_df, include.ModelFinder = TRUE))
   mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = check_modelfinder_df, IQTree_output_dir = ml_tree_dir)
   # Save the dataframe you just created
-  write.table(mfp_check_df, file = check_ModelFinder_df_file, row.names = FALSE, sep = "\t")
+  write.table(mfp_check_df, file = output_file_paths[7], row.names = FALSE, sep = "\t")
   
   ## Prepare parameters for the constraint trees
   # Attach alignment files to the rows
@@ -277,16 +277,16 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = FALSE))
   
   # Save the constraint tree dataframe
-  write.table(constraint_df, file = constraint_tree_df_file, row.names = FALSE, sep = "\t")
+  write.table(constraint_df, file = output_file_paths[8], row.names = FALSE, sep = "\t")
   
   # Save list of iqtree2 commands as text file
-  write(constraint_df$iqtree2_call, file = constraint_tree_text_file)
+  write(constraint_df$iqtree2_call, file = output_file_paths[9])
 }
 
 # Estimate hypothesis trees
 if (estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
-  constraint_df <- read.table(constraint_tree_df_file, header = T)
+  constraint_df <- read.table(output_file_paths[8], header = T)
   
   # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
   mclapply(constraint_df$iqtree2_call, system, mc.cores = number_parallel_processes)
@@ -296,15 +296,15 @@ if (estimate.hypothesis.trees == TRUE){
 #### THIS NEEDS TESTING ####
 if (collate.hypothesis.logs == TRUE){
   # Open ml_tree_df file (if it exists)
-  if (file.exists(ml_extracted_df_file) == TRUE){
-    ml_tree_df <- read.table(ml_extracted_df_file, header = T)
+  if (file.exists(output_file_paths[3]) == TRUE){
+    ml_tree_df <- read.table(output_file_paths[3], header = T)
   }
   
   # Combine hypothesis trees into one file per unique identifier and save
   ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
                                              outgroup_taxa = NA)
   # Save dataframe
-  write.table(ml_tree_df, file = collated_hypothesis_df_file, row.names = FALSE, sep = "\t")
+  write.table(ml_tree_df, file = output_file_paths[10], row.names = FALSE, sep = "\t")
   
 }
 
