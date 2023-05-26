@@ -1,10 +1,8 @@
 # metazoan-mixtures/code/02_estimate_hypothesis_trees.R
-## This script estimates maximum likelihood under constraint trees for empirical data sets
+## This script estimates maximum likelihood under constraint trees for 14 empirical data sets
 # Caitlin Cherryh, 2022
 
-## This script:
-# 1. Estimates ML trees for empirical data sets under different models
-# 2. Estimates ML trees using a constraint tree for empirical data sets under different models
+## This script estimates ML trees using a constraint tree for empirical data sets under different models
 
 
 
@@ -37,7 +35,7 @@
 
 location = "local"
 if (location == "local"){
-  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
+  ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   
@@ -46,7 +44,7 @@ if (location == "local"){
   number_parallel_processes <- 1
   
 } else if (location == "soma"){
-  alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
+  ml_tree_dir <- ""
   output_dir <- "/data/caitlin/metazoan-mixtures/output/"
   repo_dir <- "/data/caitlin/metazoan-mixtures/"
   
@@ -55,7 +53,7 @@ if (location == "local"){
   number_parallel_processes <- 2
   
 } else if (location == "dayhoff"){
-  alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
+  ml_tree_dir <- ""
   output_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   
@@ -64,7 +62,7 @@ if (location == "local"){
   number_parallel_processes <- 1
   
 } else if (location == "laptop"){
-  alignment_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/01_alignments/"
+  ml_tree_dir <- ""
   output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
   repo_dir <- "/Users/caitlin/Repositories/metazoan-mixtures/"
   
@@ -72,7 +70,7 @@ if (location == "local"){
   
   number_parallel_processes <- 1
 } else if (location == "rona"){
-  alignment_dir <- "/home/caitlin/metazoan-mixtures/data_all/"
+  ml_tree_dir <- ""
   output_dir <- "/home/caitlin/metazoan-mixtures/output/"
   repo_dir <- "/home/caitlin/metazoan-mixtures/"
   
@@ -155,16 +153,7 @@ c_tree_dir <- paste0(output_dir, "constraint_trees/")
 if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 
 # Create file paths for output files
-txt_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_iqtree2_calls.txt")
-txt_op_01_03 <- paste0(output_dir, "01_03_hypothesis_tree_iqtree2_calls.txt")
-df_op_01_01 <- paste0(output_dir, "01_01_maximum_likelihood_tree_estimation_parameters.tsv")
-df_op_01_02 <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
-df_op_01_03 <- paste0(output_dir, "01_03_constraint_tree_estimation_parameters.tsv")
-df_op_01_04 <- paste0(output_dir, "01_04_constraint_tree_results.tsv")
-df_op_completion_freq <- paste0(output_dir, "01_03_dataset_completion_frequency.tsv")
-df_op_best_models <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
-df_op_alignment_taxa <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
-df_op_mfp_model_check <- paste0(output_dir, "01_03_best_model_comparison.tsv")
+ml_run_output_path <- paste0(output_dir, "01_02_maximum_likelihood_results.tsv")
 
 
 
