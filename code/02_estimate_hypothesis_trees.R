@@ -224,10 +224,10 @@ if (prepare.hypothesis.trees == TRUE){
   # Add another column
   completion_df$remaining_trees_to_run <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
                                                         input_parameter_file = all_tree_df_file, output_parameter_file = ml_extracted_df_file)
-                                                 )[c(TRUE,FALSE)]
+  )[c(TRUE,FALSE)]
   completion_df$only_CXX_runs_remaining <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs, 
                                                          input_parameter_file = all_tree_df_file, output_parameter_file = ml_extracted_df_file)
-                                                  )[c(FALSE,TRUE)]
+  )[c(FALSE,TRUE)]
   # Output the frequency dataframe
   write.table(completion_df, file = completion_freq_df_file, row.names = FALSE, sep = "\t")
   # Extract the names of the datasets/alignment combinations with all 24 models completed
@@ -252,6 +252,11 @@ if (prepare.hypothesis.trees == TRUE){
   write.table(mfp_check_df, file = check_ModelFinder_df_file, row.names = FALSE, sep = "\t")
   
   ## Prepare parameters for the constraint trees
+  # Attach alignment files to the rows
+  all_alignment_files <- list.files(alignment_dir)
+  all_alignment_files <- grep("alignment", grep("00_", all_alignment_files, invert = T, value = T), value = T)
+  selected_models_df$alignment_file <- unlist(lapply(1:nrow(selected_models_df), function(i){
+    grep(selected_models_df$dataset[i], grep(selected_models_df$matrix_name[i], all_alignment_files, value = T), value = T)}))
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
   # Create the constraint trees and determine what parameters to use for each hypothesis tree
   #     Hypothesis tree = constrained maximum likelihood tree estimated in IQ-Tree with best model from ML run (for each constraint tree for each dataset/model combination)
