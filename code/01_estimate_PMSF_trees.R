@@ -1,5 +1,5 @@
 # metazoan-mixtures/code/01_estimate_PMSF_trees.R
-## This script estimates maximum likelihood trees and maximum likelihood under constraint trees for empirical data sets
+## This script estimates maximum likelihood trees under the PMSF model for 14 empirical data sets
 # Caitlin Cherryh, 2022
 
 ## This script:
@@ -16,23 +16,23 @@
 
 #### 1. Input parameters ####
 ## Specify parameters:
-# alignment_dir       <- Directory containing alignments for all data sets
-#                           Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
-#                           E.g. Cherryh2022.alignment1.aa.fa
-# output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
-# repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
-# iqtree2             <- Location of IQ-Tree2 stable release
+# alignment_dir               <- Directory containing alignments for all data sets
+#                                   Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                                   E.g. Cherryh2022.alignment1.aa.fa
+# output_dir                  <- Directory for IQ-Tree output (trees and tree mixtures)
+# repo_dir                    <- Location of caitlinch/metazoan-mixtures github repository
+# iqtree2                     <- Location of IQ-Tree2 stable release
 
-# pmsf_initial_model        <- Model used to estimate guide tree for the site-specific frequency model (we use pmsf_initial_model = "'LG+C60+F+G'")
-#                                 Place model inside two different types of quotes so it can be pasted into an IQ-Tree command line properly, e.g. "'model+R6'"
-# iqtree_num_threads        <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
-# ml_tree_bootstraps        <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
-# number_parallel_processes <- The number of simultaneous processes to run at once using mclapply(). 
-#                                 If 1, then all processes will run sequentially
+# pmsf_initial_model          <- Model used to estimate guide tree for the site-specific frequency model (we use pmsf_initial_model = "'LG+C60+F+G'")
+#                                   Place model inside two different types of quotes so it can be pasted into an IQ-Tree command line properly, e.g. "'model+R6'"
+# iqtree_num_threads          <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
+# ml_tree_bootstraps          <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
+# number_parallel_processes   <- The number of simultaneous processes to run at once using mclapply(). 
+#                                   If 1, then all processes will run sequentially
 
-# run_IQTREE        <- FALSE to output IQ-Tree command lines only, TRUE to output IQ-Tree command lines and run IQ-Tree 
-# trim_incomplete   <- TRUE to remove dataframe rows without a site frequency file before estimating tree in IQ-Tree
-#                         (tree cannot be estimated using the PMSF model without the site frequencies file)
+# run_IQTREE                  <- FALSE to output IQ-Tree command lines only, TRUE to output IQ-Tree command lines and run IQ-Tree 
+# trim_incomplete             <- TRUE to remove dataframe rows without a site frequency file before estimating tree in IQ-Tree
+#                                   (tree cannot be estimated using the PMSF model without the site frequencies file)
 
 location = "dayhoff"
 if (location == "local"){
