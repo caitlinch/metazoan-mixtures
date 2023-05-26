@@ -47,10 +47,10 @@ iqtree_num_threads <- 15
 hypothesis_tree_bootstraps <- 1000
 
 # Set control parameters
-extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- FALSE
-estimate.hypothesis.trees <- FALSE
-collate.hypothesis.logs <- FALSE
+control_parameters <- list(extract.ML.tree.information = FALSE,
+                           prepare.hypothesis.trees = FALSE,
+                           estimate.hypothesis.trees = FALSE,
+                           collate.hypothesis.logs = FALSE)
 
 
 
@@ -100,7 +100,7 @@ output_file_paths <- paste0(output_dir, c("01_01_maximum_likelihood_tree_estimat
 
 #### 4. Extract information from ML trees and log files ####
 # Extract information about each run from the IQ-Tree output and log files
-if (extract.ML.tree.information == TRUE){
+if (control_parameters$extract.ML.tree.information == TRUE){
   # Open ml_tree_df file 
   ml_tree_df <- read.table(output_file_paths[1], header = T)
   
@@ -200,7 +200,7 @@ if (extract.ML.tree.information == TRUE){
 setwd(c_tree_dir)
 
 # Prepare constraint trees to estimate hypothesis trees
-if (prepare.hypothesis.trees == TRUE){
+if (control_parameters$prepare.hypothesis.trees == TRUE){
   ## Retrieve results from previous steps
   # Open output_file_paths[2] (input parameters to estimate trees in IQ-Tree)
   # Open trimmed_ml_tree_df file (output from ML tree runs)
@@ -282,7 +282,7 @@ if (prepare.hypothesis.trees == TRUE){
 }
 
 # Estimate hypothesis trees
-if (estimate.hypothesis.trees == TRUE){
+if (control_parameters$estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
   constraint_df <- read.table(output_file_paths[8], header = T)
   
@@ -292,7 +292,7 @@ if (estimate.hypothesis.trees == TRUE){
 
 # Extract hypothesis trees from output and save into a tsv
 #### THIS NEEDS TESTING ####
-if (collate.hypothesis.logs == TRUE){
+if (control_parameters$collate.hypothesis.logs == TRUE){
   # Open ml_tree_df file (if it exists)
   if (file.exists(output_file_paths[3]) == TRUE){
     ml_tree_df <- read.table(output_file_paths[3], header = T)
