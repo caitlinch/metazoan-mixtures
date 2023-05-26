@@ -116,6 +116,7 @@ if (extract.ML.tree.information == TRUE){
   
   # Reduce the df to only rows that both the completed iqtree file and the log file are present for
   trimmed_ml_tree_df <- tree_df[tree_df$iqtree_file %in% basename(finished_iqtree_files),]
+  rownames(trimmed_ml_tree_df) <- 1:nrow(trimmed_ml_tree_df)
   
   # Get the correct order for the .iqtree files by reading off the trimmed_ml_tree_df$iqtree_file column
   complete_iqtree_files <- paste0(ml_tree_dir, trimmed_ml_tree_df$iqtree_file)
