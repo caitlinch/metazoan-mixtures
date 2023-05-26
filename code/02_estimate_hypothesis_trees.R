@@ -79,7 +79,8 @@ if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 # Create file paths for output files
 ml_tree_df_file             <- paste0(repo_dir, "output/01_01_maximum_likelihood_tree_estimation_parameters.tsv")
 all_tree_df_file            <- paste0(repo_dir, "output/01_01_all_tree_estimation_parameters.tsv")
-ml_extracted_output_path    <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
+ml_extracted_df_file    <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
+alignment_taxa_df_file <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
 
 
 
@@ -151,14 +152,21 @@ if (extract.ML.tree.information == TRUE){
   # Update data frame to include maximum likelihood trees
   trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
   
+  # Remove unwanted columns from the trimmed_ml_tree_df
+  trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "matrix_name", "sequence_format", "prefix", 
+                                              "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
+                                              "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
+                                              "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                              "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
+                                              "maximum_likelihood_tree")]
   # Save dataframe
-  write.table(trimmed_ml_tree_df, file = df_op_01_02, row.names = FALSE, sep = "\t")
+  write.table(trimmed_ml_tree_df, file = ml_extracted_df_file, row.names = FALSE, sep = "\t")
   
   # Determine which taxa are included in the ML trees for each alignment (each value dataset/matrix name combination)
   alignment_taxa_df <- dataset.check.tree.taxa.wrapper(unique_ids = unique(paste0(trimmed_ml_tree_df$dataset, ".", trimmed_ml_tree_df$matrix_name)),
                                                        tree_folder = ml_tree_dir)
   # Save dataframe
-  write.table(alignment_taxa_df, file = df_op_alignment_taxa, row.names = FALSE, sep = "\t")
+  write.table(alignment_taxa_df, file = alignment_taxa_df_file, row.names = FALSE, sep = "\t")
 }
 
 
@@ -173,7 +181,7 @@ if (prepare.hypothesis.trees == TRUE){
   # Open trimmed_ml_tree_df file (output from ML tree runs)
   trimmed_ml_tree_df <- read.table(df_op_01_02, header = T)
   # Open alignment_taxa_df file (list of taxa in ML trees for each alignment)
-  alignment_taxa_df <- read.table(df_op_alignment_taxa, header = T)
+  alignment_taxa_df <- read.table(alignment_taxa_df_file, header = T)
   
   ## Select completed datasets to estimate constraint trees
   # Determine which datasets have all alignments completed
