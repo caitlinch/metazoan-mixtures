@@ -194,6 +194,9 @@ setwd(c_tree_dir)
 # Prepare constraint trees to estimate hypothesis trees
 if (prepare.hypothesis.trees == TRUE){
   ## Retrieve results from previous steps
+  # Open all_tree_df_file (input parameters to estimate trees in IQ-Tree)
+  # Open trimmed_ml_tree_df file (output from ML tree runs)
+  tree_df <- read.table(all_tree_df_file, header = T)
   # Open trimmed_ml_tree_df file (output from ML tree runs)
   trimmed_ml_tree_df <- read.table(ml_extracted_df_file, header = T)
   # Open alignment_taxa_df file (list of taxa in ML trees for each alignment)
@@ -210,9 +213,13 @@ if (prepare.hypothesis.trees == TRUE){
   completion_df <- completion_df[order(completion_df$dataset, completion_df$matrix_name),]
   # Reset row names 
   row.names(completion_df) <- 1:nrow(completion_df)
+  # Add another column
+  completion_df$remaining_runs <- unlist(lapply(paste0(completion_df$dataset, ".", completion_df$matrix_name), check.remaining.runs,
+                                                input_parameter_file = all_tree_df_file, output_parameter_file = trimmed_ml_tree_df))
   # Output the frequency dataframe
   write.table(completion_df, file = completion_freq_df_file, row.names = FALSE, sep = "\t")
   # Extract the names of the datasets/alignment combinations with all 24 models completed
+  complete_inds <- unique(c(which(completion_df$frequency == 26)))
   completed_df <- completion_df[completion_df$frequency == 26,]
   
   ## Determine which models to use for each completed dataset
