@@ -162,11 +162,14 @@ if (extract.ML.tree.information == TRUE){
   # Save dataframe
   write.table(trimmed_ml_tree_df, file = ml_extracted_df_file, row.names = FALSE, sep = "\t")
   
-  # Determine which taxa are included in the ML trees for each alignment (each value dataset/matrix name combination)
-  alignment_taxa_df <- dataset.check.tree.taxa.wrapper(unique_ids = unique(paste0(trimmed_ml_tree_df$dataset, ".", trimmed_ml_tree_df$matrix_name)),
-                                                       tree_folder = ml_tree_dir)
-  # Save dataframe
-  write.table(alignment_taxa_df, file = alignment_taxa_df_file, row.names = FALSE, sep = "\t")
+  # Create a dataframe listing the taxa included in trees for each dataset
+  if (file.exists(alignment_taxa_df_file) == FALSE){
+    # Determine which taxa are included in the ML trees for each alignment (each value dataset/matrix name combination)
+    alignment_taxa_df <- dataset.check.tree.taxa.wrapper(unique_ids = unique(paste0(trimmed_ml_tree_df$dataset, ".", trimmed_ml_tree_df$matrix_name)),
+                                                         tree_folder = ml_tree_dir)
+    # Save dataframe
+    write.table(alignment_taxa_df, file = alignment_taxa_df_file, row.names = FALSE, sep = "\t")
+  }
 }
 
 
