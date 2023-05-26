@@ -9,7 +9,8 @@
 # alignment_dir               <- Directory containing alignments for all data sets
 #                                   Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
 #                                   E.g. Cherryh2022.alignment1.aa.fa
-# ml_tree_dir                 <- Directory containing all maximum likelihood trees estimating in pipeline step 01
+# ml_tree_op_dir              <- Directory containing all maximum likelihood trees/log files/iqtree files estimated in pipeline step 01
+# pmsf_op_dir                 <-  Directory containing all output files from estimating PMSF trees in pipeline step 01
 # output_dir                  <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir                    <- Location of caitlinch/metazoan-mixtures github repository
 # number_parallel_processes   <- The number of simultaneous processes to run at once using mclapply(). 
@@ -27,23 +28,26 @@
 
 location = "local"
 if (location == "local"){
-  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-  ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
-  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
-  repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+  alignment_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
+  ml_tree_op_dir    <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
+  pmsf_op_dir       <- ""
+  output_dir        <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+  repo_dir          <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+  iqtree2           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
   number_parallel_processes <- 1
-  iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
+  iqtree_num_threads        <- 3
 } else if (location == "dayhoff"){
-  alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
-  ml_tree_dir <- ""
-  output_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
-  repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
+  alignment_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
+  ml_tree_op_dir    <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/ml_tree_output_files/"
+  pmsf_op_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
+  output_dir        <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
+  repo_dir          <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
+  iqtree2           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   number_parallel_processes <- 4
-  iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  iqtree_num_threads        <- 20
 } 
 
 # Set parameters that are identical for all run locations
-iqtree_num_threads <- 15
 hypothesis_tree_bootstraps <- 1000
 
 pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'")
@@ -126,8 +130,8 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   write.table(tree_df, file = output_file_paths[2], row.names = FALSE, sep = "\t")
   
   # Make a list of .iqtree files (and .log files)
-  all_iqtree_files <- paste0(ml_tree_dir, tree_df$iqtree_file)
-  all_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", tree_df$iqtree_file))
+  all_iqtree_files <- paste0(ml_tree_op_dir, tree_df$iqtree_file)
+  all_log_files <- paste0(ml_tree_op_dir, gsub(".iqtree", ".log", tree_df$iqtree_file))
   
   # Determine which files exist (i.e. that ML tree estimated in IQ-Tree)
   finished_iqtree_files <- all_iqtree_files[file.exists(all_iqtree_files)]
@@ -137,10 +141,10 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   rownames(trimmed_ml_tree_df) <- 1:nrow(trimmed_ml_tree_df)
   
   # Get the correct order for the .iqtree files by reading off the trimmed_ml_tree_df$iqtree_file column
-  complete_iqtree_files <- paste0(ml_tree_dir, trimmed_ml_tree_df$iqtree_file)
+  complete_iqtree_files <- paste0(ml_tree_op_dir, trimmed_ml_tree_df$iqtree_file)
   
   # Determine the completed log files - every finished tree will have a .treefile, a .iqtree file and a .log file
-  complete_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", trimmed_ml_tree_df$iqtree_file))
+  complete_log_files <- paste0(ml_tree_op_dir, gsub(".iqtree", ".log", trimmed_ml_tree_df$iqtree_file))
   
   # Extract the log likelihood and other values for the tree
   trimmed_ml_tree_df$tree_LogL <- unlist(lapply(complete_iqtree_files, extract.tree.log.likelihood, var = "LogL"))
@@ -172,7 +176,7 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   trimmed_ml_tree_df$estimated_state_frequencies <- unlist(lapply(complete_iqtree_files, extract.state.frequencies))
   
   # Update data frame to include maximum likelihood trees
-  trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
+  trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_op_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
   
   # Reorder by dataset, then matrix name, then best tree by BIC
   trimmed_ml_tree_df <- trimmed_ml_tree_df[order(trimmed_ml_tree_df$dataset, trimmed_ml_tree_df$matrix_name, trimmed_ml_tree_df$tree_BIC),]
@@ -191,7 +195,7 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   if (file.exists(output_file_paths[4]) == FALSE){
     # Determine which taxa are included in the ML trees for each alignment (each value dataset/matrix name combination)
     alignment_taxa_df <- dataset.check.tree.taxa.wrapper(unique_ids = unique(paste0(trimmed_ml_tree_df$dataset, ".", trimmed_ml_tree_df$matrix_name)),
-                                                         tree_folder = ml_tree_dir)
+                                                         tree_folder = ml_tree_op_dir)
     # Save dataframe
     write.table(alignment_taxa_df, file = output_file_paths[4], row.names = FALSE, sep = "\t")
   }
@@ -249,7 +253,7 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
   ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
   check_modelfinder_df <- selected_models_list <- do.call(rbind, lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
                                                                         ML_output_df = trimmed_ml_tree_df, include.ModelFinder = TRUE))
-  mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = check_modelfinder_df, IQTree_output_dir = ml_tree_dir)
+  mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = check_modelfinder_df, IQTree_output_dir = ml_tree_op_dir)
   # Save the dataframe you just created
   write.table(mfp_check_df, file = output_file_paths[7], row.names = FALSE, sep = "\t")
   
@@ -277,8 +281,13 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
   
   # Update best_model column
   pmsf_rows <- which(grepl("PMSF", constraint_df$model_code))
-  constraint_df$best_model <- paste0(unlist(lapply(constraint_df$model_code, function(x){pmsf_model[x]})), 
-                                     ":", paste0(constraint_df$prefix, ".ssfp.sitefreq"))
+  constraint_df$best_model[pmsf_rows] <- paste0(unlist(lapply(constraint_df$model_code[pmsf_rows], function(x){pmsf_model[x]})), 
+                                                ":", paste0(pmsf_op_dir, constraint_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
+  
+  # Update filepaths for the constraint_df
+  constraint_df$alignment_path        <- paste0(alignment_dir, basename(constraint_df$alignment_path))
+  constraint_df$constraint_tree_paths <- paste0(c_tree_dir, basename(constraint_df$constraint_tree_paths))
+  constraint_df$iqtree_path <- iqtree2
   
   # Prepare iqtree commands for each of the hypothesis trees
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = FALSE))
