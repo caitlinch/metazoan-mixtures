@@ -1,15 +1,15 @@
-"dataset"	"matrix_name"	"frequency"
-"Borowiec2015"	"Best108"	26
-"Chang2015"	"Chang_AA"	25
-"Dunn2008"	"Dunn2008_FixedNames"	26
-"Laumer2018"	"Tplx_phylo_d1"	23
-"Laumer2019"	"nonbilateria_MARE_BMGE"	23
-"Moroz2014"	"ED3d"	26
-"Nosenko2013"	"nonribosomal_9187_smatrix"	26
-"Nosenko2013"	"ribosomal_14615_smatrix"	26
-"Philippe2009"	"Philippe_etal_superalignment_FixedNames"	26
-"Philippe2011"	"UPDUNN_MB_FixedNames"	23
-"Pick2010"	"Pick2010"	23
-"Ryan2013"	"REA_EST_includingXenoturbella"	22
-"Whelan2015"	"Dataset10_CertainPruned_LBAtaxa_LBAandHeteroGenesPruned"	23
-"Whelan2017"	"Metazoa_Choano_RCFV_strict"	26
+"dataset"	"matrix_name"	"frequency"	"remaining_trees_to_run"	"only_CXX_runs_remaining"
+"Borowiec2015"	"Best108"	26	NA	NA
+"Chang2015"	"Chang_AA"	25	"C60"	"TRUE"
+"Dunn2008"	"Dunn2008_FixedNames"	26	NA	NA
+"Laumer2018"	"Tplx_phylo_d1"	23	"C20,C60,LG_C60"	"TRUE"
+"Laumer2019"	"nonbilateria_MARE_BMGE"	23	"C20,C60,LG_C60"	"TRUE"
+"Moroz2014"	"ED3d"	26	NA	NA
+"Nosenko2013"	"nonribosomal_9187_smatrix"	26	NA	NA
+"Nosenko2013"	"ribosomal_14615_smatrix"	26	NA	NA
+"Philippe2009"	"Philippe_etal_superalignment_FixedNames"	26	NA	NA
+"Philippe2011"	"UPDUNN_MB_FixedNames"	23	"C20,C60,LG_C60"	"TRUE"
+"Pick2010"	"Pick2010"	23	"C20,C60,LG_C60"	"TRUE"
+"Ryan2013"	"REA_EST_includingXenoturbella"	22	"C20,C60,LG_C20,LG_C60"	"TRUE"
+"Whelan2015"	"Dataset10_CertainPruned_LBAtaxa_LBAandHeteroGenesPruned"	23	"C20,C60,LG_C60"	"TRUE"
+"Whelan2017"	"Metazoa_Choano_RCFV_strict"	26	NA	NA
