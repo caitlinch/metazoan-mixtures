@@ -6,6 +6,9 @@
 
 #### 1. Input parameters ####
 ## Specify parameters:
+# alignment_dir               <- Directory containing alignments for all data sets
+#                                   Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                                   E.g. Cherryh2022.alignment1.aa.fa
 # ml_tree_dir                 <- Directory containing all maximum likelihood trees estimating in pipeline step 01
 # output_dir                  <- Directory for IQ-Tree output (trees and tree mixtures)
 # repo_dir                    <- Location of caitlinch/metazoan-mixtures github repository
@@ -24,12 +27,14 @@
 
 location = "local"
 if (location == "local"){
+  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   number_parallel_processes <- 1
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
 } else if (location == "dayhoff"){
+  alignment_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
   ml_tree_dir <- ""
   output_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
