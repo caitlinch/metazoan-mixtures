@@ -2,32 +2,23 @@
 ## This script estimates maximum likelihood under constraint trees for 14 empirical data sets
 # Caitlin Cherryh, 2022
 
-## This script estimates ML trees using a constraint tree for empirical data sets under different models
-
 
 
 #### 1. Input parameters ####
 ## Specify parameters:
-# alignment_dir       <- Directory containing alignments for all data sets
-#                           Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
-#                           E.g. Cherryh2022.alignment1.aa.fa
-# output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
-# repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
+# ml_tree_dir                 <- Directory containing all maximum likelihood trees estimating in pipeline step 01
+# output_dir                  <- Directory for IQ-Tree output (trees and tree mixtures)
+# repo_dir                    <- Location of caitlinch/metazoan-mixtures github repository
 
-# iqtree2             <- Location of IQ-Tree2 stable release
-
+# iqtree2                     <- Location of IQ-Tree2 stable release
 # iqtree_num_threads          <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
-# iqtree_mrate                <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
-#                                   We set iqtree_mrate = "E,I,G,I+G,R,I+R"
-#                                   See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
-# ml_tree_bootstraps          <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree
+#                                     See IQ-Tree documentation for more details (http://www.iqtree.org/doc/Command-Reference)
 # hypothesis_tree_bootstraps  <- Number of ultrafast bootstraps (UFB) to perform in IQ-Tree when estimating constrained maximum likelihood trees
 # number_parallel_processes   <- The number of simultaneous processes to run at once using mclapply(). 
-#                                   If 1, then all processes will run sequentially
+#                                     If 1, then all processes will run sequentially
 
 
 ## Specify control parameters (all take logical values TRUE or FALSE:
-# estimate.ML.trees             <- TRUE to estimate all maximum likelihood trees (each combination of model and alignment). FALSE to skip.
 # extract.ML.tree.information   <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
 # prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
@@ -38,59 +29,25 @@ if (location == "local"){
   ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
-  
   iqtree2 <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  
   number_parallel_processes <- 1
-  
-} else if (location == "soma"){
-  ml_tree_dir <- ""
-  output_dir <- "/data/caitlin/metazoan-mixtures/output/"
-  repo_dir <- "/data/caitlin/metazoan-mixtures/"
-  
-  iqtree2 <- "/data/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  
-  number_parallel_processes <- 2
-  
 } else if (location == "dayhoff"){
   ml_tree_dir <- ""
   output_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
-  
   iqtree2 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  
-  number_parallel_processes <- 1
-  
-} else if (location == "laptop"){
-  ml_tree_dir <- ""
-  output_dir <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/02_output/"
-  repo_dir <- "/Users/caitlin/Repositories/metazoan-mixtures/"
-  
-  iqtree2 <- "/Users/caitlin/Documents/PhD/Ch03_sponge_mixtures/iqtree-2.2.0-MacOSX/bin/iqtree2"
-  
-  number_parallel_processes <- 1
-} else if (location == "rona"){
-  ml_tree_dir <- ""
-  output_dir <- "/home/caitlin/metazoan-mixtures/output/"
-  repo_dir <- "/home/caitlin/metazoan-mixtures/"
-  
-  iqtree2 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  
-  number_parallel_processes <- 1
-}
+  number_parallel_processes <- 4
+} 
 
 # Set parameters that are identical for all run locations
-iqtree_mrate <- "E,I,G,I+G,R,I+R"
 iqtree_num_threads <- 15
-ml_tree_bootstraps <- 1000
 hypothesis_tree_bootstraps <- 1000
 
 # Set control parameters
-estimate.ML.trees <- FALSE
 extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- FALSE # Completed this step for Borowiec2015, Nosenko2013 nonribo, Philippe2009
-estimate.hypothesis.trees <- TRUE
-collate.hypothesis.logs <- TRUE
+prepare.hypothesis.trees <- FALSE
+estimate.hypothesis.trees <- FALSE
+collate.hypothesis.logs <- FALSE
 
 
 
