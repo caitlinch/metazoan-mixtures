@@ -24,7 +24,7 @@
 
 location = "local"
 if (location == "local"){
-  ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
+  ml_tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
   output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   number_parallel_processes <- 1
@@ -78,6 +78,7 @@ if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 
 # Create file paths for output files
 ml_tree_df_file             <- paste0(repo_dir, "output/01_01_maximum_likelihood_tree_estimation_parameters.tsv")
+all_tree_df_file            <- paste0(repo_dir, "output/01_01_all_tree_estimation_parameters.tsv")
 ml_extracted_output_path    <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
 
 
@@ -88,15 +89,33 @@ if (extract.ML.tree.information == TRUE){
   # Open ml_tree_df file 
   ml_tree_df <- read.table(ml_tree_df_file, header = T)
   
+  # Add the PMSF runs
+  pmsf_ids <- grep("LG_C20|LG_C60|C20|C60", ml_tree_df$model_code)
+  pmsf_df <- ml_tree_df[pmsf_ids,]
+  pmsf_df$iqtree2_call <- NA
+  pmsf_df$model_mrate <- NA
+  pmsf_df$model_code <- paste0("PMSF_", pmsf_df$model_code)
+  pmsf_df$model_mset <- paste0("PMSF ", pmsf_df$model_mset)
+  pmsf_df$prefix <- paste0(pmsf_df$dataset, ".", pmsf_df$matrix_name, ".", pmsf_df$model_code)
+  pmsf_df$iqtree_file <- paste0(pmsf_df$prefix, ".complete.iqtree")
+  pmsf_df$ml_tree_file <- paste0(pmsf_df$prefix, ".complete.treefile")
+  
+  # Attach pmsf and ml tree runs into one big dataset
+  tree_df <- rbind(ml_tree_df, pmsf_df)
+  # Sort by dataset then by model
+  tree_df <- tree_df[order(tree_df$dataset, tree_df$matrix_name, tree_df$model_code),]
+  # Write the combined table out
+  write.table(tree_df, file = all_tree_df_file, row.names = FALSE, sep = "\t")
+  
   # Make a list of .iqtree files (and .log files)
-  all_iqtree_files <- paste0(ml_tree_dir, ml_tree_df$iqtree_file)
-  all_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", ml_tree_df$iqtree_file))
+  all_iqtree_files <- paste0(ml_tree_dir, tree_df$iqtree_file)
+  all_log_files <- paste0(ml_tree_dir, gsub(".iqtree", ".log", tree_df$iqtree_file))
   
   # Determine which files exist (i.e. that ML tree estimated in IQ-Tree)
   finished_iqtree_files <- all_iqtree_files[file.exists(all_iqtree_files)]
   
   # Reduce the df to only rows that both the completed iqtree file and the log file are present for
-  trimmed_ml_tree_df <- ml_tree_df[ml_tree_df$iqtree_file %in% basename(finished_iqtree_files),]
+  trimmed_ml_tree_df <- tree_df[tree_df$iqtree_file %in% basename(finished_iqtree_files),]
   
   # Get the correct order for the .iqtree files by reading off the trimmed_ml_tree_df$iqtree_file column
   complete_iqtree_files <- paste0(ml_tree_dir, trimmed_ml_tree_df$iqtree_file)
