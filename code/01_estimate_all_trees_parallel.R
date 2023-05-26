@@ -1,23 +1,17 @@
 # metazoan-mixtures/code/01_estimate_all_trees_parallel.R
-## This script estimates maximum likelihood trees and maximum likelihood under constraint trees for empirical data sets
+## This script estimates maximum likelihood trees under different models of substitution for 14 empirical data sets
 # Caitlin Cherryh, 2022
-
-## This script:
-# 1. Estimates ML trees for empirical data sets under different models
-# 2. Estimates ML trees using a constraint tree for empirical data sets under different models
 
 
 
 #### 1. Input parameters ####
 ## Specify parameters:
-# alignment_dir       <- Directory containing alignments for all data sets
-#                           Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
-#                           E.g. Cherryh2022.alignment1.aa.fa
-# output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
-# repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
-
-# iqtree2             <- Location of IQ-Tree2 stable release
-
+# alignment_dir               <- Directory containing alignments for all data sets
+#                                   Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                                   E.g. Cherryh2022.alignment1.aa.fa
+# output_dir                  <- Directory for IQ-Tree output (trees and tree mixtures)
+# repo_dir                    <- Location of caitlinch/metazoan-mixtures github repository
+# iqtree2                     <- Location of IQ-Tree2 stable release
 # iqtree_num_threads          <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 # iqtree_mrate                <- Specify a comma separated list of rate heterogeneity types for model selection in IQ-Tree
 #                                   We set iqtree_mrate = "E,I,G,I+G,R,I+R"
@@ -27,13 +21,8 @@
 # number_parallel_processes   <- The number of simultaneous processes to run at once using mclapply(). 
 #                                   If 1, then all processes will run sequentially
 
-
-## Specify control parameters (all take logical values TRUE or FALSE:
+## Specify control parameters (all take logical values TRUE or FALSE):
 # estimate.ML.trees             <- TRUE to estimate all maximum likelihood trees (each combination of model and alignment). FALSE to skip.
-# extract.ML.tree.information   <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
-# prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
-# estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
-# collate.hypothesis.logs       <- TRUE to extract information from hypothesis tree log file and iqtree file. FALSE to skip.
 
 location = "rona"
 if (location == "local"){
@@ -89,10 +78,6 @@ hypothesis_tree_bootstraps <- 1000
 
 # Set control parameters
 estimate.ML.trees <- FALSE
-extract.ML.tree.information <- FALSE
-prepare.hypothesis.trees <- FALSE # Completed this step for Borowiec2015, Nosenko2013 nonribo, Philippe2009
-estimate.hypothesis.trees <- TRUE
-collate.hypothesis.logs <- TRUE
 
 
 
@@ -119,6 +104,8 @@ if (length(all_files) > 0){
 }
 # Extract the list of alignments (i.e. files that contain the word "alignment")
 all_alignments <- grep("\\.alignment\\.", all_files, value = T)
+# Remove Simion and Hejnol alignments - too large to estimate ML trees with all models
+all_alignments <- grep("Hejnol", grep("Simion", all_alignments, value = TRUE, invert = TRUE), value = TRUE, invert = TRUE)
 
 # Sort and categorise models of sequence evolution 
 all_models <- sort(unique(unlist(lapply(all_models, sort.model.chunks)))) 
