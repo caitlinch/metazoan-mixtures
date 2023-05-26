@@ -139,7 +139,7 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df, include.
   #     using the output from the maximum likelihood runs
   
   # Sort the dataset by BIC (lowest to highest - remember lower is better)
-  dataset_output_df <- dataset_output_df[order(dataset_output_df$best_model_BIC, decreasing = FALSE),]
+  dataset_output_df <- dataset_output_df[order(dataset_output_df$tree_BIC, decreasing = FALSE),]
   # Determine which model has the lowest BIC
   model_lowest_BIC <- dataset_output_df$model_code[1]
   # Check whether ModelFinder has the lowest BIC
