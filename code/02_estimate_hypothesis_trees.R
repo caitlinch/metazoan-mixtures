@@ -84,8 +84,9 @@ if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 # Create file paths for output files
 ml_tree_df_file             <- paste0(repo_dir, "output/01_01_maximum_likelihood_tree_estimation_parameters.tsv")
 all_tree_df_file            <- paste0(repo_dir, "output/01_01_all_tree_estimation_parameters.tsv")
-ml_extracted_df_file    <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
-alignment_taxa_df_file <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
+ml_extracted_df_file        <- paste0(repo_dir, "output/01_02_maximum_likelihood_results.tsv")
+alignment_taxa_df_file      <- paste0(output_dir, "01_02_maximum_likelihood_included_taxa.tsv")
+completion_freq_df_file     <- paste0(output_dir, "01_02_dataset_completion_frequency.tsv")
 
 
 
@@ -187,7 +188,7 @@ setwd(c_tree_dir)
 if (prepare.hypothesis.trees == TRUE){
   ## Retrieve results from previous steps
   # Open trimmed_ml_tree_df file (output from ML tree runs)
-  trimmed_ml_tree_df <- read.table(df_op_01_02, header = T)
+  trimmed_ml_tree_df <- read.table(ml_extracted_df_file, header = T)
   # Open alignment_taxa_df file (list of taxa in ML trees for each alignment)
   alignment_taxa_df <- read.table(alignment_taxa_df_file, header = T)
   
@@ -198,11 +199,14 @@ if (prepare.hypothesis.trees == TRUE){
   # Remove all entries with 0 frequency (either an alignment that was not run, or an artifact of the method for making the table 
   #   i.e. a combination of dataset and alignment name that is incorrect)
   completion_df <- completion_df[completion_df$frequency != 0,]
+  # Sort by dataset then by matrix
+  completion_df <- completion_df[order(completion_df$dataset, completion_df$matrix_name),]
+  # Reset row names 
   row.names(completion_df) <- 1:nrow(completion_df)
   # Output the frequency dataframe
-  write.table(completion_df, file = df_op_completion_freq, row.names = FALSE, sep = "\t")
+  write.table(completion_df, file = completion_freq_df_file, row.names = FALSE, sep = "\t")
   # Extract the names of the datasets/alignment combinations with all 24 models completed
-  completed_df <- completion_df[completion_df$frequency == 24,]
+  completed_df <- completion_df[completion_df$frequency == 26,]
   
   ## Determine which models to use for each completed dataset
   # Want to extract ModelFinder model, and the model with the best BIC
