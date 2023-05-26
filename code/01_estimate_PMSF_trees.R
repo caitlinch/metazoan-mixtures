@@ -71,7 +71,7 @@ if (location == "local"){
 
 # Set parameters that are identical for all run locations
 pmsf_initial_model <- "'LG+F+G'" # select guide tree from the C20, C60, LG+C20 and LG+C60 runs
-pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'") # extract best model from the C20, C60, LG+C20 and LG+C60 runs
+pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'")
 pmsf_model_code <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 iqtree_num_threads <- 15
 ml_tree_bootstraps <- 1000
