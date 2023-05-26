@@ -92,6 +92,9 @@ alignment_taxa_df_file      <- paste0(output_dir, "01_02_maximum_likelihood_incl
 completion_freq_df_file     <- paste0(output_dir, "01_02_dataset_completion_frequency.tsv")
 best_model_df_file          <- paste0(output_dir, "01_03_best_models_per_alignment.tsv")
 check_ModelFinder_df_file   <- paste0(output_dir, "01_03_check_ModelFinder_best_models.tsv")
+constraint_tree_df_file     <- paste0(output_dir, "01_04_constraint_tree_estimation_parameters.tsv")
+constraint_tree_text_file   <- paste0(output_dir, "01_04_constraint_tree_iqtree2_command_paths.txt")
+collated_hypothesis_df_file <- paste0(output_dir, "01_05_collated_hypothesis_tree_runs.tsv")
 
 
 
@@ -269,16 +272,16 @@ if (prepare.hypothesis.trees == TRUE){
   constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = FALSE))
   
   # Save the constraint tree dataframe
-  write.table(constraint_df, file = df_op_01_03, row.names = FALSE, sep = "\t")
+  write.table(constraint_df, file = constraint_tree_df_file, row.names = FALSE, sep = "\t")
   
   # Save list of iqtree2 commands as text file
-  write(constraint_df$iqtree2_call, file = txt_op_01_03)
+  write(constraint_df$iqtree2_call, file = constraint_tree_text_file)
 }
 
 # Estimate hypothesis trees
 if (estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
-  constraint_df <- read.table(df_op_01_03, header = T)
+  constraint_df <- read.table(constraint_tree_df_file, header = T)
   
   # Run IQ-Tree commands to estimate hypothesis trees for each model/matrix combination
   mclapply(constraint_df$iqtree2_call, system, mc.cores = number_parallel_processes)
@@ -288,15 +291,15 @@ if (estimate.hypothesis.trees == TRUE){
 #### THIS NEEDS TESTING ####
 if (collate.hypothesis.logs == TRUE){
   # Open ml_tree_df file (if it exists)
-  if (file.exists(df_op_01_01) == TRUE){
-    ml_tree_df <- read.table(df_op_01_01, header = T)
+  if (file.exists(ml_extracted_df_file) == TRUE){
+    ml_tree_df <- read.table(ml_extracted_df_file, header = T)
   }
   
   # Combine hypothesis trees into one file per unique identifier and save
   ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
                                              outgroup_taxa = NA)
   # Save dataframe
-  write.table(ml_tree_df, file = df_op_01_04, row.names = FALSE, sep = "\t")
+  write.table(ml_tree_df, file = collated_hypothesis_df_file, row.names = FALSE, sep = "\t")
   
 }
 
