@@ -57,7 +57,8 @@ names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 control_parameters <- list(extract.ML.tree.information = FALSE,
                            prepare.hypothesis.trees = FALSE,
                            estimate.hypothesis.trees = FALSE,
-                           collate.hypothesis.logs = TRUE)
+                           collate.hypothesis.logs = TRUE,
+                           include.datasets.with.only.CXX.missing = TRUE)
 
 
 
@@ -236,8 +237,16 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
                                                          input_parameter_file = output_file_paths[2], output_parameter_file = output_file_paths[3]))[c(FALSE,TRUE)]
   # Output the frequency dataframe
   write.table(completion_df, file = output_file_paths[5], row.names = FALSE, sep = "\t")
-  # Extract the names of the datasets/alignment combinations with all 24 models completed
-  complete_inds <- unique(c(which(completion_df$frequency == 26)))
+  # Extract the names of the completed datasets/alignment combinations
+  if (control_parameters$include.datasets.with.only.CXX.missing == TRUE){
+    # Extract the names of the datasets/alignment combinations with EITHER:
+    #       - all 26 models completed
+    #       - all models EXCEPT any/all of the following completed: C20, C60, LG+C20, LG+C60
+    complete_inds <- sort(unique(c(which(completion_df$frequency == 26), which(completion_df$only_CXX_runs_remaining == control_parameters$include.datasets.with.only.CXX.missing))))
+  } else {
+    # Extract the names of the datasets/alignment combinations with all 26 models completed
+    complete_inds <- which(completion_df$frequency == 26)
+  }
   completed_df <- completion_df[complete_inds,]
   
   ## Determine which models to use for each completed dataset
@@ -249,13 +258,6 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
   selected_models_df <- do.call(rbind, selected_models_list)
   # Save the dataframe of best models
   write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
-  
-  ## Check whether the "best model" by BIC is tested for by ModelFinder in IQ-Tree
-  check_modelfinder_df <- selected_models_list <- do.call(rbind, lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
-                                                                        ML_output_df = trimmed_ml_tree_df, include.ModelFinder = TRUE))
-  mfp_check_df <- check.ModelFinder.models.wrapper(best_models_df = check_modelfinder_df, IQTree_output_dir = ml_tree_op_dir)
-  # Save the dataframe you just created
-  write.table(mfp_check_df, file = output_file_paths[7], row.names = FALSE, sep = "\t")
   
   ## Prepare parameters for the constraint trees
   # Attach alignment files to the rows
