@@ -17,6 +17,7 @@
 # hypothesis_tree_dir     <- Directory containing constrained maximum likelihood trees
 # pmsf_sitefreq_dir       <- Directory containing output files (including .sitefreq files) from IQ-Tree runs with PMSF model
 # mast_dir                <- Directory for phyloHMM/MAST output
+# output_dir              <- Directory for output csvs
 # repo_dir                <- Location of caitlinch/metazoan-mixtures github repository
 
 # iqtree2                 <- Location of IQ-Tree2 stable release (version 2.2.2)
@@ -29,11 +30,23 @@ if (location == "local"){
   hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/"
   pmsf_sitefreq_dir       <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_pmsf_site_freqs/"
   mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_tree_mixtures/"
+  output_dir              <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   
   iqtree2                 <- "iqtree2"
   iqtree_tm               <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
   iqtree_num_threads      <- 3
+} else if (location == "dayhoff"){
+  alignment_dir           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
+  hypothesis_tree_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/hyp_tree_output_files/"
+  pmsf_sitefreq_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
+  mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/phyloHMM"
+  output_dir              <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
+  repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
+  
+  iqtree2                 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  iqtree_tm               <- "" # Update version on dayhoff
+  iqtree_num_threads      <- 10
 }
 
 
@@ -44,35 +57,42 @@ source(paste0(repo_dir, "code/func_data_processing.R"))
 
 
 #### 3. Prepare for analysis ####
-## Prepare the dataframe 
-model_df <- read.table(paste0(repo_dir, "output/01_03_best_models_per_alignment.tsv"), header = T)
-# Add the alignments to the dataframe
-all_aldir_files <- list.files(alignment_dir)
-al_files <- grep("alignment", grep("00_", all_aldir_files, value = T, invert = T), value = T)
-model_df$alignment_path <- unlist(lapply(1:nrow(model_df), function(i){
-  grep(model_df$dataset[i], grep(model_df$matrix_name[i], al_files, value = T), value = T)
-}))
-# Split the best_model column into two columns: one for the best model to input into IQ-Tree, 
-#     and one for the path to the .sitefreq file (present only if best model is a PMSF model)
-split_best_model_str                <- strsplit(model_df$best_model, ":")
-model_df$best_model                 <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][1]}))
-model_df$best_model_sitefreq_path   <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][2]}))
-# Reorder the columns
-model_df <- model_df[,c("dataset", "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix",
-                        "best_model", "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC",
-                        "best_model_wBIC", "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams",
-                        "tree_BIC", "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
-                        "estimated_rates", "estimated_gamma", "estimated_state_frequencies",
-                        "maximum_likelihood_tree")]
-# Add the  file paths to the dataframe
-model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, model_df$best_model_sitefreq_path)
-model_df$alignment_path <- paste0(alignment_dir, model_df$alignment_path)
-
-# Prepare the hypothesis tree files
-model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
-                                               collate.hypothesis.trees, input_dir = hypothesis_tree_dir,
-                                               output_dir = mast_dir))
-
+## Check whether the dataframe for phyloHMM runs has been created
+phylohmm_parameter_path <- paste0(output_dir, "03_01_phyloHMM_parameters.tsv")
+if (file.exists(phylohmm_parameter_path) == TRUE){
+  model_df <- read.table(phylohmm_parameter_path, header = T)
+} else if (file.exists(phylohmm_parameter_path) == FALSE){
+  ## Prepare the dataframe 
+  model_df <- read.table(paste0(repo_dir, "output/01_03_best_models_per_alignment.tsv"), header = T)
+  # Add the alignments to the dataframe
+  all_aldir_files <- list.files(alignment_dir)
+  al_files <- grep("alignment", grep("00_", all_aldir_files, value = T, invert = T), value = T)
+  model_df$alignment_path <- unlist(lapply(1:nrow(model_df), function(i){
+    grep(model_df$dataset[i], grep(model_df$matrix_name[i], al_files, value = T), value = T)
+  }))
+  # Split the best_model column into two columns: one for the best model to input into IQ-Tree, 
+  #     and one for the path to the .sitefreq file (present only if best model is a PMSF model)
+  split_best_model_str                <- strsplit(model_df$best_model, ":")
+  model_df$best_model                 <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][1]}))
+  model_df$best_model_sitefreq_path   <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][2]}))
+  # Reorder the columns
+  model_df <- model_df[,c("dataset", "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix",
+                          "best_model", "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC",
+                          "best_model_wBIC", "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams",
+                          "tree_BIC", "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
+                          "estimated_rates", "estimated_gamma", "estimated_state_frequencies",
+                          "maximum_likelihood_tree")]
+  ## Prepare the hypothesis tree files
+  model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
+                                                 collate.hypothesis.trees, input_dir = hypothesis_tree_dir,
+                                                 output_dir = mast_dir))
+  ## Add the  file paths to the dataframe
+  model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, basename(model_df$best_model_sitefreq_path))
+  model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
+  model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, basename(model_df$hypothesis_tree_path))
+  ## Write the dataframe
+  write.table(model_df, file = phylohmm_parameter_path, sep = "\t")
+}
 
 
 
