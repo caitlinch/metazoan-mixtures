@@ -926,9 +926,8 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   }
   
   # Collect the output vector
-  output_vector <- c(output_prefix, MAST_model, pmsf_file_path, tree_file, alignment_file, phylohmm_call, run.iqtree)
-  names(output_vector) <- c("phyloHMM_prefix", "phyloHMM_model", "site-specific_frequency_model_file", "tree_file",
-                            "alignment_file", "phyloHMM_iqtree2_command", "iqtree.run.complete")
+  output_vector <- c(output_prefix, MAST_model, phylohmm_call, run.iqtree)
+  names(output_vector) <- c("phyloHMM_prefix", "phyloHMM_model", "phyloHMM_iqtree2_command", "iqtree.run.complete")
   
   # Return the output vector
   return(output_vector)
