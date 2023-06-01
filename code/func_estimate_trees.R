@@ -787,7 +787,8 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, prefix,
 }
 
 
-phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, iqtree_num_threads = "AUTO", run.iqtree = FALSE){
+phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_length_option = "TR", 
+                             iqtree_num_threads = "AUTO", run.iqtree = FALSE){
   # Function to take a dataframe row, extract relevant sections, and call the phyloHMM model
   
   # Extract row
@@ -808,12 +809,12 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, iqtree_num_t
     # Best model provided, but no rate categories
     # Use only the best model in the IQ-Tree call
     # Remove then replace ' around model - to make sure you don't end up with two sets
-    phylohmm_model = paste0("'", gsub("'", "", best_model), "'")
+    phylohmm_model = paste0("'", gsub("'", "", best_model),"+", MAST_branch_length_option, "'")
   } else if (rate.categories.provided == TRUE){
     # Both the best model and the rate categories are provided
     # Create a nice model with both the best model and the free rate category (weights and rates)
     # Remove ' around model and replace around free rate categories
-    phylohmm_model = paste0("'", gsub("'", "", best_model), "{", mast_row$estimated_rates, "}'")
+    phylohmm_model = paste0("'", gsub("'", "", best_model), "{", mast_row$estimated_rates, "}+", MAST_branch_length_option, "'")
   }
   
   ## Check for a site frequency file - meaning the best model is a PMSF model

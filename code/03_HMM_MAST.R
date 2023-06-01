@@ -85,17 +85,9 @@ model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", mod
 # # Run the mixture of trees models
 # mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 
-## To run the phyloHMM
-## Note: possible to apply HMM model with PMSF model?
-test_trees_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/Test.Nosenko2013.nonribosomal_9187_smatrix.LG.ML_Hypothesis_trees.treefile"
-tree_file <- test_trees_file
-alignment_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/Nosenko2013.nonribosomal_9187_smatrix.aa.alignment.phy"
-output_prefix <- "test.Nosenko2013.nonribo.LG.HMM"
-model <- "LG"
-MAST_model <- paste0(model, "+TR") # branch-length restricted MAST model: where a branch occurs in multiple treesm it is constrained to have the same length in each tree
-
-# To run phyloHMM for the toy example
-phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, run.iqtree = FALSE)
+# Run phyloHMM
+phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
+                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, run.iqtree = FALSE)
 phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
 # To extract information from the completed HMM run:
 hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
