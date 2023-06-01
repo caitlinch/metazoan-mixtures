@@ -918,7 +918,7 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   }
   
   # Assemble the command line
-  phylohmm_call <- paste(iqtree_call, model_call, sitefreq_call, gamma_call, hmm_call, al_call, nt_call, prefix_call)
+  phylohmm_call <- paste(iqtree_call, model_call, sitefreq_call, gamma_call, hmm_call, al_call, min_bl_call, nt_call, prefix_call)
   
   # Call IQ-Tree, if required
   if (run.iqtree == TRUE){
