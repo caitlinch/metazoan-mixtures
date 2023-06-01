@@ -1,11 +1,21 @@
 ## caitlinch/metazoan-mixtures/func_data_processing.R
-# Caitlin Cherryh 2022
+# Caitlin Cherryh 2023
 
 # Functions for manipulating, processing, and preparing datasets
 
 #### Packages ####
 library(stringr) # Used in extract.model.details for detecting presence/absence of a pattern in a string (using str_detect) 
 library(ape) # Used in check.tree.taxa to read in a phylogenetic tree from file (using read.tree)
+
+
+
+
+#### Collate hypothesis trees ####
+collate.hypothesis.trees <- function(dataset_id, input_dir, output_dir){
+  # This function extracts all trees with a set ID from an input dir, and writes them into a single output file
+}
+
+
 
 
 #### Process models to prepare for IQ-Tree runs ####
@@ -141,6 +151,8 @@ sort.model.chunks <- function(m){
   # Return the new, sorted model
   return(new_m)
 }
+
+
 
 
 #### Extract details from IQ-Tree output files ####
@@ -1117,6 +1129,8 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
 }
 
 
+
+
 #### Extract information from maximum likelihood trees ####
 # Functions to extract data from maximum likelihood trees estimated in IQ-Tree2 (from the .treefile output file)
 
@@ -1236,6 +1250,7 @@ dataset.check.tree.taxa.wrapper <- function(unique_ids, tree_folder){
 
 
 
+
 #### Extract information from tree mixture results ####
 extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, model, best_model, tree_branch_option){
   # Function to take one tree mixture file and output the results from the corresponding .iqtree file
@@ -1302,6 +1317,7 @@ extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, mod
   # Return output dataframe
   return(op_df)
 }
+
 
 
 
