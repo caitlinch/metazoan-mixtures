@@ -95,8 +95,8 @@ model <- "LG"
 MAST_model <- paste0(model, "+TR") # branch-length restricted MAST model: where a branch occurs in multiple treesm it is constrained to have the same length in each tree
 
 # To run phyloHMM for the toy example
-iqtree_hmm_command <- run.phyloHMM(tree_file = tree_file, alignment_file = alignment_file, MAST_model = MAST_model, output_prefix = output_prefix, 
-                                   iqtree_phyloHMM = iqtree_tm, iqtree_num_threads = "AUTO", run.iqtree = FALSE)
+phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, run.iqtree = FALSE)
+phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
 # To extract information from the completed HMM run:
 hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 
