@@ -15,8 +15,7 @@ collate.hypothesis.trees <- function(dataset_id, input_dir, output_dir){
   # This function extracts all trees with a set ID from an input dir, and writes them into a single output file
   
   # Create output path
-  output_id <- paste(c(strsplit(tree_paths[1], "\\.")[[1]])[1:(length(strsplit(tree_paths[1], "\\.")[[1]]) - 2)], collapse = ".")
-  output_path <- paste0(output_dir, output_id, ".constrained_ML.hypothesis_trees.treefile")
+  output_path <- paste0(output_dir, dataset_id, ".constrained_ML.hypothesis_trees.treefile")
   # Check if output path exists, and if it doesn't, create it
   if (file.exists(output_path) == FALSE){
     # List all the files in the input directory
