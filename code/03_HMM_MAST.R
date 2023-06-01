@@ -51,7 +51,7 @@ all_aldir_files <- list.files(alignment_dir)
 al_files <- grep("alignment", grep("00_", all_aldir_files, value = T, invert = T), value = T)
 model_df$alignment_path <- unlist(lapply(1:nrow(model_df), function(i){
   grep(model_df$dataset[i], grep(model_df$matrix_name[i], al_files, value = T), value = T)
-  }))
+}))
 # Split the best_model column into two columns: one for the best model to input into IQ-Tree, 
 #     and one for the path to the .sitefreq file (present only if best model is a PMSF model)
 split_best_model_str                <- strsplit(model_df$best_model, ":")
@@ -69,6 +69,9 @@ model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, model_df$best_mod
 model_df$alignment_path <- paste0(alignment_dir, model_df$alignment_path)
 
 # Prepare the hypothesis tree files
+model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name), 
+                                               collate.hypothesis.trees, input_dir = hypothesis_tree_dir,
+                                               output_dir = mast_dir))
 
 
 
