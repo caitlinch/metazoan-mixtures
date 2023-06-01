@@ -788,7 +788,7 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, prefix,
 
 
 phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_length_option = "TR", 
-                             iqtree_num_threads = "AUTO", run.iqtree = FALSE){
+                             iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, run.iqtree = FALSE){
   # Function to take a dataframe row, extract relevant sections, and call the phyloHMM model
   
   # Extract row
@@ -864,7 +864,8 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
                                   output_prefix = phylohmm_prefix, 
                                   MAST_model = phylohmm_model, gamma_alpha_value = phylohmm_gamma, 
                                   is.MAST.model.PMSF = check_pmsf, pmsf_file_path = mast_row$best_model_sitefreq_path,
-                                  iqtree_phyloHMM = iqtree_tree_mixtures, iqtree_num_threads = "AUTO", run.iqtree = run.iqtree)
+                                  iqtree_phyloHMM = iqtree_tree_mixtures, iqtree_num_threads = iqtree_num_threads, 
+                                  iqtree_min_branch_length = iqtree_min_branch_length, run.iqtree = run.iqtree)
   # Return output
   return(phylohmm_output)
 }
@@ -872,7 +873,7 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
 
 run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA, 
                          MAST_model, gamma_alpha_value = NA, is.MAST.model.PMSF = FALSE, pmsf_file_path = NA, 
-                         iqtree_phyloHMM, iqtree_num_threads = "AUTO", run.iqtree){
+                         iqtree_phyloHMM, iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, run.iqtree){
   # Function to apply the phyloHMM for the MAST model with multiple trees
   # iqtree_phyloHMM = the IQ-Tree2 implementation of the phyloHMM model (currently IQ-Tree version 2.2.0.8.mix.1.hmm)
   
@@ -907,6 +908,8 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   al_call <- paste0("-s ", alignment_file)
   # Set call for number of threads
   nt_call <- paste0("-nt ", iqtree_num_threads)
+  # Set call for minimum branch length
+  min_bl_call <- paste0("-blmin ", iqtree_min_branch_length)
   ## Set prefix call
   if (is.na(output_prefix) == TRUE){
     prefix_call <- ""

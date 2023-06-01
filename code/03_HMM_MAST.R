@@ -87,7 +87,8 @@ model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", mod
 
 # Run phyloHMM
 phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
-                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, run.iqtree = FALSE)
+                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, iqtree_min_branch_length = 0.0001,
+                            run.iqtree = FALSE)
 phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
 # To extract information from the completed HMM run:
 hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
