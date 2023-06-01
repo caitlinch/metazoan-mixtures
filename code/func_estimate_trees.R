@@ -915,15 +915,16 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   
   # Assemble the command line
   phylohmm_call <- paste(iqtree_call, model_call, sitefreq_call, gamma_call, hmm_call, al_call, nt_call, prefix_call)
-  command <- paste0(iqtree_phyloHMM, " -m '", MAST_model, "' -hmm -te ", tree_file, " -s ", alignment_file, " -nt ", iqtree_num_threads, prefix_call)
   
   # Call IQ-Tree, if required
   if (run.iqtree == TRUE){
-    system(command)
+    system(phylohmm_call)
   }
   
   # Collect the output vector
-  output_vector <- c(command)
+  output_vector <- c(output_prefix, MAST_model, pmsf_file_path, tree_file, alignment_file, phylohmm_call, run.iqtree)
+  names(output_vector) <- c("phyloHMM_prefix", "phyloHMM_model", "site-specific_frequency_model_file", "tree_file",
+                            "alignment_file", "phyloHMM_iqtree2_command", "iqtree.run.complete")
   
   # Return the output vector
   return(output_vector)
