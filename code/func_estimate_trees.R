@@ -854,7 +854,7 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
       # Do not create an IQ-Tree command for gamma
       phylohmm_gamma <- NA
     }
-  } else if (is.na(gamma) == TRUE){
+  } else {
     # Gamma variable is NA - do not create an IQ-Tree command for gamma
     phylohmm_gamma <- NA
   }
