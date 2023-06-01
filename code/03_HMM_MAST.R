@@ -11,27 +11,27 @@
 
 #### 1. Input parameters ####
 ## Specify parameters:
-# alignment_dir       <- Directory containing alignments for all data sets
-#                       Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
-#                       E.g. Cherryh2022.alignment1.aa.fa
-# output_dir          <- Directory for IQ-Tree output (trees and tree mixtures)
-# repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
+# alignment_dir           <- Directory containing alignments for all data sets
+#                               Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
+#                               E.g. Cherryh2022.alignment1.aa.fa
+# hypothesis_tree_dir     <- Directory containing constrained maximum likelihood trees
+# mast_dir                <- Directory for phyloHMM/MAST output
+# repo_dir                <- Location of caitlinch/metazoan-mixtures github repository
 
-# iqtree2             <- Location of IQ-Tree2 stable release (version 2.2.2)
-# iqtree_tm           <- Location of IQ-Tree2 MAST release (currently: version 2.2.0.8.mix.1.hmm)
-
-# iqtree_num_threads  <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
+# iqtree2                 <- Location of IQ-Tree2 stable release (version 2.2.2)
+# iqtree_tm               <- Location of IQ-Tree2 MAST release (currently: version 2.2.0.8.mix.1.hmm)
+# iqtree_num_threads      <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
 location = "local"
 if (location == "local"){
-  alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
-  repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+  alignment_dir           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
+  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/"
+  mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_tree_mixtures/"
+  repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   
-  iqtree2 <- "iqtree2"
-  iqtree_tm <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
-  
-  iqtree_num_threads = 3
+  iqtree2                 <- "iqtree2"
+  iqtree_tm               <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
+  iqtree_num_threads      <- 3
 }
 
 
@@ -81,4 +81,9 @@ mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 # # Output results dataframe
 # op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.tsv")
 # write.table(tr_results, file = op_file, row.names = FALSE, sep = "\t")
+
+## Apply AU-tests to all datasets
+
+
+## Note: possible to apply HMM model with PMSF model?
 
