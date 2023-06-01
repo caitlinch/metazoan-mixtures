@@ -784,10 +784,94 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, prefix,
   
   # Return the iqtree command line
   return(treemix_command)
-} # end function
+}
 
 
-run.phyloHMM <- function(tree_file, alignment_file, MAST_model, output_prefix = NA, iqtree_phyloHMM, iqtree_num_threads = "AUTO", run.iqtree = FALSE){
+phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, iqtree_num_threads = "AUTO", run.iqtree = FALSE){
+  # Function to take a dataframe row, extract relevant sections, and call the phyloHMM model
+  
+  # Extract row
+  mast_row <- mast_df[1,]
+  
+  ## Extract parameters for phyloHMM run from the row
+  # Assemble the output prefix
+  phylohmm_prefix <- paste0(mast_row$prefix, ".phyloHMM")
+  # Check whether the model is a PMSF model
+  check_pmsf <- grepl("PMSF", mast_row$model_code)
+  
+  ## Assemble the model for the MAST run model
+  best_model <- gsub("'", "", mast_row$best_model)
+  # Check whether the free-rate categories are included
+  rate.categories.provided = !is.na(mast_row$estimated_rates)
+  # Assemble the call for the model
+  if (rate.categories.provided == FALSE){
+    # Best model provided, but no rate categories
+    # Use only the best model in the IQ-Tree call
+    # Remove then replace ' around model - to make sure you don't end up with two sets
+    phylohmm_model = paste0("'", gsub("'", "", best_model), "'")
+  } else if (rate.categories.provided == TRUE){
+    # Both the best model and the rate categories are provided
+    # Create a nice model with both the best model and the free rate category (weights and rates)
+    # Remove ' around model and replace around free rate categories
+    phylohmm_model = paste0("'", gsub("'", "", best_model), "{", mast_row$estimated_rates, "}'")
+  }
+  
+  ## Check for a site frequency file - meaning the best model is a PMSF model
+  # Determine whether the sitefreq variable is present (or is NA)
+  if (is.na(mast_row$estimated_state_frequencies) == FALSE){
+    # The sitefreq variable is present - this iqtree run uses a PMSF model
+    if (mast_row$estimated_state_frequencies == "State frequencies from model"){
+      # State frequencies from model - do not provide state frequencies
+      phylohmm_sitefreq <- NA
+    } else {
+      # The sitefreq variable is present - this iqtree run uses a PMSF model
+      phylohmm_sitefreq <- mast_row$estimated_state_frequencies
+    }
+  } else if (is.na(sitefreq_file) == TRUE){
+    # No sitefreq variable is present - do not use a PMSF model
+    phylohmm_sitefreq <- NA
+  }
+  
+  ## Check for a gamma shape parameter (alpha) call
+  # Determine whether the gamma variable is present (or is NA)
+  if (is.na(mast_row$estimated_gamma) == FALSE){
+    # Make sure gamma is a character vector
+    gamma = mast_row$estimated_gamma
+    if (class(gamma) != "character"){
+      gamma <- as.character(gamma)
+    }
+    # Check whether the gamma variable is an alpha parameter (by checking if there are any commas present)
+    gamma_split <- strsplit(gamma, split = ",")[[1]]
+    if (length(gamma) == length(gamma_split)){
+      # There is only one gamma value: gamma here the gamma shape parameter
+      # Strip any spaces from the gamma value
+      gamma_clean <- gsub(" ", "", gamma)
+      # Create an IQ-Tree command for gamma
+      phylohmm_gamma <- gamma_clean
+    } else if (length(gamma) < length(gamma_split)){
+      # There are multiple values within gamma: gamma here is a list of the rates, not an alpha parameter
+      # Do not create an IQ-Tree command for gamma
+      phylohmm_gamma <- NA
+    }
+  } else if (is.na(gamma) == TRUE){
+    # Gamma variable is NA - do not create an IQ-Tree command for gamma
+    phylohmm_gamma <- NA
+  }
+  
+  # Call phyloHMM function
+  phylohmm_output <- run.phyloHMM(tree_file = mast_row$hypothesis_tree_path, alignment_file = mast_row$alignment_path, 
+                                  output_prefix = phylohmm_prefix, 
+                                  MAST_model = phylohmm_model, gamma_alpha_value = phylohmm_gamma, 
+                                  is.MAST.model.PMSF = check_pmsf, pmsf_file_path = mast_row$best_model_sitefreq_path,
+                                  iqtree_phyloHMM = iqtree_tree_mixtures, iqtree_num_threads = "AUTO", run.iqtree = run.iqtree)
+  # Return output
+  return(phylohmm_output)
+}
+
+
+run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA, 
+                         MAST_model, gamma_alpha_value = NA, is.MAST.model.PMSF = FALSE, pmsf_file_path = NA, 
+                         iqtree_phyloHMM, iqtree_num_threads = "AUTO", run.iqtree){
   # Function to apply the phyloHMM for the MAST model with multiple trees
   # iqtree_phyloHMM = the IQ-Tree2 implementation of the phyloHMM model (currently IQ-Tree version 2.2.0.8.mix.1.hmm)
   
@@ -798,13 +882,39 @@ run.phyloHMM <- function(tree_file, alignment_file, MAST_model, output_prefix = 
   #             and -s denotes the alignment file
   #         Here, the model fed in is the BEST model, i.e. the model that the hypothesis trees were estimated under
   
+  ## Set iqtree call (call to executeable)
+  iqtree_call <- iqtree_phyloHMM
+  ## Set model call
+  model_call <- paste0("-m ", MAST_model)
+  ## Set sitefreq file call 
+  if ((is.MAST.model.PMSF == TRUE) & (is.na(pmsf_file_path) == FALSE)){
+    # If -fs option selected (i.e. best model is a PMSF model) and the provided .sitefreq file exists, 
+    #     use the site-specific frequency model
+    sitefreq_call <- paste0("-fs ", pmsf_file_path)
+  } else {
+    sitefreq_call <- ""
+  }
+  ## Set gamma call
+  if (is.na(gamma_alpha_value) == FALSE){
+    gamma_call <- paste0("-a ", gamma_alpha_value)
+  } else {
+    gamma_call <- ""
+  }
+  ## Set hmm call
+  hmm_call <- paste0("-hmm -te ", tree_file)
+  ## Set alignment call
+  al_call <- paste0("-s ", alignment_file)
+  # Set call for number of threads
+  nt_call <- paste0("-nt ", iqtree_num_threads)
+  ## Set prefix call
   if (is.na(output_prefix) == TRUE){
     prefix_call <- ""
   } else {
-    prefix_call <- paste0(" -pre ", output_prefix)
+    prefix_call <- paste0("-pre ", output_prefix)
   }
   
   # Assemble the command line
+  phylohmm_call <- paste(iqtree_call, model_call, sitefreq_call, gamma_call, hmm_call, al_call, nt_call, prefix_call)
   command <- paste0(iqtree_phyloHMM, " -m '", MAST_model, "' -hmm -te ", tree_file, " -s ", alignment_file, " -nt ", iqtree_num_threads, prefix_call)
   
   # Call IQ-Tree, if required
