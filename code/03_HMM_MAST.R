@@ -52,22 +52,39 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 
 
 
-#### 3. Apply mixtures across trees and sites (MAST model) ####
-# Create a folder for the ml trees and move to that folder
-m_tree_dir <- paste0(output_dir, "tree_mixtures/")
-if (file.exists(m_tree_dir) == FALSE){dir.create(m_tree_dir)}
-setwd(m_tree_dir)
+#### 4. Apply mixtures across trees and sites (MAST model) ####
+# ## To run the MAST model and determine the weights of each tree (deprecated - now using phyloHMM):
+# # Create the tree mixture prefix and command lines
+# ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
+# ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm,
+#                                iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
+# # Run the mixture of trees models
+# mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 
-# Create the tree mixture prefix and command lines
-ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
-ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm,
-                               iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
+## To run the phyloHMM
+## Note: possible to apply HMM model with PMSF model?
+test_trees_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/Test.Nosenko2013.nonribosomal_9187_smatrix.LG.ML_Hypothesis_trees.treefile"
+tree_file <- test_trees_file
+alignment_file <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/Nosenko2013.nonribosomal_9187_smatrix.aa.alignment.phy"
+output_prefix <- "test.Nosenko2013.nonribo.LG.HMM"
+model <- "LG"
+MAST_model <- paste0(model, "+TR") # branch-length restricted MAST model: where a branch occurs in multiple treesm it is constrained to have the same length in each tree
 
-# Run the mixture of trees models
-mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
+# To run phyloHMM for the toy example
+iqtree_hmm_command <- run.phyloHMM(tree_file = tree_file, alignment_file = alignment_file, MAST_model = MAST_model, output_prefix = output_prefix, 
+                                   iqtree_phyloHMM = iqtree_tm, iqtree_num_threads = "AUTO", run.iqtree = FALSE)
+# To extract information from the completed HMM run:
+hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 
 
-############### Incomplete code: still need to extract results from MAST model and save to tsv file
+
+#### 5. Apply AU test to each dataset ####
+
+
+
+
+#### 6. Extract results from IQ-Tree output files ####
+# Incomplete code: still need to extract results from MAST model and save to tsv file
 # # Identify iqtree files from tree mixture run
 # all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
 # all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
@@ -82,8 +99,4 @@ mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 # op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.tsv")
 # write.table(tr_results, file = op_file, row.names = FALSE, sep = "\t")
 
-## Apply AU-tests to all datasets
-
-
-## Note: possible to apply HMM model with PMSF model?
 
