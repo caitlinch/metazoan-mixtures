@@ -139,7 +139,7 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 
 #### 5. Apply AU test to each dataset ####
 # Get the IQ-Tree2 command lines for each dataset
-top_test_call_list <- tree.topology.test.wrapper(1:nrow(phyloHMM_df), df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
+top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
                                                    iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = FALSE)
 top_test_call_df <- as.data.frame(do.call(rbind, top_test_call_list))
 # Get the tree topology test results for each dataset

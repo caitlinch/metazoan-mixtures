@@ -1021,7 +1021,9 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
   }
   
   ## Change location to output directory
-  setwd(output_dir)
+  if (run.iqtree == TRUE){
+    setwd(row_df_output_dir)
+  }
   
   ## Call perform.AU.test and run tree topology tests in IQ-Tree
   au_test_command_line <- perform.AU.test(alignment_file = df_row$alignment_path, hypothesis_tree_files = df_row$hypothesis_tree_path, 
@@ -1032,9 +1034,9 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
                                           iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
   if (return.AU.output == TRUE){
     ## Detect the output iqtree file
-    output_dir_files <- list.files(output_dir)
+    output_dir_files <- list.files(row_df_output_dir)
     prefix_files <- grep(output_prefix, output_dir_files, value = T)
-    iqtree_file <- paste0(output_dir, grep(".iqtree", prefix_files, value = T))
+    iqtree_file <- paste0(row_df_output_dir, grep(".iqtree", prefix_files, value = T))
     
     ## Determine the number of trees (needed to extract output)
     h_trees <- read.tree(hypothesis_tree_files)
@@ -1113,7 +1115,6 @@ perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_prefix
   }
   # Assemble the command line
   au_test_call <- paste(c(iqtree_call, al_call, model_call, sitefreq_call, gamma_call, te_call, hyp_tree_call, tree_top_call, nt_call, prefix_call), collapse = " ")
-  print(au_test_call)
   
   ## Call IQ-Tree, if desired
   if (run.iqtree == TRUE){
