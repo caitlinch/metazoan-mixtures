@@ -886,7 +886,7 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   #             and -s denotes the alignment file
   #         Here, the model fed in is the BEST model, i.e. the model that the hypothesis trees were estimated under
   
-  ## Set iqtree call (call to executeable)
+  ## Set iqtree call (call to executable)
   iqtree_call <- iqtree_phyloHMM
   ## Set model call
   model_call <- paste0("-m ", MAST_model)
@@ -945,9 +945,116 @@ extract.phyloHMM.output <- function(output_prefix, output_directory){
 
 
 #### Applying tests of tree topology using IQ-Tree2
+tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE){
+  # Function to take a dataframe row, extract relevant sections, and call the tree topology test function
+  
+  # Extract row
+  df_row <- df[row_id,]
+  
+  ## Extract parameters for AU test run from the row
+  # Assemble the output prefix
+  tree_top_prefix <- paste0(df_row$prefix, ".AU_test")
+  # Check whether the model is a PMSF model
+  check_pmsf <- grepl("PMSF", df_row$model_code)
+  
+  ## Assemble the model for the MAST run model
+  best_model <- gsub("'", "", df_row$best_model)
+  # Check whether the free-rate categories are included
+  rate.categories.provided = !is.na(df_row$estimated_rates)
+  # Assemble the call for the model
+  if (rate.categories.provided == FALSE){
+    # Best model provided, but no rate categories
+    # Use only the best model in the IQ-Tree call
+    # Remove then replace ' around model - to make sure you don't end up with two sets
+    tree_top_model = paste0("'", gsub("'", "", best_model), "'")
+  } else if (rate.categories.provided == TRUE){
+    # Both the best model and the rate categories are provided
+    # Create a nice model with both the best model and the free rate category (weights and rates)
+    # Remove ' around model and replace around free rate categories
+    tree_top_model = paste0("'", gsub("'", "", best_model), "{", df_row$estimated_rates, "}'")
+  }
+  
+  ## Check for a site frequency file - meaning the best model is a PMSF model
+  # Determine whether the sitefreq variable is present (or is NA)
+  if (is.na(df_row$estimated_state_frequencies) == FALSE){
+    # The sitefreq variable is present - this iqtree run uses a PMSF model
+    if (df_row$estimated_state_frequencies == "State frequencies from model"){
+      # State frequencies from model - do not provide state frequencies
+      tree_top_sitefreq <- NA
+    } else {
+      # The sitefreq variable is present - this iqtree run uses a PMSF model
+      tree_top_sitefreq <- df_row$estimated_state_frequencies
+    }
+  } else if (is.na(sitefreq_file) == TRUE){
+    # No sitefreq variable is present - do not use a PMSF model
+    tree_top_sitefreq <- NA
+  }
+  
+  ## Check for a gamma shape parameter (alpha) call
+  # Determine whether the gamma variable is present (or is NA)
+  if (is.na(df_row$estimated_gamma) == FALSE){
+    # Make sure gamma is a character vector
+    gamma = df_row$estimated_gamma
+    if (class(gamma) != "character"){
+      gamma <- as.character(gamma)
+    }
+    # Check whether the gamma variable is an alpha parameter (by checking if there are any commas present)
+    gamma_split <- strsplit(gamma, split = ",")[[1]]
+    if (length(gamma) == length(gamma_split)){
+      # There is only one gamma value: gamma here the gamma shape parameter
+      # Strip any spaces from the gamma value
+      gamma_clean <- gsub(" ", "", gamma)
+      # Create an IQ-Tree command for gamma
+      tree_top_gamma <- gamma_clean
+    } else if (length(gamma) < length(gamma_split)){
+      # There are multiple values within gamma: gamma here is a list of the rates, not an alpha parameter
+      # Do not create an IQ-Tree command for gamma
+      tree_top_gamma <- NA
+    }
+  } else {
+    # Gamma variable is NA - do not create an IQ-Tree command for gamma
+    tree_top_gamma <- NA
+  }
+  
+  ## Determine output directory
+  if (is.na(output_dir) == TRUE){
+    # No output directory is provided - use hypothesis tree directory
+    row_df_output_dir <- paste0(dirname(hypothesis_tree_dir), "/")
+  } else if (is.na(output_dir) == FALSE){
+    # Output directory is provided
+    row_df_output_dir <- output_dir
+  }
+  
+  ## Call perform.AU.test and run tree topology tests in IQ-Tree
+  tree_top_output <- perform.AU.test(alignment_file = df_row$alignment_path, hypothesis_tree_files = df_row$hypothesis_tree_path, 
+                                     output_dir = row_df_output_dir, output_prefix = tree_top_prefix,
+                                     AU_test_model = tree_top_model, gamma_alpha_value = tree_top_gamma, 
+                                     is.best.model.PMSF = check_pmsf, pmsf_file_path = tree_top_sitefreq, 
+                                     iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads, 
+                                     iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
+  
+  ## Format output
+  if (class(tree_top_output) == "data.frame"){
+    # Check if the returned output is a dataframe - if yes, then the tree topology tests ran successfully.
+    # Add new columns 
+    tree_top_output$Prefix <- tree_top_prefix
+    tree_top_output$Evolutionary_hypothesis <- c("CTEN-sister", "PORI-sister", "CTEN+PORI-sister", 
+                                                 "CTEN-sister (PORI paraphyletic)", "PORI-sister (PORI paraphyletic)")[1:nrow(tree_top_output)]
+    # Rearrange columns
+    tree_top_output <- tree_top_output[, c("Prefix", "Tree", "Evolutionary_hypothesis", "logL", "deltaL",
+                                           "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
+  }
+  
+  ## Return output
+  return(tree_top_output)
+}
+
+
+
+
 perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_dir, output_prefix = NA,
                             AU_test_model, gamma_alpha_value = NA, is.best.model.PMSF = FALSE, pmsf_file_path = NA, 
-                            iqtree2, iqtree_num_threads = "AUTO", num_RELL_replicates = 10000, run.iqtree = FALSE){
+                            iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE){
   ## This function takes an alignment and a set of trees, and applies the tree topology tests within IQ-Tree2
   # Example command line:
   #     Running tree topology tests:
@@ -982,7 +1089,7 @@ perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_dir, o
   # Set hypothesis tree call
   hyp_tree_call <- paste0("-z ", hypothesis_tree_files)
   # Set call for tree topology tests
-  tree_top_call <- paste0("-zb ", num_RELL_replicates," -au -zw")
+  tree_top_call <- paste0("-zb ", iqtree_num_RELL_replicates," -au -zw")
   # Set call for number of threads
   nt_call <- paste0("-nt ", iqtree_num_threads)
   # Set prefix call
