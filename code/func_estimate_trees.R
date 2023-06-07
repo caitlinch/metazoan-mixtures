@@ -1026,16 +1026,23 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
   }
   
   ## Call perform.AU.test and run tree topology tests in IQ-Tree
-  tree_top_output <- perform.AU.test(alignment_file = df_row$alignment_path, hypothesis_tree_files = df_row$hypothesis_tree_path, 
-                                     output_dir = row_df_output_dir, output_prefix = tree_top_prefix,
-                                     AU_test_model = tree_top_model, gamma_alpha_value = tree_top_gamma, 
-                                     is.best.model.PMSF = check_pmsf, pmsf_file_path = tree_top_sitefreq, 
-                                     iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads, 
-                                     iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
+  au_test_output <- perform.AU.test(alignment_file = df_row$alignment_path, hypothesis_tree_files = df_row$hypothesis_tree_path, 
+                                    output_dir = row_df_output_dir, output_prefix = tree_top_prefix,
+                                    AU_test_model = tree_top_model, gamma_alpha_value = tree_top_gamma, 
+                                    is.best.model.PMSF = check_pmsf, pmsf_file_path = tree_top_sitefreq, 
+                                    iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads, 
+                                    iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
   
-  ## Format output
-  if (class(tree_top_output) == "data.frame"){
-    # Check if the returned output is a dataframe - if yes, then the tree topology tests ran successfully.
+  ## Extract output
+  # Extract iqtree_file
+  iqtree_file <- au_test_output[1]
+  # Determine the number of trees (needed to extract output)
+  h_trees <- read.tree(hypothesis_tree_files)
+  num_h_trees <- length(h_trees)
+  # Extract output from completed iqtree file
+  if (file.exists(iqtree_file) == TRUE){
+    # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
+    tree_top_output <- extract.tree.topology.test.results(iqtree_file = iqtree_file, number_of_trees = num_h_trees)
     # Add new columns 
     tree_top_output$Prefix <- tree_top_prefix
     tree_top_output$Evolutionary_hypothesis <- c("CTEN-sister", "PORI-sister", "CTEN+PORI-sister", 
@@ -1043,6 +1050,9 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
     # Rearrange columns
     tree_top_output <- tree_top_output[, c("Prefix", "Tree", "Evolutionary_hypothesis", "logL", "deltaL",
                                            "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
+  } else {
+    # No .iqtree file present - return NA
+    tree_top_output <- NA
   }
   
   ## Return output
@@ -1100,29 +1110,28 @@ perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_dir, o
   }
   # Assemble the command line
   au_test_call <- paste(c(iqtree_call, al_call, model_call, sitefreq_call, gamma_call, te_call, hyp_tree_call, tree_top_call, nt_call, prefix_call), collapse = " ")
+  print(au_test_call)
   
   ## Call IQ-Tree, if desired
   if (run.iqtree == TRUE){
     system(au_test_call)
   }
   
-  ## Extract output
-  # Determine the number of trees (needed to extract output)
-  h_trees <- read.tree(hypothesis_tree_files)
-  num_h_trees <- length(h_trees)
-  # Find the output iqtree file
+  ## Return the output iqtree file
   output_dir_files <- list.files(output_dir)
   prefix_files <- grep(output_prefix, output_dir_files, value = T)
   iqtree_file <- paste0(output_dir, grep(".iqtree", prefix_files, value = T))
   if (file.exists(iqtree_file) == TRUE){
     # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
-    tree_top_op <- extract.tree.topology.test.results(iqtree_file = iqtree_file, number_of_trees = num_h_trees)
+    complete_iqtree_file <- iqtree_file
   } else {
     # No .iqtree file present - return NA
-    tree_top_op <- NA
+    complete_iqtree_file <- NA
   }
+  # Collate results
+  au_op <- c(complete_iqtree_file, au_test_call)
   # Return the results
-  return(tree_top_op)
+  return(au_op)
 }
 
 
