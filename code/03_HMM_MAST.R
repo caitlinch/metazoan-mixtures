@@ -47,7 +47,7 @@ if (location == "local"){
   alignment_dir           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
   hypothesis_tree_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/hyp_tree_output_files/"
   pmsf_sitefreq_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
-  mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/phyloHMM"
+  mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/phyloHMM/"
   output_dir              <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   iqtree2                 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
@@ -119,7 +119,7 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
 
 # Create phyloHMM command lines in IQ-Tree
 phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
-                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, iqtree_min_branch_length = 0.0001,
+                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
                             run.iqtree = FALSE)
 phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
 # Bind dataframe
