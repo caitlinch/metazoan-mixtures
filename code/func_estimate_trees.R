@@ -788,7 +788,8 @@ run.tree.mixture.model <- function(alignment_file, hypothesis_tree_file, prefix,
 
 
 phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_length_option = "TR", 
-                             iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, run.iqtree = FALSE){
+                             iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, 
+                             run.iqtree = FALSE){
   # Function to take a dataframe row, extract relevant sections, and call the phyloHMM model
   
   # Extract row
@@ -873,7 +874,8 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
 
 run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA, 
                          MAST_model, gamma_alpha_value = NA, is.MAST.model.PMSF = FALSE, pmsf_file_path = NA, 
-                         iqtree_phyloHMM, iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, run.iqtree){
+                         iqtree_phyloHMM, iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, 
+                         run.iqtree = FALSE){
   # Function to apply the phyloHMM for the MAST model with multiple trees
   # iqtree_phyloHMM = the IQ-Tree2 implementation of the phyloHMM model (currently IQ-Tree version 2.2.0.8.mix.1.hmm)
   
@@ -918,7 +920,7 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   }
   
   # Assemble the command line
-  phylohmm_call <- paste(iqtree_call, model_call, sitefreq_call, gamma_call, hmm_call, al_call, min_bl_call, nt_call, prefix_call)
+  phylohmm_call <- paste(c(iqtree_call, model_call, sitefreq_call, gamma_call, hmm_call, al_call, min_bl_call, nt_call, prefix_call), collapse = " ")
   
   # Call IQ-Tree, if required
   if (run.iqtree == TRUE){
@@ -939,3 +941,94 @@ extract.phyloHMM.output <- function(output_prefix, output_directory){
   
 }
 
+
+
+
+#### Applying tests of tree topology using IQ-Tree2
+# This function takes an alignment and calculates the AU test using IQ-Tree
+perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_prefix = NA, num_RELL_replicates = 10000,
+                            AU_test_model, gamma_alpha_value = NA, is.best.model.PMSF = FALSE, pmsf_file_path = NA, 
+                            iqtree2, iqtree_num_threads = "AUTO", run.iqtree = FALSE){
+  # Function to apply the phyloHMM for the MAST model with multiple trees
+  
+  # Example command line:
+  #     Running tree topology tests:
+  #         $ iqtree2 -s data.phy -m GTR+G -n 0 -z data.trees -zb 10000 -zw -au
+  
+  ## Set iqtree call (call to executeable)
+  iqtree_call <- iqtree2
+  ## Set alignment call
+  al_call <- paste0("-s ", alignment_file)
+  ## Set model call
+  model_call <- paste0("-m ", AU_test_model)
+  ## Set sitefreq file call 
+  if ((is.best.model.PMSF == TRUE) & (is.na(pmsf_file_path) == FALSE)){
+    # If -fs option selected (i.e. best model is a PMSF model) and the provided .sitefreq file exists, 
+    #     use the site-specific frequency model
+    sitefreq_call <- paste0("-fs ", pmsf_file_path)
+  } else {
+    sitefreq_call <- ""
+  }
+  ## Set gamma call
+  if (is.na(gamma_alpha_value) == FALSE){
+    gamma_call <- paste0("-a ", gamma_alpha_value)
+  } else {
+    gamma_call <- ""
+  }
+  ## Set tree estimation call
+  te_call <- "-n 0"
+  ## Set hypothesis tree call
+  hyp_tree_call <- paste0("-z ", hypothesis_tree_files)
+  ## Set call for tree topology tests
+  tree_top_call <- paste0("-zb ", num_RELL_replicates," -au -zw")
+  # Set call for number of threads
+  nt_call <- paste0("-nt ", iqtree_num_threads)
+  ## Set prefix call
+  if (is.na(output_prefix) == TRUE){
+    prefix_call <- ""
+  } else {
+    prefix_call <- paste0("-pre ", output_prefix)
+  }
+  
+  # Assemble the command line
+  au_test_call <- paste(c(iqtree_call, al_call, model_call, sitefreq_call, gamma_call, te_call, hyp_tree_call, tree_top_call, nt_call, prefix_call), collapse = " ")
+  
+  # Call IQ-Tree, if required
+  if (run.iqtree == TRUE){
+    system(au_test_call)
+  }
+
+  # Collect the results of the AU test
+  # Open the log file
+  log_file <- paste0(alignment_path, ".log")
+  log_lines <- readLines(log_file)
+  ind <- grep("Reading trees in",log_lines) + 2
+  # extract log likelihood values
+  tree1_logl <- log_lines[ind]
+  tree1_logl <- as.numeric(strsplit(tree1_logl, ":")[[1]][2])
+  tree2_logl <- log_lines[ind + 1]
+  tree2_logl <- as.numeric(strsplit(tree2_logl, ":")[[1]][2])
+  tree3_logl <- log_lines[ind + 2]
+  tree3_logl <- as.numeric(strsplit(tree3_logl, ":")[[1]][2])
+  logl_sum <- tree1_logl + tree2_logl + tree3_logl
+  tree1_prop_logl <- tree1_logl/logl_sum
+  tree2_prop_logl <- tree2_logl/logl_sum
+  tree3_prop_logl <- tree3_logl/logl_sum
+  find_best_tree <- which(c(tree1_logl, tree2_logl, tree3_logl) == max(c(tree1_logl, tree2_logl, tree3_logl)))
+  best_tree_number <- paste(c(find_best_tree), collapse = " + ")
+  if (length(find_best_tree) == 1){
+    best_tree_exists = "YES"
+  } else if (length(find_best_tree) > 1){
+    best_tree_exists = "NO"
+  }
+  if ((round(tree1_logl, 4) ==  round(tree2_logl, 4)) & (round(tree2_logl, 4) ==  round(tree3_logl, 4)) & (round(tree1_logl, 4) ==  round(tree3_logl, 4))){
+    logl_equal = TRUE
+  } else {
+    logl_equal = FALSE
+  }
+  output_df <- data.frame(locus = loci_name, tree1_log_likelihood =  tree1_logl, tree2_log_likelihood = tree2_logl, 
+                          tree3_log_likelihood = tree3_logl, sum_log_likelihood = logl_sum, best_tree = best_tree_number, 
+                          one_tree_best = best_tree_exists, all_likelihoods_equal = logl_equal, tree1_likelihood_proportion = tree1_prop_logl, 
+                          tree2_likelihood_proportion = tree2_prop_logl, tree3_likelihood_proportion = tree3_prop_logl)
+  write.csv(output_df, file = paste0(csv_folder, loci_name, "_AU_test_results.csv"))
+}
