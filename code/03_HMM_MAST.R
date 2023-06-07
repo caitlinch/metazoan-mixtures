@@ -141,7 +141,8 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 # Get the IQ-Tree2 command lines for each dataset
 top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
                                                    iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = FALSE)
-top_test_call_df <- as.data.frame(do.call(rbind, top_test_call_list))
+au_test_calls <- unlist(top_test_call_list)
+write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
 # Get the tree topology test results for each dataset
 top_test_list <- tree.topology.test.wrapper(1:nrow(phyloHMM_df), df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
                                                  iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = TRUE)
