@@ -53,6 +53,7 @@ if (location == "local"){
 
 #### 2. Prepare variables, open packages and source functions ####
 source(paste0(repo_dir, "code/func_data_processing.R"))
+source(paste0(repo_dir, "code/func_estimate_trees.R"))
 
 
 
