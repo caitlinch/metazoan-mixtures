@@ -945,7 +945,8 @@ extract.phyloHMM.output <- function(output_prefix, output_directory){
 
 
 #### Applying tests of tree topology using IQ-Tree2
-tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE){
+tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE,
+                                       return.AU.output = TRUE){
   # Function to take a dataframe row, extract relevant sections, and call the tree topology test function
   
   # Extract row
@@ -1034,29 +1035,35 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
                                     iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
   
   ## Extract output
-  # Extract iqtree_file
-  iqtree_file <- au_test_output[1]
-  # Determine the number of trees (needed to extract output)
-  h_trees <- read.tree(hypothesis_tree_files)
-  num_h_trees <- length(h_trees)
-  # Extract output from completed iqtree file
-  if (file.exists(iqtree_file) == TRUE){
-    # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
-    tree_top_output <- extract.tree.topology.test.results(iqtree_file = iqtree_file, number_of_trees = num_h_trees)
-    # Add new columns 
-    tree_top_output$Prefix <- tree_top_prefix
-    tree_top_output$Evolutionary_hypothesis <- c("CTEN-sister", "PORI-sister", "CTEN+PORI-sister", 
-                                                 "CTEN-sister (PORI paraphyletic)", "PORI-sister (PORI paraphyletic)")[1:nrow(tree_top_output)]
-    # Rearrange columns
-    tree_top_output <- tree_top_output[, c("Prefix", "Tree", "Evolutionary_hypothesis", "logL", "deltaL",
-                                           "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
-  } else {
-    # No .iqtree file present - return NA
-    tree_top_output <- NA
+  if (return.AU.output == TRUE){
+    # Extract iqtree_file
+    iqtree_file <- au_test_output[1]
+    # Determine the number of trees (needed to extract output)
+    h_trees <- read.tree(hypothesis_tree_files)
+    num_h_trees <- length(h_trees)
+    # Extract output from completed iqtree file
+    if (file.exists(iqtree_file) == TRUE){
+      # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
+      tree_top_output <- extract.tree.topology.test.results(iqtree_file = iqtree_file, number_of_trees = num_h_trees)
+      # Add new columns 
+      tree_top_output$Prefix <- tree_top_prefix
+      tree_top_output$Evolutionary_hypothesis <- c("CTEN-sister", "PORI-sister", "CTEN+PORI-sister", 
+                                                   "CTEN-sister (PORI paraphyletic)", "PORI-sister (PORI paraphyletic)")[1:nrow(tree_top_output)]
+      # Rearrange columns
+      tree_top_output <- tree_top_output[, c("Prefix", "Tree", "Evolutionary_hypothesis", "logL", "deltaL",
+                                             "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
+      wrapper_op <- tree_top_output
+    } else {
+      # No .iqtree file present - return NA
+      wrapper_op <- NA
+    }
+  } else if (return.AU.output == FALSE){
+    wrapper_op <- au_test_output
   }
   
+  
   ## Return output
-  return(tree_top_output)
+  return(wrapper_op)
 }
 
 
