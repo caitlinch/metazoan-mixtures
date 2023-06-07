@@ -945,8 +945,7 @@ extract.phyloHMM.output <- function(output_prefix, output_directory){
 
 
 #### Applying tests of tree topology using IQ-Tree2
-tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE,
-                                       return.AU.output = TRUE){
+tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE){
   # Function to take a dataframe row, extract relevant sections, and call the tree topology test function
   
   # Extract row
@@ -976,19 +975,13 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
   }
   
   ## Check for a site frequency file - meaning the best model is a PMSF model
-  # Determine whether the sitefreq variable is present (or is NA)
-  if (is.na(df_row$estimated_state_frequencies) == FALSE){
-    # The sitefreq variable is present - this iqtree run uses a PMSF model
-    if (df_row$estimated_state_frequencies == "State frequencies from model"){
-      # State frequencies from model - do not provide state frequencies
-      tree_top_sitefreq <- NA
-    } else {
-      # The sitefreq variable is present - this iqtree run uses a PMSF model
-      tree_top_sitefreq <- df_row$estimated_state_frequencies
-    }
+  # Determine whether the pmsf file is present
+  if (is.na(df_row$best_model_sitefreq_path) == FALSE){
+    # This iqtree run uses a PMSF model
+    tree_top_pmsf_file <- df_row$best_model_sitefreq_path
   } else if (is.na(sitefreq_file) == TRUE){
     # No sitefreq variable is present - do not use a PMSF model
-    tree_top_sitefreq <- NA
+    tree_top_pmsf_file <- NA
   }
   
   ## Check for a gamma shape parameter (alpha) call
@@ -1026,21 +1019,26 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
     row_df_output_dir <- output_dir
   }
   
-  ## Call perform.AU.test and run tree topology tests in IQ-Tree
-  au_test_output <- perform.AU.test(alignment_file = df_row$alignment_path, hypothesis_tree_files = df_row$hypothesis_tree_path, 
-                                    output_dir = row_df_output_dir, output_prefix = tree_top_prefix,
-                                    AU_test_model = tree_top_model, gamma_alpha_value = tree_top_gamma, 
-                                    is.best.model.PMSF = check_pmsf, pmsf_file_path = tree_top_sitefreq, 
-                                    iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads, 
-                                    iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
+  ## Change location to output directory
+  setwd(output_dir)
   
-  ## Extract output
+  ## Call perform.AU.test and run tree topology tests in IQ-Tree
+  au_test_command_line <- perform.AU.test(alignment_file = df_row$alignment_path, hypothesis_tree_files = df_row$hypothesis_tree_path, 
+                                          output_prefix = tree_top_prefix,
+                                          AU_test_model = tree_top_model, gamma_alpha_value = tree_top_gamma, 
+                                          is.best.model.PMSF = check_pmsf, pmsf_file_path = tree_top_pmsf_file, 
+                                          iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads, 
+                                          iqtree_num_RELL_replicates = iqtree_num_RELL_replicates, run.iqtree = run.iqtree)
   if (return.AU.output == TRUE){
-    # Extract iqtree_file
-    iqtree_file <- au_test_output[1]
-    # Determine the number of trees (needed to extract output)
+    ## Detect the output iqtree file
+    output_dir_files <- list.files(output_dir)
+    prefix_files <- grep(output_prefix, output_dir_files, value = T)
+    iqtree_file <- paste0(output_dir, grep(".iqtree", prefix_files, value = T))
+    
+    ## Determine the number of trees (needed to extract output)
     h_trees <- read.tree(hypothesis_tree_files)
     num_h_trees <- length(h_trees)
+    
     # Extract output from completed iqtree file
     if (file.exists(iqtree_file) == TRUE){
       # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
@@ -1054,13 +1052,13 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
                                              "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
       wrapper_op <- tree_top_output
     } else {
-      # No .iqtree file present - return NA
-      wrapper_op <- NA
+      # No .iqtree file present - return just the iqtree2 command line
+      wrapper_op <- au_test_command_line
     }
   } else if (return.AU.output == FALSE){
-    wrapper_op <- au_test_output
+    # Do not check for iqtree_file - return just the iqtree2 command line
+    wrapper_op <- au_test_command_line
   }
-  
   
   ## Return output
   return(wrapper_op)
@@ -1069,16 +1067,13 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
 
 
 
-perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_dir, output_prefix = NA,
+perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_prefix = NA,
                             AU_test_model, gamma_alpha_value = NA, is.best.model.PMSF = FALSE, pmsf_file_path = NA, 
                             iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE){
   ## This function takes an alignment and a set of trees, and applies the tree topology tests within IQ-Tree2
   # Example command line:
   #     Running tree topology tests:
   #         $ iqtree2 -s data.phy -m GTR+G -n 0 -z data.trees -zb 10000 -zw -au
-  
-  ## Change location to output directory
-  setwd(output_dir)
   
   ## Create IQ-Tree command line
   # Set iqtree call (call to executeable)
@@ -1124,21 +1119,8 @@ perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_dir, o
     system(au_test_call)
   }
   
-  ## Return the output iqtree file
-  output_dir_files <- list.files(output_dir)
-  prefix_files <- grep(output_prefix, output_dir_files, value = T)
-  iqtree_file <- paste0(output_dir, grep(".iqtree", prefix_files, value = T))
-  if (file.exists(iqtree_file) == TRUE){
-    # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
-    complete_iqtree_file <- iqtree_file
-  } else {
-    # No .iqtree file present - return NA
-    complete_iqtree_file <- NA
-  }
-  # Collate results
-  au_op <- c(complete_iqtree_file, au_test_call)
-  # Return the results
-  return(au_op)
+  ## Return the iqtree2 command line
+  return(au_test_call)
 }
 
 
