@@ -10,7 +10,7 @@
 
 
 #### 1. Input parameters ####
-## Specify parameters:
+## File paths
 # alignment_dir           <- Directory containing alignments for all data sets
 #                               Alignment naming convention: [manuscript].[matrix_name].[sequence_type].fa
 #                               E.g. Cherryh2022.alignment1.aa.fa
@@ -19,35 +19,46 @@
 # mast_dir                <- Directory for phyloHMM/MAST output
 # output_dir              <- Directory for output csvs
 # repo_dir                <- Location of caitlinch/metazoan-mixtures github repository
-
 # iqtree2                 <- Location of IQ-Tree2 stable release (version 2.2.2)
 # iqtree_tm               <- Location of IQ-Tree2 MAST release (currently: version 2.2.0.8.mix.1.hmm)
+
+## Phylogenetic and IQ-Tree2 parameters
 # iqtree_num_threads      <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
+
+## Control parameters
+# run.phyloHMM            <- TRUE to call IQ-Tree2 and run the phyloHMM. FALSE to output IQ-Tree2 command lines without running phyloHMM.
 
 location = "local"
 if (location == "local"){
+  ## File paths
   alignment_dir           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/"
   pmsf_sitefreq_dir       <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_pmsf_site_freqs/"
   mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_tree_mixtures/"
   output_dir              <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
-  
   iqtree2                 <- "iqtree2"
   iqtree_tm               <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0.8.mix.1.hmm-MacOSX/bin/iqtree2"
+  
+  ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 3
 } else if (location == "dayhoff"){
+  ## File paths
   alignment_dir           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
   hypothesis_tree_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/hyp_tree_output_files/"
   pmsf_sitefreq_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
   mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/phyloHMM"
   output_dir              <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
-  
   iqtree2                 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree_tm               <- "/mnt/data/dayhoff//home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.8.mix.1.hmm-Linux/bin/iqtree2"
+  iqtree_tm               <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.8.mix.1.hmm-Linux/bin/iqtree2"
+  
+  ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 10
 }
+
+## Control parameters
+run.phyloHMM              <- FALSE
 
 
 
@@ -106,11 +117,25 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
 # # Run the mixture of trees models
 # mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
 
-# Run phyloHMM
+# Create phyloHMM command lines in IQ-Tree
 phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
                             iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = 2, iqtree_min_branch_length = 0.0001,
                             run.iqtree = FALSE)
 phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
+# Bind dataframe
+phyloHMM_df <- cbind(model_df,phyloHMM_run_df)
+# Write dataframe
+phylohmm_call_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.tsv")
+write.table(phyloHMM_df, file = phylohmm_call_path, sep = "\t")
+# Write command lines as text file
+phylohmm_call_text_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.txt")
+write(phyloHMM_df$phyloHMM_iqtree2_command, file = phylohmm_call_text_path)
+# Run phyloHMM
+if (run.phyloHMM == TRUE){
+  # Call IQ-Tree2
+  system(phyloHMM_df$phyloHMM_iqtree2_command)
+}
+
 # To extract information from the completed HMM run:
 hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 
