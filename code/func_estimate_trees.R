@@ -945,7 +945,8 @@ extract.phyloHMM.output <- function(output_prefix, output_directory){
 
 
 #### Applying tests of tree topology using IQ-Tree2
-tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE){
+tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqtree_num_threads = "AUTO", iqtree_num_RELL_replicates = 10000,
+                                       run.iqtree = FALSE, return.AU.output = FALSE){
   # Function to take a dataframe row, extract relevant sections, and call the tree topology test function
   
   # Extract row
