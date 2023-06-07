@@ -63,6 +63,10 @@ run.phyloHMM              <- FALSE
 
 
 #### 2. Prepare variables, open packages and source functions ####
+# Extend the number of digits allowed (so BIC and logL can be extracted properly from iqtree files)
+options(digits = 12)
+
+# Source files containing functions
 source(paste0(repo_dir, "code/func_data_processing.R"))
 source(paste0(repo_dir, "code/func_estimate_trees.R"))
 
