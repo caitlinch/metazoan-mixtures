@@ -45,7 +45,7 @@ if (location == "local"){
   repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   
   iqtree2                 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree_tm               <- "" # Update version on dayhoff
+  iqtree_tm               <- "/mnt/data/dayhoff//home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0.8.mix.1.hmm-Linux/bin/iqtree2"
   iqtree_num_threads      <- 10
 }
 
