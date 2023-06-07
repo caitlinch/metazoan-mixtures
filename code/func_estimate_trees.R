@@ -792,7 +792,7 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
   # Function to take a dataframe row, extract relevant sections, and call the phyloHMM model
   
   # Extract row
-  mast_row <- mast_df[1,]
+  mast_row <- mast_df[row_id,]
   
   ## Extract parameters for phyloHMM run from the row
   # Assemble the output prefix
