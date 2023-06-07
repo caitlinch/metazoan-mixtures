@@ -113,14 +113,6 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
 
 
 #### 4. Apply mixtures across trees and sites (MAST model) ####
-# ## To run the MAST model and determine the weights of each tree (deprecated - now using phyloHMM):
-# # Create the tree mixture prefix and command lines
-# ml_tree_df$MAST_prefix <- paste0(ml_tree_df$prefix,".TR")
-# ml_tree_df$MAST_call <- lapply(1:nrow(ml_tree_df), tree.mixture.wrapper, iqtree_tm_path = iqtree2_tm,
-#                                iqtree_num_threads = iqtree_num_threads, df = ml_tree_df)
-# # Run the mixture of trees models
-# mclapply(ml_tree_df$MAST_call, system, mc.cores = number_parallel_processes)
-
 # Create phyloHMM command lines in IQ-Tree
 phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
                             iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
@@ -146,8 +138,17 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 
 
 #### 5. Apply AU test to each dataset ####
-
-
+# Get the IQ-Tree2 command lines for each dataset
+top_test_call_list <- tree.topology.test.wrapper(1:nrow(phyloHMM_df), df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
+                                                   iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = FALSE)
+top_test_call_df <- as.data.frame(do.call(rbind, top_test_call_list))
+# Get the tree topology test results for each dataset
+top_test_list <- tree.topology.test.wrapper(1:nrow(phyloHMM_df), df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
+                                                 iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = TRUE)
+top_test_df <- as.data.frame(do.call(rbind, top_test_list))
+# Write the tree topology results out
+tree_top_path <- paste0(output_dir, "03_03_tree_topology_test_results.tsv")
+write.table(top_test_df, file = tree_top_path, sep = "\t")
 
 
 #### 6. Extract results from IQ-Tree output files ####
