@@ -145,7 +145,7 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 # Run the tree topology tests
 if (run.tree.topology.tests == TRUE){
   top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = au_test_dir, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                               iqtree_num_RELL_replicates = 10000, run.iqtree = TRUE, return.AU.output = FALSE)
+                               iqtree_num_RELL_replicates = 10000, run.iqtree = TRUE)
   au_test_calls <- unlist(top_test_call_list)
   write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
 }
