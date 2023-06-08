@@ -150,12 +150,12 @@ if (run.tree.topology.tests == TRUE){
   write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
 }
 # Extract the tree topology test results
-top_test_list <- tree.topology.test.wrapper(1:nrow(phyloHMM_df), df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                                            iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = TRUE)
-top_test_df <- as.data.frame(do.call(rbind, top_test_list))
-# Write the tree topology results out
-tree_top_path <- paste0(output_dir, "03_03_tree_topology_test_results.tsv")
-write.table(top_test_df, file = tree_top_path, sep = "\t")
+all_op_files <- list.files(au_test_dir)
+au_test_iqtree_files <- paste0(au_test_dir, grep("AU_test", grep("\\.iqtree", all_op_files, value = TRUE), value = TRUE))
+au_test_list <- lapply(au_test_iqtree_files, extract.tree.topology.test.results)
+# Save tree topology test results to file
+au_test_df <- as.data.frame(do.call(rbind, au_test_list))
+write.table(au_test_df, paste0(output_dir, "04_01_tree_topology_test_results.tsv"), sep= "\t")
 
 
 #### 6. Extract results from IQ-Tree output files ####
