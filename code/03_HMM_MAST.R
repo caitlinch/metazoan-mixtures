@@ -158,20 +158,3 @@ au_test_df <- as.data.frame(do.call(rbind, au_test_list))
 write.table(au_test_df, paste0(output_dir, "04_01_tree_topology_test_results.tsv"), sep= "\t")
 
 
-#### 6. Extract results from IQ-Tree output files ####
-# Incomplete code: still need to extract results from MAST model and save to tsv file
-# # Identify iqtree files from tree mixture run
-# all_files <- paste0(a_tm_op_dir, list.files(a_tm_op_dir))
-# all_iqtree_files <- grep("\\.iqtree", all_files, value = TRUE)
-# tree_mixture_tr_iqfile <- grep(paste0(a_m_prefix,".TR"), all_iqtree_files, value = TRUE)
-# 
-# # Extract information about each tree mixture model run
-# tr_results <- extract.tree.mixture.results(tree_mixture_file = tree_mixture_tr_iqfile, 
-#                                            dataset = a_dataset, prefix = paste0(a_m_prefix,".TR"), 
-#                                            model = m, best_model = best_model, tree_branch_option = "TR")
-# 
-# # Output results dataframe
-# op_file <- paste0(a_tm_op_dir, a_m_prefix, "_tree_mixture_results.tsv")
-# write.table(tr_results, file = op_file, row.names = FALSE, sep = "\t")
-
-
