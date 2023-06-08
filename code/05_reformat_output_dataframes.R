@@ -1,5 +1,5 @@
 # metazoan-mixtures/code/05_reformat_output_dataframes.R
-## This script reads in tsv files created prior in the pipeline, and reformats them nicely for the manuscript
+## This script reads in csv/tsv files created prior in the pipeline, and reformats them nicely for the manuscript
 # Caitlin Cherryh, 2023
 
 
@@ -33,7 +33,7 @@ all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 
 
 #### 3. Prepare summary of the manual topology check csv file ####
-### Summarise topology results (as precentage of each output topology)
+### Summarise topology results (as percentage of each output topology)
 # Read in csv file
 topology_check_file <- grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE)
 topology_check_df <- read.csv(topology_check_file, stringsAsFactors = FALSE)
@@ -50,7 +50,7 @@ summary_topology_df <- summary_topology_df[order(summary_topology_df$dataset_yea
 summary_topology_file <- paste0(output_file_dir, "summary_ML_tree_topology.csv")
 write.csv(summary_topology_df, file = summary_topology_file, row.names = FALSE)
 
-### Nicely format output dataframes of tree topologies and of sponge topologies
+### Nicely format output data frames of tree topologies and of sponge topologies
 model_order <- c("PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60", 
                  "C20", "C60", "LG_C20", "LG_C60", "CF4", "EHO", "EX_EHO",
                  "EX2", "EX3", "GTR20", "JTT", "JTTDCMut", "LG", "LG4M",
@@ -58,11 +58,28 @@ model_order <- c("PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60",
                  "ModelFinder")
 ordered_dataset_ids <- paste0(summary_topology_df$dataset, ".", summary_topology_df$matrix_name)
 ## For tree topologies:
+# Extract tree topologies from dataframe
 tree_topology_list <- lapply(ordered_dataset_ids, tree.topology.results, topology_check_df, model_order)
 tree_topology_df <- as.data.frame(do.call(cbind, tree_topology_list))
+# Format dataframe
+names(tree_topology_df) <- ordered_dataset_ids
+tree_topology_df$row_names <- c("dataset", "matrix_name", model_order)
+tree_topology_df <- tree_topology_df[, c("row_names", ordered_dataset_ids)]
+# Output dataframe
+tree_topology_file <- paste0(output_file_dir, "all_models_ML_tree_topology.csv")
+write.csv(tree_topology_df, file = tree_topology_file, row.names = FALSE)
 ## For Porifera topologies:
+# Extract tree topologies from dataframe
 pori_topology_list <- lapply(ordered_dataset_ids, porifera.topology.results, topology_check_df, model_order)
 pori_topology_df <- as.data.frame(do.call(cbind, pori_topology_list))
+# Format dataframe
+names(pori_topology_df) <- ordered_dataset_ids
+pori_topology_df$row_names <- c("dataset", "matrix_name", model_order)
+pori_topology_df <- pori_topology_df[, c("row_names", ordered_dataset_ids)]
+# Output dataframe
+pori_topology_file <- paste0(output_file_dir, "all_models_ML_Porifera_topology.csv")
+write.csv(pori_topology_df, file = pori_topology_file, row.names = FALSE)
+
 
 
 #### 4. Prepare summary of the tree topology test tsv file ####
