@@ -36,6 +36,18 @@ all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 # Read in csv file
 topology_check_file <- grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE)
 topology_check_df <- read.csv(topology_check_file, stringsAsFactors = FALSE)
+# Remove Simion and Hejnol datasets - too computationally intensive to run full ML models
+topology_check_df <- topology_check_df[which(topology_check_df$dataset != "Hejnol2009" & topology_check_df$dataset != "Simion2017"), ]
+# Summarise results for each dataset as a percentage
+dataset_ids <- unique(paste0(topology_check_df$dataset, ".", topology_check_df$matrix_name))
+summary_topology_list <- lapply(dataset_ids, summarise.topology.results, topology_check_df, 
+                                excluded_models = c("C10", "C30", "C40", "C50"))
+summary_topology_df <-  as.data.frame(do.call(rbind, summary_topology_list))
+# Sort output by year
+summary_topology_df <- summary_topology_df[order(summary_topology_df$dataset_year, summary_topology_df$dataset, summary_topology_df$matrix_name),]
+# Write the output
+summary_topology_file <- paste0(output_file_dir, "summary_ML_tree_topology.csv")
+write.csv(summary_topology_df, file = summary_topology_file, row.names = FALSE)
 
 
 
@@ -58,6 +70,12 @@ write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
 # Read in tsv file
 phyloHMM_file <- grep("phyloHMM", all_output_files, value = TRUE)
 phyloHMM_df <- read.table(file = phyloHMM_file, header = TRUE, sep = "\t")
+# Process each dataset one at a time
+
+# Sort output by year
+
+# Write the output
+
 
 
 
