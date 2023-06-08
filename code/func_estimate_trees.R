@@ -1094,40 +1094,6 @@ perform.AU.test <- function(alignment_file, hypothesis_tree_files, output_prefix
 }
 
 
-extract.AU.test.results <- function(iqtree_file, number_of_trees){
-  if (return.AU.output == TRUE){
-    ## Detect the output iqtree file
-    output_dir_files <- list.files(row_df_output_dir)
-    prefix_files <- grep(output_prefix, output_dir_files, value = T)
-    iqtree_file <- paste0(row_df_output_dir, grep(".iqtree", prefix_files, value = T))
-    
-    ## Determine the number of trees (needed to extract output)
-    h_trees <- read.tree(hypothesis_tree_files)
-    num_h_trees <- length(h_trees)
-    
-    # Extract output from completed iqtree file
-    if (file.exists(iqtree_file) == TRUE){
-      # Collect the results of the AU test and other tree topology tests (if the iqtree file exists)
-      tree_top_output <- extract.tree.topology.test.results(iqtree_file = iqtree_file, number_of_trees = num_h_trees)
-      # Add new columns 
-      tree_top_output$Prefix <- tree_top_prefix
-      tree_top_output$Evolutionary_hypothesis <- c("CTEN-sister", "PORI-sister", "CTEN+PORI-sister", 
-                                                   "CTEN-sister (PORI paraphyletic)", "PORI-sister (PORI paraphyletic)")[1:nrow(tree_top_output)]
-      # Rearrange columns
-      tree_top_output <- tree_top_output[, c("Prefix", "Tree", "Evolutionary_hypothesis", "logL", "deltaL",
-                                             "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
-      wrapper_op <- tree_top_output
-    } else {
-      # No .iqtree file present - return just the iqtree2 command line
-      wrapper_op <- au_test_command_line
-    }
-  } else if (return.AU.output == FALSE){
-    # Do not check for iqtree_file - return just the iqtree2 command line
-    wrapper_op <- au_test_command_line
-  }
-}
-
-
 extract.tree.topology.test.results <- function(iqtree_file){
   ## File to extract results from completed tree topology tests
   # Extract identifier from the iqtree file
