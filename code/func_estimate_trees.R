@@ -1124,7 +1124,7 @@ extract.tree.topology.test.results <- function(iqtree_file){
   table_df$best_model_code <- iqtree_file_split[3]
   table_df$analysis <- "tree_topology_tests"
   table_df$evolutionary_hypothesis <- possible_hypotheses[1:nrow(table_df)]
-  table_df$AU_test_rejected <- table_df$p_AU < 0.05
+  table_df$AU_test_rejected <- as.numeric(table_df$p_AU) < 0.05
   table_df$tree_topology_iqtree_file <- iqtree_file
   # Rearrange columns
   table_df <- table_df[, c("ID", "dataset", "matrix", "best_model_code", "analysis", "tree", "evolutionary_hypothesis", 
