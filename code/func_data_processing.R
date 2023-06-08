@@ -1349,7 +1349,6 @@ extract.tree.mixture.results <- function(tree_mixture_file, dataset, prefix, mod
 #### Extract information from dataframes ####
 check.remaining.runs <- function(dataset, input_parameter_file, output_parameter_file){
   ## Small function to check which (if any) runs are remaining for a single model
-  
   # Open the input and output dataframes
   in_df <- read.table(input_parameter_file, header = TRUE, sep = "\t")
   out_df <- read.table(output_parameter_file, header = TRUE, sep = "\t")
@@ -1380,7 +1379,6 @@ check.remaining.runs <- function(dataset, input_parameter_file, output_parameter
       cat_only = FALSE
     }
   }
-  
   # Assemble and return output
   check_runs_op <- c(remaining_models, cat_only)
   names(check_runs_op) <- c("remaining_trees_to_run", "only_CXX_runs_remaining")
@@ -1393,7 +1391,6 @@ check.remaining.runs <- function(dataset, input_parameter_file, output_parameter
 #### Summarise information from output csvs ####
 summarise.AU.test.results <- function(dataset_id, au_test_df){
   ## Function to take one dataset and summarise the AU test results in one row
-  
   # Get rows of dataframe that have matching ID
   d_df <- au_test_df[au_test_df$ID == dataset_id,]
   # Extract year of publication
@@ -1405,9 +1402,64 @@ summarise.AU.test.results <- function(dataset_id, au_test_df){
     au_test_pvalues <- d_df$p_AU
   }
   # Create a new row for output
-  new_row <- c(d_df$dataset[1], d_df$matrix[1], d_df$best_model_code[1], "AU_test_p_values", au_test_pvalues, dataset_year)
-  names(new_row) <- c("dataset", "matrix", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year")
+  new_row <- c(d_df$dataset[1], d_df$matrix[1], d_df$best_model_code[1], "AU_test_p_values", 
+               au_test_pvalues, dataset_year)
+  names(new_row) <- c("dataset", "matrix", "best_model_code", "topology_test", 
+                      "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year")
   # Return the output
   return(new_row)
+}
+
+
+summarise.topology.results <- function(dataset_id, topology_check_df, 
+                                       excluded_models = c("C10", "C30", "C40", "C50")){
+  ## Function to take one dataset and summarise the tree topology and Porifera clade topology
+  # Get rows of dataframe that have matching ID
+  d_df <- topology_check_df[grep(dataset_id, topology_check_df$ML_tree_name),]
+  # Extract year of publication
+  dataset_year <- as.numeric(str_extract(unique(d_df$dataset), "(\\d)+"))
+  # Remove excluded models from the dataframe
+  keep_rows <- which(!d_df$model_code %in% excluded_models)
+  d_df <- d_df[keep_rows, ]
+  # Remove any rows with NA or "" (i.e. missing trees)
+  keep_tree_rows <- unique(c(which(d_df$sister_group != ""), which(d_df$PORI_topology != ""), 
+                             which(!is.na(d_df$sister_group)), which(!is.na(d_df$PORI_topology))))
+  d_df <- d_df[keep_tree_rows, ]
+  # Summarise results
+  topology_results <- c(length(which(d_df$sister_group == "Ctenophora")), 
+                        length(which(d_df$sister_group == "Porifera")),
+                        length(which(d_df$sister_group == "Ctenophora+Porifera")), 
+                        length(which(d_df$sister_group == "Radiata")))
+  pori_topology_results <- c(length(which(d_df$PORI_topology == "Monophyletic")), 
+                             length(which(d_df$PORI_topology == "Paraphyletic")),
+                             length(which(d_df$PORI_topology == "One taxon")))
+  cten_cnid_mono_results <- c(length(which(d_df$CTEN.CNID_monophyletic == "Yes")), 
+                              length(which(d_df$CTEN.CNID_monophyletic == "No")))
+  # Summarise UFB support
+  mean_UFB_support <- mean(as.numeric(d_df$UFB_support))
+  # Check whether the dataset is completed
+  num_trees <- nrow(d_df)
+  num_completed_trees <- num_trees - length(which(d_df$sister_group == ""))
+  if (num_completed_trees == 26){
+    dataset_completed = TRUE
+  } else {
+    dataset_completed = FALSE
+  }
+  # Assemble output vector
+  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], num_completed_trees, dataset_completed, topology_results, 
+                     round((topology_results/num_trees*100), digits = 2), mean_UFB_support, pori_topology_results, 
+                     round((pori_topology_results/num_trees*100), digits = 2), cten_cnid_mono_results, 
+                     round((cten_cnid_mono_results/num_trees*100), digits = 2), d_df$PLAC_present[1], dataset_year)
+  names(output_vector) <- c("dataset", "matrix_name", "num_completed_trees", "dataset_completed",
+                            "CTEN_sister", "PORI_sister", "CTEN+PORI_sister", "Radiata_sister",
+                            "percent_CTEN_sister", "percent_PORI_sister", "percent_CTEN+PORI_sister",
+                            "percent_Radiata_sister", "mean_UFB_support", "PORI_monophyletic", 
+                            "PORI_paraphyletic", "PORI_one_taxon", "percent_PORI_monophyletic",
+                            "percent_PORI_paraphyletic", "percent_PORI_one_taxon", 
+                            "CTEN+CNID_monophyletic", "CTEN+CNID_not_monophyletic",
+                            "percent_CTEN+CNID_monophyletic", "percent_CTEN+CNID_not_monophyletic",
+                            "PLAC_present", "dataset_year")
+  # Return output vector
+  return(output_vector)
 }
 
