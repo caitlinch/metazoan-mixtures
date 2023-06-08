@@ -1128,19 +1128,38 @@ extract.AU.test.results <- function(iqtree_file, number_of_trees){
 }
 
 
-extract.tree.topology.test.results <- function(iqtree_file, number_of_trees){
+extract.tree.topology.test.results <- function(iqtree_file){
   ## File to extract results from completed tree topology tests
+  # Extract identifier from the iqtree file
+  iqtree_file_split <- strsplit(basename(iqtree_file), "\\.")[[1]]
+  # Prepare vector of possible evolutionary hypotheses
+  possible_hypotheses <- c("CTEN-sister", "PORI-sister", "CTEN+PORI-sister", "CTEN-sister (PORI paraphyletic)", "PORI-sister (PORI paraphyletic)")
   # Open .iqtree file to get results of other tests
   iq_lines <- readLines(iqtree_file)
   # Find the table of test results
   ind <- intersect(intersect(grep("deltaL", iq_lines), grep("bp-RELL", iq_lines)), intersect(grep("p-SH", iq_lines), grep("p-AU", iq_lines)))
+  # Find the number of trees by finding the next blank line after the end of the table of test results - 
+  #   the number of lines in the table is the number of trees
+  all_blank_lines <- which(iq_lines == "")
+  next_blank_line <- all_blank_lines[which(all_blank_lines > ind)[1]]
+  # Add 2 to starting ind (header row + "-----" division row) and subtract 1 from end ind (blank row) to get number of trees
+  number_of_trees <- length(iq_lines[(147+2):(152-1)])
   # Adjust the indices for all rows
   inds <- c(1:number_of_trees) + ind + 1
   # Extract a row at a time
   table_list <- lapply(inds, extract.results.for.one.tree, iq_lines)
   table_df <- as.data.frame(do.call(rbind, table_list))
   # Add names to the dataframe
-  names(table_df) <- c("Tree", "logL", "deltaL", "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")
+  names(table_df) <- c("tree", "logL", "deltaL", "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")
+  # Add columns to the table_df
+  table_df$ID <- paste(c(iqtree_file_split[1], iqtree_file_split[2], iqtree_file_split[3]), collapse = ".")
+  table_df$dataset <- iqtree_file_split[1]
+  table_df$matrix <- iqtree_file_split[2]
+  table_df$best_model_code <- iqtree_file_split[3]
+  table_df$analysis <- iqtree_file_split[4]
+  table_df$evolutionary_hypothesis <- possible_hypotheses[1:nrow(table_df)]
+  # Rearrange columns
+  table_df <- table_df[, c("ID", "dataset", "matrix", "best_model_code", "analysis", "tree", "evolutionary_hypothesis", "logL", "deltaL","bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
   # Return the tree topology test output
   return(table_df)
 }
