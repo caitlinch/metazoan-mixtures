@@ -1116,16 +1116,20 @@ extract.tree.topology.test.results <- function(iqtree_file){
   table_list <- lapply(inds, extract.results.for.one.tree, iq_lines)
   table_df <- as.data.frame(do.call(rbind, table_list))
   # Add names to the dataframe
-  names(table_df) <- c("tree", "logL", "deltaL", "bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")
+  names(table_df) <- c("tree", "logL", "deltaL", "bp_RELL", "p_KH", "p_SH", "p_wKH", "p_wSH", "c_ELW", "p_AU")
   # Add columns to the table_df
   table_df$ID <- paste(c(iqtree_file_split[1], iqtree_file_split[2], iqtree_file_split[3]), collapse = ".")
   table_df$dataset <- iqtree_file_split[1]
   table_df$matrix <- iqtree_file_split[2]
   table_df$best_model_code <- iqtree_file_split[3]
-  table_df$analysis <- iqtree_file_split[4]
+  table_df$analysis <- "tree_topology_tests"
   table_df$evolutionary_hypothesis <- possible_hypotheses[1:nrow(table_df)]
+  table_df$AU_test_rejected <- table_df$p_AU < 0.05
+  table_df$tree_topology_iqtree_file <- iqtree_file
   # Rearrange columns
-  table_df <- table_df[, c("ID", "dataset", "matrix", "best_model_code", "analysis", "tree", "evolutionary_hypothesis", "logL", "deltaL","bp-RELL", "p-KH", "p-SH", "p-wKH", "p-wSH", "c-ELW", "p-AU")]
+  table_df <- table_df[, c("ID", "dataset", "matrix", "best_model_code", "analysis", "tree", "evolutionary_hypothesis", 
+                           "logL", "deltaL","bp_RELL", "p_KH", "p_SH", "p_wKH", "p_wSH", "c_ELW", "p_AU", "AU_test_rejected",
+                           "tree_topology_iqtree_file")]
   # Return the tree topology test output
   return(table_df)
 }
