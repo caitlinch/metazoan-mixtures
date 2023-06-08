@@ -1109,7 +1109,7 @@ extract.tree.topology.test.results <- function(iqtree_file){
   all_blank_lines <- which(iq_lines == "")
   next_blank_line <- all_blank_lines[which(all_blank_lines > ind)[1]]
   # Add 2 to starting ind (header row + "-----" division row) and subtract 1 from end ind (blank row) to get number of trees
-  number_of_trees <- length(iq_lines[(147+2):(152-1)])
+  number_of_trees <- length(iq_lines[(ind+2):(next_blank_line-1)])
   # Adjust the indices for all rows
   inds <- c(1:number_of_trees) + ind + 1
   # Extract a row at a time
