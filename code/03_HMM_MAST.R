@@ -26,15 +26,17 @@
 # iqtree_num_threads      <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
 ## Control parameters
-# run.phyloHMM            <- TRUE to call IQ-Tree2 and run the phyloHMM. FALSE to output IQ-Tree2 command lines without running phyloHMM.
+# run.phyloHMM              <- TRUE to call IQ-Tree2 and run the phyloHMM. FALSE to output IQ-Tree2 command lines without running phyloHMM.
+# run.tree.topology.tests   <- TRUE to call IQ-Tree2 and run the tree topology tests. FALSE to output IQ-Tree2 command lines without running tree topology tests.
 
 location = "local"
 if (location == "local"){
   ## File paths
   alignment_dir           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/"
+  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/hypothesis_tree_estimation/"
   pmsf_sitefreq_dir       <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_pmsf_site_freqs/"
-  mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_tree_mixtures/"
+  mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/06_phyloHMM/"
+  au_test_dir             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_au_test/"
   output_dir              <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   iqtree2                 <- "iqtree2"
@@ -48,6 +50,7 @@ if (location == "local"){
   hypothesis_tree_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/hyp_tree_output_files/"
   pmsf_sitefreq_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
   mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/phyloHMM/"
+  au_test_dir             <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/au_test/"
   output_dir              <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   iqtree2                 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
@@ -59,6 +62,7 @@ if (location == "local"){
 
 ## Control parameters
 run.phyloHMM              <- FALSE
+run.tree.topology.tests   <- FALSE
 
 
 
@@ -138,14 +142,16 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 
 
 #### 5. Apply AU test to each dataset ####
-# Get the IQ-Tree2 command lines for each dataset
-top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                                                   iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = FALSE)
-au_test_calls <- unlist(top_test_call_list)
-write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
-# Get the tree topology test results for each dataset
+# Run the tree topology tests
+if (run.tree.topology.tests == TRUE){
+  top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = au_test_dir, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
+                               iqtree_num_RELL_replicates = 10000, run.iqtree = TRUE, return.AU.output = FALSE)
+  au_test_calls <- unlist(top_test_call_list)
+  write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
+}
+# Extract the tree topology test results
 top_test_list <- tree.topology.test.wrapper(1:nrow(phyloHMM_df), df = phyloHMM_df, output_dir = NA, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                                                 iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = TRUE)
+                                            iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE, return.AU.output = TRUE)
 top_test_df <- as.data.frame(do.call(rbind, top_test_list))
 # Write the tree topology results out
 tree_top_path <- paste0(output_dir, "03_03_tree_topology_test_results.tsv")
