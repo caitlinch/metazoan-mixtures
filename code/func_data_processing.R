@@ -1463,3 +1463,34 @@ summarise.topology.results <- function(dataset_id, topology_check_df,
   return(output_vector)
 }
 
+
+tree.topology.results <- function(dataset_id, topology_check_df, model_order){
+  ## Function to order the topologies consistently by model and return the results
+  # Get rows of dataframe that have matching ID
+  d_df <- topology_check_df[grep(dataset_id, topology_check_df$ML_tree_name),]
+  # Remove excluded models from the dataframe
+  keep_rows <- which(d_df$model_code %in% model_order)
+  d_df <- d_df[keep_rows, ]
+  # Sort by model order
+  d_df <- d_df[match(model_order, d_df$model_code),]
+  # Create output vector
+  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], d_df$sister_group)
+  # Return output
+  return(output_vector)
+}
+
+
+porifera.topology.results <- function(dataset_id, topology_check_df, model_order){
+  ## Function to order the topologies consistently by model and return the results
+  # Get rows of dataframe that have matching ID
+  d_df <- topology_check_df[grep(dataset_id, topology_check_df$ML_tree_name),]
+  # Remove excluded models from the dataframe
+  keep_rows <- which(d_df$model_code %in% model_order)
+  d_df <- d_df[keep_rows, ]
+  # Sort by model order
+  d_df <- d_df[match(model_order, d_df$model_code),]
+  # Create output vector
+  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], d_df$PORI_topology)
+  # Return output
+  return(output_vector)
+}
