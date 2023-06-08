@@ -1473,8 +1473,14 @@ tree.topology.results <- function(dataset_id, topology_check_df, model_order){
   d_df <- d_df[keep_rows, ]
   # Sort by model order
   d_df <- d_df[match(model_order, d_df$model_code),]
+  # Replace with shortened names
+  d_df$sister_group_output <- d_df$sister_group
+  d_df$sister_group_output[which(d_df$sister_group == "Ctenophora")] <- "CTEN"
+  d_df$sister_group_output[which(d_df$sister_group == "Porifera")] <- "PORI"
+  d_df$sister_group_output[which(d_df$sister_group == "Ctenophora+Porifera")] <- "CTEN+PORI"
+  d_df$sister_group_output[which(d_df$sister_group == "Radiata")] <- "RADIATA"
   # Create output vector
-  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], d_df$sister_group)
+  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], d_df$sister_group_output)
   # Return output
   return(output_vector)
 }
@@ -1489,8 +1495,13 @@ porifera.topology.results <- function(dataset_id, topology_check_df, model_order
   d_df <- d_df[keep_rows, ]
   # Sort by model order
   d_df <- d_df[match(model_order, d_df$model_code),]
+  # Replace with shortened names
+  d_df$PORI_topology_output <- d_df$PORI_topology
+  d_df$PORI_topology_output[which(d_df$PORI_topology == "Monophyletic")] <- "MONO"
+  d_df$PORI_topology_output[which(d_df$PORI_topology == "Paraphyletic")] <- "PARA"
+  d_df$PORI_topology_output[which(d_df$PORI_topology == "One taxon")] <- "NA"
   # Create output vector
-  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], d_df$PORI_topology)
+  output_vector <- c(d_df$dataset[1], d_df$matrix_name[1], d_df$PORI_topology_output)
   # Return output
   return(output_vector)
 }
