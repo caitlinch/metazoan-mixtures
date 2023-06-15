@@ -1,7 +1,7 @@
-## caitlinch/metazoan-mixtures/func_data_processing.R
+## caitlinch/metazoan-mixtures/code/func_data_processing.R
+# Functions for manipulating, processing, and preparing datasets
 # Caitlin Cherryh 2023
 
-# Functions for manipulating, processing, and preparing datasets
 
 #### Packages ####
 library(stringr) # Used in extract.model.details for detecting presence/absence of a pattern in a string (using str_detect) 

@@ -1,10 +1,15 @@
-## caitlinch/metazoan-mixtures/func_data_analysis.R
-# Caitlin Cherryh 2022
-
+## caitlinch/metazoan-mixtures/code/func_data_analysis.R
 # Functions for data analysis and manipulation in R
+# Caitlin Cherryh 2023
 
+
+#### Packages ####
 library(ape)
 library(phylotools)
+
+
+
+
 
 #### Functions to extract information about alignments ####
 matrix.dimensions <- function(alignment_path){

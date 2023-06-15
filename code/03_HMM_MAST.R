@@ -1,6 +1,7 @@
-# metazoan-mixtures/code/02_HMM_MAST.R
-## This script applies the MAST (Mixtures Across Sites and Trees) method to constrained hypothesis trees estimated from 14 empirical Metazoan datasets
-# Caitlin Cherryh, 2023
+## caitlinch/metazoan-mixtures/code/03_HMM_MAST.R
+# This script applies the MAST (Mixtures Across Sites and Trees) method to constrained hypothesis trees estimated from 14 empirical Metazoan datasets
+# Caitlin Cherryh 2023
+
 
 # In this script, MAST refers to the Mixtures Across Sites and Trees model
 #   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 

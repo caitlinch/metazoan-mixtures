@@ -1,11 +1,10 @@
-## caitlinch/metazoan-mixtures/func_pmsf_trees.R
-# Caitlin Cherryh 2022
+## caitlinch/metazoan-mixtures/code/func_pmsf_trees.R
+# Functions for estimating maximum likelihood trees and constrained maximum likelihood trees with PMSF and CAT-PMSF models
+# Caitlin Cherryh 2023
+
 
 library(ape) # Functions: read.nexus.data
 library(phylotools) # Functions: read.fasta, dat2phylip
-
-# Functions for estimating maximum likelihood trees and constrained maximum likelihood trees with PMSF and CAT-PMSF models
-
 
 
 #### Functions for estimating trees with PMSF model in IQ-Tree ####

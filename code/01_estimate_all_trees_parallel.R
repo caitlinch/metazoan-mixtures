@@ -1,7 +1,6 @@
-# metazoan-mixtures/code/01_estimate_all_trees_parallel.R
-## This script estimates maximum likelihood trees under different models of substitution for 14 empirical data sets
-# Caitlin Cherryh, 2022
-
+## caitlinch/metazoan-mixtures/code/01_estimate_all_trees_parallel.R
+# This script estimates maximum likelihood trees under different models of substitution for 14 empirical data sets
+# Caitlin Cherryh 2023
 
 
 #### 1. Input parameters ####

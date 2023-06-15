@@ -1,11 +1,6 @@
-## caitlinch/metazoan-mixtures/func_constraint_trees.R
-# Caitlin Cherryh 2022
-
-# Functions for estimating maximum likelihood trees and constrained maximum likelihood trees,
-#     and for running the Mixture of Trees and Sites (MAST) model in iqtree2
-
-
-
+## caitlinch/metazoan-mixtures/code/func_estimate_trees.R
+# Functions for estimating maximum likelihood trees and constrained maximum likelihood trees,and for running the Mixture of Trees and Sites (MAST) model in iqtree2
+# Caitlin Cherryh 2023
 
 
 #### Estimating an ML tree in IQ-Tree with a specified model ####

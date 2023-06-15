@@ -1,10 +1,9 @@
-# metazoan-mixtures/code/03_data_analysis_and_plotting.R
-## This script performs data analysis and creates plots of methods and results
-# Caitlin Cherryh, 2022
+## caitlinch/metazoan-mixtures/code/03_data_analysis_and_plotting.R
+# This script performs data analysis and creates plots of methods and results
+# Caitlin Cherryh 2023
 
 ## This script:
 # 1. Plots figures for the introduction and methods section of the manuscript
-
 
 
 #### 1. Input parameters ####

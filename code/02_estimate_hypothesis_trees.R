@@ -1,7 +1,6 @@
-# metazoan-mixtures/code/02_estimate_hypothesis_trees.R
-## This script estimates maximum likelihood under constraint trees for 14 empirical data sets
-# Caitlin Cherryh, 2022
-
+## caitlinch/metazoan-mixtures/code/02_estimate_hypothesis_trees.R
+# This script estimates maximum likelihood under constraint trees for 14 empirical data sets
+# Caitlin Cherryh 2023
 
 
 #### 1. Input parameters ####

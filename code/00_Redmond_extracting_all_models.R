@@ -1,6 +1,6 @@
-# metazoan-mixtures/code/00_Redmond_extracting_all_models.R
-## This script extracts the list of models used for tree estimation in a precious study, 
-# Caitlin Cherryh, 2022
+## caitlinch/metazoan-mixtures/code/00_Redmond_extracting_all_models.R
+# This script extracts the list of models used for tree estimation in a precious study, 
+# Caitlin Cherryh 2023
 
 # File to extract all models used in the Redmond and McLysaght paper (from the partition files!)
 # Paper: https://www.nature.com/articles/s41467-021-22074-7
@@ -44,3 +44,5 @@ if (dir.exists(output_dir) == FALSE){
 # Save the models as a text file
 output_path <- paste0(output_dir, "Redmond.McLysaght2021_all_models.txt")
 write(models, file = output_path)
+
+

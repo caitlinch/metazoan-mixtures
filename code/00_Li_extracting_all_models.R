@@ -1,6 +1,7 @@
-# metazoan-mixtures/code/00_matrix_parameters.R
-## This script extracts the list of models used in a previous study, from the github repository of that study
-# Caitlin Cherryh, 2022
+## caitlinch/metazoan-mixtures/code/00_matrix_parameters.R
+# This script extracts the list of models used in a previous study, from the github repository of that study
+# Caitlin Cherry, 2023
+
 
 #### 1. Input parameters ####
 ## Specify parameters:

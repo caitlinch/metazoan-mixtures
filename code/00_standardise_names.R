@@ -1,6 +1,6 @@
-# metazoan-mixtures/code/00_standardise_names.R
-## This script standardises the names for all species for all datasets
-# Caitlin Cherryh, 2022
+## caitlinch/metazoan-mixtures/code/00_standardise_names.R
+# This script standardises the names for all species for all datasets
+# Caitlin Cherryh 2023
 
 # For this script, you will need the naming csv from Li et. al. (2021)
 #     Available from the data repository: https://figshare.com/articles/dataset/Rooting_the_animal_tree_of_life/13122881
@@ -11,7 +11,6 @@
 #   Thomas KF Wong, Caitlin Cherryh, Allen G Rodrigo, Matthew W Hahn, Bui Quang Minh, Robert Lanfear 2022, 
 #   "MAST: Phylogenetic Inference with Mixtures Across Sites and Trees", bioRxiv 2022.10.06.511210; 
 #   doi: https://doi.org/10.1101/2022.10.06.511210
-
 
 
 #### 1. Input parameters ####
@@ -163,7 +162,5 @@ rownames(mastmet_df) <- 1:nrow(mastmet_df)
 # Save the dataframe with the relabelled species names
 mastmet_file_path <- paste0(repo_dir, "Cherryh_MAST_metazoa_taxa_reconciliation.csv")
 write.csv(mastmet_df,  file = mastmet_file_path, row.names = F)
-
-
 
 

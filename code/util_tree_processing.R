@@ -1,10 +1,6 @@
-# metazoan-mixtures/code/02_maximum_likelihood_tree_processing.R
-## This script processes maximum likelihood trees (so all trees from all datasets are consistent)
-# Caitlin Cherryh, 2022
-
-## This script:
-# 1. Updates taxa names for maximum likelihood trees to be consistent across datasets
-
+## caitlinch/metazoan-mixtures/code/util_tree_processing.R
+# This script processes and updates the taxa names for estimated maximum likelihood trees (so all trees from all datasets are consistent)
+# Caitlin Cherryh 2023
 
 
 #### 1. Input parameters ####
@@ -38,7 +34,5 @@ all_tree_files <- grep("\\.treefile", all_files, value = T)
 all_trees_list <- lapply(all_tree_files, update.tree.taxa, naming_reconciliation_df = taxa_df, 
                     output.clade.names = TRUE, save.updated.tree = TRUE, output.directory = renamed_tree_dir)
 all_trees <- as.multiPhylo(all_trees_list)
-
-
 
 

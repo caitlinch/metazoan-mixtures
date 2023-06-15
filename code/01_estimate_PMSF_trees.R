@@ -1,6 +1,6 @@
-# metazoan-mixtures/code/01_estimate_PMSF_trees.R
-## This script estimates maximum likelihood trees under the PMSF model for 14 empirical data sets
-# Caitlin Cherryh, 2022
+## caitlinch/metazoan-mixtures/code/01_estimate_PMSF_trees.R
+# This script estimates maximum likelihood trees under the PMSF model for 14 empirical data sets
+# Caitlin Cherryh 2023
 
 ## This script:
 # 1. Estimates ML trees for empirical data sets under the PMSF model (and eventually under the CAT-PMSF models)
@@ -11,7 +11,6 @@
 #     Modeling site heterogeneity with posterior mean site frequency profiles
 #     accelerates accurate phylogenomic estimation. Syst. Biol., 67:216-235.
 #     https://doi.org/10.1093/sysbio/syx068
-
 
 
 #### 1. Input parameters ####

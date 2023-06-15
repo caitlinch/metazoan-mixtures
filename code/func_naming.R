@@ -1,7 +1,7 @@
-## caitlinch/metazoan-mixtures/func_names.R
-# Caitlin Cherryh 2022
-
+## caitlinch/metazoan-mixtures/code/func_naming.R
 # Functions for updating and renaming taxa
+# Caitlin Cherryh 2023
+
 
 library(ape)
 

@@ -1,7 +1,6 @@
-# metazoan-mixtures/code/05_reformat_output_dataframes.R
-## This script reads in csv/tsv files created prior in the pipeline, and reformats them nicely for the manuscript
-# Caitlin Cherryh, 2023
-
+## caitlinch/metazoan-mixtures/code/05_reformat_output_dataframes.R
+# This script reads in csv/tsv files created prior in the pipeline, and reformats them nicely for the manuscript
+# Caitlin Cherryh 2023
 
 
 #### 1. Input parameters ####

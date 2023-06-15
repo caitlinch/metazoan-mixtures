@@ -1,7 +1,7 @@
-## caitlinch/metazoan-mixtures/data_taxa_names.R
-# Caitlin Cherryh 2022
-
+## caitlinch/metazoan-mixtures/code/data_taxa_names.R
 # File to store the taxa names, clade classifications, and models of sequence evolution for the Metazoan datasets used for analysis
+# Caitlin Cherryh 2023
+
 
 #### FUNCTIONS ####
 count.taxa <- function(list){

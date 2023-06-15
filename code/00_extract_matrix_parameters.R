@@ -1,6 +1,7 @@
-# metazoan-mixtures/code/00_matrix_parameters.R
-## This script extracts the number of taxa and number of sites from a list of alignments
-# Caitlin Cherryh, 2022
+## caitlinch/metazoan-mixtures/code/00_matrix_parameters.R
+# This script extracts the number of taxa and number of sites from a list of alignments
+# Caitlin Cherryh 2023
+
 
 #### 1. Input parameters ####
 ## Specify parameters:

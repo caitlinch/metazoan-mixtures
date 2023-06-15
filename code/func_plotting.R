@@ -1,7 +1,7 @@
-## caitlinch/metazoan-mixtures/func_plotting.R
-# Caitlin Cherryh 2022
-
+## caitlinch/metazoan-mixtures/code/func_plotting.R
 # Functions for plotting graphs and trees
+# Caitlin Cherryh 2023
+
 
 #### Packages ####
 
