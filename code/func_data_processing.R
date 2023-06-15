@@ -1156,15 +1156,40 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
 
 
 
-#### Extract information from maximum likelihood trees ####
-extract.phyloHMM.output <- function(output_prefix, output_directory){
-  # Function to take an output prefix and directory, and return the results of the phyloHMM model
-  
-}
-
-extract.HMMster.output <- function(output_prefix, output_directory){
+#### Extract information from MAST runs ####
+extract.HMM.output <- function(hmm_file){
   # Function to take an output prefix and directory, and return the results of the HMMster model
   
+  # Open the iqtree file
+  hmm_lines <- readLines(hmm_file)
+  # Detect the output HMM probabilities
+  hmm_prob_ind <- grep("Estimated HMM probabilities", hmm_lines, ignore.case = T)
+  hmm_prob_line <- hmm_lines[ (hmm_prob_ind+1) ]
+  hmm_probs <- strsplit(hmm_prob_line, "\t")[[1]]
+  # Detect the number of sites for each category
+  num_sites_ind <- grep("Number of sites for each category", hmm_lines, ignore.case = T)
+  num_sites_line <- hmm_lines[ (num_sites_ind) ]
+  num_sites_line_split <- strsplit(strsplit(num_sites_line, ":")[[1]][2], " ")[[1]]
+  num_sites <- num_sites_line_split[which(num_sites_line_split != "")]
+  # Detect the ratio of sites for each category
+  rat_sites_ind <- grep("Ratio of sites for each category", hmm_lines, ignore.case = T)
+  rat_sites_line <- hmm_lines[ (rat_sites_ind) ]
+  rat_sites_line_split <- strsplit(strsplit(rat_sites_line, ":")[[1]][2], " ")[[1]]
+  rat_sites <- rat_sites_line_split[which(rat_sites_line_split != "")]
+  # Determine the number of trees
+  num_trees <- length(hmm_probs)
+  # Check how long each of the outputs are, and extend to 5 if necessary
+  if (num_trees == 3){
+    hmm_probs <- c(hmm_probs, NA, NA)
+    num_sites <- c(num_sites, NA, NA)
+    rat_sites <- c(rat_sites, NA, NA)
+  }
+  # Collect the output to return it
+  hmm_output <- c(basename(hmm_file), num_trees, hmm_probs, num_sites, rat_sites)
+  names(hmm_output) <- c("hmm_file", "number_hypothesis_trees",paste0("tree_", 1:5, "_hmm_probs"),
+                         paste0("tree_", 1:5, "_number_sites"), paste0("tree_", 1:5, "_ratio_sites"))
+  # Return output
+  return(hmm_output)
 }
 
 
