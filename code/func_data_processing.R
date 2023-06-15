@@ -1160,6 +1160,14 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
 extract.HMM.output <- function(hmm_file){
   # Function to take an output prefix and directory, and return the results of the HMMster model
   
+  # Create output label
+  if (grepl("HMMster", hmm_file, ignore.case = T) == TRUE){
+    MAST_option <- "HMMster"
+  } else if (grepl("phyloHMM", hmm_file, ignore.case = T) == TRUE){
+    MAST_option <- "phyloHMM"
+  } else {
+    MAST_option <- NA
+  }
   # Open the iqtree file
   hmm_lines <- readLines(hmm_file)
   # Detect the output HMM probabilities
@@ -1185,8 +1193,8 @@ extract.HMM.output <- function(hmm_file){
     rat_sites <- c(rat_sites, NA, NA)
   }
   # Collect the output to return it
-  hmm_output <- c(basename(hmm_file), num_trees, hmm_probs, num_sites, rat_sites)
-  names(hmm_output) <- c("hmm_file", "number_hypothesis_trees",paste0("tree_", 1:5, "_hmm_probs"),
+  hmm_output <- c(basename(hmm_file), MAST_option, num_trees, hmm_probs, num_sites, rat_sites)
+  names(hmm_output) <- c("hmm_file", "analysis_type", "number_hypothesis_trees",paste0("tree_", 1:5, "_hmm_probs"),
                          paste0("tree_", 1:5, "_number_sites"), paste0("tree_", 1:5, "_ratio_sites"))
   # Return output
   return(hmm_output)
