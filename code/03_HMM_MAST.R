@@ -164,6 +164,10 @@ if (run.MAST == TRUE){
 
 
 #### 6. Extract results from phyloHMM and HMMster runs ####
+# Extract list of HMMster and phyloHMM files
+all_files <- list.files(mast_dir)
+hmmster_files <- grep("\\.iqtree", grep("HMMster", all_files, value = T), value = T)
+phylohmm_files <- grep("\\.iqtree", grep("phyloHMM", all_files, value = T), value = T)
 # To extract information from the completed HMM run:
 phylohmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 # To extract information from the completed HMM run:
