@@ -139,9 +139,6 @@ if (run.MAST == TRUE){
   system(phyloHMM_df$phyloHMM_iqtree2_command)
 }
 
-# To extract information from the completed HMM run:
-phylohmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
-
 
 
 #### 5. Apply mixtures across trees and sites (MAST model) - HMMster ####
@@ -164,12 +161,17 @@ if (run.MAST == TRUE){
   system(HMMster_df$HMMster_iqtree2_command)
 }
 
+
+
+#### 6. Extract results from phyloHMM and HMMster runs ####
+# To extract information from the completed HMM run:
+phylohmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 # To extract information from the completed HMM run:
 hmmster_output <- extract.HMMster.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 
 
 
-#### 6. Apply AU test to each dataset ####
+#### 7. Apply AU test to each dataset ####
 # Run the tree topology tests
 if (run.tree.topology.tests == TRUE){
   top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = au_test_dir, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
