@@ -792,7 +792,7 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
   
   ## Extract parameters for phyloHMM run from the row
   # Assemble the output prefix
-  phylohmm_prefix <- paste0(mast_row$prefix, ".phyloHMM")
+  phylohmm_prefix <- paste0(mast_row$prefix, ".phyloHMM.", MAST_branch_length_option)
   # Check whether the model is a PMSF model
   check_pmsf <- grepl("PMSF", mast_row$model_code)
   
@@ -925,6 +925,164 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   # Collect the output vector
   output_vector <- c(output_prefix, MAST_model, phylohmm_call, run.iqtree)
   names(output_vector) <- c("phyloHMM_prefix", "phyloHMM_model", "phyloHMM_iqtree2_command", "iqtree.run.complete")
+  
+  # Return the output vector
+  return(output_vector)
+}
+
+
+HMMster.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_length_option = "T", 
+                            iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, 
+                            run.iqtree = FALSE){
+  # Function to take a dataframe row, extract relevant sections, and call the HMMster model
+  
+  # Extract row
+  mast_row <- mast_df[row_id,]
+  
+  ## Extract parameters for HMMster run from the row
+  # Assemble the output prefix
+  HMMster_prefix <- paste0(mast_row$prefix, ".HMMster.", MAST_branch_length_option)
+  # Check whether the model is a PMSF model
+  check_pmsf <- grepl("PMSF", mast_row$model_code)
+  
+  ## Assemble the model for the MAST run model
+  best_model <- gsub("'", "", mast_row$best_model)
+  # Check whether the free-rate categories are included
+  rate.categories.provided = !is.na(mast_row$estimated_rates)
+  # Assemble the call for the model
+  if (rate.categories.provided == FALSE){
+    # Best model provided, but no rate categories
+    # Use only the best model in the IQ-Tree call
+    # Remove then replace ' around model - to make sure you don't end up with two sets
+    HMMster_model = paste0("'", gsub("'", "", best_model),"+", MAST_branch_length_option, "'")
+  } else if (rate.categories.provided == TRUE){
+    # Both the best model and the rate categories are provided
+    # Create a nice model with both the best model and the free rate category (weights and rates)
+    # Remove ' around model and replace around free rate categories
+    HMMster_model = paste0("'", gsub("'", "", best_model), "{", mast_row$estimated_rates, "}+", MAST_branch_length_option, "'")
+  }
+  
+  ## Check for a site frequency file - meaning the best model is a PMSF model
+  # Determine whether the sitefreq variable is present (or is NA)
+  if (is.na(mast_row$estimated_state_frequencies) == FALSE){
+    # The sitefreq variable is present - this iqtree run uses a PMSF model
+    if (mast_row$estimated_state_frequencies == "State frequencies from model"){
+      # State frequencies from model - do not provide state frequencies
+      HMMster_sitefreq <- NA
+    } else {
+      # The sitefreq variable is present - this iqtree run uses a PMSF model
+      HMMster_sitefreq <- mast_row$estimated_state_frequencies
+    }
+  } else if (is.na(sitefreq_file) == TRUE){
+    # No sitefreq variable is present - do not use a PMSF model
+    HMMster_sitefreq <- NA
+  }
+  
+  ## Check for a gamma shape parameter (alpha) call
+  # Determine whether the gamma variable is present (or is NA)
+  if (is.na(mast_row$estimated_gamma) == FALSE){
+    # Make sure gamma is a character vector
+    gamma = mast_row$estimated_gamma
+    if (class(gamma) != "character"){
+      gamma <- as.character(gamma)
+    }
+    # Check whether the gamma variable is an alpha parameter (by checking if there are any commas present)
+    gamma_split <- strsplit(gamma, split = ",")[[1]]
+    if (length(gamma) == length(gamma_split)){
+      # There is only one gamma value: gamma here the gamma shape parameter
+      # Strip any spaces from the gamma value
+      gamma_clean <- gsub(" ", "", gamma)
+      # Create an IQ-Tree command for gamma
+      HMMster_gamma <- gamma_clean
+    } else if (length(gamma) < length(gamma_split)){
+      # There are multiple values within gamma: gamma here is a list of the rates, not an alpha parameter
+      # Do not create an IQ-Tree command for gamma
+      HMMster_gamma <- NA
+    }
+  } else {
+    # Gamma variable is NA - do not create an IQ-Tree command for gamma
+    HMMster_gamma <- NA
+  }
+  
+  # Call HMMster function
+  HMMster_output <- run.HMMster(tree_file = mast_row$hypothesis_tree_path, alignment_file = mast_row$alignment_path, 
+                                output_prefix = HMMster_prefix, 
+                                MAST_model = HMMster_model, gamma_alpha_value = HMMster_gamma, 
+                                is.MAST.model.PMSF = check_pmsf, pmsf_file_path = mast_row$best_model_sitefreq_path,
+                                iqtree_HMMster = iqtree_tree_mixtures, iqtree_num_threads = iqtree_num_threads, 
+                                iqtree_min_branch_length = iqtree_min_branch_length, run.iqtree = run.iqtree)
+  # Return output
+  return(HMMster_output)
+}
+
+
+run.HMMster <- function(tree_file, alignment_file, output_prefix = NA, 
+                        MAST_model, gamma_alpha_value = NA, is.MAST.model.PMSF = FALSE, pmsf_file_path = NA, 
+                        iqtree_HMMster, iqtree_num_threads = "AUTO", iqtree_min_branch_length = 0.0001, 
+                        run.iqtree = FALSE){
+  # Function to apply the HMMster mdoel for the MAST model with multiple trees
+  # iqtree_HMMster = the IQ-Tree2 implementation of the HMMster model (currently IQ-Tree version 2.2.3.hmmster)
+  
+  ## Example command line:
+  # Running HMMster for a MAST model on a data set simulated under the same MAST model
+  #     For a PMSF model:
+  #     $ iqtree2 -m "TMIX{GTR+FO+G,GTR+FO+G}+T" -fs ssfp.sitefreq -te hypothesis_trees.treefile -s alignment.fa  -hmmster -blmin 0.00001 -nt 30 -pre alignment.HMMster.T
+  # For a non-PMSF model
+  #     $ iqtree2 -m "TMIX{GTR+FO+G,GTR+FO+G}+T" -te hypothesis_trees.treefile -s alignment.fa  -hmmster -blmin 0.00001 -nt 30 -pre alignment.HMMster.T
+  #         where: 
+  #               -m denotes the best model i.e. the model that the hypothesis trees were estimated under, plus the MAST tree branch parameter (+T or +TR)
+  #               -fs is the site frequencies file (if using a PMSF model)
+  #               -te denotes the file containing one or more trees
+  #               -s denotes the alignment file
+  #               -hmmster calls the HMMster model
+  #               -blmin sets the minimum branch length (necessary for tree mixture models to prevent branch lengths shrinking to 0)
+  
+  ## Set iqtree call (call to executable)
+  iqtree_call <- iqtree_HMMster
+  ## Set model call
+  model_call <- paste0("-m ", MAST_model)
+  ## Set sitefreq file call 
+  if ((is.MAST.model.PMSF == TRUE) & (is.na(pmsf_file_path) == FALSE)){
+    # If -fs option selected (i.e. best model is a PMSF model) and the provided .sitefreq file exists, 
+    #     use the site-specific frequency model
+    sitefreq_call <- paste0("-fs ", pmsf_file_path)
+  } else {
+    sitefreq_call <- ""
+  }
+  ## Set gamma call
+  if (is.na(gamma_alpha_value) == FALSE){
+    gamma_call <- paste0("-a ", gamma_alpha_value)
+  } else {
+    gamma_call <- ""
+  }
+  ## Set hmm call
+  tree_file_call <- paste0("-te ", tree_file)
+  ## Set alignment call
+  al_call <- paste0("-s ", alignment_file)
+  # Set call for HMMster model
+  hmm_call <- "-hmmster"
+  # Set call for minimum branch length
+  min_bl_call <- paste0("-blmin ", iqtree_min_branch_length)
+  # Set call for number of threads
+  nt_call <- paste0("-nt ", iqtree_num_threads)
+  ## Set prefix call
+  if (is.na(output_prefix) == TRUE){
+    prefix_call <- ""
+  } else {
+    prefix_call <- paste0("-pre ", output_prefix)
+  }
+  
+  # Assemble the command line
+  HMMster_call <- paste(c(iqtree_call, model_call, gamma_call, sitefreq_call, tree_file_call, al_call, hmm_call, min_bl_call, nt_call, prefix_call), collapse = " ")
+  
+  # Call IQ-Tree, if required
+  if (run.iqtree == TRUE){
+    system(HMMster_call)
+  }
+  
+  # Collect the output vector
+  output_vector <- c(output_prefix, MAST_model, HMMster_call, run.iqtree)
+  names(output_vector) <- c("HMMster_prefix", "HMMster_model", "HMMster_iqtree2_command", "iqtree.run.complete")
   
   # Return the output vector
   return(output_vector)
