@@ -1089,12 +1089,6 @@ run.HMMster <- function(tree_file, alignment_file, output_prefix = NA,
 }
 
 
-extract.phyloHMM.output <- function(output_prefix, output_directory){
-  # Function to take an output prefix and directory, and return the results of the phyloHMM model
-  
-}
-
-
 
 
 #### Applying tests of tree topology using IQ-Tree2

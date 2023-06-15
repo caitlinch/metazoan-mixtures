@@ -1157,6 +1157,20 @@ check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
 
 
 #### Extract information from maximum likelihood trees ####
+extract.phyloHMM.output <- function(output_prefix, output_directory){
+  # Function to take an output prefix and directory, and return the results of the phyloHMM model
+  
+}
+
+extract.HMMster.output <- function(output_prefix, output_directory){
+  # Function to take an output prefix and directory, and return the results of the HMMster model
+  
+}
+
+
+
+
+#### Extract information from maximum likelihood trees ####
 # Functions to extract data from maximum likelihood trees estimated in IQ-Tree2 (from the .treefile output file)
 
 check.tree.taxa <- function(tree_file){
