@@ -64,7 +64,7 @@ if (location == "local"){
 }
 
 ## Control parameters
-run.phyloHMM              <- FALSE
+run.MAST                  <- FALSE
 run.tree.topology.tests   <- FALSE
 
 
@@ -121,8 +121,8 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
 
 #### 4. Apply mixtures across trees and sites (MAST model) - phyloHMM ####
 # Create phyloHMM command lines in IQ-Tree
-phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
-                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
+phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, iqtree_tree_mixtures = iqtree_tm,
+                            MAST_branch_length_option = "TR", iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
                             run.iqtree = FALSE)
 phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
 # Bind dataframe
@@ -134,38 +134,38 @@ write.table(phyloHMM_df, file = phylohmm_call_path, sep = "\t")
 phylohmm_call_text_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.txt")
 write(phyloHMM_df$phyloHMM_iqtree2_command, file = phylohmm_call_text_path)
 # Run phyloHMM
-if (run.phyloHMM == TRUE){
+if (run.MAST == TRUE){
   # Call IQ-Tree2
   system(phyloHMM_df$phyloHMM_iqtree2_command)
 }
 
 # To extract information from the completed HMM run:
-hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
+phylohmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 
 
 
 #### 5. Apply mixtures across trees and sites (MAST model) - HMMster ####
-# Create phyloHMM command lines in IQ-Tree
-phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
-                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
-                            run.iqtree = FALSE)
-phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
+# Create HMMster command lines in IQ-Tree
+HMMster_run_list <- lapply(1:nrow(model_df), HMMster.wrapper, mast_df = model_df, iqtree_tree_mixtures = iqtree_hmmster, 
+                           MAST_branch_length_option = "T", iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
+                           run.iqtree = FALSE)
+HMMster_run_df <- as.data.frame(do.call(rbind, HMMster_run_list))
 # Bind dataframe
-phyloHMM_df <- cbind(model_df,phyloHMM_run_df)
+HMMster_df <- cbind(model_df,HMMster_run_df)
 # Write dataframe
-phylohmm_call_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.tsv")
-write.table(phyloHMM_df, file = phylohmm_call_path, sep = "\t")
+HMMster_call_path <- paste0(output_dir, "03_02_HMMster_command_lines.tsv")
+write.table(HMMster_df, file = HMMster_call_path, sep = "\t")
 # Write command lines as text file
-phylohmm_call_text_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.txt")
-write(phyloHMM_df$phyloHMM_iqtree2_command, file = phylohmm_call_text_path)
-# Run phyloHMM
-if (run.phyloHMM == TRUE){
+HMMster_call_text_path <- paste0(output_dir, "03_02_HMMster_command_lines.txt")
+write(HMMster_df$HMMster_iqtree2_command, file = HMMster_call_text_path)
+# Run HMMster
+if (run.MAST == TRUE){
   # Call IQ-Tree2
-  system(phyloHMM_df$phyloHMM_iqtree2_command)
+  system(HMMster_df$HMMster_iqtree2_command)
 }
 
 # To extract information from the completed HMM run:
-hmmster_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
+hmmster_output <- extract.HMMster.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
 
 
 
