@@ -119,7 +119,7 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
 
 
 
-#### 4. Apply mixtures across trees and sites (MAST model) ####
+#### 4. Apply mixtures across trees and sites (MAST model) - phyloHMM ####
 # Create phyloHMM command lines in IQ-Tree
 phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
                             iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
@@ -144,7 +144,32 @@ hmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_dire
 
 
 
-#### 5. Apply AU test to each dataset ####
+#### 5. Apply mixtures across trees and sites (MAST model) - HMMster ####
+# Create phyloHMM command lines in IQ-Tree
+phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, MAST_branch_length_option = "TR",
+                            iqtree_tree_mixtures = iqtree_tm, iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
+                            run.iqtree = FALSE)
+phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
+# Bind dataframe
+phyloHMM_df <- cbind(model_df,phyloHMM_run_df)
+# Write dataframe
+phylohmm_call_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.tsv")
+write.table(phyloHMM_df, file = phylohmm_call_path, sep = "\t")
+# Write command lines as text file
+phylohmm_call_text_path <- paste0(output_dir, "03_02_phyloHMM_command_lines.txt")
+write(phyloHMM_df$phyloHMM_iqtree2_command, file = phylohmm_call_text_path)
+# Run phyloHMM
+if (run.phyloHMM == TRUE){
+  # Call IQ-Tree2
+  system(phyloHMM_df$phyloHMM_iqtree2_command)
+}
+
+# To extract information from the completed HMM run:
+hmmster_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
+
+
+
+#### 6. Apply AU test to each dataset ####
 # Run the tree topology tests
 if (run.tree.topology.tests == TRUE){
   top_test_call_list <- lapply(1:nrow(phyloHMM_df), tree.topology.test.wrapper, df = phyloHMM_df, output_dir = au_test_dir, iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
