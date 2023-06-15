@@ -166,12 +166,19 @@ if (run.MAST == TRUE){
 #### 6. Extract results from phyloHMM and HMMster runs ####
 # Extract list of HMMster and phyloHMM files
 all_files <- list.files(mast_dir)
-hmmster_files <- grep("\\.iqtree", grep("HMMster", all_files, value = T), value = T)
-phylohmm_files <- grep("\\.iqtree", grep("phyloHMM", all_files, value = T), value = T)
+phylohmm_files <- grep("\\.hmm", grep("phyloHMM", all_files, value = T), value = T)
+hmmster_files <- grep("\\.hmm", grep("HMMster", all_files, value = T), value = T)
 # To extract information from the completed HMM run:
-phylohmm_output <- extract.phyloHMM.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
+phylohmm_output <- lapply(paste0(mast_dir, phylohmm_files), extract.HMM.output)
 # To extract information from the completed HMM run:
-hmmster_output <- extract.HMMster.output(output_prefix = output_prefix, output_directory = "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/constraint_trees/00_test_phyloHMM/")
+hmmster_output <- lapply(paste0(mast_dir, hmmster_files), extract.HMM.output)
+# Bind results together
+hmm_df <- rbind(as.data.frame(do.call(rbind, phylohmm_output)), as.data.frame(do.call(rbind, hmmster_output)))
+hmm_df <- hmm_df[order(hmm_df$hmm_file),]
+rownames(hmm_df) <- 1:nrow(hmm_df)
+# Save output dataframe
+hmm_df_file <- paste0(output_dir, "04_01_MAST_model_output.tsv")
+write.table(hmm_df_file, hmm_df_file, sep= "\t")
 
 
 
