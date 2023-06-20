@@ -156,13 +156,20 @@ topology_trimmed_df <- topology_trimmed_df[order(topology_trimmed_df$dataset, to
 ml_trimmed_df <- ml_trimmed_df[order(ml_trimmed_df$dataset, ml_trimmed_df$matrix_name, ml_trimmed_df$model_code), ]
 # Combine relevant columns into a single dataframe
 comparison_df <- as.data.frame(cbind(ml_trimmed_df$dataset, ml_trimmed_df$model_code, 
-                                    ml_trimmed_df$matrix_name, ml_trimmed_df$prefix,
-                                    ml_trimmed_df$best_model_BIC, topology_trimmed_df$model_BIC,
-                                    ml_trimmed_df$tree_BIC, topology_trimmed_df$tree_BIC))
+                                     ml_trimmed_df$matrix_name, ml_trimmed_df$prefix,
+                                     ml_trimmed_df$best_model_BIC, topology_trimmed_df$model_BIC,
+                                     ml_trimmed_df$tree_BIC, topology_trimmed_df$tree_BIC))
 names(comparison_df) <- c("dataset", "model_code",
                           "matrix_name", "prefix",
                           "extracted_model_BIC", "manual_model_BIC",
                           "extracted_tree_BIC", "manual_tree_BIC")
-
+# Identify which model_BIC and tree_BIC differ in the two files and print results
+differing_model_BIC_rows <- which(comparison_df$extracted_model_BIC != comparison_df$manual_model_BIC)
+differing_tree_BIC_rows <- which(comparison_df$extracted_tree_BIC != comparison_df$manual_tree_BIC)
+print(paste0("Number of best model BIC values differing between automatic and manual extraction: ", length(differing_model_BIC_rows)))
+if (length(differing_model_BIC_rows) > 0){print(paste0("Rows differing for model BIC: ", differing_model_BIC_rows))}
+print(paste0("Number of tree BIC values differing between automatic and manual extraction: ", length(differing_tree_BIC_rows)))
+if (length(differing_tree_BIC_rows) > 0){print(paste0("Rows differing for tree BIC: ", differing_tree_BIC_rows))}
+# Manually check and correct any rows with differing BIC values (for best model or for trees)
 
 
