@@ -1436,10 +1436,10 @@ check.remaining.runs <- function(dataset, input_parameter_file, output_parameter
 
 
 #### Summarise information from output csvs ####
-summarise.HMMster.results <- function(hmmster_prefix, hmmster_df){
+summarise.HMM.results <- function(hmm_prefix, hmm_df){
   ## Function to take one dataset and summarise the HMMster (MAST) results in one row
   # Get rows of dataframe that have matching ID
-  d_df <- hmmster_df[hmmster_df$hmm_file == hmmster_prefix,]
+  d_df <- hmm_df[hmm_df$hmm_file == hmm_prefix,]
   # Split the file path to get the dataset name, matrix name, and model code
   h_path_split <- strsplit(d_df$hmm_file, split = "\\.")[[1]]
   d_dataset <- h_path_split[1]
@@ -1447,9 +1447,27 @@ summarise.HMMster.results <- function(hmmster_prefix, hmmster_df){
   d_model_code <- h_path_split[3]
   # Extract year of publication
   dataset_year <- as.numeric(str_extract(unique(d_dataset), "(\\d)+"))
+  # Find the type of tree branch length option
+  if ("T" %in% h_path_split){
+    tree_branch_option <- "T"
+  } else if ("TR" %in% h_path_split){
+    tree_branch_option <- "TR"
+  } else {
+    tree_branch_option <- NA
+  }
   # Create a new row for the output
-  new_row <- c()
-  names(new_row) <- c()
+  new_row <- c(d_dataset, dataset_year, d_matrix_name, d_model_code,
+               d_df$analysis_type, tree_branch_option,
+               d_df$tree_1_ratio_sites, d_df$tree_2_ratio_sites, 
+               d_df$tree_3_ratio_sites, d_df$tree_4_ratio_sites, 
+               d_df$tree_5_ratio_sites)
+  names(new_row) <- c("dataset", "year", "matrix_name", "model_code",
+                      "analysis_type", "branch_length_option",
+                      "tree_1_ratio_sites", "tree_2_ratio_sites",
+                      "tree_3_ratio_sites", "tree_4_ratio_sites",
+                      "tree_5_ratio_sites")
+  # Return output
+  return(new_row)
   
 }
 
