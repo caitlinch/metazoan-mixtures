@@ -37,11 +37,8 @@ all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 #### 3. Prepare summary of the manual topology check csv file ####
 ### Summarise topology results (as percentage of each output topology)
 # Read in .xlsx file with manual topology check results
-topology_check_x_file <- grep("xlsx", grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE), value = TRUE)
+topology_check_x_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE), value = TRUE)
 topology_check_df <- as.data.frame(read_excel(path = topology_check_x_file, sheet = "Topology"))
-# Read in csv file
-topology_check_csv_file <- grep("csv", grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE), value = TRUE)
-topology_check_df <- read.csv(topology_check_csv_file, stringsAsFactors = FALSE)
 # Remove Simion and Hejnol datasets - too computationally intensive to run full ML models
 topology_check_df <- topology_check_df[which(topology_check_df$dataset != "Hejnol2009" & topology_check_df$dataset != "Simion2017"), ]
 # Summarise results for each dataset as a percentage
