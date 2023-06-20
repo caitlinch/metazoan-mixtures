@@ -113,10 +113,13 @@ write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
 
 
 
-#### 5. Prepare summary of the phyloHMM tsv file ####
+#### 5. Prepare summary of the MAST tsv file ####
 # Read in tsv file
-phyloHMM_file <- grep("phyloHMM", all_output_files, value = TRUE)
-phyloHMM_df <- read.table(file = phyloHMM_file, header = TRUE, sep = "\t")
+mast_file <- grep("MAST_model_output", all_output_files, value = TRUE)
+mast_df <- read.table(file = mast_file, header = TRUE, sep = "\t")
+# Separate into HMMster and phyloHMM dfs
+phylohmm_df <- mast_df[mast_df$analysis_type == "phyloHMM",]
+hmmster_df <- mast_df[mast_df$analysis_type == "HMMster",]
 # Process each dataset one at a time
 
 # Sort output by year
