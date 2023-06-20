@@ -126,8 +126,43 @@ phyloHMM_df <- read.table(file = phyloHMM_file, header = TRUE, sep = "\t")
 
 
 #### 6. Check and compare manually extracted BIC/tree BIC results with the automatically extracted values ####
-
-
+# Set order for models and datasets
+model_order <- c("PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60", 
+                 "C20", "C60", "LG_C20", "LG_C60", "CF4", "EHO", "EX_EHO",
+                 "EX2", "EX3", "GTR20", "JTT", "JTTDCMut", "LG", "LG4M",
+                 "mtZOA", "PMB", "Poisson", "rtREV", "UL2", "UL3", "WAG",
+                 "ModelFinder")
+dataset_order <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011",
+                   "Nosenko2013", "Ryan2013", "Moroz2014", "Borowiec2015",
+                   "Chang2015", "Whelan2015", "Whelan2017", "Laumer2018",
+                   "Laumer2019")
+# Open the ML tree results and trim the dataframes
+ml_results_file <- grep("maximum_likelihood_results", all_output_files, value = T)
+ml_results_df <- read.table(ml_results_file, header = TRUE, sep = "\t")
+# Fix matrix names to be identical to those in the manual check .xlsx file
+ml_results_df$matrix_name[which(ml_results_df$matrix_name == "Dataset10_CertainPruned_LBAtaxa_LBAandHeteroGenesPruned")] <- "Dataset10"
+# Trim the ML tree results dataframe
+ml_keep_rows <- sort(intersect(which(ml_results_df$dataset %in% dataset_order), which(ml_results_df$model_code %in% model_order)))
+ml_trimmed_df <- ml_results_df[ml_keep_rows, ]
+# Trim the topology_check_df dataframe
+t_keep_rows <- sort(intersect(which(topology_check_df$dataset %in% dataset_order), which(topology_check_df$model_code %in% model_order)))
+topology_trimmed_df <- topology_check_df[t_keep_rows, ]
+# Update prefix columns
+ml_trimmed_df$prefix <- paste0(ml_trimmed_df$dataset, ".", ml_trimmed_df$matrix_name, ".", ml_trimmed_df$model_code)
+# Trim topology_df to only inclue columns in the ml_trimmed_df
+topology_trimmed_df <- topology_trimmed_df[which(topology_trimmed_df$ML_tree_name %in% ml_trimmed_df$prefix), ]
+# Sort dataframe row order
+topology_trimmed_df <- topology_trimmed_df[order(topology_trimmed_df$dataset, topology_trimmed_df$matrix_name, topology_trimmed_df$model_code), ]
+ml_trimmed_df <- ml_trimmed_df[order(ml_trimmed_df$dataset, ml_trimmed_df$matrix_name, ml_trimmed_df$model_code), ]
+# Combine relevant columns into a single dataframe
+comparison_df <- as.data.frame(cbind(ml_trimmed_df$dataset, ml_trimmed_df$model_code, 
+                                    ml_trimmed_df$matrix_name, ml_trimmed_df$prefix,
+                                    ml_trimmed_df$best_model_BIC, topology_trimmed_df$model_BIC,
+                                    ml_trimmed_df$tree_BIC, topology_trimmed_df$tree_BIC))
+names(comparison_df) <- c("dataset", "model_code",
+                          "matrix_name", "prefix",
+                          "extracted_model_BIC", "manual_model_BIC",
+                          "extracted_tree_BIC", "manual_tree_BIC")
 
 
 
