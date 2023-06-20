@@ -23,6 +23,9 @@ if (location == "local"){
 
 
 #### 2. Prepare variables, open packages and source functions ####
+# Change the default number of digits (so we don't lose the decimal points in the BIC scores)
+options(digits = 12)
+
 # Open packages
 library(readxl)
 
@@ -41,6 +44,17 @@ topology_check_x_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_ou
 topology_check_df <- as.data.frame(read_excel(path = topology_check_x_file, sheet = "Topology"))
 # Remove Simion and Hejnol datasets - too computationally intensive to run full ML models
 topology_check_df <- topology_check_df[which(topology_check_df$dataset != "Hejnol2009" & topology_check_df$dataset != "Simion2017"), ]
+# Convert "NA" to NA
+topology_check_df$model_BIC[which(topology_check_df$model_BIC == "NA")] <- NA
+topology_check_df$sister_group[which(topology_check_df$sister_group == "NA")] <- NA
+topology_check_df$UFB_support[which(topology_check_df$UFB_support == "NA")] <- NA
+topology_check_df$PORI_topology[which(topology_check_df$PORI_topology == "NA")] <- NA
+topology_check_df$`CTEN+CNID_monophyletic`[which(topology_check_df$`CTEN+CNID_monophyletic` == "NA")] <- NA
+topology_check_df$PLAC_present[which(topology_check_df$PLAC_present == "NA")] <- NA
+topology_check_df$tree_BIC[which(topology_check_df$tree_BIC == "NA")] <- NA
+# Convert necessary columns to numeric
+topology_check_df$model_BIC <- as.numeric(topology_check_df$model_BIC)
+topology_check_df$tree_BIC <- as.numeric(topology_check_df$tree_BIC) 
 # Summarise results for each dataset as a percentage
 dataset_ids <- unique(paste0(topology_check_df$dataset, ".", topology_check_df$matrix_name))
 summary_topology_list <- lapply(dataset_ids, summarise.topology.results, topology_check_df, 
