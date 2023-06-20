@@ -178,7 +178,7 @@ hmm_df <- hmm_df[order(hmm_df$hmm_file),]
 rownames(hmm_df) <- 1:nrow(hmm_df)
 # Save output dataframe
 hmm_df_file <- paste0(output_dir, "04_01_MAST_model_output.tsv")
-write.table(hmm_df_file, hmm_df_file, sep= "\t")
+write.table(hmm_df, hmm_df_file, sep= "\t")
 
 
 
