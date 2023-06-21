@@ -241,7 +241,7 @@ names(mast_df) <- c("dataset", "matrix_name", "model_code",  "analysis_type", "n
                     "tree_3_sum_internal_branch_lengths", "tree_4_sum_internal_branch_lengths",
                     "tree_5_sum_internal_branch_lengths")
 ## Save output dataframe
-mast_df_file <- paste0(output_dir, "04_01_HMM_MAST_model_output.tsv")
+mast_df_file <- paste0(output_dir, "04_01_MAST_model_output.tsv")
 write.table(mast_df, mast_df_file, sep= "\t")
 
 
