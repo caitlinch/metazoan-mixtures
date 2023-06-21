@@ -1201,6 +1201,50 @@ extract.HMM.output <- function(hmm_file){
 }
 
 
+extract.tree.weights <- function(iq_file){
+  # Function to take an output prefix and directory, and return the results of the HMMster model
+  
+  # Create output label
+  if (grepl("HMMster", iq_file, ignore.case = T) == TRUE){
+    MAST_option <- "HMMster"
+  } else if (grepl("phyloHMM", iq_file, ignore.case = T) == TRUE){
+    MAST_option <- "phyloHMM"
+  } else {
+    MAST_option <- NA
+  }
+  # Open the iqtree file
+  iq_lines <- readLines(iq_file)
+  # Detect the tree weights for each tree
+  tw_ind <- grep("Tree weights", iq_lines, ignore.case = T)
+  tw_line <- iq_lines[ (tw_ind) ]
+  tws <- gsub(" ", "", strsplit(strsplit(tw_line, ":")[[1]][2], ",")[[1]])
+  # Detect the total tree length for each tree
+  ttls_ind <- grep("Total tree lengths", iq_lines, ignore.case = T)
+  ttls_line <- iq_lines[ (ttls_ind) ]
+  ttls_raw <- gsub(" ", "", strsplit(strsplit(ttls_line, ":")[[1]][2], " ")[[1]])
+  ttls <- ttls_raw[which(ttls_raw != "")]
+  # Detect the sum of internal branch lengths for each tree
+  sibl_ind <- grep("Sum of internal branch lengths", iq_lines, ignore.case = T)
+  sibl_line <- iq_lines[ (sibl_ind) ]
+  sibl_raw <- unlist(strsplit(strsplit(strsplit(sibl_line, ":")[[1]][2], "\\(")[[1]],  "\\)"))
+  sibl <- gsub(" ", "", grep("\\%", sibl_raw, value = TRUE, invert = TRUE))
+  # Determine the number of trees
+  num_trees <- length(tws)
+  # Check how long each of the outputs are, and extend to 5 if necessary
+  if (num_trees == 3){
+    tws <- c(tws, NA, NA)
+    ttls <- c(ttls, NA, NA)
+    sibl <- c(sibl, NA, NA)
+  }
+  # Collect the output to return it
+  mast_output <- c(basename(iq_file), MAST_option, num_trees, tws, ttls, sibl)
+  names(mast_output) <- c("iq_file", "analysis_type", "number_hypothesis_trees",paste0("tree_", 1:5, "_tree_weight"),
+                         paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
+  # Return output
+  return(mast_output)
+}
+
+
 
 
 #### Extract information from maximum likelihood trees ####
