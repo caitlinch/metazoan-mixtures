@@ -1239,7 +1239,7 @@ extract.tree.weights <- function(iq_file){
   # Collect the output to return it
   mast_output <- c(basename(iq_file), MAST_option, num_trees, tws, ttls, sibl)
   names(mast_output) <- c("iq_file", "analysis_type", "number_hypothesis_trees",paste0("tree_", 1:5, "_tree_weight"),
-                         paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
+                          paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
   # Return output
   return(mast_output)
 }
@@ -1480,36 +1480,45 @@ check.remaining.runs <- function(dataset, input_parameter_file, output_parameter
 
 
 #### Summarise information from output csvs ####
-summarise.HMM.results <- function(hmm_prefix, hmm_df){
+summarise.HMM.results <- function(row_index, hmm_df){
   ## Function to take one dataset and summarise the HMMster (MAST) results in one row
-  # Get rows of dataframe that have matching ID
-  d_df <- hmm_df[hmm_df$hmm_file == hmm_prefix,]
-  # Split the file path to get the dataset name, matrix name, and model code
-  h_path_split <- strsplit(d_df$hmm_file, split = "\\.")[[1]]
-  d_dataset <- h_path_split[1]
-  d_matrix_name <- h_path_split[2]
-  d_model_code <- h_path_split[3]
+  # Get the relevant row from the dataset
+  d_df <- hmm_df[row_index,]
   # Extract year of publication
-  dataset_year <- as.numeric(str_extract(unique(d_dataset), "(\\d)+"))
-  # Find the type of tree branch length option
-  if ("T" %in% h_path_split){
-    tree_branch_option <- "T"
-  } else if ("TR" %in% h_path_split){
-    tree_branch_option <- "TR"
-  } else {
-    tree_branch_option <- NA
-  }
+  dataset_year <- as.numeric(str_extract(unique(d_df$dataset), "(\\d)+"))
   # Create a new row for the output
-  new_row <- c(d_dataset, dataset_year, d_matrix_name, d_model_code,
-               d_df$analysis_type, tree_branch_option,
+  new_row <- c(d_df$dataset, dataset_year, d_df$matrix_name, d_df$model_code,
+               d_df$analysis_type, d_df$number_hypothesis_trees,
                d_df$tree_1_ratio_sites, d_df$tree_2_ratio_sites, 
                d_df$tree_3_ratio_sites, d_df$tree_4_ratio_sites, 
                d_df$tree_5_ratio_sites)
   names(new_row) <- c("dataset", "year", "matrix_name", "model_code",
-                      "analysis_type", "branch_length_option",
+                      "analysis_type", "number_hypothesis_trees", 
                       "tree_1_ratio_sites", "tree_2_ratio_sites",
                       "tree_3_ratio_sites", "tree_4_ratio_sites",
                       "tree_5_ratio_sites")
+  # Return output
+  return(new_row)
+  
+}
+
+summarise.tree.weights <- function(row_index, tw_df){
+  ## Function to take one dataset and summarise the HMMster (MAST) results in one row
+  # Get the relevant row from the dataset
+  d_df <- tw_df[row_index,]
+  # Extract year of publication
+  dataset_year <- as.numeric(str_extract(unique(d_df$dataset), "(\\d)+"))
+  # Create a new row for the output
+  new_row <- c(d_df$dataset, dataset_year, d_df$matrix_name, d_df$model_code,
+               d_df$analysis_type, d_df$number_hypothesis_trees,
+               d_df$tree_1_tree_weight, d_df$tree_2_tree_weight, 
+               d_df$tree_3_tree_weight, d_df$tree_4_tree_weight, 
+               d_df$tree_5_tree_weight)
+  names(new_row) <- c("dataset", "year", "matrix_name", "model_code",
+                      "analysis_type", "number_hypothesis_trees", 
+                      "tree_1_tree_weight", "tree_2_tree_weight",
+                      "tree_3_tree_weight", "tree_4_tree_weight",
+                      "tree_5_tree_weight")
   # Return output
   return(new_row)
   
