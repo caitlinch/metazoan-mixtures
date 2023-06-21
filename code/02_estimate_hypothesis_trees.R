@@ -246,12 +246,12 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
     # Extract the names of the datasets/alignment combinations with all 26 models completed
     complete_inds <- which(completion_df$frequency == 26)
   }
-  completed_df <- completion_df[complete_inds,]
+  completed_runs_df <- completion_df[complete_inds,]
   
   ## Determine which models to use for each completed dataset
   # Want to extract ModelFinder model, and the model with the best BIC
   # If the ModelFinder model has the best BIC, return just the ModelFinder model
-  selected_models_list <- lapply(1:nrow(completed_df), determine.best.ML.model.wrapper, completed_runs_df = completed_df, 
+  selected_models_list <- lapply(1:nrow(completed_runs_df), determine.best.ML.model.wrapper, completed_runs_df = completed_runs_df, 
                                  ML_output_df = trimmed_ml_tree_df, include.ModelFinder = FALSE) 
   # Convert lapply output to a nice dataframe
   selected_models_df <- do.call(rbind, selected_models_list)
