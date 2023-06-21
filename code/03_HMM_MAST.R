@@ -165,7 +165,7 @@ if (run.MAST == TRUE){
 
 #### 6. Extract results from phyloHMM and HMMster runs ####
 # Extract list of HMMster and phyloHMM files
-all_files <- list.files(mast_dir)
+all_files <- list.files(mast_dir, recursive = TRUE)
 phylohmm_files <- grep("\\.hmm", grep("phyloHMM", all_files, value = T), value = T)
 hmmster_files <- grep("\\.hmm", grep("HMMster", all_files, value = T), value = T)
 # To extract information from the completed HMM run:
