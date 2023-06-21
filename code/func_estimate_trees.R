@@ -124,6 +124,7 @@ determine.best.ML.model.wrapper <- function(row_id, completed_runs_df, ML_output
   dataset_output_df <- ML_output_df[ML_output_df$dataset == row$dataset & ML_output_df$matrix_name == row$matrix_name,]
   # Input information from the row into the determine.best.ML.model function
   dataset_best_model_df <- determine.best.ML.model(dataset = row$dataset, matrix = row$matrix_name, dataset_output_df = dataset_output_df, include.ModelFinder)
+  
   # Return the best model(s) for the dataset
   return(dataset_best_model_df)
 } # end function
@@ -133,6 +134,8 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df, include.
   # Function to determine the best substitution model (by BIC) for a particular dataset and alignment combination,
   #     using the output from the maximum likelihood runs
   
+  # Convert tree_BIC column to numeric
+  dataset_output_df$tree_BIC <- as.numeric(dataset_output_df$tree_BIC)
   # Sort the dataset by BIC (lowest to highest - remember lower is better && remember - decreasing = FALSE means increasing = TRUE i.e. lowest BIC first) 
   dataset_output_df <- dataset_output_df[order(dataset_output_df$tree_BIC, decreasing = FALSE),]
   # Determine which model has the lowest BIC
