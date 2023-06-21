@@ -122,10 +122,11 @@ mast_df <- read.table(file = mast_file, header = TRUE, sep = "\t")
 phylohmm_results_df <- mast_df[mast_df$analysis_type == "phyloHMM",]
 hmmster_results_df <- mast_df[mast_df$analysis_type == "HMMster",]
 # Process each dataset one at a time
-phylohmm_summary_df <- as.data.frame(do.call(rbind, lapply(phylohmm_results_df$hmm_file, summarise.HMM.results, hmm_df = phylohmm_results_df)))
-hmmster_summary_df <- as.data.frame(do.call(rbind, lapply(hmmster_results_df$hmm_file, summarise.HMM.results, hmm_df = hmmster_results_df)))
-# Add "TR" as branch length option for phyloHMM - used this option to run but didn't include in output prefix
+phylohmm_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(phylohmm_results_df), summarise.HMM.results, hmm_df = phylohmm_results_df)))
+hmmster_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(hmmster_results_df), summarise.HMM.results, hmm_df = hmmster_results_df)))
+# Add branch length options
 phylohmm_summary_df$branch_length_option <- "TR"
+hmmster_summary_df$branch_length_option <- "T"
 # Sort output by year
 phylohmm_summary_df <- phylohmm_summary_df[order(phylohmm_summary_df$year, phylohmm_summary_df$dataset, phylohmm_summary_df$matrix_name), ]
 hmmster_summary_df <- hmmster_summary_df[order(hmmster_summary_df$year, hmmster_summary_df$dataset, hmmster_summary_df$matrix_name), ]
@@ -133,13 +134,31 @@ hmmster_summary_df <- hmmster_summary_df[order(hmmster_summary_df$year, hmmster_
 rownames(phylohmm_summary_df) <- 1:nrow(phylohmm_summary_df)
 rownames(hmmster_summary_df) <- 1:nrow(hmmster_summary_df)
 # Write the output for phyloHMM
-phylohmm_summary_test_file <- paste0(output_file_dir, "summary_phyloHMM_test_results.csv")
+phylohmm_summary_test_file <- paste0(output_file_dir, "summary_phyloHMM_HMM_results.csv")
 write.csv(phylohmm_summary_df, file = phylohmm_summary_test_file, row.names = FALSE)
 # Write the output for HMMster
-hmmster_summary_test_file <- paste0(output_file_dir, "summary_HMMster_test_results.csv")
+hmmster_summary_test_file <- paste0(output_file_dir, "summary_HMMster_HMM_results.csv")
 write.csv(hmmster_summary_df, file = hmmster_summary_test_file, row.names = FALSE)
 
 ### Output tree weights
+# Process each dataset one at a time
+phylohmm_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(phylohmm_results_df), summarise.tree.weights, tw_df = phylohmm_results_df)))
+hmmster_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(hmmster_results_df), summarise.tree.weights, tw_df = hmmster_results_df)))
+# Add branch length options
+phylohmm_summary_df$branch_length_option <- "TR"
+hmmster_summary_df$branch_length_option <- "T"
+# Sort output by year
+phylohmm_summary_df <- phylohmm_summary_df[order(phylohmm_summary_df$year, phylohmm_summary_df$dataset, phylohmm_summary_df$matrix_name), ]
+hmmster_summary_df <- hmmster_summary_df[order(hmmster_summary_df$year, hmmster_summary_df$dataset, hmmster_summary_df$matrix_name), ]
+# Relabel row numbers
+rownames(phylohmm_summary_df) <- 1:nrow(phylohmm_summary_df)
+rownames(hmmster_summary_df) <- 1:nrow(hmmster_summary_df)
+# Write the output for phyloHMM
+phylohmm_summary_test_file <- paste0(output_file_dir, "summary_phyloHMM_treeWeight_results.csv")
+write.csv(phylohmm_summary_df, file = phylohmm_summary_test_file, row.names = FALSE)
+# Write the output for HMMster
+hmmster_summary_test_file <- paste0(output_file_dir, "summary_HMMster_treeWeight_results.csv")
+write.csv(hmmster_summary_df, file = hmmster_summary_test_file, row.names = FALSE)
 
 
 
