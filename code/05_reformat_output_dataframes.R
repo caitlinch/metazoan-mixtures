@@ -114,6 +114,7 @@ write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
 
 
 #### 5. Prepare summary of the MAST tsv file ####
+### Output site ratios from HMM weights
 # Read in tsv file
 mast_file <- grep("MAST_model_output", all_output_files, value = TRUE)
 mast_df <- read.table(file = mast_file, header = TRUE, sep = "\t")
@@ -137,6 +138,8 @@ write.csv(phylohmm_summary_df, file = phylohmm_summary_test_file, row.names = FA
 # Write the output for HMMster
 hmmster_summary_test_file <- paste0(output_file_dir, "summary_HMMster_test_results.csv")
 write.csv(hmmster_summary_df, file = hmmster_summary_test_file, row.names = FALSE)
+
+### Output tree weights
 
 
 
