@@ -9,8 +9,6 @@ library(phylotools)
 
 
 
-
-
 #### Functions to extract information about alignments ####
 matrix.dimensions <- function(alignment_path){
   # Small function to  check the number of dimensions in an alignment
@@ -45,6 +43,35 @@ matrix.dimensions <- function(alignment_path){
   
   # Collate results into a vector
   op_vector <- c(dataset, matrix_name, sequence_format, num_taxa, num_sites, alignment_path)
+  
+  # Return the results
+  return(op_vector)
+}
+
+
+number.informative.sites <- function(iq_file){
+  ## Extract number of informative sites from IQ-Tree output files
+  
+  # Get details about the alignment from the filepath name
+  dataset = strsplit(basename(iq_file), "\\.")[[1]][1]
+  sequence_format = strsplit(basename(iq_file), "\\.")[[1]][3]
+  matrix_name <- strsplit(basename(iq_file), "\\.")[[1]][2]
+  # Open IQ-Tree file
+  iq_lines <- readLines(iq_file)
+  # Extract information
+  num_sites <- as.numeric(gsub(" ", "", strsplit(strsplit(grep("Input data", iq_lines, value = T), "with")[[1]][2], " ")[[1]][2]))
+  num_constant_sites <- as.numeric(gsub(" ", "", strsplit(strsplit(grep("Number of constant sites", iq_lines, value = T), ":")[[1]][2], "\\(")[[1]][1]))
+  prop_constant_sites <- num_constant_sites/num_sites
+  num_invariant_sites <- as.numeric(gsub(" ", "", strsplit(strsplit(grep("Number of invariant", iq_lines, value = T), ":")[[1]][2], "\\(")[[1]][1]))
+  prop_invariant_sites <- num_invariant_sites/num_sites
+  num_pis <- as.numeric(gsub(" ", "", strsplit(strsplit(grep("Number of parsimony informative sites:", iq_lines, value = T), ":")[[1]][2], "\\(")[[1]]))
+  prop_pis <- num_pis/num_sites
+  
+  # Collate results into a vector
+  op_vector <- c(dataset, matrix_name, sequence_format, num_taxa,
+                 num_sites, num_constant_sites, prop_constant_sites,
+                 num_invariant_sites, prop_invariant_sites, num_pis,
+                 prop_pis, iq_file)
   
   # Return the results
   return(op_vector)
