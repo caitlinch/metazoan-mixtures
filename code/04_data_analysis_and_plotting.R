@@ -23,6 +23,7 @@ repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 library(ggplot2)
 library(ggtree)
 library(patchwork)
+library(reshape2)
 
 # Open function files
 source(paste0(repo_dir,"code/func_plotting.R"))
@@ -80,8 +81,106 @@ hyp5_plot <- color.clades.plot(trees[[5]], tip_labels = metazoan_clade_labs, col
 #### 4. Exploratory plots ####
 # List all files in the results directory
 all_files <- list.files(results_dir)
+# Open the summary alignment details and the summary topology results
+al_df <- read.csv(paste0(results_dir, grep("summary_alignment_details", all_files, value = T)), stringsAsFactors = FALSE)
+al_df$matrix_name[which(al_df$dataset == "Whelan2015")] <- "Dataset10"
+topo_df <-read.csv(paste0(results_dir, grep("summary_ML_tree_topology", all_files, value = T)), stringsAsFactors = FALSE)
+topo_df$ID <- paste0(topo_df$dataset, ".", topo_df$matrix_name)
+al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name)
+al_df_row_order <- match(topo_df$ID, al_df$ID)[which(!is.na(match(topo_df$ID, al_df$ID)))]
+al_df <- al_df[al_df_row_order, ]
+# Make a df for plotting
+al_df$percent_CTEN_sister <- topo_df$percent_CTEN_sister
+al_df$percent_PORI_sister <- topo_df$percent_PORI_sister
+al_df$percent_CTEN_PORI_sister <- topo_df$`percent_CTEN.PORI_sister`
+al_df$percent_Radiata_sister <- topo_df$percent_Radiata_sister
+al_df$percent_PORI_monophyletic <- topo_df$percent_PORI_monophyletic
+al_df$percent_PORI_paraphyletic <- topo_df$percent_PORI_paraphyletic
+al_df$percent_PORI_one_taxon <- topo_df$percent_PORI_one_taxon
+al_df$percent_CTEN_CNID_monophyletic <- topo_df$percent_CTEN.CNID_monophyletic
+al_df$percent_CTEN_CNID_not_monophyletic <- topo_df$percent_CTEN.CNID_not_monophyletic
+al_df$ID <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011", "Nosenko2013 non-ribo",
+                "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
+                "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
+### Plot 1: Percent of trees with Ctenophora sister against number of sites ###
+plot_df <- melt(al_df, 
+                id.vars = c("ID", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
+                            "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
+                            "proportion_informative_sites"),
+                measure.vars = c("percent_CTEN_sister") )
+# Number of sites
+ggplot(data = plot_df, aes(x = num_sites, y = value)) +
+  geom_point() +
+  geom_smooth() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
+  theme_bw()
+# Number of constant sites
+ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
+  theme_bw()
+# Number of informative sites
+ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
+  theme_bw()
+
+### Plot 2: Percent of trees with monophyletic Porifer against number of sites ###
+plot_df <- melt(al_df, 
+                id.vars = c("ID", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
+                            "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
+                            "proportion_informative_sites"),
+                measure.vars = c("percent_PORI_monophyletic") )
+# Number of sites
+ggplot(data = plot_df, aes(x = num_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
+  theme_bw()
+# Number of constant sites
+ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
+  theme_bw()
+# Number of informative sites
+ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
+  theme_bw()
+
+### Plot 3: Percent of trees with Cten/Cnid paraphyletic against number of sites ###
+plot_df <- melt(al_df, 
+                id.vars = c("ID", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
+                            "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
+                            "proportion_informative_sites"),
+                measure.vars = c("percent_CTEN_CNID_not_monophyletic") )
+# Number of sites
+ggplot(data = plot_df, aes(x = num_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
+  theme_bw()
+# Number of constant sites
+ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
+  theme_bw()
+# Number of informative sites
+ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
+  theme_bw()
+
+
 
 
 
