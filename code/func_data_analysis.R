@@ -68,10 +68,14 @@ extract.number.informative.sites <- function(iq_file){
   prop_pis <- num_pis/num_sites
   
   # Collate results into a vector
-  op_vector <- c(dataset, matrix_name, sequence_format, num_taxa,
-                 num_sites, num_constant_sites, prop_constant_sites,
-                 num_invariant_sites, prop_invariant_sites, num_pis,
-                 prop_pis, iq_file)
+  op_vector <- c(dataset, matrix_name, sequence_format, num_sites, 
+                 num_constant_sites, prop_constant_sites,
+                 num_invariant_sites, prop_invariant_sites, 
+                 num_pis, prop_pis, iq_file)
+  names(op_vector) <- c("dataset", "matrix_name", "sequence_format", "num_sites",
+                            "number_constant_sites", "proportion_constant_sites",
+                            "number_invariant_sites", "proportion_invariant_sites",
+                            "number_informative_sites", "proportion_informative_sites")
   
   # Return the results
   return(op_vector)

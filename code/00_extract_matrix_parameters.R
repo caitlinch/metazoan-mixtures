@@ -8,12 +8,15 @@
 # alignment_dir       <- Directory containing alignments for all data sets
 #                        Alignments have the naming convention dataset.matrix_name.sequence_type.fa
 #                        E.g. Cherryh2022.all_taxa.aa.fa
+# tree_dir            <- 
+# output_dir          <- Location to save output files
 # repo_dir            <- Location of caitlinch/metazoan-mixtures github repository
 
 location = "local"
 if (location == "local"){
   alignment_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+  tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
+  output_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
   repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 } else if (location == "soma"){
   alignment_dir <- "/data/caitlin/metazoan-mixtures/data_all/"
@@ -31,6 +34,12 @@ library(phangorn)
 
 # Source functions
 source(paste0(repo_dir, "code/func_data_analysis.R"))
+
+# Check the output folder exists
+output_dir <- paste0(repo_dir, "data/")
+if (dir.exists(output_dir) == FALSE){
+  dir.crate(output_dir)
+}
 
 
 
@@ -91,14 +100,16 @@ all_alignments <- grep("Original", all_alignments, value = T, invert = T)
 dimension_list <- lapply(all_alignments, matrix.dimensions)
 dimension_df <- as.data.frame(do.call(rbind, dimension_list))
 names(dimension_df) <- c("dataset", "matrix_name", "sequence_format", "num_taxa", "num_sites", "alignment_path")
+dimension_df$ID <- paste0(dimension_df$dataset, ".", dimension_df$matrix_name)
 
-# Check the output folder exists
-output_dir <- paste0(repo_dir, "data/")
-if (dir.exists(output_dir) == FALSE){
-  dir.crate(output_dir)
-}
+# Extract the number of informative sites
+iq_files <- paste0(tree_dir, grep("ModelFinder", grep("\\.iqtree",list.files(tree_dir), value = T), value = T))
+iq_df <- as.data.frame(do.call(rbind, lapply(iq_files, extract.number.informative.sites)))
+iq_df$ID <- paste0(iq_df$dataset, ".", iq_df$matrix_name)
 
-# Save the dataframe
+# Save the dataframes
 df_path <- paste0(output_dir, "alignment_dimensions.csv")
 write.csv(dimension_df, file = df_path, row.names = FALSE)
+df_path <- paste0(output_dir, "alignment_site_details.csv")
+write.csv(iq_df, file = df_path, row.names = FALSE)
 
