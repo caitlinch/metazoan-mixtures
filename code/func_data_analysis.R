@@ -49,7 +49,7 @@ matrix.dimensions <- function(alignment_path){
 }
 
 
-number.informative.sites <- function(iq_file){
+extract.number.informative.sites <- function(iq_file){
   ## Extract number of informative sites from IQ-Tree output files
   
   # Get details about the alignment from the filepath name
