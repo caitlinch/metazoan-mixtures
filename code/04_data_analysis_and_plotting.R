@@ -14,12 +14,14 @@
 
 plot_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/05_plotting/"
 results_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
+tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/02_renamed_trees/"
 repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 
 
 
 #### 2. Prepare functions, variables and packages ####
 # Open packages
+library(ape)
 library(ggplot2)
 library(ggtree)
 library(patchwork)
@@ -100,13 +102,75 @@ al_df$percent_PORI_one_taxon <- topo_df$percent_PORI_one_taxon
 al_df$percent_CTEN_CNID_monophyletic <- topo_df$percent_CTEN.CNID_monophyletic
 al_df$percent_CTEN_CNID_not_monophyletic <- topo_df$percent_CTEN.CNID_not_monophyletic
 al_df$ID <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011", "Nosenko2013 non-ribo",
-                "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
-                "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
+              "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
+              "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
+al_df$best_model <- c("PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60",
+                      "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_LG_C60",
+                      "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60")
+# Extract branch a and branch b lengths
+
+# Extract row information
+row <- al_df[1,]
+# Open best tree for this dataset
+all_trees <- list.files(tree_dir)
+row_tree_file <- grep(row$best_model, grep(row$matrix_name, grep(row$dataset, all_trees, value = T), value = T), value = T)
+row_tree_file_path <- paste0(tree_dir, row_tree_file)
+raw_tree <- read.tree(row_tree_file_path)
+# Extract clades from tip labels
+outgroup_species <- grep("outgroup", tree$tip.label, value = T, ignore.case = T)
+ctenophora_species <- grep("ctenophora", tree$tip.label, value = T, ignore.case = T)
+porifera_species <- grep("porifera", tree$tip.label, value = T, ignore.case = T)
+# Root at outgroup
+og_tips <- raw_tree$tip.label
+tree <- root(raw_tree, outgroup = outgroup_species, resolve.root = T)
+is_tip <- tree$edge[,2] <= length(tree$tip.label)
+tip_order <- tree$edge[is_tip, 2]
+ordered_tips <- tree$tip.label[tip_order]
+# Get node and branch numbers for Ctenophora clade
+if (length(ctenophora_species) > 1){
+  # If multiple sponge species
+  ctenophora_node <- getMRCA(tree, ctenophora_species)
+  ctenophora_branch <- which(tree$edge[,2] == ctenophora_node)
+} else {
+  # If single sponge species 
+  ctenophora_branch <- which(tree$edge[,2] == which(tree$tip.label == ctenophora_species))
+  ctenophora_node <- tree$edge[ctenophora_branch, 1]
+}
+# Get node and branch numbers for Porifera clade
+if (length(porifera_species) > 1){
+  # If multiple sponge species
+  porifera_node <- getMRCA(tree, porifera_species)
+  porifera_branch <- which(tree$edge[,2] == porifera_node)
+} else {
+  # If single sponge species 
+  porifera_branch <- which(tree$edge[,2] == which(tree$tip.label == porifera_species))
+  porifera_node <- tree$edge[porifera_branch, 1]
+}
+# Get branch lengths
+if (length(ctenophora_species) > 1){
+  ctenophora_branch_length <- tree$edge.length[ctenophora_branch]
+} else {
+  ctenophora_branch_length <- NA
+}
+if (length(porifera_species) > 1){
+  porifera_branch_length <- tree$edge.length[porifera_branch]
+} else {
+  porifera_branch_length <- NA
+}
+# Return requested branch lengths
+if (clade == "Porifera"){
+  op = porifera_branch_length
+} else if (clade == "Ctenophora"){
+  op = ctenophora_branch_length
+}
+return(op)
+
+
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
 ### Plot 1: Percent of trees with Ctenophora sister against number of sites ###
 plot_df <- melt(al_df, 
-                id.vars = c("ID", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
                             "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
                             "proportion_informative_sites"),
                 measure.vars = c("percent_CTEN_sister") )
