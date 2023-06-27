@@ -29,6 +29,7 @@ library(reshape2)
 
 # Open function files
 source(paste0(repo_dir,"code/func_plotting.R"))
+source(paste0(repo_dir,"code/func_data_processing.R"))
 
 
 
@@ -108,62 +109,7 @@ al_df$best_model <- c("PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60"
                       "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_LG_C60",
                       "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60")
 # Extract branch a and branch b lengths
-
-# Extract row information
-row <- al_df[1,]
-# Open best tree for this dataset
-all_trees <- list.files(tree_dir)
-row_tree_file <- grep(row$best_model, grep(row$matrix_name, grep(row$dataset, all_trees, value = T), value = T), value = T)
-row_tree_file_path <- paste0(tree_dir, row_tree_file)
-raw_tree <- read.tree(row_tree_file_path)
-# Extract clades from tip labels
-outgroup_species <- grep("outgroup", tree$tip.label, value = T, ignore.case = T)
-ctenophora_species <- grep("ctenophora", tree$tip.label, value = T, ignore.case = T)
-porifera_species <- grep("porifera", tree$tip.label, value = T, ignore.case = T)
-# Root at outgroup
-og_tips <- raw_tree$tip.label
-tree <- root(raw_tree, outgroup = outgroup_species, resolve.root = T)
-is_tip <- tree$edge[,2] <= length(tree$tip.label)
-tip_order <- tree$edge[is_tip, 2]
-ordered_tips <- tree$tip.label[tip_order]
-# Get node and branch numbers for Ctenophora clade
-if (length(ctenophora_species) > 1){
-  # If multiple sponge species
-  ctenophora_node <- getMRCA(tree, ctenophora_species)
-  ctenophora_branch <- which(tree$edge[,2] == ctenophora_node)
-} else {
-  # If single sponge species 
-  ctenophora_branch <- which(tree$edge[,2] == which(tree$tip.label == ctenophora_species))
-  ctenophora_node <- tree$edge[ctenophora_branch, 1]
-}
-# Get node and branch numbers for Porifera clade
-if (length(porifera_species) > 1){
-  # If multiple sponge species
-  porifera_node <- getMRCA(tree, porifera_species)
-  porifera_branch <- which(tree$edge[,2] == porifera_node)
-} else {
-  # If single sponge species 
-  porifera_branch <- which(tree$edge[,2] == which(tree$tip.label == porifera_species))
-  porifera_node <- tree$edge[porifera_branch, 1]
-}
-# Get branch lengths
-if (length(ctenophora_species) > 1){
-  ctenophora_branch_length <- tree$edge.length[ctenophora_branch]
-} else {
-  ctenophora_branch_length <- NA
-}
-if (length(porifera_species) > 1){
-  porifera_branch_length <- tree$edge.length[porifera_branch]
-} else {
-  porifera_branch_length <- NA
-}
-# Return requested branch lengths
-if (clade == "Porifera"){
-  op = porifera_branch_length
-} else if (clade == "Ctenophora"){
-  op = ctenophora_branch_length
-}
-return(op)
+lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Ctenophora")
 
 
 
