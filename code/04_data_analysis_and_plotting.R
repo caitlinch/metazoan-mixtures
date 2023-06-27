@@ -109,7 +109,8 @@ al_df$best_model <- c("PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60"
                       "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_LG_C60",
                       "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60")
 # Extract branch a and branch b lengths
-lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Ctenophora")
+al_df$ctenophora_branch_length <- unlist(lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Ctenophora"))
+al_df$porifera_branch_length <- unlist(lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Porifera"))
 
 
 
