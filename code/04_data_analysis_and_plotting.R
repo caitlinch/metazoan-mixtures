@@ -125,19 +125,19 @@ plot_df <- melt(al_df,
 ggplot(data = plot_df, aes(x = num_sites, y = value)) +
   geom_point() +
   geom_smooth() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
   theme_bw()
 # Number of constant sites
 ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
   theme_bw()
 # Number of informative sites
 ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
   theme_bw()
 
@@ -150,19 +150,19 @@ plot_df <- melt(al_df,
 # Number of sites
 ggplot(data = plot_df, aes(x = num_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
   theme_bw()
 # Number of constant sites
 ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
   theme_bw()
 # Number of informative sites
 ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
   theme_bw()
 
@@ -175,13 +175,13 @@ plot_df <- melt(al_df,
 # Number of sites
 ggplot(data = plot_df, aes(x = num_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
   theme_bw()
 # Number of constant sites
 ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
   geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
   scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
   theme_bw()
 # Number of informative sites
@@ -191,12 +191,25 @@ ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
   scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
   theme_bw()
 
+### Plot 4: Percent of trees with Ctenophora sister length of Ctenophora branch lengths ###
+plot_df <- melt(al_df, 
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "ctenophora_branch_length"),
+                measure.vars = c("percent_CTEN_sister") )
+ggplot(data = plot_df, aes(x = ctenophora_branch_length, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
+  scale_x_continuous(name = "Length of branch to Ctenophora clade", breaks = seq(0,0.80,0.1), minor_breaks = seq(0,0.80,0.05)) +
+  theme_bw()
 
-
-
-
-
-
-
+### Plot 5: Percent of trees with Ctenophora sister length of Porifera branch lengths ###
+plot_df <- melt(al_df, 
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "porifera_branch_length"),
+                measure.vars = c("percent_CTEN_sister") )
+# Number of sites
+ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
+  scale_x_continuous(name = "Length of branch to Porifera clade", breaks = seq(0,0.05,0.01), minor_breaks = seq(0,0.05,0.005)) +
+  theme_bw()
 
 
