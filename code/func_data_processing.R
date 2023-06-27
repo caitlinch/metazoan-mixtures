@@ -269,7 +269,7 @@ extract.branch.length.wrapper <- function(row_id, alignment_df, tree_directory, 
   ## Wrapper function for extract.branch.length
   
   # Extract row information
-  row <- alignment_df[1,]
+  row <- alignment_df[row_id,]
   # Call function
   bl <- extract.branch.length(dataset = row$dataset, matrix_name = row$matrix_name, best_model = row$best_model,
                               tree_directory = tree_directory, clade = clade)
@@ -286,9 +286,9 @@ extract.branch.length <- function(dataset, matrix_name, best_model, tree_directo
   row_tree_file_path <- paste0(tree_directory, row_tree_file)
   raw_tree <- read.tree(row_tree_file_path)
   # Extract clades from tip labels
-  outgroup_species <- grep("outgroup", tree$tip.label, value = T, ignore.case = T)
-  ctenophora_species <- grep("ctenophora", tree$tip.label, value = T, ignore.case = T)
-  porifera_species <- grep("porifera", tree$tip.label, value = T, ignore.case = T)
+  outgroup_species <- grep("outgroup", raw_tree$tip.label, value = T, ignore.case = T)
+  ctenophora_species <- grep("ctenophora", raw_tree$tip.label, value = T, ignore.case = T)
+  porifera_species <- grep("porifera", raw_tree$tip.label, value = T, ignore.case = T)
   # Root at outgroup
   og_tips <- raw_tree$tip.label
   tree <- root(raw_tree, outgroup = outgroup_species, resolve.root = T)
