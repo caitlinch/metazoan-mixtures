@@ -292,47 +292,36 @@ extract.branch.length <- function(dataset, matrix_name, best_model, tree_directo
   # Root at outgroup
   og_tips <- raw_tree$tip.label
   tree <- root(raw_tree, outgroup = outgroup_species, resolve.root = T)
-  is_tip <- tree$edge[,2] <= length(tree$tip.label)
-  tip_order <- tree$edge[is_tip, 2]
-  ordered_tips <- tree$tip.label[tip_order]
-  # Get node and branch numbers for Ctenophora clade
+  # Get node, branch numbers and branch lengths for Ctenophora clade
   if (length(ctenophora_species) > 1){
     # If multiple sponge species
     ctenophora_node <- getMRCA(tree, ctenophora_species)
     ctenophora_branch <- which(tree$edge[,2] == ctenophora_node)
+    ctenophora_branch_length <- tree$edge.length[ctenophora_branch]
   } else {
     # If single sponge species 
     ctenophora_branch <- which(tree$edge[,2] == which(tree$tip.label == ctenophora_species))
     ctenophora_node <- tree$edge[ctenophora_branch, 1]
+    ctenophora_branch_length <- NA
   }
-  # Get node and branch numbers for Porifera clade
+  # Get node, branch numbers and branch lengths for Porifera clade
   if (length(porifera_species) > 1){
     # If multiple sponge species
     porifera_node <- getMRCA(tree, porifera_species)
     porifera_branch <- which(tree$edge[,2] == porifera_node)
+    porifera_branch_length <- tree$edge.length[porifera_branch]
   } else {
     # If single sponge species 
     porifera_branch <- which(tree$edge[,2] == which(tree$tip.label == porifera_species))
     porifera_node <- tree$edge[porifera_branch, 1]
-  }
-  # Get branch lengths
-  if (length(ctenophora_species) > 1){
-    ctenophora_branch_length <- tree$edge.length[ctenophora_branch]
-  } else {
-    ctenophora_branch_length <- NA
-  }
-  if (length(porifera_species) > 1){
-    porifera_branch_length <- tree$edge.length[porifera_branch]
-  } else {
     porifera_branch_length <- NA
   }
   # Return requested branch lengths
   if (clade == "Porifera"){
-    op = porifera_branch_length
+    return(porifera_branch_length)
   } else if (clade == "Ctenophora"){
-    op = ctenophora_branch_length
+    return(ctenophora_branch_length)
   }
-  return(op)
 }
 
 
