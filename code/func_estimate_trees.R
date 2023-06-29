@@ -795,7 +795,7 @@ phyloHMM.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_
   
   ## Extract parameters for phyloHMM run from the row
   # Assemble the output prefix
-  phylohmm_prefix <- paste0(mast_row$prefix, ".phyloHMM.", MAST_branch_length_option)
+  phylohmm_prefix <- paste0(mast_row$prefix, ".phyloHMM.", MAST_branch_length_option, ".minbl_", format(iqtree_min_branch_length, scientific = FALSE))
   # Check whether the model is a PMSF model
   check_pmsf <- grepl("PMSF", mast_row$model_code)
   
@@ -909,7 +909,7 @@ run.phyloHMM <- function(tree_file, alignment_file, output_prefix = NA,
   # Set call for number of threads
   nt_call <- paste0("-nt ", iqtree_num_threads)
   # Set call for minimum branch length
-  min_bl_call <- paste0("-blmin ", iqtree_min_branch_length)
+  min_bl_call <- paste0("-blmin ", format(iqtree_min_branch_length, scientific = F))
   ## Set prefix call
   if (is.na(output_prefix) == TRUE){
     prefix_call <- ""
@@ -944,7 +944,7 @@ HMMster.wrapper <- function(row_id, mast_df, iqtree_tree_mixtures, MAST_branch_l
   
   ## Extract parameters for HMMster run from the row
   # Assemble the output prefix
-  HMMster_prefix <- paste0(mast_row$prefix, ".HMMster.", MAST_branch_length_option)
+  HMMster_prefix <- paste0(mast_row$prefix, ".HMMster.", MAST_branch_length_option, ".minbl_", format(iqtree_min_branch_length, scientific = FALSE))
   # Check whether the model is a PMSF model
   check_pmsf <- grepl("PMSF", mast_row$model_code)
   
@@ -1065,7 +1065,7 @@ run.HMMster <- function(tree_file, alignment_file, output_prefix = NA,
   # Set call for HMMster model
   hmm_call <- "-hmmster"
   # Set call for minimum branch length
-  min_bl_call <- paste0("-blmin ", iqtree_min_branch_length)
+  min_bl_call <- paste0("-blmin ", format(iqtree_min_branch_length, scientific = F))
   # Set call for number of threads
   nt_call <- paste0("-nt ", iqtree_num_threads)
   ## Set prefix call
