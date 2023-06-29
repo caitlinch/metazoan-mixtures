@@ -30,7 +30,7 @@
 # run.phyloHMM              <- TRUE to call IQ-Tree2 and run the phyloHMM. FALSE to output IQ-Tree2 command lines without running phyloHMM.
 # run.tree.topology.tests   <- TRUE to call IQ-Tree2 and run the tree topology tests. FALSE to output IQ-Tree2 command lines without running tree topology tests.
 
-location = "local"
+location = "dayhoff"
 if (location == "local"){
   ## File paths
   alignment_dir           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
@@ -98,13 +98,7 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
   split_best_model_str                <- strsplit(model_df$best_model, ":")
   model_df$best_model                 <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][1]}))
   model_df$best_model_sitefreq_path   <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][2]}))
-  # Reorder the columns
-  model_df <- model_df[,c("dataset", "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix",
-                          "best_model", "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC",
-                          "best_model_wBIC", "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams",
-                          "tree_BIC", "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
-                          "estimated_rates", "estimated_gamma", "estimated_state_frequencies",
-                          "maximum_likelihood_tree")]
+  
   ## Prepare the hypothesis tree files
   model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
                                                  collate.hypothesis.trees, input_dir = hypothesis_tree_dir,
@@ -113,17 +107,47 @@ if (file.exists(phylohmm_parameter_path) == TRUE){
   model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, basename(model_df$best_model_sitefreq_path))
   model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
   model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, basename(model_df$hypothesis_tree_path))
+  
+  ## Add column with the minimum branch length for each alignment
+  al_dims_file <- paste0(output_dir, grep("summary_alignment_details", list.files(output_dir), value = T))
+  if (file.exists(al_dims_file) == TRUE){
+    # Open alignment dimensions file
+    al_dims_df <- read.csv(al_dims_file, stringsAsFactors = F)
+    # Reorder row order to match model_df
+    include_rows <- match(model_df$matrix_name, al_dims_df$matrix_name)[which(!is.na(match(model_df$matrix_name, al_dims_df$matrix_name)))]
+    al_dims_df <- al_dims_df[include_rows, ]
+    # Sort dataframes by column value
+    al_dims_df <- al_dims_df[order(al_dims_df$dataset, al_dims_df$matrix_name),]
+    model_df <- model_df[order(model_df$dataset, model_df$matrix_name),]
+    # Determine minimum branch length as 1/N for each dataset (where N is the total number of sites), and add it to the model_df as a column
+    model_df$num_sites <- al_dims_df$num_sites
+    model_df$min_MAST_bl_from_alignment <- round(1/model_df$num_sites, 5)
+    model_df$min_MAST_bl_arbitrary <- 0.00001
+  }
+  
+  ## Sort and remove columns
+  model_df <- model_df[, c("dataset", "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix", "best_model",                
+                           "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC", "best_model_wBIC", "tree_LogL",
+                           "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC", "tree_length", "tree_SumInternalBranch",
+                           "tree_PercentInternalBranch",  "estimated_rates", "estimated_gamma", "estimated_state_frequencies",
+                           "hypothesis_tree_path", "num_sites", "min_MAST_bl_from_alignment", "min_MAST_bl_arbitrary")]
+  
   ## Write the dataframe
   write.table(model_df, file = phylohmm_parameter_path, sep = "\t")
+  
 }
+
 
 
 
 #### 4. Apply mixtures across trees and sites (MAST model) - phyloHMM ####
 # Create phyloHMM command lines in IQ-Tree
-phyloHMM_run_list <- lapply(1:nrow(model_df), phyloHMM.wrapper, mast_df = model_df, iqtree_tree_mixtures = iqtree_tm,
-                            MAST_branch_length_option = "TR", iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
-                            run.iqtree = FALSE)
+phyloHMM_run_list <- lapply(1:nrow(model_df), function(i){phyloHMM.wrapper(i, mast_df = model_df, 
+                                                                           iqtree_tree_mixtures = iqtree_tm,
+                                                                           MAST_branch_length_option = "TR", 
+                                                                           iqtree_num_threads = iqtree_num_threads, 
+                                                                           iqtree_min_branch_length = model_df$min_MAST_bl_from_alignment[i],
+                                                                           run.iqtree = FALSE) } )
 phyloHMM_run_df <- as.data.frame(do.call(rbind, phyloHMM_run_list))
 # Bind dataframe
 phyloHMM_df <- cbind(model_df,phyloHMM_run_df)
@@ -143,9 +167,12 @@ if (run.MAST == TRUE){
 
 #### 5. Apply mixtures across trees and sites (MAST model) - HMMster ####
 # Create HMMster command lines in IQ-Tree
-HMMster_run_list <- lapply(1:nrow(model_df), HMMster.wrapper, mast_df = model_df, iqtree_tree_mixtures = iqtree_hmmster, 
-                           MAST_branch_length_option = "T", iqtree_num_threads = iqtree_num_threads, iqtree_min_branch_length = 0.00001,
-                           run.iqtree = FALSE)
+HMMster_run_list <- lapply(1:nrow(model_df), function(i){HMMster.wrapper(i, mast_df = model_df, 
+                                                                         iqtree_tree_mixtures = iqtree_hmmster, 
+                                                                         MAST_branch_length_option = "T",
+                                                                         iqtree_num_threads = iqtree_num_threads,
+                                                                         iqtree_min_branch_length = model_df$min_MAST_bl_from_alignment[i],
+                                                                         run.iqtree = FALSE) } )
 HMMster_run_df <- as.data.frame(do.call(rbind, HMMster_run_list))
 # Bind dataframe
 HMMster_df <- cbind(model_df,HMMster_run_df)
