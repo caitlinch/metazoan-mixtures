@@ -1628,8 +1628,8 @@ summarise.topology.results <- function(dataset_id, topology_check_df,
   pori_topology_results <- c(length(which(d_df$PORI_topology == "Monophyletic")), 
                              length(which(d_df$PORI_topology == "Paraphyletic")),
                              length(which(d_df$PORI_topology == "One taxon")))
-  cten_cnid_mono_results <- c(length(which(d_df$CTEN.CNID_monophyletic == "Yes")), 
-                              length(which(d_df$CTEN.CNID_monophyletic == "No")))
+  cten_cnid_mono_results <- c(length(which(d_df$`CTEN+CNID_monophyletic` == "Yes")), 
+                              length(which(d_df$`CTEN+CNID_monophyletic` == "No")))
   # Summarise UFB support
   mean_UFB_support <- mean(as.numeric(d_df$UFB_support))
   # Check whether the dataset is completed
