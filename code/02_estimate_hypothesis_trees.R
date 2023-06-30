@@ -309,20 +309,4 @@ if (control_parameters$estimate.hypothesis.trees == TRUE){
   mclapply(constraint_df$iqtree2_call, system, mc.cores = number_parallel_processes)
 }
 
-# Extract hypothesis trees from output and save into a tsv
-#### THIS NEEDS TESTING ####
-if (control_parameters$collate.hypothesis.logs == TRUE){
-  # Open ml_tree_df file (if it exists)
-  if (file.exists(output_file_paths[3]) == TRUE){
-    ml_tree_df <- read.table(output_file_paths[3], header = T)
-  }
-  
-  # Combine hypothesis trees into one file per unique identifier and save
-  ml_tree_df$hypothesis_tree_files <- lapply(ml_tree_df$prefix, combine.hypothesis.trees, constraint_tree_directory = c_tree_dir,
-                                             outgroup_taxa = NA)
-  # Save dataframe
-  write.table(ml_tree_df, file = output_file_paths[10], row.names = FALSE, sep = "\t")
-  
-}
-
 
