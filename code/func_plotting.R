@@ -38,7 +38,7 @@ bw.paraphyletic.clades.plot <- function(tree, label_nodes = c(NA,NA)){
   return(temp_plot)
 }
 
-color.clades.plot <- function(tree, tip_labels, color_palette, save.plot = FALSE, output_directory = output_dir, output_id){
+color.clades.plot <- function(tree, tip_labels, color_palette, save.plot = FALSE, output_directory, output_id){
   # Function to plot in black and white overview of hypotheses for relationships between 
   #   clades of the Animal tree of life, where the sponge clade is monophyletic
   
@@ -61,12 +61,12 @@ color.clades.plot <- function(tree, tip_labels, color_palette, save.plot = FALSE
       plot_params <- c("png_width" = 1364, "png_height" = 723, "svg_width" = 7, "svg_height" = 3.5)
     }
     # Output png
-    hypothesis_plot_file <- paste0(output_dir, output_id, ".png")
+    hypothesis_plot_file <- paste0(output_directory, output_id, ".png")
     png(filename = hypothesis_plot_file, width = plot_params[["png_width"]], height = plot_params[["png_height"]], units = "px", pointsize = 12, bg = "white")
     temp_plot
     dev.off()
     # Output svg
-    hypothesis_plot_file <- paste0(output_dir, output_id, ".svg")
+    hypothesis_plot_file <- paste0(output_directory, output_id, ".svg")
     svg(filename = hypothesis_plot_file, width = plot_params[["svg_width"]], height = plot_params[["svg_height"]], bg = "white")
     temp_plot
     dev.off()
