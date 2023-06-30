@@ -191,7 +191,7 @@ ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
   scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
   theme_bw()
 
-### Plot 4: Percent of trees with Ctenophora sister length of Ctenophora branch lengths ###
+### Plot 4: Percent of trees with Ctenophora sister against length of Ctenophora branch lengths ###
 plot_df <- melt(al_df, 
                 id.vars = c("ID", "best_model", "num_taxa", "num_sites", "ctenophora_branch_length"),
                 measure.vars = c("percent_CTEN_sister") )
@@ -199,6 +199,17 @@ ggplot(data = plot_df, aes(x = ctenophora_branch_length, y = value)) +
   geom_point() +
   scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
   scale_x_continuous(name = "Length of branch to Ctenophora clade", breaks = seq(0,0.80,0.1), minor_breaks = seq(0,0.80,0.05)) +
+  theme_bw()
+
+### Plot 5: Percent of trees with Ctenophora sister against length of Porifera branch lengths ###
+plot_df <- melt(al_df, 
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "porifera_branch_length"),
+                measure.vars = c("percent_CTEN_sister") )
+# Number of sites
+ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
+  geom_point() +
+  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
+  scale_x_continuous(name = "Length of branch to Porifera clade", breaks = seq(0,0.05,0.01), minor_breaks = seq(0,0.05,0.005)) +
   theme_bw()
 
 ### Plot 5: Percent of trees with Ctenophora sister length of Porifera branch lengths ###
@@ -211,5 +222,6 @@ ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
   scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
   scale_x_continuous(name = "Length of branch to Porifera clade", breaks = seq(0,0.05,0.01), minor_breaks = seq(0,0.05,0.005)) +
   theme_bw()
+
 
 
