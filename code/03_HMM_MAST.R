@@ -21,13 +21,14 @@
 # output_dir              <- Directory for output csvs
 # repo_dir                <- Location of caitlinch/metazoan-mixtures github repository
 # iqtree2                 <- Location of IQ-Tree2 stable release (version 2.2.2)
-# iqtree_tm               <- Location of IQ-Tree2 MAST release (currently: version 2.2.0.8.mix.1.hmm)
+# iqtree_tm               <- Location of IQ-Tree2 phyloHMM release (currently: version 2.2.0.8.mix.1.hmm)
+# iqtree_hmmster          <- Location of IQ-Tree2 HMMster release (currently: version 2.2.3.hmmster)
 
 ## Phylogenetic and IQ-Tree2 parameters
 # iqtree_num_threads      <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
 ## Control parameters
-# run.phyloHMM              <- TRUE to call IQ-Tree2 and run the phyloHMM. FALSE to output IQ-Tree2 command lines without running phyloHMM.
+# run.MAST                  <- TRUE to call IQ-Tree2 and run the MAST model. FALSE to output IQ-Tree2 command lines without running MAST model.
 # run.tree.topology.tests   <- TRUE to call IQ-Tree2 and run the tree topology tests. FALSE to output IQ-Tree2 command lines without running tree topology tests.
 
 location = "dayhoff"
