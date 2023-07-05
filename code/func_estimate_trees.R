@@ -428,17 +428,17 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
 } # end function
 
 
-output.constraint.trees <- function(dataset, matrix_name, dataset_constraint_tree_dir, 
+output.constraint.trees <- function(dataset, matrix_name, constraint_tree_dir, 
                                     constraint_clades, force.update.constraint.trees = TRUE){
   # Function to create the constraint trees for a given dataset. Does not create a dataframe of information or any iqtree commands.
   # Does not include Placozoa - Placozoa is not relevant to the question I am investigating (and is only ~1 taxa in most data sets)
   
   ### Prepare output file names
-  constraint_tree_1_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "1", ".nex")
-  constraint_tree_2_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "2", ".nex")
-  constraint_tree_3_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "3", ".nex")
-  constraint_tree_4_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "4", ".nex")
-  constraint_tree_5_file_name <- paste0(dataset_constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "5", ".nex")
+  constraint_tree_1_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "1", ".nex")
+  constraint_tree_2_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "2", ".nex")
+  constraint_tree_3_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "3", ".nex")
+  constraint_tree_4_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "4", ".nex")
+  constraint_tree_5_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "5", ".nex")
   
   ### Format taxa nicely for constraint trees
   # Split the taxa into clades
