@@ -23,7 +23,6 @@
 # extract.ML.tree.information   <- TRUE to extract information from maximum likelihood tree log file and iqtree file, including tree topology. FALSE to skip.
 # prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
-# collate.hypothesis.logs       <- TRUE to extract information from hypothesis tree log file and iqtree file. FALSE to skip.
 
 location = "local"
 if (location == "local"){
@@ -56,7 +55,6 @@ names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 control_parameters <- list(extract.ML.tree.information = FALSE,
                            prepare.hypothesis.trees = FALSE,
                            estimate.hypothesis.trees = FALSE,
-                           collate.hypothesis.logs = TRUE,
                            include.datasets.with.only.CXX.missing = TRUE)
 
 
