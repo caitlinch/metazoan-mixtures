@@ -429,7 +429,8 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
 
 
 output.constraint.trees <- function(dataset, matrix_name, constraint_tree_dir, 
-                                    constraint_clades, force.update.constraint.trees = TRUE){
+                                    dataset_info, matrix_taxa_info, ml_tree_tips_df,
+                                    force.update.constraint.trees = TRUE){
   # Function to create the constraint trees for a given dataset. Does not create a dataframe of information or any iqtree commands.
   # Does not include Placozoa - Placozoa is not relevant to the question I am investigating (and is only ~1 taxa in most data sets)
   
@@ -439,6 +440,56 @@ output.constraint.trees <- function(dataset, matrix_name, constraint_tree_dir,
   constraint_tree_3_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "3", ".nex")
   constraint_tree_4_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "4", ".nex")
   constraint_tree_5_file_name <- paste0(constraint_tree_dir, dataset, ".", matrix_name, ".constraint_tree_", "5", ".nex")
+  
+  ### Extract the relevant list of taxa for this dataframe
+  # First, check whether this matrix is included in the keys of the matrix_taxa list
+  row_key <- paste0(dataset, ".", matrix_name, ".", "aa")
+  list_keys <- names(matrix_taxa_info)
+  # Check if row_key in list_key
+  if ((row_key %in% list_keys) == FALSE){
+    # If row key is not in list key, then all taxa for this dataset have the same names
+    # Extract the object containing those taxa names
+    constraint_clades <- dataset_info[[dataset]]
+  } else if ((row_key %in% list_keys) == TRUE){
+    # First, identify the list of taxa in this matrix
+    keep_taxa <- matrix_taxa_info[[row_key]]
+    # Secondly, extract the taxa clades for this dataset
+    dataset_taxa_clades <- dataset_info[[dataset]]
+    # Make a copy of the clades object
+    constraint_clades <- dataset_taxa_clades
+    # Lastly, remove any taxa that is NOT in the keep_taxa from the constraint clades
+    #   i.e., remove any taxa from this dataset that are NOT present in this matrix
+    #   (as some datasets have multiple matrices, with different taxon sampling or different taxon naming conventions)
+    constraint_clades$Bilateria <- dataset_taxa_clades$Bilateria[which(dataset_taxa_clades$Bilateria %in% keep_taxa)]
+    constraint_clades$Cnidaria <- dataset_taxa_clades$Cnidaria[which(dataset_taxa_clades$Cnidaria %in% keep_taxa)]
+    constraint_clades$Placozoa <- dataset_taxa_clades$Placozoa[which(dataset_taxa_clades$Placozoa %in% keep_taxa)]
+    constraint_clades$Porifera <- dataset_taxa_clades$Porifera[which(dataset_taxa_clades$Porifera %in% keep_taxa)]
+    constraint_clades$Ctenophora <- dataset_taxa_clades$Ctenophora[which(dataset_taxa_clades$Ctenophora %in% keep_taxa)]
+    constraint_clades$Outgroup <- dataset_taxa_clades$Outgroup[which(dataset_taxa_clades$Outgroup %in% keep_taxa)]
+    constraint_clades$Sponges_Calcarea <- dataset_taxa_clades$Sponges_Calcarea[which(dataset_taxa_clades$Sponges_Calcarea %in% keep_taxa)]
+    constraint_clades$Sponges_Homoscleromorpha <- dataset_taxa_clades$Sponges_Homoscleromorpha[which(dataset_taxa_clades$Sponges_Homoscleromorpha %in% keep_taxa)]
+    constraint_clades$Sponges_Hexactinellida <- dataset_taxa_clades$Sponges_Hexactinellida[which(dataset_taxa_clades$Sponges_Hexactinellida %in% keep_taxa)]
+    constraint_clades$Sponges_Demospongiae <- dataset_taxa_clades$Sponges_Demospongiae[which(dataset_taxa_clades$Sponges_Demospongiae %in% keep_taxa)]
+  }
+  
+  ### Remove any taxa from the constraint_clades that are not included in the ML tree for the alignment
+  # Create the unique identifier for this row
+  unique_id <- paste0(dataset, ".", matrix_name)
+  # Extract the column of tip labels from the relevant unique_id column of the ml_tree_tips_df
+  tree_tips_raw <- ml_tree_tips_df[[c(unique_id)]]
+  tree_tips_cleaned <- na.omit(tree_tips_raw)
+  tree_tips <- as.character(tree_tips_cleaned)
+  # Check each of the clades and remove any tips not in the list of tree tips
+  constraint_clades$Bilateria <- constraint_clades$Bilateria[(constraint_clades$Bilateria %in% tree_tips)]
+  constraint_clades$Cnidaria <- constraint_clades$Cnidaria[(constraint_clades$Cnidaria %in% tree_tips)]
+  constraint_clades$Placozoa <- constraint_clades$Placozoa[(constraint_clades$Placozoa %in% tree_tips)]
+  constraint_clades$Porifera <- constraint_clades$Porifera[(constraint_clades$Porifera %in% tree_tips)]
+  constraint_clades$Ctenophora <- constraint_clades$Ctenophora[(constraint_clades$Ctenophora %in% tree_tips)]
+  constraint_clades$Outgroup <- constraint_clades$Outgroup[(constraint_clades$Outgroup %in% tree_tips)]
+  constraint_clades$Sponges_Calcarea <- constraint_clades$Sponges_Calcarea[(constraint_clades$Sponges_Calcarea %in% tree_tips)]
+  constraint_clades$Sponges_Homoscleromorpha <- constraint_clades$Sponges_Homoscleromorpha[(constraint_clades$Sponges_Homoscleromorpha %in% tree_tips)]
+  constraint_clades$Sponges_Hexactinellida <- constraint_clades$Sponges_Hexactinellida[(constraint_clades$Sponges_Hexactinellida %in% tree_tips)]
+  constraint_clades$Sponges_Demospongiae <- constraint_clades$Sponges_Demospongiae[(constraint_clades$Sponges_Demospongiae %in% tree_tips)]
   
   ### Format taxa nicely for constraint trees
   # Split the taxa into clades
