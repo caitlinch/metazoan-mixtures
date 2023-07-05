@@ -45,7 +45,7 @@
 # run.MAST.model                <- TRUE to call IQ-Tree2 and run the MAST model. FALSE to output IQ-Tree2 command lines without running MAST model.
 # run.tree.topology.tests       <- TRUE to call IQ-Tree2 and run the tree topology tests. FALSE to output IQ-Tree2 command lines without running tree topology tests.
 
-location = "local"
+location = "soma"
 if (location == "local"){
   alignment_dir         <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   big_data_output_dir   <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_large_datasets/"
@@ -68,13 +68,18 @@ if (location == "local"){
   iqtree_hmmster          <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
   iqtree_num_threads        <- 20
   number_parallel_processes <- 4
-} 
-
-# Set control parameters
-control_parameters <- list(prepare.hypothesis.trees = FALSE,
-                           estimate.hypothesis.trees = FALSE,
-                           run.MAST.model = FALSE,
-                           run.tree.topology.tests = FALSE)
+} else if (location == "soma"){
+  alignment_dir         <- "/home/caitlin/metazoan-mixtures/data_all/"
+  big_data_output_dir   <- "/home/caitlin/metazoan-mixtures/large_datasets/"
+  output_dir            <- "/home/caitlin/metazoan-mixtures/output_csvs/"
+  repo_dir              <- "/home/caitlin/metazoan-mixtures/"
+  
+  iqtree2               <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+  iqtree_tm               <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0.8.mix.1.hmm-Linux/bin/iqtree2"
+  iqtree_hmmster          <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
+  iqtree_num_threads        <- 20
+  number_parallel_processes <- 4
+}
 
 
 
@@ -143,7 +148,11 @@ simion_partition_file <- paste0(big_data_output_dir, grep("gene_partitions.model
 simion_constraint_trees <- sort(paste0(big_data_output_dir, grep("constraint_tree", grep("Simion2017", list.files(big_data_output_dir), value = T), value = T)))
 simion_hypothesis_prefixes <- paste0("Simion2017.supermatrix_97sp_401632pos_1719genes.ML_H", 1:length(simion_constraint_trees))
 # Assemble iqtree command line
-simion_hypothesis_tree_calls <- paste0(iqtree2, " -s ", simion_al_file, " -spp ", simion_partition_file, " -g ", simion_constraint_trees, 
+# # With partitions - do not use this for MAST runs
+# simion_hypothesis_tree_calls <- paste0(iqtree2, " -s ", simion_al_file, " -spp ", simion_partition_file, " -g ", simion_constraint_trees, 
+#                                        " -nt ", iqtree_num_threads, " -pre ", simion_hypothesis_prefixes)
+# Without partitions - concatenated LG+G4+F model
+simion_hypothesis_tree_calls <- paste0(iqtree2, " -s ", simion_al_file, " -m LG+G4+F -g ", simion_constraint_trees, 
                                        " -nt ", iqtree_num_threads, " -pre ", simion_hypothesis_prefixes)
 ## Hejnol 2009 dataset
 # Prepare file paths and iqtree parameters
@@ -156,7 +165,7 @@ hejnol_hypothesis_tree_calls <- paste0(iqtree2, " -s ", hejnol_al_file, " -spp "
                                        " -nt ", iqtree_num_threads, " -pre ", hejnol_hypothesis_prefixes)
 
 ## Output all command lines
-large_dataset_hypothesis_calls <- write(c(simion_hypothesis_tree_calls, hejnol_hypothesis_tree_calls), file = output_file_paths[[2]])
+write(c(simion_hypothesis_tree_calls, hejnol_hypothesis_tree_calls), file = output_file_paths[[2]])
 
 ## Collate trees
 # Collect all files from directory
@@ -192,7 +201,7 @@ simion_phylohmm_call <- paste0(iqtree_tm, " -m 'LG+G4+F+TR' -hmm -te ", simion_c
                                " -blmin ", format(1/simion_num_sites, scientific = F, digits = 1),
                               " -nt ", iqtree_num_threads, " -pre Simion2017.supermatrix_97sp_401632pos_1719genes.phyloHMM")
 ## Hejnol 2009 dataset
-simion_phylohmm_call <- paste0(iqtree_tm, " -m 'LG+G4+F+TR' -hmm -te ", hejnol_collated_trees, " -s ", hejnol_al_file, 
+hejnol_phylohmm_call <- paste0(iqtree_tm, " -m 'LG+G4+F+TR' -hmm -te ", hejnol_collated_trees, " -s ", hejnol_al_file, 
                                " -blmin ", format(1/hejnol_num_sites, scientific = F, digits = 1),
                                " -nt ", iqtree_num_threads, " -pre Hejnol2009.Hejnol_etal_2009_FixedNames.phyloHMM")
 
