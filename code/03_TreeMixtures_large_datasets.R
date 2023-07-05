@@ -85,27 +85,31 @@ rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018
 options(digits = 12)
 
 # Create file paths for output files
-output_file_paths <- paste0(output_dir, c())
+output_file_paths <- paste0(output_dir, c("01_02_maximum_likelihood_included_taxa.tsv"))
 
 
 
-#### 3. Prepare constraint trees ####
+#### 3. Construct constraint trees ####
+alignment_taxa_df <- read.table(output_file_paths[[1]], header = T)
+simion_constraint_trees <- output.constraint.trees(dataset = "Simion2017", matrix_name = "supermatrix_97sp_401632pos_1719genes", 
+                                                   constraint_tree_dir = big_data_output_dir, dataset_info = all_datasets,
+                                                   matrix_taxa_info = matrix_taxa, ml_tree_tips_df = alignment_taxa_df, 
+                                                   force.update.constraint.trees = TRUE)
+hejnol_constraint_trees <- output.constraint.trees(dataset = "Hejnol2009", matrix_name = "Hejnol_etal_2009_FixedNames", 
+                                                   constraint_tree_dir = big_data_output_dir, dataset_info = all_datasets,
+                                                   matrix_taxa_info = matrix_taxa, ml_tree_tips_df = alignment_taxa_df, 
+                                                   force.update.constraint.trees = TRUE)
+
+
+#### 4. Estimate hypothesis trees ####
 
 
 
-#### 4. Construct constraint trees ####
+#### 5. Apply MAST model ####
 
 
 
-#### 5. Estimate hypothesis trees ####
-
-
-
-#### 6. Apply MAST model ####
-
-
-
-#### 7. Apply tree topology tests ####
+#### 6. Apply tree topology tests ####
 
 
 
