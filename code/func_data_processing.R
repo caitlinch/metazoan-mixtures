@@ -1700,3 +1700,17 @@ porifera.topology.results <- function(dataset_id, topology_check_df, model_order
   # Return output
   return(output_vector)
 }
+
+
+return.MAST.branch.type <- function(file_path){
+  # Quick function to return the branch type option from the MAST run
+  
+  if (grepl(".T.", file_path) == TRUE){
+    branch_type = "T"
+  } else if (grepl(".TR.", file_path) == TRUE){
+    branch_type = "TR"
+  } else {
+    branch_type = NA
+  }
+  return(branch_type)
+}
