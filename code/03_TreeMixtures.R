@@ -195,8 +195,10 @@ if (run.MAST == TRUE){
 ## Extract file paths
 # Extract list of HMMster and phyloHMM files
 all_files <- list.files(mast_dir, recursive = TRUE)
-phylohmm_files <- grep("\\.hmm", grep("phyloHMM", all_files, value = T), value = T)
-hmmster_files <- grep("\\.hmm", grep("HMMster", all_files, value = T), value = T)
+exclude_dirs <- "minbl_0.00001"
+op_files <- all_files[grep(exclude_dirs, dirname(all_files), invert = T)]
+phylohmm_files <- grep("\\.hmm", grep("phyloHMM", op_files, value = T), value = T)
+hmmster_files <- grep("\\.hmm", grep("HMMster", op_files, value = T), value = T)
 ## HMM results and site ratios
 # To extract information from the completed HMM run:
 phylohmm_hmm_output <- lapply(paste0(mast_dir, phylohmm_files), extract.HMM.output)
@@ -215,12 +217,16 @@ tw_df <- rbind(as.data.frame(do.call(rbind, phylohmm_tw_output)), as.data.frame(
 hmm_df$dataset <- unlist(lapply(1:nrow(hmm_df), function(i){strsplit(hmm_df$hmm_file[i], "\\.")[[1]][1]}))
 hmm_df$matrix_name <- unlist(lapply(1:nrow(hmm_df), function(i){strsplit(hmm_df$hmm_file[i], "\\.")[[1]][2]}))
 hmm_df$model_code <- unlist(lapply(1:nrow(hmm_df), function(i){strsplit(hmm_df$hmm_file[i], "\\.")[[1]][3]}))
-hmm_df <- hmm_df[, c("dataset", "matrix_name", "model_code",  "analysis_type", "number_hypothesis_trees",
+hmm_df$mast_branch_type <- unlist(lapply(hmmster_files, return.MAST.branch.type))
+hmm_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(hmm_df), function(i){strsplit(hmm_df$hmm_file[i], "\\.")[[1]][7]})))
+hmm_df <- hmm_df[, c("dataset", "matrix_name", "model_code",  "analysis_type",
+                     "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
                      "tree_1_hmm_probs", "tree_2_hmm_probs", "tree_3_hmm_probs", "tree_4_hmm_probs",
                      "tree_5_hmm_probs", "tree_1_number_sites", "tree_2_number_sites", "tree_3_number_sites",
                      "tree_4_number_sites", "tree_5_number_sites", "tree_1_ratio_sites", "tree_2_ratio_sites",
                      "tree_3_ratio_sites", "tree_4_ratio_sites", "tree_5_ratio_sites")]
-names(hmm_df) <- c("hmm_dataset", "hmm_matrix_name", "hmm_model_code",  "hmm_analysis_type", "hmm_number_hypothesis_trees",
+names(hmm_df) <- c("hmm_dataset", "hmm_matrix_name", "hmm_model_code",  "hmm_analysis_type", 
+                   "hmm_mast_branch_type", "hmm_minimum_branch_length", "hmm_number_hypothesis_trees",
                    "tree_1_hmm_probs", "tree_2_hmm_probs", "tree_3_hmm_probs", "tree_4_hmm_probs",
                    "tree_5_hmm_probs", "tree_1_number_sites", "tree_2_number_sites", "tree_3_number_sites",
                    "tree_4_number_sites", "tree_5_number_sites", "tree_1_ratio_sites", "tree_2_ratio_sites",
@@ -229,14 +235,18 @@ hmm_df <- hmm_df[order(hmm_df$hmm_analysis_type, hmm_df$hmm_dataset, hmm_df$hmm_
 tw_df$dataset <- unlist(lapply(1:nrow(tw_df), function(i){strsplit(tw_df$iq_file[i], "\\.")[[1]][1]}))
 tw_df$matrix_name <- unlist(lapply(1:nrow(tw_df), function(i){strsplit(tw_df$iq_file[i], "\\.")[[1]][2]}))
 tw_df$model_code <- unlist(lapply(1:nrow(tw_df), function(i){strsplit(tw_df$iq_file[i], "\\.")[[1]][3]}))
-tw_df <- tw_df[, c("dataset", "matrix_name", "model_code",  "analysis_type", "number_hypothesis_trees",
+tw_df$mast_branch_type <- unlist(lapply(hmmster_files, return.MAST.branch.type))
+tw_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(tw_df), function(i){strsplit(tw_df$iq_file[i], "\\.")[[1]][7]})))
+tw_df <- tw_df[, c("dataset", "matrix_name", "model_code",  "analysis_type", 
+                   "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
                    "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
                    "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
                    "tree_3_total_tree_length", "tree_4_total_tree_length", "tree_5_total_tree_length",
                    "tree_1_sum_internal_branch_lengths", "tree_2_sum_internal_branch_lengths",
                    "tree_3_sum_internal_branch_lengths", "tree_4_sum_internal_branch_lengths",
                    "tree_5_sum_internal_branch_lengths")]
-names(tw_df) <- c("tw_dataset", "tw_matrix_name", "tw_model_code",  "tw_analysis_type", "tw_number_hypothesis_trees",
+names(tw_df) <- c("tw_dataset", "tw_matrix_name", "tw_model_code",  "tw_analysis_type", 
+                  "tw_mast_branch_type", "tw_minimum_branch_length", "tw_number_hypothesis_trees",
                   "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
                   "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
                   "tree_3_total_tree_length", "tree_4_total_tree_length", "tree_5_total_tree_length",
@@ -246,7 +256,8 @@ names(tw_df) <- c("tw_dataset", "tw_matrix_name", "tw_model_code",  "tw_analysis
 tw_df <- tw_df[order(tw_df$tw_analysis_type, tw_df$tw_dataset, tw_df$tw_matrix_name, tw_df$tw_matrix_name), ]
 ## Combine dataframes
 mast_df <- cbind(hmm_df, tw_df)
-mast_df <- mast_df[, c("hmm_dataset", "hmm_matrix_name", "hmm_model_code",  "hmm_analysis_type", "hmm_number_hypothesis_trees",
+mast_df <- mast_df[, c("hmm_dataset", "hmm_matrix_name", "hmm_model_code",  "hmm_analysis_type", 
+                       "hmm_mast_branch_type", "hmm_minimum_branch_length", "hmm_number_hypothesis_trees",
                        "tree_1_hmm_probs", "tree_2_hmm_probs", "tree_3_hmm_probs", "tree_4_hmm_probs",
                        "tree_5_hmm_probs", "tree_1_number_sites", "tree_2_number_sites", "tree_3_number_sites",
                        "tree_4_number_sites", "tree_5_number_sites", "tree_1_ratio_sites", "tree_2_ratio_sites",
@@ -257,7 +268,8 @@ mast_df <- mast_df[, c("hmm_dataset", "hmm_matrix_name", "hmm_model_code",  "hmm
                        "tree_1_sum_internal_branch_lengths", "tree_2_sum_internal_branch_lengths",
                        "tree_3_sum_internal_branch_lengths", "tree_4_sum_internal_branch_lengths",
                        "tree_5_sum_internal_branch_lengths")]
-names(mast_df) <- c("dataset", "matrix_name", "model_code",  "analysis_type", "number_hypothesis_trees",
+names(mast_df) <- c("dataset", "matrix_name", "model_code",  "analysis_type", 
+                    "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
                     "tree_1_hmm_probs", "tree_2_hmm_probs", "tree_3_hmm_probs", "tree_4_hmm_probs",
                     "tree_5_hmm_probs", "tree_1_number_sites", "tree_2_number_sites", "tree_3_number_sites",
                     "tree_4_number_sites", "tree_5_number_sites", "tree_1_ratio_sites", "tree_2_ratio_sites",
