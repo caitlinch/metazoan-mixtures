@@ -168,6 +168,50 @@ determine.best.ML.model <- function(dataset, matrix, dataset_output_df, include.
 } # end function
 
 
+determine.best.ML.model.per.class.wrapper <- function(row_id, completed_runs_df, ML_output_df){
+  # Function to take in a row number, the dataframe of which runs have completed, and the data frame of output from the
+  #     maximum likelihood runs, and feed that information into another function to pick the best ML models
+  
+  # Set classes for models list
+  model_classes = list("profile" = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20"),
+                       "site_heterogeneous" = c("LG_C60", "LG_C20", "C60", "C20"),
+                       "other" = c("LG4M", "EX_EHO", "UL3", "UL2", "EX3", "EX2", "EHO", "GTR20",      
+                                         "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT", 
+                                         "mtZOA", "PMB", "CF4", "Poisson"))
+  # Find the row of interest
+  row <- completed_runs_df[row_id, ]
+  # Reduce the output dataframe to just the dataset/matrix in that row
+  dataset_output_df <- ML_output_df[ML_output_df$dataset == row$dataset & ML_output_df$matrix_name == row$matrix_name,]
+  # Input information from the row into the determine.best.ML.model function
+  dataset_best_model_df <- do.call(rbind, lapply(names(model_classes), 
+                                                 best.ML.model.per.class, 
+                                                 model_classes = model_classes, 
+                                                 dataset_output_df = dataset_output_df))
+  # Add a new column with the model class
+  dataset_best_model_df$model_class <- names(model_classes)
+  # Reorder columns
+  dataset_best_model_df <- dataset_best_model_df[, c(1,3,2,21,4:20)]
+  
+  # Return the best model(s) for the dataset
+  return(dataset_best_model_df)
+}
+
+
+best.ML.model.per.class <- function(class_of_interest, model_classes, dataset_output_df){
+  # Function to determine the best substitution model (by BIC) for a particular dataset and alignment combination,
+  #     using the output from the maximum likelihood runs
+  
+  # Trim dataset to only models in this class
+  model_df <- dataset_output_df[which(dataset_output_df$model_code %in% model_classes[[class_of_interest]]), ]
+  # Convert tree_BIC column to numeric
+  model_df$tree_BIC <- as.numeric(model_df$tree_BIC)
+  # Sort the dataset by BIC (lowest to highest - remember lower is better && remember - decreasing = FALSE means increasing = TRUE i.e. lowest BIC first) 
+  model_df <- model_df[order(model_df$tree_BIC, decreasing = FALSE),]
+  # Extract row with the best model
+  best_model_row <- model_df[1, ]
+  # Return the dataframe of information from the best model(s)
+  return(best_model_row)
+}
 
 
 
