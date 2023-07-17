@@ -29,7 +29,7 @@ if (location == "local"){
   alignment_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   ml_tree_op_dir    <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
   pmsf_op_dir       <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_pmsf_site_freqs/"
-  output_dir        <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/"
+  output_dir        <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
   repo_dir          <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   iqtree2           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.0-MacOSX/bin/iqtree2"
   number_parallel_processes <- 1
@@ -249,10 +249,10 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
   ## Determine which models to use for each completed dataset
   # Want to extract ModelFinder model, and the model with the best BIC
   # If the ModelFinder model has the best BIC, return just the ModelFinder model
-  selected_models_list <- lapply(1:nrow(completed_runs_df), determine.best.ML.model.wrapper, completed_runs_df = completed_runs_df, 
-                                 ML_output_df = trimmed_ml_tree_df, include.ModelFinder = FALSE) 
-  # Convert lapply output to a nice dataframe
-  selected_models_df <- do.call(rbind, selected_models_list)
+  selected_models_df <- do.call(rbind, lapply(1:nrow(completed_runs_df), 
+                                              determine.best.ML.model.per.class.wrapper, 
+                                              completed_runs_df = completed_runs_df, 
+                                              ML_output_df = trimmed_ml_tree_df))
   # Save the dataframe of best models
   write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
   
