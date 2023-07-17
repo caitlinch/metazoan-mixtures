@@ -1714,3 +1714,35 @@ return.MAST.branch.type <- function(file_path){
   }
   return(branch_type)
 }
+
+
+
+duplicate.constraint.rows <- function(df){
+  ## Function to take in a dataframe and repeat each row a certain number of times  
+  
+  # Create the new dataframe using the first row
+  first_row <- df[1, ]
+  if (first_row$num_constraint_trees == 3){
+    new_df <- rbind(first_row, first_row, first_row)
+    new_df$constraint_tree_id <- 1:3
+  } else if (first_row$num_constraint_trees == 5){
+    new_df <- rbind(first_row, first_row, first_row, first_row, first_row)
+    new_df$constraint_tree_id <- 1:5
+  }
+  # Iterate through the rows and duplicate the rows
+  for (i in 2:nrow(df)){
+    temp_row <- df[i, ]
+    if (temp_row$num_constraint_trees == 3){
+      temp_df <- rbind(temp_row, temp_row, temp_row)
+      temp_df$constraint_tree_id <- 1:3
+    } else if (temp_row$num_constraint_trees == 5){
+      temp_df <- rbind(temp_row, temp_row, temp_row, temp_row, temp_row)
+      temp_df$constraint_tree_id <- 1:5
+    }
+    new_df <- rbind(new_df, temp_df)
+  }
+  # Return the duplicated dataframe
+  return(new_df)
+}
+
+
