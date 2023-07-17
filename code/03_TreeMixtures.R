@@ -50,7 +50,7 @@ if (location == "local"){
   alignment_dir           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
   hypothesis_tree_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/hyp_tree_output_files/"
   pmsf_sitefreq_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
-  mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/phyloHMM/"
+  mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/mast_output/"
   au_test_dir             <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/au_test/"
   output_dir              <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
   repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
@@ -96,7 +96,7 @@ source(paste0(repo_dir, "code/func_estimate_trees.R"))
 
 
 #### 3. Prepare for analysis ####
-## Check whether the dataframe for phyloHMM runs has been created
+## Check whether the dataframe for AU tests and MAST runs has been created
 mast_parameter_path <- paste0(output_dir, "03_01_MAST_parameters.tsv")
 if (file.exists(mast_parameter_path) == TRUE){
   model_df <- read.table(mast_parameter_path, header = T)
@@ -138,6 +138,7 @@ if (file.exists(mast_parameter_path) == TRUE){
     # Sort dataframes by column value
     al_dims_df <- al_dims_df[order(al_dims_df$dataset, al_dims_df$matrix_name),]
     model_df <- model_df[order(model_df$dataset, model_df$matrix_name),]
+    rownames(model_df) <- 1:nrow(model_df)
     # Determine minimum branch length as 1/N for each dataset (where N is the total number of sites), and add it to the model_df as a column
     model_df$num_sites <- al_dims_df$num_sites
     model_df$min_MAST_bl_from_alignment <- round(100/model_df$num_sites, 5)
@@ -160,6 +161,10 @@ if (file.exists(mast_parameter_path) == TRUE){
 
 #### 4. Apply mixtures across trees and sites (MAST model) ####
 if (control_parameters$prepare.MAST == TRUE){
+  # Update best model values that start with C60 - needs to have another model added to run properly in IQ-Tree
+  #   Specify the Poisson model, as that's what underlies C60/C20 models
+  model_df$best_model <- gsub("'C60", "'Poisson+C60", model_df$best_model)
+  
   # Update parameter file paths for MAST run on server
   model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
   model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, basename(model_df$best_model_sitefreq_path))
@@ -188,7 +193,7 @@ if (control_parameters$prepare.MAST == TRUE){
   # Write command lines as text file
   MAST_call_text_path <- paste0(output_dir, "03_02_MAST_command_lines.txt")
   write(MAST_run_df$MAST_iqtree2_command, file = MAST_call_text_path)
-  # Run HMMster
+  # Run MAST model to determine tree weights
   if (control_parameters$run.MAST == TRUE){
     # Call IQ-Tree2
     system(MAST_run_df$MAST_iqtree2_command)
@@ -213,7 +218,7 @@ if (control_parameters$extract.MAST == TRUE){
   mast_tws_df$dataset <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][1]}))
   mast_tws_df$matrix_name <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][2]}))
   mast_tws_df$model_code <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][3]}))
-  mast_tws_df$mast_branch_type <- unlist(lapply(hmmster_files, return.MAST.branch.type))
+  mast_tws_df$mast_branch_type <- unlist(lapply(mast_files, return.MAST.branch.type))
   mast_tws_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][7]})))
   mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "analysis_type", 
                                  "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
