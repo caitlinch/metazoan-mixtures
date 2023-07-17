@@ -472,6 +472,22 @@ create.constraint.trees <- function(dataset, matrix_name, model_code, prefix = N
 } # end function
 
 
+
+output.all.constraint.trees <- function(row_id, selected_models_df, constraint_tree_dir, dataset_info, matrix_taxa_info, ml_tree_tips_df){
+  # Function to output all constraint trees without needing a dataframe
+  
+  # Extract row of interest
+  row <- selected_models_df[row_id, ]
+  # Output constraint trees
+  output.constraint.trees(dataset = row$dataset, matrix_name = row$matrix_name, 
+                          constraint_tree_dir = constraint_tree_dir, 
+                          dataset_info = dataset_info, matrix_taxa_info = matrix_taxa_info, 
+                          ml_tree_tips_df = ml_tree_tips_df,
+                          force.update.constraint.trees = TRUE)
+}
+
+
+
 output.constraint.trees <- function(dataset, matrix_name, constraint_tree_dir, 
                                     dataset_info, matrix_taxa_info, ml_tree_tips_df,
                                     force.update.constraint.trees = TRUE){
@@ -835,6 +851,38 @@ run.one.constraint.dataframe <- function(csv_file, run.iqtree = TRUE){
 } # end function
 
 
+construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
+  # Function to wrap around run.iqtree.with.constraint.tree
+  
+  ## Extract row of interest using row_df
+  row <- hyp_tree_info_df[row_id, ]
+  
+  ## Check model
+  # Set model parameters
+  pmsf_check <- grepl("PMSF", row$best_model)
+  # Check whether the best model is a PMSF model
+  if (pmsf_check == TRUE){
+    # If the model is not a PMSF model, send the sitefreqs file through to be used for tree estimation
+    split_best_model <- unlist(strsplit(row$best_model, ":"))
+    row_best_model <- split_best_model[[1]]
+    row_sitefreq_file <- split_best_model[[2]]
+  } else if (pmsf_check == FALSE){
+    # If the model is not a PMSF model, send the best model through to be used for tree estimation
+    row_best_model <- row$best_model
+    row_sitefreq_file <- NA
+  }
+  
+  ## Feed row information into function call
+  # Call function with lapply whether run.iqtree = TRUE or run.iqtree = FALSE:
+  #   either way, want to run function to print iqtree command line
+  iqtree_command <- run.iqtree.with.constraint.tree(output_prefix = row$hypothesis_tree_path, alignment_path = row$alignment_file, constraint_tree_file = row$constraint_tree_path,
+                                                    best_model = row_best_model, sitefreq_file = row_sitefreq_file, free_rate_categories = row$estimated_rates, gamma = row$estimated_gamma,
+                                                    iqtree_path = row$iqtree_path, num_bootstraps = row$num_bootstraps, num_threads = row$num_threads, run.iqtree = FALSE,
+                                                    partitioned_check = FALSE, partition_file = row$partition_file)
+  
+  # Return the iqtree_command as output
+  return(iqtree_command)
+}
 
 
 
@@ -1479,4 +1527,5 @@ extract.results.for.one.tree <- function(ind, iq_lines){
   # Return tree topology values from this line
   return(temp_line)
 }
+
 
