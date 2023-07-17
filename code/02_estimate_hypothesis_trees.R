@@ -42,7 +42,7 @@ if (location == "local"){
   repo_dir          <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   iqtree2           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   number_parallel_processes <- 4
-  iqtree_num_threads        <- 50
+  iqtree_num_threads        <- 20
 } 
 
 # Set parameters that are identical for all run locations
