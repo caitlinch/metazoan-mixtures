@@ -72,7 +72,7 @@ if (location == "local"){
   iqtree_MAST             <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
   
   ## Phylogenetic and IQ-Tree2 parameters
-  iqtree_num_threads      <- 50
+  iqtree_num_threads      <- 30
 }
 
 ## Control parameters
@@ -186,7 +186,7 @@ if (control_parameters$prepare.MAST == TRUE){
   MAST_T_run_df$MAST_branch_length_model <- "T"
   # Bind dataframe
   MAST_run_df <- rbind(cbind(model_df, MAST_TR_run_df), cbind(model_df, MAST_T_run_df))
-  MAST_run_df$prefix <- paste0(MAST_run_df$prefix, ".", MAST_run_df$MAST_branch_length_model)
+  MAST_run_df$prefix <- paste0(MAST_run_df$dataset, ".", MAST_run_df$matrix_name, ".", MAST_run_df$model_code, ".", MAST_run_df$MAST_branch_length_model)
   # Write dataframe
   MAST_call_path <- paste0(output_dir, "03_02_MAST_command_lines.tsv")
   write.table(MAST_run_df, file = MAST_call_path, sep = "\t")
