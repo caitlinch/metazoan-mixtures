@@ -42,17 +42,18 @@ if (location == "local"){
   repo_dir          <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
   iqtree2           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   number_parallel_processes <- 4
-  iqtree_num_threads        <- 20
+  iqtree_num_threads        <- 50
 } 
 
 # Set parameters that are identical for all run locations
-hypothesis_tree_bootstraps <- 1000
+hypothesis_tree_bootstraps <- NA
 
 pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'")
 names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
 
 # Set control parameters
 control_parameters <- list(extract.ML.tree.information = FALSE,
+                           prepare.constraint.trees = FALSE,
                            prepare.hypothesis.trees = FALSE,
                            estimate.hypothesis.trees = FALSE,
                            include.datasets.with.only.CXX.missing = TRUE)
@@ -156,6 +157,8 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   # Extract the best model for each combination of matrix and model
   trimmed_ml_tree_df$best_model <- unlist(lapply(complete_iqtree_files, extract.best.model))
   # Update best model for PMSF models
+  pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'")
+  names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
   pmsf_rows <- which(grepl("PMSF", trimmed_ml_tree_df$model_code))
   trimmed_ml_tree_df$best_model[pmsf_rows] <- paste0(unlist(lapply(trimmed_ml_tree_df$model_code[pmsf_rows], function(x){pmsf_model[x]})),
                                                      ":", paste0(trimmed_ml_tree_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
@@ -205,8 +208,8 @@ if (control_parameters$extract.ML.tree.information == TRUE){
 # Move to the folder for the constraint trees
 setwd(c_tree_dir)
 
-# Prepare constraint trees to estimate hypothesis trees
-if (control_parameters$prepare.hypothesis.trees == TRUE){
+## Prepare constraint trees
+if (control_parameters$prepare.constraint.trees == TRUE){
   ## Retrieve results from previous steps
   # Open output_file_paths[2] (input parameters to estimate trees in IQ-Tree)
   # Open trimmed_ml_tree_df file (output from ML tree runs)
@@ -256,49 +259,62 @@ if (control_parameters$prepare.hypothesis.trees == TRUE){
   # Save the dataframe of best models
   write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
   
-  ## Prepare parameters for the constraint trees
-  # Attach alignment files to the rows
-  all_alignment_files <- list.files(alignment_dir)
-  all_alignment_files <- grep("alignment", grep("00_", all_alignment_files, invert = T, value = T), value = T)
-  selected_models_df$alignment_file <- unlist(lapply(1:nrow(selected_models_df), function(i){
-    grep(selected_models_df$dataset[i], grep(selected_models_df$matrix_name[i], all_alignment_files, value = T), value = T)}))
+  ## Construct constraint trees
   # Constraint and hypothesis trees will only be estimated for the best model(s) for each dataset/matrix combination (found in the selected_models_df)
   # Create the constraint trees and determine what parameters to use for each hypothesis tree
   #     Hypothesis tree = constrained maximum likelihood tree estimated in IQ-Tree with best model from ML run (for each constraint tree for each dataset/model combination)
   # Create a constraint dataframe for each row in the selected_models_df
-  constraint_list <- lapply(1:nrow(selected_models_df), constraint.tree.wrapper, output_directory = c_tree_dir,
-                            iqtree_path = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                            dataset_info = all_datasets, matrix_taxa_info = matrix_taxa,
-                            ml_output_df = selected_models_df, ml_tree_tips_df = alignment_taxa_df, 
-                            force.update.constraint.trees = TRUE)
-  # Collate the constraints into a single dataframe
-  constraint_df <- do.call(rbind, constraint_list)
-  # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
-  constraint_df$model_mrate <- NA
-  # Add the number of ultrafast bootstraps to perform for the hypothesis trees (constrained maximum likelihood trees with fixed model)
-  constraint_df$num_bootstraps <- hypothesis_tree_bootstraps
-  
-  # Update best_model column
-  pmsf_rows <- which(grepl("PMSF", constraint_df$model_code))
-  constraint_df$best_model[pmsf_rows] <- paste0(unlist(lapply(constraint_df$model_code[pmsf_rows], function(x){pmsf_model[x]})), 
-                                                ":", paste0(pmsf_op_dir, constraint_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
-  
-  # Update filepaths for the constraint_df
-  constraint_df$alignment_path        <- paste0(alignment_dir, basename(constraint_df$alignment_path))
-  constraint_df$constraint_tree_paths <- paste0(c_tree_dir, basename(constraint_df$constraint_tree_paths))
-  constraint_df$iqtree_path <- iqtree2
-  
-  # Prepare iqtree commands for each of the hypothesis trees
-  constraint_df$iqtree2_call <- unlist(lapply(1:nrow(constraint_df), run.one.constraint.tree, constraint_df = constraint_df, run.iqtree = FALSE))
-  
-  # Save the constraint tree dataframe
-  write.table(constraint_df, file = output_file_paths[8], row.names = FALSE, sep = "\t")
-  
-  # Save list of iqtree2 commands as text file
-  write(constraint_df$iqtree2_call, file = output_file_paths[9])
+  lapply(1:nrow(selected_models_df), output.all.constraint.trees, selected_models_df, 
+         constraint_tree_dir = c_tree_dir, dataset_info = all_datasets, 
+         matrix_taxa_info = matrix_taxa, ml_tree_tips_df = alignment_taxa_df)
 }
 
-# Estimate hypothesis trees
+## Prepare hypothesis tree commands
+if (prepare.hypothesis.trees == TRUE){
+  ### Prepare hypothesis tree estimation
+  # Copy df for hypothesis tree estimation
+  hyp_te_df <- read.table(output_file_paths[6], header = TRUE, sep = "\t")
+  # Attach alignment files to the rows
+  all_alignment_files <- list.files(alignment_dir)
+  all_alignment_files <- grep("alignment", grep("00_", all_alignment_files, invert = T, value = T), value = T)
+  hyp_te_df$alignment_file <- unlist(lapply(1:nrow(hyp_te_df), function(i){
+    grep(hyp_te_df$dataset[i], grep(hyp_te_df$matrix_name[i], all_alignment_files, value = T), value = T)}))
+  # Add the mrate = NA options for IQ-Tree to the dataframe (do not include mrate option for estimating constraint trees)
+  hyp_te_df$model_mrate <- NA
+  # Add the number of threads
+  hyp_te_df$num_threads <- iqtree_num_threads
+  # Add the number of ultrafast bootstraps to perform for the hypothesis trees (constrained maximum likelihood trees with fixed model)
+  hyp_te_df$num_bootstraps <- hypothesis_tree_bootstraps
+  # Add new column with the number of constraint trees to estimate
+  hyp_te_df$num_constraint_trees <- 5
+  hyp_te_df[hyp_te_df$dataset == "Borowiec2015", ]$num_constraint_trees <- 3
+  hyp_te_df[hyp_te_df$dataset == "Dunn2008", ]$num_constraint_trees <- 3
+  # Add column with constraint path name by duplicating each row the number of times required (once per tree)
+  c_te_df <- duplicate.constraint.rows(df = hyp_te_df)
+  c_te_df$constraint_tree_path <- paste0(c_te_df$dataset, ".", c_te_df$matrix_name, ".constraint_tree_", c_te_df$constraint_tree_id, ".nex")
+  c_te_df$hypothesis_tree_path <- paste0(c_te_df$dataset, ".", c_te_df$matrix_name, ".",  c_te_df$model_code, ".ML_H", c_te_df$constraint_tree_id)
+  # Update filepaths for the constraint_df
+  c_te_df$alignment_file        <- paste0(alignment_dir, basename(c_te_df$alignment_file))
+  c_te_df$constraint_tree_path <- paste0(c_tree_dir, basename(c_te_df$constraint_tree_path))
+  c_te_df$hypothesis_tree_path <- paste0(c_tree_dir, basename(c_te_df$hypothesis_tree_path))
+  c_te_df$iqtree_path <- iqtree2
+  # Update best_model column for PMSF models to add file path to site frequency files
+  pmsf_model <- c("'LG+C60+F+R4'", "'LG+C20+F+R4'", "'C60+F+R4'", "'C20+F+R4'")
+  names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
+  pmsf_rows <- which(grepl("PMSF", c_te_df$model_code))
+  c_te_df$best_model[pmsf_rows] <- paste0(unlist(lapply(c_te_df$model_code[pmsf_rows], function(x){pmsf_model[x]})), 
+                                            ":", paste0(pmsf_op_dir, c_te_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
+  
+  # Prepare iqtree commands for each of the hypothesis trees
+  c_te_df$iqtree2_call <- unlist(lapply(1:nrow(c_te_df), construct.hypothesis.tree.call, hyp_tree_info_df = c_te_df))
+  
+  # Save the constraint tree dataframe
+  write.table(c_te_df, file = output_file_paths[8], row.names = FALSE, sep = "\t")
+  # Save list of iqtree2 commands as text file
+  write(c_te_df$iqtree2_call, file = output_file_paths[9])
+}
+
+## Estimate hypothesis trees
 if (control_parameters$estimate.hypothesis.trees == TRUE){
   # Open constraint tree dataframe file
   constraint_df <- read.table(output_file_paths[8], header = T)
