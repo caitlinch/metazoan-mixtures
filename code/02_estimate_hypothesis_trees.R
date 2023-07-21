@@ -24,7 +24,7 @@
 # prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 
-location = "local"
+location = "rosa"
 if (location == "local"){
   alignment_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   ml_tree_op_dir    <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
@@ -43,7 +43,20 @@ if (location == "local"){
   iqtree2           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   number_parallel_processes <- 4
   iqtree_num_threads        <- 20
-} 
+}  else if (location == "rosa"){
+  alignment_dir     <- "/home/caitlin/metazoan_mixtures/data_all/"
+  ml_tree_op_dir    <- "/home/caitlin/metazoan_mixtures/output/ml_tree_output_files/"
+  pmsf_op_dir       <- "/home/caitlin/metazoan_mixtures/output/pmsf_trees/"
+  output_dir        <- "/home/caitlin/metazoan_mixtures/output/"
+  repo_dir          <- "/home/caitlin/metazoan_mixtures/metazoan-mixtures/"
+  iqtree2           <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.2-Linux/bin/iqtree2"
+  number_parallel_processes <- 4
+  iqtree_num_threads        <- 20
+}
+
+# Create file paths for the constraint trees and hypothesis trees
+c_tree_dir <- paste0(output_dir, "constraint_trees/")
+h_tree_dir <- paste0(output_dir, "hypothesis_trees/")
 
 # Set parameters that are identical for all run locations
 hypothesis_tree_bootstraps <- NA
@@ -82,12 +95,9 @@ rm(borowiec2015_list, chang2015_list, dunn2008_list, hejnol2009_list, laumer2018
 # Extend the number of digits allowed (so BIC and logL can be extracted properly from iqtree files)
 options(digits = 12)
 
-# Create output folders
 # Create a folder for the constraint trees
-c_tree_dir <- paste0(output_dir, "constraint_trees/")
 if (file.exists(c_tree_dir) == FALSE){dir.create(c_tree_dir)}
 # Create a folder for the hypothesis trees
-h_tree_dir <- paste0(output_dir, "hypothesis_trees/")
 if (file.exists(h_tree_dir) == FALSE){dir.create(h_tree_dir)}
 
 # Create file paths for output files
