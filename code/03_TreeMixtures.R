@@ -73,6 +73,18 @@ if (location == "local"){
   
   ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 30
+} else if (location == "rosa"){
+  alignment_dir           <- "/home/caitlin/metazoan_mixtures/data_all/"
+  hypothesis_tree_dir     <- "/home/caitlin/metazoan_mixtures/output/hypothesis_trees/"
+  pmsf_sitefreq_dir       <- "/home/caitlin/metazoan_mixtures/output/pmsf_sitefreqs/"
+  mast_dir                <- "/home/caitlin/metazoan_mixtures/output/mast/"
+  au_test_dir             <- "/home/caitlin/metazoan_mixtures/output/au_test/"
+  output_dir              <- "/home/caitlin/metazoan_mixtures/output/output_csvs/"
+  repo_dir                <- "/home/caitlin/metazoan_mixtures/"
+  iqtree2                 <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.2-Linux/bin/iqtree2"
+  iqtree_MAST             <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
+  number_parallel_processes <- 4
+  iqtree_num_threads        <- 30
 }
 
 ## Control parameters
@@ -142,11 +154,19 @@ if (file.exists(mast_parameter_path) == TRUE){
   }
   
   ## Sort and remove columns
-  model_df <- model_df[, c("dataset", "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix", "best_model",                
+  model_df <- model_df[, c("dataset", "model_class", "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix", "best_model",                
                            "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC", "best_model_wBIC", "tree_LogL",
                            "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC", "tree_length", "tree_SumInternalBranch",
                            "tree_PercentInternalBranch",  "estimated_rates", "estimated_gamma", "estimated_state_frequencies",
                            "hypothesis_tree_path", "num_sites", "min_MAST_bl_from_alignment", "min_MAST_bl_arbitrary")]
+  
+  # Update best model values that start with C60 - needs to have another model added to run properly in IQ-Tree
+  #   Specify the Poisson model, as that's what underlies C60/C20 models
+  model_df$best_model <- gsub("'C60", "'Poisson+C60", model_df$best_model)
+  
+  # Sort dataframe by model category
+  model_df <- model_df[order(model_df$model_class, model_df$dataset, model_df$matrix_name),]
+  rownames(model_df) <- 1:nrow(model_df)
   
   ## Write the dataframe
   write.table(model_df, file = mast_parameter_path, sep = "\t")
@@ -157,9 +177,6 @@ if (file.exists(mast_parameter_path) == TRUE){
 
 #### 4. Apply mixtures across trees and sites (MAST model) ####
 if (control_parameters$prepare.MAST == TRUE){
-  # Update best model values that start with C60 - needs to have another model added to run properly in IQ-Tree
-  #   Specify the Poisson model, as that's what underlies C60/C20 models
-  model_df$best_model <- gsub("'C60", "'Poisson+C60", model_df$best_model)
   
   # Update parameter file paths for MAST run on server
   model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
@@ -168,12 +185,12 @@ if (control_parameters$prepare.MAST == TRUE){
   
   # Create MAST command lines in IQ-Tree
   MAST_TR_run_df <- as.data.frame(do.call(rbind, lapply(1:nrow(model_df), function(i){MAST.wrapper(i, mast_df = model_df, 
-                                                                                                   iqtree_tree_mixtures = iqtree_MAST, 
+                                                                                                   iqtree_MAST = iqtree_MAST, 
                                                                                                    MAST_branch_length_option = "TR",
                                                                                                    iqtree_num_threads = iqtree_num_threads,
                                                                                                    run.iqtree = FALSE) }) ) )
   MAST_T_run_df <- as.data.frame(do.call(rbind, lapply(1:nrow(model_df), function(i){MAST.wrapper(i, mast_df = model_df, 
-                                                                                                  iqtree_tree_mixtures = iqtree_MAST, 
+                                                                                                  iqtree_MAST = iqtree_MAST, 
                                                                                                   MAST_branch_length_option = "T",
                                                                                                   iqtree_num_threads = iqtree_num_threads,
                                                                                                   run.iqtree = FALSE) }) ) )
@@ -248,7 +265,7 @@ if (control_parameters$prepare.tree.topology.tests == TRUE){
   if (control_parameters$run.tree.topology.tests == TRUE){
     top_test_call_list <- lapply(1:nrow(model_df), tree.topology.test.wrapper, df = model_df, output_dir = au_test_dir, 
                                  iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                                 iqtree_num_RELL_replicates = 10000, run.iqtree = TRUE)
+                                 iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE)
     au_test_calls <- unlist(top_test_call_list)
     write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
   }
