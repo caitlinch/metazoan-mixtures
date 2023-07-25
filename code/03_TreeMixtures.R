@@ -34,7 +34,7 @@ location = "local"
 if (location == "local"){
   ## File paths
   alignment_dir           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/hypothesis_tree_estimation/"
+  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/collated_hypothesis_trees/"
   pmsf_sitefreq_dir       <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_pmsf_site_freqs/"
   mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_all_MAST_output/"
   au_test_dir             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_au_test/"
@@ -115,17 +115,13 @@ if (file.exists(mast_parameter_path) == TRUE){
   model_df$best_model                 <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][1]}))
   model_df$best_model_sitefreq_path   <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][2]}))
   
-  ## Remove all models without complete hypothesis trees
-  model_df <- model_df[which(model_df$model_class == "profile"), ]
-  
   ## Prepare the hypothesis tree files
-  model_df$hypothesis_tree_path <- unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
-                                                 collate.hypothesis.trees, input_dir = hypothesis_tree_dir,
-                                                 output_dir = mast_dir))
+  model_df$hypothesis_tree_path <- basename( unlist( lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
+                                                          combine.hypothesis.trees, tree_directory = hypothesis_tree_dir, file.name.only = TRUE) ) )
   ## Add the  file paths to the dataframe
-  model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, basename(model_df$best_model_sitefreq_path))
-  model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
-  model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, basename(model_df$hypothesis_tree_path))
+  model_df$best_model_sitefreq_path <- basename(model_df$best_model_sitefreq_path)
+  model_df$alignment_path <- basename(model_df$alignment_path)
+  model_df$hypothesis_tree_path <- basename(model_df$hypothesis_tree_path)
   
   ## Add column with the minimum branch length for each alignment
   al_dims_file <- paste0(output_dir, grep("summary_alignment_details", list.files(output_dir), value = T))
