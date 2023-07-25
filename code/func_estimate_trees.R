@@ -890,7 +890,7 @@ construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
 combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", file.name.only = FALSE){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
   
-  # Assemble output file for the collated, unrooted trees
+  # Assemble output file for the collated (unrooted) trees
   unrooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".treefile")
   
   if (file.name.only == FALSE){
@@ -903,7 +903,7 @@ combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "const
     # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 5)
     hypothesis_tree_files <- grep("H1|H2|H3|H4|H5", tree_id_files, value = TRUE)
     hypothesis_tree_treefiles <- grep("treefile", tree_id_files, value = TRUE)
-    # Extend file path
+    # Extend file path to include directory
     if (length(hypothesis_tree_treefiles) > 0){
       hypothesis_tree_treefiles <- paste0(tree_directory, hypothesis_tree_treefiles)
     }
@@ -913,8 +913,7 @@ combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "const
     # Convert hypothesis_trees from a list into a multiPhylo object 
     class(hypothesis_trees) <- "multiPhylo"
     
-    # Output the (unrooted) hypothesis trees
-    unrooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".treefile")
+    # Output the collated (unrooted) hypothesis trees
     write.tree(hypothesis_trees, file = unrooted_file)
   }
   
