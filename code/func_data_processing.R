@@ -9,40 +9,6 @@ library(ape) # Used in check.tree.taxa to read in a phylogenetic tree from file 
 
 
 
-
-#### Collate hypothesis trees ####
-collate.hypothesis.trees <- function(dataset_id, input_dir, output_dir){
-  # This function extracts all trees with a set ID from an input dir, and writes them into a single output file
-  
-  # Create output path
-  output_path <- paste0(output_dir, dataset_id, ".constrained_ML.hypothesis_trees.treefile")
-  # Check if output path exists, and if it doesn't, create it
-  if (file.exists(output_path) == FALSE){
-    # List all the files in the input directory
-    all_files <- list.files(input_dir)
-    # Extract all treefiles
-    tree_files <- grep("\\.treefile", all_files, value = T)
-    # Extract all files containing the dataset_id
-    d_files <- grep(dataset_id, tree_files, value = T)
-    # Sort the files in order of hypothesis
-    if (length(d_files) == 5){
-      tree_paths <- c(grep("H1", d_files, value = T), grep("H2", d_files, value = T), grep("H3", d_files, value = T),
-                      grep("H4", d_files, value = T), grep("H5", d_files, value = T))
-    } else if (length(d_files) == 3){
-      tree_paths <- c(grep("H1", d_files, value = T), grep("H2", d_files, value = T), grep("H3", d_files, value = T))
-    }
-    # Open the text in each file
-    tree_text <- c(unlist(lapply(paste0(input_dir, tree_paths), readLines)), "")
-    # Output the text
-    write(tree_text, file = output_path)
-  }
-  # Return the output filepath
-  return(output_path)
-}
-
-
-
-
 #### Process models to prepare for IQ-Tree runs ####
 create.model.dataframe <- function(model_vector, output.counts = FALSE, output.model.chunks = FALSE){
   # Function to read in a partition file and return the list of models applied to the charsets
