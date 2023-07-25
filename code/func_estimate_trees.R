@@ -887,7 +887,7 @@ construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
 
 
 #### Collating multiple trees into a single file ####
-combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", outgroup_taxa = NA, file.name.only = FALSE){
+combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", file.name.only = FALSE){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
   
   # Assemble output file for the collated, unrooted trees
@@ -916,30 +916,14 @@ combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "const
     # Output the (unrooted) hypothesis trees
     unrooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".treefile")
     write.tree(hypothesis_trees, file = unrooted_file)
-    
-    if (class(outgroup_taxa) == "character"){
-      # If the outgroup taxa are provided, root the hypothesis trees and save the rooted trees
-      # Root hypothesis trees
-      rooted_hypothesis_trees <- root(hypothesis_trees, outgroup_taxa)
-      # Output the rooted hypothesis trees
-      rooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".rooted.treefile")
-      write.tree(hypothesis_trees, file = rooted_file)
-      # Return paths for both rooted and unrooted hypothesis trees
-      op_vec <- c(rooted_file, unrooted_file)
-      names(op_vec) <- c("rooted_hypothesis_tree_file", "unrooted_hypothesis_tree_file")
-    } else if (class(outgroup_taxa) == "logical"){
-      # If the outgroup taxa are not provided, return only the path to the unrooted hypothesis trees
-      op_vec <- c(unrooted_file)
-      names(op_vec) <- c("unrooted_hypothesis_tree_file")
-    }
-  } else if (file.name.only == FALSE){
-    # If only returning the output filename
-    op_vec <- c(unrooted_file)
-    names(op_vec) <- c("unrooted_hypothesis_tree_file")
   }
   
+  # Prepare tree file path as output vector
+  tree_file <- c(unrooted_file)
+  names(tree_file) <- c("unrooted_hypothesis_tree_file")
+  
   # Return the file names
-  return(op_vec)
+  return(tree_file)
 } # end function
 
 
