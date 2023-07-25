@@ -334,3 +334,20 @@ if (control_parameters$estimate.hypothesis.trees == TRUE){
 }
 
 
+
+#### 6. Collate hypothesis trees into one file per dataset/model combination ####
+# List all files in the hypothesis tree directory
+all_files <- list.files(h_tree_dir, recursive = T)
+# Get the files for hypothesis trees
+filenames <- basename(all_files)
+iq_files <- grep("\\.iqtree", filenames, value = T) # get all IQ-Tree files
+ml_h_files <- grep("ML_H1|ML_H2|ML_H3|ML_H4|ML_H5", iq_files, value = T) # get only files for hypothesis trees: ML_H1 to HL_H5
+# Separate out the unique IDs for each combination of model and dataset
+run_ids <- sort(unique(unlist(lapply(strsplit(ml_h_files, "\\."), function(x){paste0(x[[1]], ".", x[[2]], ".", x[[3]])}))))
+# Collate hypothesis trees by id
+collated_h_trees <- lapply(run_ids, combine.hypothesis.trees, tree_directory = h_tree_dir, outgroup_taxa = NA)
+
+
+
+
+
