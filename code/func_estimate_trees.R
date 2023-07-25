@@ -887,11 +887,11 @@ construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
 
 
 #### Collating multiple trees into a single file ####
-combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgroup_taxa = NA){
+combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", outgroup_taxa = NA){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
   
   # List all hypothesis trees in the folder
-  all_constraint_tree_dir_files <- list.files(constraint_tree_directory, recursive = TRUE)
+  all_constraint_tree_dir_files <- list.files(tree_directory, recursive = TRUE)
   # Remove any files with "ignore" in the name
   all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
   # Find all files for this tree_id
@@ -901,7 +901,7 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
   hypothesis_tree_treefiles <- grep("treefile", tree_id_files, value = TRUE)
   # Extend file path
   if (length(hypothesis_tree_treefiles) > 0){
-    hypothesis_tree_treefiles <- paste0(constraint_tree_directory, hypothesis_tree_treefiles)
+    hypothesis_tree_treefiles <- paste0(tree_directory, hypothesis_tree_treefiles)
   }
   
   # Read in hypothesis tree files
@@ -910,7 +910,7 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
   class(hypothesis_trees) <- "multiPhylo"
   
   # Output the (unrooted) hypothesis trees
-  unrooted_file <- paste0(constraint_tree_directory, tree_id, "_unrooted_hypothesis_trees.tre")
+  unrooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".treefile")
   write.tree(hypothesis_trees, file = unrooted_file)
   
   if (class(outgroup_taxa) == "character"){
@@ -918,7 +918,7 @@ combine.hypothesis.trees <- function(tree_id, constraint_tree_directory, outgrou
     # Root hypothesis trees
     rooted_hypothesis_trees <- root(hypothesis_trees, outgroup_taxa)
     # Output the rooted hypothesis trees
-    rooted_file <- paste0(constraint_tree_directory, tree_id, "_rooted_hypothesis_trees.tre")
+    rooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".rooted.treefile")
     write.tree(hypothesis_trees, file = rooted_file)
     # Return paths for both rooted and unrooted hypothesis trees
     op_vec <- c(rooted_file, unrooted_file)
