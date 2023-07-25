@@ -41,24 +41,10 @@ if (location == "local"){
   output_dir              <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   iqtree2                 <- "iqtree2"
-  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.3.hmmster-MacOSX/bin/iqtree"
+  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.5.hmmster-MacOSX/bin/iqtree"
   
   ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 3
-} else if (location == "dayhoff"){
-  ## File paths
-  alignment_dir           <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
-  hypothesis_tree_dir     <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/hyp_tree_output_files/"
-  pmsf_sitefreq_dir       <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/pmsf_trees/"
-  mast_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/mast_output/"
-  au_test_dir             <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/au_test/"
-  output_dir              <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
-  repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
-  iqtree2                 <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree_MAST             <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
-  
-  ## Phylogenetic and IQ-Tree2 parameters
-  iqtree_num_threads      <- 25
 } else if (location == "rona"){
   ## File paths
   alignment_dir           <- "/home/caitlin/metazoan-mixtures/data_all/"
@@ -69,7 +55,7 @@ if (location == "local"){
   output_dir              <- "/home/caitlin/metazoan-mixtures/output_csvs/"
   repo_dir                <- "/home/caitlin/metazoan-mixtures/"
   iqtree2                 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree_MAST             <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
+  iqtree_MAST             <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.5.hmmster-Linux/bin/iqtree2"
   
   ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 30
@@ -82,7 +68,7 @@ if (location == "local"){
   output_dir              <- "/home/caitlin/metazoan_mixtures/output/output_csvs/"
   repo_dir                <- "/home/caitlin/metazoan_mixtures/"
   iqtree2                 <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.2-Linux/bin/iqtree2"
-  iqtree_MAST             <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
+  iqtree_MAST             <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.5.hmmster-Linux/bin/iqtree2"
   number_parallel_processes <- 4
   iqtree_num_threads        <- 30
 }
