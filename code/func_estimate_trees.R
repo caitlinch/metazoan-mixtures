@@ -887,44 +887,53 @@ construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
 
 
 #### Collating multiple trees into a single file ####
-combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", outgroup_taxa = NA){
+combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", outgroup_taxa = NA, file.name.only = FALSE){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
   
-  # List all hypothesis trees in the folder
-  all_constraint_tree_dir_files <- list.files(tree_directory, recursive = TRUE)
-  # Remove any files with "ignore" in the name
-  all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
-  # Find all files for this tree_id
-  tree_id_files <- grep(tree_id, all_constraint_tree_dir_files, value = TRUE)
-  # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 5)
-  hypothesis_tree_files <- grep("H1|H2|H3|H4|H5", tree_id_files, value = TRUE)
-  hypothesis_tree_treefiles <- grep("treefile", tree_id_files, value = TRUE)
-  # Extend file path
-  if (length(hypothesis_tree_treefiles) > 0){
-    hypothesis_tree_treefiles <- paste0(tree_directory, hypothesis_tree_treefiles)
-  }
-  
-  # Read in hypothesis tree files
-  hypothesis_trees <- lapply(hypothesis_tree_treefiles, read.tree)
-  # Convert hypothesis_trees from a list into a multiPhylo object 
-  class(hypothesis_trees) <- "multiPhylo"
-  
-  # Output the (unrooted) hypothesis trees
+  # Assemble output file for the collated, unrooted trees
   unrooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".treefile")
-  write.tree(hypothesis_trees, file = unrooted_file)
   
-  if (class(outgroup_taxa) == "character"){
-    # If the outgroup taxa are provided, root the hypothesis trees and save the rooted trees
-    # Root hypothesis trees
-    rooted_hypothesis_trees <- root(hypothesis_trees, outgroup_taxa)
-    # Output the rooted hypothesis trees
-    rooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".rooted.treefile")
-    write.tree(hypothesis_trees, file = rooted_file)
-    # Return paths for both rooted and unrooted hypothesis trees
-    op_vec <- c(rooted_file, unrooted_file)
-    names(op_vec) <- c("rooted_hypothesis_tree_file", "unrooted_hypothesis_tree_file")
-  } else if (class(outgroup_taxa) == "logical"){
-    # If the outgroup taxa are not provided, return only the path to the unrooted hypothesis trees
+  if (file.name.only == FALSE){
+    # List all hypothesis trees in the folder
+    all_constraint_tree_dir_files <- list.files(tree_directory, recursive = TRUE)
+    # Remove any files with "ignore" in the name
+    all_constraint_tree_dir_files <- grep("ignore", all_constraint_tree_dir_files, value = TRUE, invert = TRUE)
+    # Find all files for this tree_id
+    tree_id_files <- grep(tree_id, all_constraint_tree_dir_files, value = TRUE)
+    # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 5)
+    hypothesis_tree_files <- grep("H1|H2|H3|H4|H5", tree_id_files, value = TRUE)
+    hypothesis_tree_treefiles <- grep("treefile", tree_id_files, value = TRUE)
+    # Extend file path
+    if (length(hypothesis_tree_treefiles) > 0){
+      hypothesis_tree_treefiles <- paste0(tree_directory, hypothesis_tree_treefiles)
+    }
+    
+    # Read in hypothesis tree files
+    hypothesis_trees <- lapply(hypothesis_tree_treefiles, read.tree)
+    # Convert hypothesis_trees from a list into a multiPhylo object 
+    class(hypothesis_trees) <- "multiPhylo"
+    
+    # Output the (unrooted) hypothesis trees
+    unrooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".treefile")
+    write.tree(hypothesis_trees, file = unrooted_file)
+    
+    if (class(outgroup_taxa) == "character"){
+      # If the outgroup taxa are provided, root the hypothesis trees and save the rooted trees
+      # Root hypothesis trees
+      rooted_hypothesis_trees <- root(hypothesis_trees, outgroup_taxa)
+      # Output the rooted hypothesis trees
+      rooted_file <- paste0(tree_directory, tree_id, ".", output_id, ".rooted.treefile")
+      write.tree(hypothesis_trees, file = rooted_file)
+      # Return paths for both rooted and unrooted hypothesis trees
+      op_vec <- c(rooted_file, unrooted_file)
+      names(op_vec) <- c("rooted_hypothesis_tree_file", "unrooted_hypothesis_tree_file")
+    } else if (class(outgroup_taxa) == "logical"){
+      # If the outgroup taxa are not provided, return only the path to the unrooted hypothesis trees
+      op_vec <- c(unrooted_file)
+      names(op_vec) <- c("unrooted_hypothesis_tree_file")
+    }
+  } else if (file.name.only == FALSE){
+    # If only returning the output filename
     op_vec <- c(unrooted_file)
     names(op_vec) <- c("unrooted_hypothesis_tree_file")
   }
@@ -1386,10 +1395,10 @@ MAST.wrapper <- function(row_id, mast_df, iqtree_MAST, MAST_branch_length_option
   
   # Call HMMster function
   MAST_output <- run.MAST(tree_file = mast_row$hypothesis_tree_path, alignment_file = mast_row$alignment_path, 
-                             output_prefix = MAST_prefix, MAST_model = MAST_model, gamma_alpha_value = MAST_gamma, 
-                             is.MAST.model.PMSF = check_pmsf, pmsf_file_path = MAST_pmsf_file,
-                             iqtree_MAST = iqtree_MAST, iqtree_num_threads = iqtree_num_threads, 
-                             iqtree_min_branch_length = MAST_min_bl, run.iqtree = run.iqtree)
+                          output_prefix = MAST_prefix, MAST_model = MAST_model, gamma_alpha_value = MAST_gamma, 
+                          is.MAST.model.PMSF = check_pmsf, pmsf_file_path = MAST_pmsf_file,
+                          iqtree_MAST = iqtree_MAST, iqtree_num_threads = iqtree_num_threads, 
+                          iqtree_min_branch_length = MAST_min_bl, run.iqtree = run.iqtree)
   # Return output
   return(MAST_output)
 }
