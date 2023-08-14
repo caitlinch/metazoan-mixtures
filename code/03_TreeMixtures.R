@@ -74,10 +74,10 @@ if (location == "local"){
 }
 
 ## Control parameters
-control_parameters <- list(prepare.MAST = FALSE,
+control_parameters <- list(prepare.MAST = TRUE,
                            run.MAST = FALSE,
                            extract.MAST = FALSE,
-                           prepare.tree.topology.tests = FALSE,
+                           prepare.tree.topology.tests = TRUE,
                            run.tree.topology.tests = FALSE,
                            extract.tree.topology.tests = FALSE)
 
