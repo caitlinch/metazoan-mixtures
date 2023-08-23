@@ -74,12 +74,12 @@ if (location == "local"){
 }
 
 ## Control parameters
-control_parameters <- list(prepare.MAST = TRUE,
+control_parameters <- list(prepare.MAST = FALSE,
                            run.MAST = FALSE,
-                           extract.MAST = FALSE,
-                           prepare.tree.topology.tests = TRUE,
+                           extract.MAST = TRUE,
+                           prepare.tree.topology.tests = FALSE,
                            run.tree.topology.tests = FALSE,
-                           extract.tree.topology.tests = FALSE)
+                           extract.tree.topology.tests = TRUE)
 
 
 
@@ -205,42 +205,36 @@ if (control_parameters$extract.MAST == TRUE){
   ## Extract file paths
   # Extract list of MAST files
   all_files <- list.files(mast_dir, recursive = TRUE)
-  exclude_dirs <- "minbl_0.00001|HMM|HMMster|phyloHMM"
-  op_files <- all_files[grep(exclude_dirs, dirname(all_files), invert = T)]
-  mast_files <- grep("\\.iqtree", grep("MAST", op_files, value = T), value = T)
+  mast_files <- paste0(mast_dir, grep("\\.iqtree", grep("MAST", all_files, value = T), value = T))
   
   ## Tree Weights
   # To extract information from the tree weights:
   mast_tws_df <- as.data.frame(do.call(rbind, lapply(mast_files, extract.tree.weights)))
   
   ## Format dataframes
+  # Add descriptive columns 
   mast_tws_df$dataset <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][1]}))
   mast_tws_df$matrix_name <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][2]}))
   mast_tws_df$model_code <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][3]}))
-  mast_tws_df$mast_branch_type <- unlist(lapply(mast_files, return.MAST.branch.type))
+  mast_tws_df$mast_branch_type <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][5]}))
   mast_tws_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][7]})))
-  mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "analysis_type", 
-                                 "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
+  # Add a new column breaking the models up by type of model
+  mast_tws_df$model_type <- mast_tws_df$model_code
+  mast_tws_df$model_type[grep("UL3|LG4M", mast_tws_df$model_code)] <- "Other"
+  mast_tws_df$model_type[grep("C60|C20|LG_C60|LG_C20", mast_tws_df$model_code)] <- "CXX"
+  mast_tws_df$model_type[grep("PMSF", mast_tws_df$model_code)] <- "PMSF"
+  # Rearrange columns
+  mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "model_type", "mast_branch_type", 
+                                 "minimum_branch_length", "number_hypothesis_trees",
                                  "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
                                  "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
                                  "tree_3_total_tree_length", "tree_4_total_tree_length", "tree_5_total_tree_length",
                                  "tree_1_sum_internal_branch_lengths", "tree_2_sum_internal_branch_lengths",
                                  "tree_3_sum_internal_branch_lengths", "tree_4_sum_internal_branch_lengths",
-                                 "tree_5_sum_internal_branch_lengths")]
-  names(mast_tws_df) <- c("dataset", "matrix_name", "model_code",  "analysis_type", 
-                          "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
-                          "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
-                          "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
-                          "tree_3_total_tree_length", "tree_4_total_tree_length", "tree_5_total_tree_length",
-                          "tree_1_sum_internal_branch_lengths", "tree_2_sum_internal_branch_lengths",
-                          "tree_3_sum_internal_branch_lengths", "tree_4_sum_internal_branch_lengths",
-                          "tree_5_sum_internal_branch_lengths")
-  mast_tws_df <- mast_tws_df[order(mast_tws_df$analysis_type, mast_tws_df$mast_branch_type, 
-                                   mast_tws_df$dataset, mast_tws_df$matrix_name, mast_tws_df$model_code), ]
-  
+                                 "tree_5_sum_internal_branch_lengths", "iq_file")]
   ## Save output dataframe
   mast_df_file <- paste0(output_dir, "04_01_MAST_model_output.tsv")
-  write.table(mast_tws_df, mast_df_file, sep= "\t")
+  write.table(mast_tws_df, mast_df_file, sep= "\t", row.names = FALSE)
 }
 
 
