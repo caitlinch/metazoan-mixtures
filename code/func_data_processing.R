@@ -1229,15 +1229,7 @@ extract.HMM.output <- function(hmm_file){
 
 extract.tree.weights <- function(iq_file){
   # Function to take an output prefix and directory, and return the results of the HMMster model
-  
-  # Create output label
-  if (grepl("HMMster", iq_file, ignore.case = T) == TRUE){
-    MAST_option <- "HMMster"
-  } else if (grepl("phyloHMM", iq_file, ignore.case = T) == TRUE){
-    MAST_option <- "phyloHMM"
-  } else {
-    MAST_option <- NA
-  }
+
   # Open the iqtree file
   iq_lines <- readLines(iq_file)
   # Detect the tree weights for each tree
@@ -1263,8 +1255,8 @@ extract.tree.weights <- function(iq_file){
     sibl <- c(sibl, NA, NA)
   }
   # Collect the output to return it
-  mast_output <- c(basename(iq_file), MAST_option, num_trees, tws, ttls, sibl)
-  names(mast_output) <- c("iq_file", "analysis_type", "number_hypothesis_trees",paste0("tree_", 1:5, "_tree_weight"),
+  mast_output <- c(basename(iq_file), num_trees, tws, ttls, sibl)
+  names(mast_output) <- c("iq_file", "number_hypothesis_trees",paste0("tree_", 1:5, "_tree_weight"),
                           paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
   # Return output
   return(mast_output)
