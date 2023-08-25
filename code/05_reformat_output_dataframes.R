@@ -41,6 +41,7 @@ all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 ### Summarise topology results (as percentage of each output topology)
 # Read in .xlsx file with manual topology check results
 topology_check_x_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE), value = TRUE)
+topology_check_x_file <- grep("Summary", topology_check_x_file, value = TRUE, invert = TRUE)
 topology_check_df <- as.data.frame(read_excel(path = topology_check_x_file, sheet = "Topology"))
 # Remove Simion and Hejnol datasets - too computationally intensive to run full ML models
 topology_check_df <- topology_check_df[which(topology_check_df$dataset != "Hejnol2009" & topology_check_df$dataset != "Simion2017"), ]
@@ -105,8 +106,15 @@ au_test_df <- read.table(file = au_test_file, header = TRUE, sep = "\t")
 # Process each dataset one at a time
 summary_au_test_list <- lapply(unique(au_test_df$ID), summarise.AU.test.results, au_test_df)
 summary_au_test_df <- as.data.frame(do.call(rbind, summary_au_test_list))
+# Add new column for model class
+summary_au_test_df$model_class <- summary_au_test_df$best_model_code
+summary_au_test_df$model_class[grep("LG4M|UL3", summary_au_test_df$best_model_code)] <- "Other"
+summary_au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", summary_au_test_df$best_model_code)] <- "CXX"
+summary_au_test_df$model_class[grep("PMSF", summary_au_test_df$best_model_code)] <- "PMSF"
 # Sort output by year
 summary_au_test_df <- summary_au_test_df[order(summary_au_test_df$year, summary_au_test_df$dataset, summary_au_test_df$matrix),]
+# Reorder columns
+summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year" )]
 # Write the output
 summary_au_test_file <- paste0(output_file_dir, "summary_au_test_results.csv")
 write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
