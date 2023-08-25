@@ -113,6 +113,8 @@ summary_au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", summary_au_test_df$
 summary_au_test_df$model_class[grep("PMSF", summary_au_test_df$best_model_code)] <- "PMSF"
 # Sort output by year
 summary_au_test_df <- summary_au_test_df[order(summary_au_test_df$year, summary_au_test_df$dataset, summary_au_test_df$matrix),]
+# Relabel row numbers
+rownames(summary_au_test_df) <- 1:nrow(summary_au_test_df)
 # Reorder columns
 summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year" )]
 # Write the output
@@ -126,15 +128,11 @@ write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
 # Read in tsv file
 mast_file <- grep("MAST_model_output", all_output_files, value = TRUE)
 mast_df <- read.table(file = mast_file, header = TRUE, sep = "\t")
-# Separate out MAST results
-mast_results_df <- mast_df[mast_df$analysis_type == "MAST",]
 # Output tree weights
 # Process each dataset one at a time
-mast_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(mast_results_df), summarise.tree.weights, tw_df = mast_results_df)))
+mast_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(mast_df), summarise.tree.weights, tw_df = mast_df)))
 # Add branch length option
-mast_summary_df$mast_branch_option <- as.character(mast_results_df$mast_branch_type)
-# Replace TRUE with T (branch option T gets converted to TRUE when reading in the tsv file)
-mast_summary_df$mast_branch_option[which(mast_summary_df$mast_branch_option == "TRUE")] <- "T"
+mast_summary_df$mast_branch_option <- as.character(mast_df$mast_branch_type)
 # Sort output by year
 mast_summary_df <- mast_summary_df[order(mast_summary_df$year, mast_summary_df$dataset, mast_summary_df$matrix_name), ]
 # Relabel row numbers
