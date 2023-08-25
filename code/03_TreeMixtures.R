@@ -258,11 +258,19 @@ if (control_parameters$prepare.tree.topology.tests == TRUE){
 
 if (control_parameters$extract.tree.topology.tests == TRUE){
   # Extract the tree topology test results
-  all_op_files <- list.files(au_test_dir)
+  all_op_files <- list.files(au_test_dir, recursive = TRUE)
   au_test_iqtree_files <- paste0(au_test_dir, grep("AU_test", grep("\\.iqtree", all_op_files, value = TRUE), value = TRUE))
   au_test_list <- lapply(au_test_iqtree_files, extract.tree.topology.test.results)
-  # Save tree topology test results to file
+  # Transform list to data frame
   au_test_df <- as.data.frame(do.call(rbind, au_test_list))
+  # Add new column for model class
+  au_test_df$model_class <- au_test_df$best_model_code
+  au_test_df$model_class[grep("LG4M|UL3", au_test_df$best_model_code)] <- "Other"
+  au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", au_test_df$best_model_code)] <- "CXX"
+  au_test_df$model_class[grep("PMSF", au_test_df$best_model_code)] <- "PMSF"
+  # Rearrange columns
+  au_test_df <- au_test_df[, c(names(au_test_df)[1:4], "model_class", names(au_test_df)[5:(ncol(au_test_df) - 1)])]
+  # Save tree topology test results to file
   write.table(au_test_df, paste0(output_dir, "04_01_tree_topology_test_results.tsv"), sep= "\t")
 }
 
