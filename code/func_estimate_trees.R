@@ -887,7 +887,7 @@ construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
 
 
 #### Collating multiple trees into a single file ####
-combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", file.name.only = FALSE, remove.collated = TRUE){
+combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", num_trees = 5, file.name.only = FALSE, remove.collated = TRUE){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
   
   # Assemble output file for the collated (unrooted) trees
@@ -904,9 +904,10 @@ combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "const
     }
     # Find all files for this tree_id
     tree_id_files <- grep(tree_id, all_constraint_tree_dir_files, value = TRUE)
-    # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= 5)
-    hypothesis_tree_files <- grep("H1|H2|H3|H4|H5", tree_id_files, value = TRUE)
-    hypothesis_tree_treefiles <- grep("treefile", tree_id_files, value = TRUE)
+    # Find all hypothesis trees for this tree_id (hypothesis trees are marked by HX, where 1<= X <= num_trees)
+    h_tree_check <- paste(paste0("H", 1:num_trees), collapse = "|")
+    hypothesis_tree_files <- grep(h_tree_check, tree_id_files, value = TRUE)
+    hypothesis_tree_treefiles <- grep("treefile", hypothesis_tree_files, value = TRUE)
     # Extend file path to include directory
     if (length(hypothesis_tree_treefiles) > 0){
       hypothesis_tree_treefiles <- paste0(tree_directory, hypothesis_tree_treefiles)
