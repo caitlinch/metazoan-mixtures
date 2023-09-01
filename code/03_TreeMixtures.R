@@ -97,7 +97,7 @@ source(paste0(repo_dir, "code/func_estimate_trees.R"))
 ## Check whether the dataframe for AU tests and MAST runs has been created
 mast_parameter_path <- paste0(output_dir, "03_01_MAST_parameters.csv")
 if (file.exists(mast_parameter_path) == TRUE){
-  model_df <- read.table(mast_parameter_path, header = T)
+  model_df <- read.csv(mast_parameter_path, header = T)
 } else if (file.exists(mast_parameter_path) == FALSE){
   ## Prepare the dataframe 
   model_df <- read.table(paste0(output_dir, "01_03_best_models_per_alignment.tsv"), header = T)
