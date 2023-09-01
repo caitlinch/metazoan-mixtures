@@ -115,7 +115,7 @@ if (file.exists(mast_parameter_path) == TRUE){
   
   ## Prepare the hypothesis tree files
   model_df$hypothesis_tree_path <- basename( unlist( lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
-                                                          combine.hypothesis.trees, tree_directory = hypothesis_tree_dir, file.name.only = TRUE) ) )
+                                                            combine.hypothesis.trees, tree_directory = hypothesis_tree_dir, file.name.only = TRUE) ) )
   ## Add the  file paths to the dataframe
   model_df$best_model_sitefreq_path <- basename(model_df$best_model_sitefreq_path)
   model_df$alignment_path <- basename(model_df$alignment_path)
@@ -240,20 +240,18 @@ if (control_parameters$extract.MAST == TRUE){
 
 
 #### 7. Apply AU test to each dataset ####
-if (control_parameters$prepare.tree.topology.tests == TRUE){
+if (control_parameters$prepare.tree.topology.tests == TRUE | control_parameters$run.tree.topology.tests == TRUE){
   # Run the tree topology tests
-  if (control_parameters$run.tree.topology.tests == TRUE){
-    # Update parameter file paths for MAST run on server
-    model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
-    model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, basename(model_df$best_model_sitefreq_path))
-    model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, basename(model_df$hypothesis_tree_path))
-    # Create the AU test commnd lines
-    top_test_call_list <- lapply(1:nrow(model_df), tree.topology.test.wrapper, df = model_df, output_dir = au_test_dir, 
-                                 iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
-                                 iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE)
-    au_test_calls <- unlist(top_test_call_list)
-    write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
-  }
+  # Update parameter file paths for MAST run on server
+  model_df$alignment_path <- paste0(alignment_dir, basename(model_df$alignment_path))
+  model_df$best_model_sitefreq_path <- paste0(pmsf_sitefreq_dir, basename(model_df$best_model_sitefreq_path))
+  model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, basename(model_df$hypothesis_tree_path))
+  # Create the AU test commnd lines
+  top_test_call_list <- lapply(1:nrow(model_df), tree.topology.test.wrapper, df = model_df, output_dir = au_test_dir, 
+                               iqtree2 = iqtree2, iqtree_num_threads = iqtree_num_threads,
+                               iqtree_num_RELL_replicates = 10000, run.iqtree = FALSE)
+  au_test_calls <- unlist(top_test_call_list)
+  write(au_test_calls, paste0(output_dir, "03_02_au_test_calls.text"))
 }
 
 if (control_parameters$extract.tree.topology.tests == TRUE){
