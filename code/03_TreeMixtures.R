@@ -34,7 +34,7 @@ location = "local"
 if (location == "local"){
   ## File paths
   alignment_dir           <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
-  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/collated_hypothesis_trees/"
+  hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/collated_trees/"
   pmsf_sitefreq_dir       <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_pmsf_site_freqs/"
   mast_dir                <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_all_MAST_output/"
   au_test_dir             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/05_au_test/"
@@ -95,7 +95,7 @@ source(paste0(repo_dir, "code/func_estimate_trees.R"))
 
 #### 3. Prepare for analysis ####
 ## Check whether the dataframe for AU tests and MAST runs has been created
-mast_parameter_path <- paste0(output_dir, "03_01_MAST_parameters.tsv")
+mast_parameter_path <- paste0(output_dir, "03_01_MAST_parameters.csv")
 if (file.exists(mast_parameter_path) == TRUE){
   model_df <- read.table(mast_parameter_path, header = T)
 } else if (file.exists(mast_parameter_path) == FALSE){
@@ -155,7 +155,7 @@ if (file.exists(mast_parameter_path) == TRUE){
   rownames(model_df) <- 1:nrow(model_df)
   
   ## Write the dataframe
-  write.table(model_df, file = mast_parameter_path, sep = "\t")
+  write.csv(model_df, file = mast_parameter_path)
 }
 
 
