@@ -2,6 +2,8 @@
 # Functions for estimating maximum likelihood trees and constrained maximum likelihood trees,and for running the Mixture of Trees and Sites (MAST) model in iqtree2
 # Caitlin Cherryh 2023
 
+library(ape)
+
 
 #### Estimating an ML tree in IQ-Tree with a specified model ####
 estimate.ml.iqtree <- function(iqtree2, alignment_file, model = "MFP", mset = NA, mrate = NA, partition_file = NA, 
@@ -887,7 +889,7 @@ construct.hypothesis.tree.call <- function(row_id, hyp_tree_info_df){
 
 
 #### Collating multiple trees into a single file ####
-combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", num_trees = 5, file.name.only = FALSE, remove.collated = TRUE){
+combine.hypothesis.trees <- function(tree_id, tree_directory, output_id = "constrained_ML.hypothesis_trees", num_trees = 2, file.name.only = FALSE, remove.collated = TRUE){
   # Function to open all hypothesis trees with a given id in a folder and collate them into one file
   
   # Assemble output file for the collated (unrooted) trees

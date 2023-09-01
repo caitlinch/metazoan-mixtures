@@ -24,7 +24,7 @@
 # prepare.hypothesis.trees      <- TRUE to prepare constraint trees and create command lines to estimate hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 # estimate.hypothesis.trees     <- TRUE to estimate all hypothesis trees (constrained maximum likelihood trees). FALSE to skip.
 
-location = "rosa"
+location = "local"
 if (location == "local"){
   alignment_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/01_Data_all/"
   ml_tree_op_dir    <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/01_ml_tree_output_files/"
@@ -343,7 +343,7 @@ all_files <- grep("collated_hypothesis_trees|hypothesis|constrained_ML", all_fil
 # Get the files for hypothesis trees
 filenames <- basename(all_files)
 iq_files <- grep("\\.iqtree", filenames, value = T) # get all IQ-Tree files
-ml_h_files <- grep("ML_H1|ML_H2|ML_H3|ML_H4|ML_H5", iq_files, value = T) # get only files for hypothesis trees: ML_H1 to HL_H5
+ml_h_files <- grep("ML_H1", iq_files, value = T) # get only files for hypothesis trees
 # Separate out the unique IDs for each combination of model and dataset
 run_ids <- sort(unique(unlist(lapply(strsplit(ml_h_files, "\\."), function(x){paste0(x[[1]], ".", x[[2]], ".", x[[3]])}))))
 # Collate hypothesis trees by id
