@@ -116,7 +116,13 @@ summary_au_test_df <- summary_au_test_df[order(summary_au_test_df$year, summary_
 # Relabel row numbers
 rownames(summary_au_test_df) <- 1:nrow(summary_au_test_df)
 # Reorder columns
-summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year" )]
+if ( TRUE %in% is.na(summary_au_test_df$tree_3)){
+  # Remove columns for trees 3-5
+  summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "year" )]
+} else {
+  # Keep columns for all trees
+  summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year")]
+}
 # Write the output
 summary_au_test_file <- paste0(output_file_dir, "summary_au_test_results.csv")
 write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
