@@ -99,33 +99,47 @@ write.csv(pori_topology_df, file = pori_topology_file, row.names = FALSE)
 
 
 
-#### 4. Prepare summary of the tree topology test tsv file ####
-# Read in tsv file
-au_test_file <- grep("tree_topology_test_results.tsv", all_output_files, value = TRUE)
-au_test_df <- read.table(file = au_test_file, header = TRUE, sep = "\t")
+#### 4. Prepare summary of the AU test results using the tree topology test tsv file ####
+# Read in csv file
+tree_test_df <- read.csv(file = grep("tree_topology_test_results.csv", all_output_files, value = TRUE), header = TRUE)
 # Process each dataset one at a time
-summary_au_test_list <- lapply(unique(au_test_df$ID), summarise.AU.test.results, au_test_df)
-summary_au_test_df <- as.data.frame(do.call(rbind, summary_au_test_list))
+summary_au_test_df <- as.data.frame(do.call(rbind, lapply(unique(tree_test_df$ID), summarise.AU.test.results, tree_test_df)))
 # Add new column for model class
-summary_au_test_df$model_class <- summary_au_test_df$best_model_code
-summary_au_test_df$model_class[grep("LG4M|UL3", summary_au_test_df$best_model_code)] <- "Other"
-summary_au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", summary_au_test_df$best_model_code)] <- "CXX"
-summary_au_test_df$model_class[grep("PMSF", summary_au_test_df$best_model_code)] <- "PMSF"
+summary_au_test_df$model_class <- factor(summary_au_test_df$best_model_code,
+                                         levels = c("LG_C60", "C60", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
+                                         labels = c("CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
+                                         ordered = TRUE)
 # Sort output by year
 summary_au_test_df <- summary_au_test_df[order(summary_au_test_df$year, summary_au_test_df$dataset, summary_au_test_df$matrix),]
-# Relabel row numbers
-rownames(summary_au_test_df) <- 1:nrow(summary_au_test_df)
 # Reorder columns
-if ( TRUE %in% is.na(summary_au_test_df$tree_3)){
-  # Remove columns for trees 3-5
-  summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "year" )]
-} else {
-  # Keep columns for all trees
-  summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year")]
-}
+summary_au_test_df <- summary_au_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year")]
+# Remove columns consisting only of NA
+summary_au_test_df <- Filter(function(x)!all(is.na(x)), summary_au_test_df)
 # Write the output
 summary_au_test_file <- paste0(output_file_dir, "summary_au_test_results.csv")
 write.csv(summary_au_test_df, file = summary_au_test_file, row.names = FALSE)
+
+
+
+#### 5. Prepare summary of the expected likelihood weights using the tree topology test tsv file ####
+# Read in csv file
+tree_test_df <- read.csv(file = grep("tree_topology_test_results.csv", all_output_files, value = TRUE), header = TRUE)
+# Process each dataset one at a time
+summary_elw_test_df <- as.data.frame(do.call(rbind, lapply(unique(tree_test_df$ID), summarise.eLW, tree_test_df)))
+# Add new column for model class
+summary_elw_test_df$model_class <- factor(summary_elw_test_df$best_model_code,
+                                          levels = c("LG_C60", "C60", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
+                                          labels = c("CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
+                                          ordered = TRUE)
+# Sort output by year
+summary_elw_test_df <- summary_elw_test_df[order(summary_elw_test_df$year, summary_elw_test_df$dataset, summary_elw_test_df$matrix),]
+# Reorder columns
+summary_elw_test_df <- summary_elw_test_df[, c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "tree_1", "tree_2", "tree_3", "tree_4", "tree_5", "year")]
+# Remove columns consisting only of NA
+summary_elw_test_df <- Filter(function(x)!all(is.na(x)), summary_elw_test_df)
+# Write the output
+summary_elw_test_file <- paste0(output_file_dir, "summary_elw_results.csv")
+write.csv(summary_elw_test_df, file = summary_elw_test_file, row.names = FALSE)
 
 
 
