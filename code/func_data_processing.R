@@ -1532,13 +1532,13 @@ summarise.tree.weights <- function(row_index, tw_df){
   dataset_year <- as.numeric(str_extract(unique(d_df$dataset), "(\\d)+"))
   # Create a new row for the output
   new_row <- c(d_df$dataset, dataset_year, d_df$matrix_name, d_df$model_code,
-               d_df$model_type, d_df$mast_branch_type,
+               d_df$model_class, d_df$mast_branch_type,
                d_df$minimum_branch_length, d_df$number_hypothesis_trees,
                d_df$tree_1_tree_weight, d_df$tree_2_tree_weight, 
                d_df$tree_3_tree_weight, d_df$tree_4_tree_weight, 
                d_df$tree_5_tree_weight)
   names(new_row) <- c("dataset", "year", "matrix_name", "model_code",
-                      "model_type", "mast_branch_type", 
+                      "model_class", "mast_branch_type", 
                       "minimum_branch_length", "number_hypothesis_trees", 
                       "tree_1_tree_weight", "tree_2_tree_weight",
                       "tree_3_tree_weight", "tree_4_tree_weight",

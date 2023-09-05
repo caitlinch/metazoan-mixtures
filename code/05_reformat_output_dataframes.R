@@ -146,22 +146,21 @@ write.csv(summary_elw_test_df, file = summary_elw_test_file, row.names = FALSE)
 #### 5. Prepare summary of the MAST tsv file ####
 ### Output site ratios from HMM weights
 # Read in tsv file
-mast_file <- grep("MAST_model_output", all_output_files, value = TRUE)
-mast_df <- read.table(file = mast_file, header = TRUE, sep = "\t")
+mast_df <- read.csv(file = grep("MAST_model_output", all_output_files, value = TRUE), header = TRUE)
 # Output tree weights
 # Process each dataset one at a time
 mast_summary_df <- as.data.frame(do.call(rbind, lapply(1:nrow(mast_df), summarise.tree.weights, tw_df = mast_df)))
-# Add branch length option
-mast_summary_df$mast_branch_option <- as.character(mast_df$mast_branch_type)
 # Sort output by year
 mast_summary_df <- mast_summary_df[order(mast_summary_df$year, mast_summary_df$dataset, mast_summary_df$matrix_name), ]
-# Relabel row numbers
-rownames(mast_summary_df) <- 1:nrow(mast_summary_df)
 # Reorganise columns
-mast_summary_df <- mast_summary_df[,c(1,2,3,4,5,12,6,7,8,9,10,11)]
+mast_summary_df <- mast_summary_df[,c("dataset", "matrix_name", "model_class", "model_code", 
+                                      "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", 
+                                      "tree_4_tree_weight", "tree_5_tree_weight",
+                                      "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees", "year")]
+# Remove columns consisting only of NA
+mast_summary_df <- Filter(function(x)!all(is.na(x)), mast_summary_df)
 # Write the output for MAST tree weights
-mast_summary_test_file <- paste0(output_file_dir, "summary_MAST_treeWeight_results.csv")
-write.csv(mast_summary_df, file = mast_summary_test_file, row.names = FALSE)
+write.csv(mast_summary_df, file = paste0(output_file_dir, "summary_MAST_treeWeight_results.csv"), row.names = FALSE)
 
 
 
