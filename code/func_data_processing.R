@@ -483,7 +483,7 @@ extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
       ## Gamma (+G)
       if (gamma.parameter == "Shape"){
         ## Extract the value of the gamma shape alpha
-        # Extract the line containing the gamma alpha vaue
+        # Extract the line containing the gamma alpha value
         gamma_line <- iq_lines[gamma_shape_ind]
         # Process the line to extract just the gamma alpha value
         raw_gamma_alpha <- strsplit(gamma_line, "\\:")[[1]][2]
@@ -1213,11 +1213,9 @@ extract.HMM.output <- function(hmm_file){
   # Determine the number of trees
   num_trees <- length(hmm_probs)
   # Check how long each of the outputs are, and extend to 5 if necessary
-  if (num_trees == 3){
-    hmm_probs <- c(hmm_probs, NA, NA)
-    num_sites <- c(num_sites, NA, NA)
-    rat_sites <- c(rat_sites, NA, NA)
-  }
+  tws <- c(tws, rep(NA, (5 - num_trees )) )
+  ttls <- c(ttls,rep(NA, (5 - num_trees )) )
+  sibl <- c(sibl, rep(NA, (5 - num_trees )) )
   # Collect the output to return it
   hmm_output <- c(basename(hmm_file), MAST_option, num_trees, hmm_probs, num_sites, rat_sites)
   names(hmm_output) <- c("hmm_file", "analysis_type", "number_hypothesis_trees",paste0("tree_", 1:5, "_hmm_probs"),
@@ -1227,9 +1225,9 @@ extract.HMM.output <- function(hmm_file){
 }
 
 
-extract.tree.weights <- function(iq_file){
+extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
   # Function to take an output prefix and directory, and return the results of the HMMster model
-
+  
   # Open the iqtree file
   iq_lines <- readLines(iq_file)
   # Detect the tree weights for each tree
@@ -1248,16 +1246,22 @@ extract.tree.weights <- function(iq_file){
   sibl <- gsub(" ", "", grep("\\%", sibl_raw, value = TRUE, invert = TRUE))
   # Determine the number of trees
   num_trees <- length(tws)
-  # Check how long each of the outputs are, and extend to 5 if necessary
-  if (num_trees == 3){
-    tws <- c(tws, NA, NA)
-    ttls <- c(ttls, NA, NA)
-    sibl <- c(sibl, NA, NA)
+  # EITHER keep all 5 columns (for the maximum number of 5 trees) OR 
+  #     remove any columns with NA values and return only the same number of columns as input trees
+  if (trim.output.columns == FALSE){
+    # Check how long each of the outputs are, and extend to 5 if necessary
+    tws <- c(tws, rep(NA, (5 - num_trees )) )
+    ttls <- c(ttls,rep(NA, (5 - num_trees )) )
+    sibl <- c(sibl, rep(NA, (5 - num_trees )) )
+    # Collect the output to return it
+    mast_output <- c(basename(iq_file), num_trees, tws, ttls, sibl)
+    names(mast_output) <- c("iq_file", "number_hypothesis_trees",paste0("tree_", 1:5, "_tree_weight"),
+                            paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
+  } else if (trim.output.columns == TRUE){
+    mast_output <- c(basename(iq_file), num_trees, tws, ttls, sibl)
+    names(mast_output) <- c("iq_file", "number_hypothesis_trees",paste0("tree_", 1:num_trees, "_tree_weight"),
+                            paste0("tree_", 1:num_trees, "_total_tree_length"), paste0("tree_", 1:num_trees, "_sum_internal_branch_lengths"))
   }
-  # Collect the output to return it
-  mast_output <- c(basename(iq_file), num_trees, tws, ttls, sibl)
-  names(mast_output) <- c("iq_file", "number_hypothesis_trees",paste0("tree_", 1:5, "_tree_weight"),
-                          paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
   # Return output
   return(mast_output)
 }
@@ -1550,14 +1554,10 @@ summarise.AU.test.results <- function(dataset_id, au_test_df){
   d_df <- au_test_df[au_test_df$ID == dataset_id,]
   # Extract year of publication
   dataset_year <- as.numeric(str_extract(unique(d_df$dataset), "(\\d)+"))
-  # Process the dataset df (depending on the number of trees)
-  if (nrow(d_df) == 2){
-    au_test_pvalues <- c(d_df$p_AU, NA, NA, NA)
-  } else if (nrow(d_df) == 3){
-    au_test_pvalues <- c(d_df$p_AU, NA, NA)
-  } else if (nrow(d_df) == 5){
-    au_test_pvalues <- d_df$p_AU
-  }
+  # Identify the number of trees
+  num_trees <- length(d_df$p_AU)
+  # Pad the dataset df with NA (depending on the number of trees)
+  au_test_pvalues <- c(d_df$p_AU, rep(NA, (5 - num_trees)) )
   # Create a new row for output
   new_row <- c(d_df$dataset[1], d_df$matrix[1], d_df$best_model_code[1], "AU_test_p_values", 
                au_test_pvalues, dataset_year)
