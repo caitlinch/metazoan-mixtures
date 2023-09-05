@@ -219,12 +219,12 @@ if (control_parameters$extract.MAST == TRUE){
   mast_tws_df$mast_branch_type <- unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][5]}))
   mast_tws_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][7]})))
   # Add a new column breaking the models up by type of model
-  mast_tws_df$model_type <- mast_tws_df$model_code
-  mast_tws_df$model_type[grep("UL3|LG4M", mast_tws_df$model_code)] <- "Other"
-  mast_tws_df$model_type[grep("C60|C20|LG_C60|LG_C20", mast_tws_df$model_code)] <- "CXX"
-  mast_tws_df$model_type[grep("PMSF", mast_tws_df$model_code)] <- "PMSF"
+  mast_tws_df$model_class <- factor(mast_tws_df$model_code,
+                                           levels = c("LG_C60", "C60", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
+                                           labels = c("CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
+                                           ordered = TRUE)
   # Rearrange columns
-  mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "model_type", "mast_branch_type", 
+  mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "model_class", "mast_branch_type", 
                                  "minimum_branch_length", "number_hypothesis_trees",
                                  "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
                                  "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
@@ -233,8 +233,7 @@ if (control_parameters$extract.MAST == TRUE){
                                  "tree_3_sum_internal_branch_lengths", "tree_4_sum_internal_branch_lengths",
                                  "tree_5_sum_internal_branch_lengths", "iq_file")]
   ## Save output dataframe
-  mast_df_file <- paste0(output_dir, "04_01_MAST_model_output.tsv")
-  write.table(mast_tws_df, mast_df_file, sep= "\t", row.names = FALSE)
+  write.csv(mast_tws_df, paste0(output_dir, "04_01_MAST_model_output.csv"), row.names = FALSE)
 }
 
 
