@@ -269,8 +269,8 @@ if (control_parameters$extract.tree.topology.tests == TRUE){
   # Rearrange columns
   au_test_df <- au_test_df[, c(names(au_test_df)[1:4], "model_class", names(au_test_df)[5:(ncol(au_test_df) - 1)])]
   # Save tree topology test results to file
-  write.table(au_test_df, paste0(output_dir, "04_01_tree_topology_test_results.tsv"), sep= "\t")
-}
+  write.csv(au_test_df, file = paste0(output_dir, "04_01_tree_topology_test_results.csv"), row.names = FALSE)
+ }
 
 
 
