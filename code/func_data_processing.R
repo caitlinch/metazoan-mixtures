@@ -1551,7 +1551,9 @@ summarise.AU.test.results <- function(dataset_id, au_test_df){
   # Extract year of publication
   dataset_year <- as.numeric(str_extract(unique(d_df$dataset), "(\\d)+"))
   # Process the dataset df (depending on the number of trees)
-  if (nrow(d_df) == 3){
+  if (nrow(d_df) == 2){
+    au_test_pvalues <- c(d_df$p_AU, NA, NA, NA)
+  } else if (nrow(d_df) == 3){
     au_test_pvalues <- c(d_df$p_AU, NA, NA)
   } else if (nrow(d_df) == 5){
     au_test_pvalues <- d_df$p_AU
