@@ -26,6 +26,7 @@ library(ggplot2)
 library(ggtree)
 library(patchwork)
 library(reshape2)
+library(readxl)
 
 # Open function files
 source(paste0(repo_dir,"code/func_plotting.R"))
@@ -72,6 +73,7 @@ tree5_palette <- c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")
 tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
 tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
 tree2_tonal <- c("#bdd7e7", "#2171b5")
+
 
 # Plot one tree at a time
 hyp1_plot <- color.clades.plot(trees[[1]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
@@ -279,7 +281,7 @@ ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10,
 all_files <- list.files(results_dir, recursive = TRUE)
 au_df_file <- paste0(results_dir, grep("summary_au_test_results", all_files, value = TRUE))
 au_df <- read.csv(au_df_file, header = TRUE)
-# Convert MAST output to long format
+# Convert AU test output to long format
 au_long <- melt(au_df,
                 id.vars = c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "year"),
                 measure.vars = c("tree_1", "tree_2"))
@@ -323,7 +325,7 @@ ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10,
 all_files <- list.files(results_dir, recursive = TRUE)
 elw_df_file <- paste0(results_dir, grep("summary_elw_results", all_files, value = TRUE))
 elw_df <- read.csv(elw_df_file, header = TRUE)
-# Convert MAST output to long format
+# Convert ELW output to long format
 elw_long <- melt(elw_df,
                  id.vars = c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "year"),
                  measure.vars = c("tree_1", "tree_2"))
@@ -359,4 +361,68 @@ bp_file <- paste0(plot_dir, "expected_likelihood_weights_2tree.")
 ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 10, height = 14, units = "in")
 ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10, height = 14, units = "in")
 
+
+
+#### 7. Plot bar charts of different tree topologies for each dataset ####
+# List all output files
+all_files <- list.files(results_dir, recursive = TRUE)
+topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_files, value = TRUE), value = TRUE)
+topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
+topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
+# Convert topology output to long format
+topo_long <- melt(topo_df,
+                  id.vars = c("dataset", "matrix_name", "model_code"),
+                  measure.vars = c("sister_group"))
+topo_long$dataset_label <- factor(topo_long$matrix_name,
+                                  levels = c("Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
+                                             "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
+                                             "REA_EST_includingXenoturbella", "ED3d", "Best108", "Chang_AA",  "Dataset10",
+                                             "Metazoa_Choano_RCFV_strict", "Tplx_phylo_d1", "nonbilateria_MARE_BMGE"),
+                                  labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013\nnon-ribosomal", 
+                                             "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
+                                             "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
+                                  ordered = TRUE)
+# Plot with barchart for each dataset - plot with legend
+bc <- ggplot(topo_long, aes(x = value, fill = value)) +
+  geom_bar() +
+  geom_hline(yintercept = 26, linetype = "dashed", color = "darkgrey") +
+  facet_wrap(~dataset_label) +
+  labs(title = "Maximum Likelihood Tree Topology") +
+  scale_x_discrete(name = "Tree topology") +
+  scale_y_continuous(name = "Number of trees", limits = c(0,27), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+  scale_fill_viridis_d(name = "Hypothesis tree", option = "C") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 15),
+        axis.ticks.x = element_blank(),
+        strip.text = element_text(size = 20),
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 25),
+        legend.text = element_text(size = 20))
+bc_file <- paste0(plot_dir, "ML_topology_results_legend.")
+ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png")
+ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf")
+
+# Plot with barchart for each dataset - plot with x axis
+bc <- ggplot(topo_long, aes(x = value, fill = value)) +
+  geom_bar() +
+  geom_hline(yintercept = 26, linetype = "dashed", color = "darkgrey") +
+  facet_wrap(~dataset_label) +
+  labs(title = "Maximum Likelihood Tree Topology") +
+  scale_x_discrete(name = "Sister to all other Metazoan clades") +
+  scale_y_continuous(name = "Number of trees", limits = c(0,27), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+  scale_fill_viridis_d(option = "C", guide = "none") +
+  theme_bw() +
+  theme(axis.title.x = element_text(size = 25, margin = margin(t = 15, r = 0, b = 10, l = 0)),
+        axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15, hjust = 1, vjust = 1, angle = 90),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20),
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)) )
+
+bc_file <- paste0(plot_dir, "ML_topology_results_Xaxis.")
+ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png", width = 10, height = 13, units = "in")
+ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf", width = 10, height = 13, units = "in")
 
