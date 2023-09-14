@@ -26,6 +26,8 @@ source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # List all files in output directory
 all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
+# Remove any files with all 5 trees - only want to look at the output for the 2 tree model
+all_output_files <- grep("5trees", all_output_files, value = TRUE, invert = TRUE)
 
 
 
