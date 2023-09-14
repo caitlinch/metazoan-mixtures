@@ -8,17 +8,9 @@
 # output_file_dir         <- Directory for output csvs
 # repo_dir                <- Location of caitlinch/metazoan-mixtures github repository
 
-location = "local"
-if (location == "local"){
-  ## File paths
-  output_file_dir         <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
-  repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
-} else if (location == "dayhoff"){
-  ## File paths
-  output_file_dir         <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/"
-  repo_dir                <- "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/"
-  
-}
+## File paths
+output_file_dir         <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
+repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 
 
 
