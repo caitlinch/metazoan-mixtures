@@ -41,6 +41,11 @@ tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154F
 tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
 tree2_tonal <- c("#bdd7e7", "#2171b5")
 
+# List all files
+all_files <- list.files(results_dir, recursive = TRUE)
+# Remove any for the 5 tree model
+all_files <- grep("5trees", all_files, value = TRUE, invert = TRUE) 
+
 
 
 #### 3. Plot figures for introduction and methods sections of manuscript ####
@@ -87,8 +92,6 @@ hyp5_plot <- color.clades.plot(trees[[5]], tip_labels = metazoan_clade_labs, col
 
 
 #### 4. Exploratory plots ####
-# List all files in the results directory
-all_files <- list.files(results_dir)
 # Open the summary alignment details and the summary topology results
 al_df <- read.csv(paste0(results_dir, grep("summary_alignment_details", all_files, value = T)), stringsAsFactors = FALSE)
 al_df$matrix_name[which(al_df$dataset == "Whelan2015")] <- "Dataset10"
@@ -231,8 +234,7 @@ ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
 
 
 #### 4. Plot tree weights from MAST model ####
-# List all output files
-all_files <- list.files(results_dir, recursive = TRUE)
+# Identify MAST csv file
 mast_df_file <- paste0(results_dir, grep("summary_MAST_treeWeight_results.csv", all_files, value = TRUE))
 mast_df <- read.csv(mast_df_file, header = TRUE)
 # Convert MAST output to long format
@@ -274,8 +276,7 @@ ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10,
 
 
 #### 5. Plot expected likelihood weights from tree topology tests ####
-# List all output files
-all_files <- list.files(results_dir, recursive = TRUE)
+# Identify AU test results
 au_df_file <- paste0(results_dir, grep("summary_au_test_results.csv", all_files, value = TRUE))
 au_df <- read.csv(au_df_file, header = TRUE)
 # Convert AU test output to long format
@@ -318,8 +319,7 @@ ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10,
 
 
 #### 6. Plot expected likelihood weights from tree topology tests ####
-# List all output files
-all_files <- list.files(results_dir, recursive = TRUE)
+# Identify AU test results
 elw_df_file <- paste0(results_dir, grep("summary_elw_results.csv", all_files, value = TRUE))
 elw_df <- read.csv(elw_df_file, header = TRUE)
 # Convert ELW output to long format
