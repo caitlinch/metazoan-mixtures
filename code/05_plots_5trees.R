@@ -41,20 +41,25 @@ tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154F
 tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
 tree2_tonal <- c("#bdd7e7", "#2171b5")
 
+# List all output files
+all_files <- list.files(results_dir, recursive = TRUE)
+all_files <- grep("5trees", all_files, value = T)
+
+# List the hypothesis tree labels
+labels_5tree <- c("Ctenophora", "Porifera", "Ctenophora+Porifera", "Ctenophora, Paraphyletic Porifera", "Porifera, Paraphyletic Porifera")
 
 
 #### 3. Plot tree weights from MAST model ####
-# List all output files
-all_files <- list.files(results_dir, recursive = TRUE)
+# Open 5 tree MAST results
 mast_df_file <- paste0(results_dir, grep("summary_MAST_treeWeight_results", all_files, value = TRUE))
 mast_df <- read.csv(mast_df_file, header = TRUE)
 # Convert MAST output to long format
 mast_long <- melt(mast_df,
                   id.vars = c("dataset", "matrix_name", "model_class", "model_code", "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees", "year"),
-                  measure.vars = c("tree_1_tree_weight", "tree_2_tree_weight"))
+                  measure.vars = c("tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight", "tree_5_tree_weight"))
 mast_long$var_label <- factor(mast_long$variable,
-                              levels = c("tree_1_tree_weight", "tree_2_tree_weight"),
-                              labels = c("Ctenophora-sister", "Porifera-sister"),
+                              levels = c("tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight", "tree_5_tree_weight"),
+                              labels = labels_5tree,
                               ordered = TRUE)
 mast_long$dataset_label <- factor(mast_long$matrix_name,
                                   levels = c( "Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
@@ -72,32 +77,33 @@ bp <- ggplot(mast_long, aes(x = var_label, y = value, fill = var_label)) +
   facet_wrap(~dataset_label) +
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "Tree weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-  scale_fill_manual(name = "Hypothesis tree", labels = c("Ctenophora-sister", "Porifera-sister"), values = tree2_tonal, guide = "none") +
+  scale_fill_manual(name = "Hypothesis tree", labels = labels_5tree, values = tree5_palette) +
   labs(title = "MAST tree weights") +
   theme_bw() +
-  theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 20, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+  theme(axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_blank(),  
         axis.text.y = element_text(size = 15),
         strip.text = element_text(size = 20),
-        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)) )
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15) )
 bp_file <- paste0(plot_dir, "MAST_tree_weights_5tree.")
-ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 10, height = 14, units = "in")
-ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10, height = 14, units = "in")
+ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 14, height = 10, units = "in")
+ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 14, height = 10, units = "in")
 
 
 
 #### 4. Plot expected likelihood weights from tree topology tests ####
-# List all output files
-all_files <- list.files(results_dir, recursive = TRUE)
+# Open 5 tree AU test results
 au_df_file <- paste0(results_dir, grep("summary_au_test_results", all_files, value = TRUE))
 au_df <- read.csv(au_df_file, header = TRUE)
 # Convert AU test output to long format
 au_long <- melt(au_df,
                 id.vars = c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "year"),
-                measure.vars = c("tree_1", "tree_2"))
+                measure.vars = c("tree_1", "tree_2", "tree_3", "tree_4", "tree_5"))
 au_long$var_label <- factor(au_long$variable,
-                            levels = c("tree_1", "tree_2"),
-                            labels = c("Ctenophora-sister", "Porifera-sister"),
+                            levels = c("tree_1", "tree_2", "tree_3", "tree_4", "tree_5"),
+                            labels = labels_5tree,
                             ordered = TRUE)
 au_long$dataset_label <- factor(au_long$matrix,
                                 levels = c( "Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
@@ -116,32 +122,33 @@ bp <- ggplot(au_long, aes(x = var_label, y = value, fill = var_label)) +
   facet_wrap(~dataset_label) +
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-  scale_fill_manual(name = "Hypothesis tree", labels = c("Ctenophora-sister", "Porifera-sister"), values = tree2_tonal, guide = "none") +
+  scale_fill_manual(name = "Hypothesis tree", labels = labels_5tree, values = tree5_palette) +
   labs(title = "AU Test") +
   theme_bw() +
-  theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 20, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+  theme(axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_blank(),  
         axis.text.y = element_text(size = 15),
         strip.text = element_text(size = 20),
-        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)) )
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15) )
 bp_file <- paste0(plot_dir, "au_test_5tree.")
-ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 10, height = 14, units = "in")
-ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10, height = 14, units = "in")
+ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 14, height = 10, units = "in")
+ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 14, height = 10, units = "in")
 
 
 
 #### 5. Plot expected likelihood weights from tree topology tests ####
-# List all output files
-all_files <- list.files(results_dir, recursive = TRUE)
+# Open 5 tree topology test results
 elw_df_file <- paste0(results_dir, grep("summary_elw_results", all_files, value = TRUE))
 elw_df <- read.csv(elw_df_file, header = TRUE)
 # Convert ELW output to long format
 elw_long <- melt(elw_df,
                  id.vars = c("dataset", "matrix", "model_class", "best_model_code", "topology_test", "year"),
-                 measure.vars = c("tree_1", "tree_2"))
+                 measure.vars = c("tree_1", "tree_2", "tree_3", "tree_4", "tree_5"))
 elw_long$var_label <- factor(elw_long$variable,
-                             levels = c("tree_1", "tree_2"),
-                             labels = c("Ctenophora-sister", "Porifera-sister"),
+                             levels = c("tree_1", "tree_2", "tree_3", "tree_4", "tree_5"),
+                             labels = labels_5tree,
                              ordered = TRUE)
 elw_long$dataset_label <- factor(elw_long$matrix,
                                  levels = c( "Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
@@ -159,19 +166,18 @@ bp <- ggplot(elw_long, aes(x = var_label, y = value, fill = var_label)) +
   facet_wrap(~dataset_label) +
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-  scale_fill_manual(name = "Hypothesis tree", labels = c("Ctenophora-sister", "Porifera-sister"), values = tree2_tonal, guide = "none") +
+  scale_fill_manual(name = "Hypothesis tree", labels = labels_5tree, values = tree5_palette) +
   labs(title = "Expected likelihood weight") +
   theme_bw() +
-  theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 20, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+  theme(axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_blank(),  
         axis.text.y = element_text(size = 15),
         strip.text = element_text(size = 20),
-        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)) )
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15) )
 bp_file <- paste0(plot_dir, "expected_likelihood_weights_5tree.")
-ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 10, height = 14, units = "in")
-ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10, height = 14, units = "in")
-
-
-
+ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 14, height = 10, units = "in")
+ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 14, height = 10, units = "in")
 
 
