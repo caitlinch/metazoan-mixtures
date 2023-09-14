@@ -1,4 +1,4 @@
-## caitlinch/metazoan-mixtures/code/03_data_analysis_and_plotting.R
+## caitlinch/metazoan-mixtures/code/05_plots.R
 # This script performs data analysis and creates plots of methods and results
 # Caitlin Cherryh 2023
 
@@ -32,6 +32,15 @@ library(readxl)
 source(paste0(repo_dir,"code/func_plotting.R"))
 source(paste0(repo_dir,"code/func_data_processing.R"))
 
+# Specify colour palettes (some of these are unused)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
+tree2_palette <- c("#F0F921FF", "#0D0887FF")
+tree5_palette <- c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")
+tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
+tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
+tree2_tonal <- c("#bdd7e7", "#2171b5")
+
 
 
 #### 3. Plot figures for introduction and methods sections of manuscript ####
@@ -62,18 +71,6 @@ hypothesis_plot_file <- paste0(plot_dir, "hypothesis_tree_example_plot.png")
 png(filename = hypothesis_plot_file, width = 1090, height = 723, units = "px", pointsize = 12, bg = "white")
 patchwork_hyps
 dev.off()
-
-
-### Colour plots ###
-# Colourblind friendly palette with grey:
-cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
-tree2_palette <- c("#F0F921FF", "#0D0887FF")
-tree5_palette <- c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")
-tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
-tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
-tree2_tonal <- c("#bdd7e7", "#2171b5")
-
 
 # Plot one tree at a time
 hyp1_plot <- color.clades.plot(trees[[1]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
@@ -236,7 +233,7 @@ ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
 #### 4. Plot tree weights from MAST model ####
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
-mast_df_file <- paste0(results_dir, grep("summary_MAST_treeWeight_results", all_files, value = TRUE))
+mast_df_file <- paste0(results_dir, grep("summary_MAST_treeWeight_results.csv", all_files, value = TRUE))
 mast_df <- read.csv(mast_df_file, header = TRUE)
 # Convert MAST output to long format
 mast_long <- melt(mast_df,
@@ -279,7 +276,7 @@ ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10,
 #### 5. Plot expected likelihood weights from tree topology tests ####
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
-au_df_file <- paste0(results_dir, grep("summary_au_test_results", all_files, value = TRUE))
+au_df_file <- paste0(results_dir, grep("summary_au_test_results.csv", all_files, value = TRUE))
 au_df <- read.csv(au_df_file, header = TRUE)
 # Convert AU test output to long format
 au_long <- melt(au_df,
@@ -323,7 +320,7 @@ ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10,
 #### 6. Plot expected likelihood weights from tree topology tests ####
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
-elw_df_file <- paste0(results_dir, grep("summary_elw_results", all_files, value = TRUE))
+elw_df_file <- paste0(results_dir, grep("summary_elw_results.csv", all_files, value = TRUE))
 elw_df <- read.csv(elw_df_file, header = TRUE)
 # Convert ELW output to long format
 elw_long <- melt(elw_df,
