@@ -27,8 +27,13 @@
 # iqtree_num_threads      <- Number of parallel threads for IQ-Tree to use. Can be a set number (e.g. 2) or "AUTO"
 
 ## Control parameters
-# run.MAST                  <- TRUE to call IQ-Tree2 and run the MAST model. FALSE to output IQ-Tree2 command lines without running MAST model.
-# run.tree.topology.tests   <- TRUE to call IQ-Tree2 and run the tree topology tests. FALSE to output IQ-Tree2 command lines without running tree topology tests.
+# prepare.MAST                  <- TRUE to prepare the parameters and IQ-Tree command lines for MAST run. FALSE to skip.
+# run.MAST                      <- TRUE to call IQ-Tree2 and run the MAST model. FALSE to output IQ-Tree2 command lines without running MAST model.
+# extract.MAST                  <- TRUE to extract MAST results from the IQ-Tree output files. FALSE to skip.
+# prepare.tree.topology.tests   <- TRUE to prepare the parameters and IQ-Tree command lines for tree topology tests. FALSE to skip.
+# run.tree.topology.tests       <- TRUE to call IQ-Tree2 and run the tree topology tests. FALSE to output IQ-Tree2 command lines without running tree topology tests.
+# extract.tree.topology.tests   <- TRUE to extract tree topology test results from the IQ-Tree output files. FALSE to skip.
+
 
 location = "local"
 if (location == "local"){
