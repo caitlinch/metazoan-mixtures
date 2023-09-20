@@ -63,7 +63,7 @@ if (location == "local"){
   iqtree_MAST             <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.4.hmmster-Linux/bin/iqtree2"
   
   ## Phylogenetic and IQ-Tree2 parameters
-  iqtree_num_threads      <- 30
+  iqtree_num_threads      <- 250
 } else if (location == "rosa"){
   alignment_dir           <- "/home/caitlin/metazoan_mixtures/data_all/"
   hypothesis_tree_dir     <- "/home/caitlin/metazoan_mixtures/output/hypothesis_trees/"
@@ -74,8 +74,7 @@ if (location == "local"){
   repo_dir                <- "/home/caitlin/metazoan_mixtures/"
   iqtree2                 <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.2-Linux/bin/iqtree2"
   iqtree_MAST             <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.4.hmmster-Linux/bin/iqtree2"
-  number_parallel_processes <- 4
-  iqtree_num_threads        <- 30
+  iqtree_num_threads        <- 120
 }
 
 ## Control parameters
@@ -106,6 +105,12 @@ if (file.exists(mast_parameter_path) == TRUE){
 } else if (file.exists(mast_parameter_path) == FALSE){
   ## Prepare the dataframe 
   model_df <- read.table(paste0(output_dir, "01_03_best_models_per_alignment.tsv"), header = T)
+  # Remove the two rows for MAST runs that don't work - replaced with better models
+  remove_rows <- c(which(model_df$dataset == "Nosenko2013" & model_df$matrix_name == "nonribosomal_9187_smatrix" & model_df$model_code == "C60"),
+                   which(model_df$dataset == "Laumer2018" & model_df$matrix_name == "Tplx_phylo_d1" & model_df$model_code == "LG_C60"))
+  keep_rows <- setdiff(1:nrow(model_df), remove_rows)
+  model_df <- model_df[keep_rows, ]
+  
   # Add the alignments to the dataframe
   all_aldir_files <- list.files(alignment_dir)
   al_files <- grep("alignment", grep("00_", all_aldir_files, value = T, invert = T), value = T)
@@ -119,8 +124,10 @@ if (file.exists(mast_parameter_path) == TRUE){
   model_df$best_model_sitefreq_path   <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][2]}))
   
   ## Prepare the hypothesis tree files
-  model_df$hypothesis_tree_path <- basename( unlist( lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
-                                                            combine.hypothesis.trees, tree_directory = hypothesis_tree_dir, file.name.only = TRUE) ) )
+  model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, 
+                                          unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
+                                                 function(x){grep(x, list.files(hypothesis_tree_dir), value = T)})) )
+  
   ## Add the  file paths to the dataframe
   model_df$best_model_sitefreq_path <- basename(model_df$best_model_sitefreq_path)
   model_df$alignment_path <- basename(model_df$alignment_path)
