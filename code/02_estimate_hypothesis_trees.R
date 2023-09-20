@@ -269,6 +269,11 @@ if (control_parameters$prepare.constraint.trees == TRUE){
                                               determine.best.ML.model.per.class.wrapper, 
                                               completed_runs_df = completed_runs_df, 
                                               ML_output_df = trimmed_ml_tree_df))
+  # Add the two substitution models to the csv
+  # Nosenko 2013 non-ribo C60 has errors - replace with Nosenko 2013 non-ribo LG+C60
+  selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Nosenko2013" & trimmed_ml_tree_df$matrix_name == "nonribosomal_9187_smatrix" & trimmed_ml_tree_df$model_code == "LG_C60"), ])
+  selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Laumer2018" & trimmed_ml_tree_df$matrix_name == "Tplx_phylo_d1" & trimmed_ml_tree_df$model_code == "LG_C20"), ])
+  
   # Save the dataframe of best models
   write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
   
