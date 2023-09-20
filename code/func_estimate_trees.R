@@ -1341,7 +1341,8 @@ MAST.wrapper <- function(row_id, mast_df, iqtree_MAST, MAST_branch_length_option
   }
   
   ## Assemble the model for the MAST run model
-  best_model <- gsub("'", "", mast_row$best_model)
+  # Remove any quote marks from the models
+  best_model <- gsub("'", "", mast_row$MAST_model)
   # Check whether the free-rate categories are included
   rate.categories.provided = !is.na(mast_row$estimated_rates)
   # Assemble the call for the model
@@ -1349,12 +1350,14 @@ MAST.wrapper <- function(row_id, mast_df, iqtree_MAST, MAST_branch_length_option
     # Best model provided, but no rate categories
     # Use only the best model in the IQ-Tree call
     # Remove then replace ' around model - to make sure you don't end up with two sets
-    MAST_model = paste0("'", gsub("'", "", best_model),"+", MAST_branch_length_option, "'")
+    MAST_model = paste0("'", best_model, "+", MAST_branch_length_option, "'")
   } else if (rate.categories.provided == TRUE){
     # Both the best model and the rate categories are provided
+    # Determine the total number of rate categories
+    num_rate_categories <- length(strsplit(mast_row$estimated_rates, ",")[[1]])/2
     # Create a nice model with both the best model and the free rate category (weights and rates)
     # Remove ' around model and replace around free rate categories
-    MAST_model = paste0("'", gsub("'", "", best_model), "{", mast_row$estimated_rates, "}+", MAST_branch_length_option, "'")
+    MAST_model = paste0("'", best_model, "+R", num_rate_categories, "{", mast_row$estimated_rates, "}+", MAST_branch_length_option, "'")
   }
   
   ## Check for a gamma shape parameter (alpha) call
