@@ -594,6 +594,58 @@ extract.state.frequencies <- function(iqtree_file){
 }
 
 
+
+extract.cat.frequencies <- function(iqtree_file){
+  # Extract and return the CAT frequencies and rates
+  
+  # Open the iqtree file (if it exists)
+  if (file.exists(iqtree_file) == TRUE){
+    # Extract the best model
+    best_model <- extract.best.model(iqtree_file)
+    # Check if the best model is a CXX model
+    cat_model_check <- grepl("C10|C20|C30|C40|C50|C60", best_model)
+    
+    # If the best model is not a CAT model, return NA
+    # Otherwise, extract and return the frequency vector
+    if (cat_model_check == FALSE){
+      output_vector <- NA
+    } else {
+      # Extract and return the CXX frequency vectors
+      # Open the .iqtree file:
+      iq_lines <- readLines(iqtree_file)
+      # Identify lines for table to extract
+      table_start <- table(c(grep("No", iq_lines), grep("Component", iq_lines), grep("Rate", iq_lines), grep("Weight", iq_lines), grep("Parameters", iq_lines)))
+      table_start_row <- as.numeric(names(which(table_start == 5)))
+      empty_rows <- which(iq_lines == "")
+      table_end_row <- empty_rows[table_start_row < empty_rows][1] -1
+      # Extract table of CXX parameters
+      table_lines <- iq_lines[table_start_row:table_end_row]
+      # Translate table into a table
+      split_lines <- strsplit(table_lines, "  ")
+      # Remove empty lines
+      split_lines <- lapply(split_lines, function(x){x[x != ""]})
+      # Turn strings into a dataframe
+      cxx_table <- as.data.frame(do.call(rbind, split_lines[2:length(split_lines)]))
+      names(cxx_table) <- gsub(" ", "", split_lines[[1]])
+      # Paste the CXX parameters together into a single vector (to input into the MAST run)
+      cxx_components <- paste0(cxx_table$Component, ":", cxx_table$Rate, ":", cxx_table$Weight)
+      cxx_components <- gsub(" ", "", cxx_components)
+      # Assemble into a CXX model
+      cxx_model <- paste0("MIX{", paste(cxx_components, collapse = ","), "}")
+      # Return the cxx model as the output_vector
+      output_vector <- cxx_model
+    }
+    
+  } else {
+    output_vector <- NA
+  }
+  
+  # Return output
+  return(output_vector)
+}
+
+
+
 extract.alisim.model <- function(log_file){
   # Given a .log file (output from IQ-Tree), this function will extract the model specification from the Alisim instructions
   
