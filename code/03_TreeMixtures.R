@@ -151,14 +151,6 @@ if (file.exists(mast_parameter_path) == TRUE){
     model_df$min_MAST_bl_arbitrary <- 0.00001
   }
   
-  ## Sort and remove columns
-  model_df <- model_df[, c("dataset", "model_class",  "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix", "best_model",                
-                           "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC", "best_model_wBIC", "tree_LogL",
-                           "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC", "tree_length", "tree_SumInternalBranch",
-                           "tree_PercentInternalBranch",  "estimated_rates", "estimated_gamma", "estimated_CXX_frequencies",
-                           "estimated_state_frequencies", "hypothesis_tree_path", "num_sites", "min_MAST_bl_from_alignment",
-                           "min_MAST_bl_arbitrary")]
-  
   # Update best model values that start with C60 - needs to have another model added to run properly in IQ-Tree
   #   Specify the Poisson model, as that's what underlies C60/C20 models
   model_df$best_model <- gsub("'C60", "'Poisson+C60", model_df$best_model)
@@ -176,6 +168,12 @@ if (file.exists(mast_parameter_path) == TRUE){
   # Reorder by model class   
   model_df <- model_df[order(model_df$model_class, model_df$dataset, model_df$matrix_name),]
   rownames(model_df) <- 1:nrow(model_df)
+  
+  ## Sort and remove columns
+  model_df <- model_df[, c("dataset", "model_class",  "model_code", "matrix_name", "prefix", "best_model", "MAST_model",
+                           "sequence_format", "num_sites", "alignment_path",  "best_model_sitefreq_path", "hypothesis_tree_path",
+                           "estimated_rates", "estimated_gamma", "estimated_CXX_frequencies", "estimated_state_frequencies",
+                           "min_MAST_bl_from_alignment", "min_MAST_bl_arbitrary")]
   
   ## Write the dataframe
   write.csv(model_df, file = mast_parameter_path, row.names = FALSE)
