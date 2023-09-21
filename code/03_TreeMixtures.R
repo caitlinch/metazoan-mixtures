@@ -47,8 +47,6 @@ if (location == "local"){
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   iqtree2                 <- "iqtree2"
   iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.5.hmmster-MacOSX/bin/iqtree"
-  
-  ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 3
 } else if (location == "rona"){
   ## File paths
@@ -61,8 +59,6 @@ if (location == "local"){
   repo_dir                <- "/home/caitlin/metazoan-mixtures/"
   iqtree2                 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
   iqtree_MAST             <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.4.hmmster-Linux/bin/iqtree2"
-  
-  ## Phylogenetic and IQ-Tree2 parameters
   iqtree_num_threads      <- 250
 } else if (location == "rosa"){
   alignment_dir           <- "/home/caitlin/metazoan_mixtures/data_all/"
@@ -126,7 +122,7 @@ if (file.exists(mast_parameter_path) == TRUE){
   ## Prepare the hypothesis tree files
   model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, 
                                           unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
-                                                 function(x){grep(x, list.files(hypothesis_tree_dir), value = T)})) )
+                                                        function(x){grep(x, list.files(hypothesis_tree_dir), value = T)})) )
   
   ## Add the  file paths to the dataframe
   model_df$best_model_sitefreq_path <- basename(model_df$best_model_sitefreq_path)
@@ -205,7 +201,16 @@ if (control_parameters$prepare.MAST == TRUE){
   MAST_TR_run_df$MAST_branch_length_model <- "TR"
   MAST_T_run_df$MAST_branch_length_model <- "T"
   # Bind dataframe
-  MAST_run_df <- rbind(cbind(model_df, MAST_TR_run_df), cbind(model_df, MAST_T_run_df))
+  MAST_run_df <- rbind(cbind(model_df[, c("dataset", "model_class",  "model_code", "matrix_name", "prefix", "best_model",
+                                          "alignment_path",  "best_model_sitefreq_path", "hypothesis_tree_path", "estimated_rates", 
+                                          "estimated_gamma", "estimated_CXX_frequencies", "estimated_state_frequencies",
+                                          "min_MAST_bl_from_alignment", "min_MAST_bl_arbitrary")], 
+                             MAST_TR_run_df), 
+                       cbind(model_df[, c("dataset", "model_class",  "model_code", "matrix_name", "prefix", "best_model",
+                                          "alignment_path",  "best_model_sitefreq_path", "hypothesis_tree_path", "estimated_rates", 
+                                          "estimated_gamma", "estimated_CXX_frequencies", "estimated_state_frequencies",
+                                          "min_MAST_bl_from_alignment", "min_MAST_bl_arbitrary")], 
+                             MAST_T_run_df))
   MAST_run_df$prefix <- paste0(MAST_run_df$dataset, ".", MAST_run_df$matrix_name, ".", MAST_run_df$model_code, ".", MAST_run_df$MAST_branch_length_model)
   # Write dataframe
   MAST_call_path <- paste0(output_dir, "03_02_MAST_command_lines.tsv")
@@ -241,9 +246,9 @@ if (control_parameters$extract.MAST == TRUE){
   mast_tws_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][7]})))
   # Add a new column breaking the models up by type of model
   mast_tws_df$model_class <- factor(mast_tws_df$model_code,
-                                           levels = c("LG_C60", "C60", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
-                                           labels = c("CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
-                                           ordered = TRUE)
+                                    levels = c("LG_C60", "C60", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
+                                    labels = c("CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
+                                    ordered = TRUE)
   # Rearrange columns
   mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "model_class", "mast_branch_type", 
                                  "minimum_branch_length", "number_hypothesis_trees",
@@ -290,7 +295,7 @@ if (control_parameters$extract.tree.topology.tests == TRUE){
   au_test_df <- au_test_df[, c(names(au_test_df)[1:4], "model_class", names(au_test_df)[5:(ncol(au_test_df) - 1)])]
   # Save tree topology test results to file
   write.csv(au_test_df, file = paste0(output_dir, "04_01_tree_topology_test_results.csv"), row.names = FALSE)
- }
+}
 
 
 
