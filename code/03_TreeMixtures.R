@@ -178,7 +178,7 @@ if (file.exists(mast_parameter_path) == TRUE){
   rownames(model_df) <- 1:nrow(model_df)
   
   ## Write the dataframe
-  write.csv(model_df, file = mast_parameter_path)
+  write.csv(model_df, file = mast_parameter_path, row.names = FALSE)
 }
 
 
