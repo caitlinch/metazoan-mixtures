@@ -275,10 +275,39 @@ if (control_parameters$prepare.constraint.trees == TRUE){
                                               determine.best.ML.model.per.class.wrapper, 
                                               completed_runs_df = completed_runs_df, 
                                               ML_output_df = trimmed_ml_tree_df))
+  # Add model class (Other, PMSF, CXX)
+  selected_models_df$model_class <- factor(selected_models_df$model_code,
+                                           levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", "LG_C60", "LG_C20", "C60", "C20", "LG4M", "EX_EHO",
+                                                      "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
+                                                      "mtZOA", "PMB", "CF4", "Poisson"),
+                                           labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
+  # Rearrange columns
+  selected_models_df <- selected_models_df[,c("dataset", "model_class", "model_code", "matrix_name", "sequence_format",
+                                              "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                              "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
+                                              "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
+                                              "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
+                                              "estimated_CXX_frequencies")]
   # Add the two substitution models to the csv
   # Nosenko 2013 non-ribo C60 has errors - replace with Nosenko 2013 non-ribo LG+C60
-  selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Nosenko2013" & trimmed_ml_tree_df$matrix_name == "nonribosomal_9187_smatrix" & trimmed_ml_tree_df$model_code == "LG_C60"), ])
-  selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Laumer2018" & trimmed_ml_tree_df$matrix_name == "Tplx_phylo_d1" & trimmed_ml_tree_df$model_code == "LG_C20"), ])
+  selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Nosenko2013" & 
+                                                                             trimmed_ml_tree_df$matrix_name == "nonribosomal_9187_smatrix" & 
+                                                                             trimmed_ml_tree_df$model_code == "LG_C60"), 
+                                                                     c("dataset", "model_class", "model_code", "matrix_name", "sequence_format",
+                                                                       "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                                                       "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
+                                                                       "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
+                                                                       "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
+                                                                       "estimated_CXX_frequencies")])
+  selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Laumer2018" & 
+                                                                             trimmed_ml_tree_df$matrix_name == "Tplx_phylo_d1" & 
+                                                                             trimmed_ml_tree_df$model_code == "LG_C20"), 
+                                                                     c("dataset", "model_class", "model_code", "matrix_name", "sequence_format",
+                                                                       "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+                                                                       "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
+                                                                       "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
+                                                                       "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
+                                                                       "estimated_CXX_frequencies")])
   
   # Save the dataframe of best models
   write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
