@@ -151,12 +151,6 @@ if (file.exists(mast_parameter_path) == TRUE){
     model_df$min_MAST_bl_arbitrary <- 0.00001
   }
   
-  ## Add model class (Other, PMSF, CXX)
-  model_df$model_class <- factor(model_df$model_code,
-                                 levels = c("C60", "LG_C60", "LG_C20", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
-                                 labels = c("CXX", "CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
-                                 ordered = TRUE)
-  
   ## Sort and remove columns
   model_df <- model_df[, c("dataset", "model_class",  "model_code", "matrix_name", "alignment_path", "sequence_format", "prefix", "best_model",                
                            "best_model_sitefreq_path", "best_model_LogL", "best_model_BIC", "best_model_wBIC", "tree_LogL",
@@ -176,6 +170,12 @@ if (file.exists(mast_parameter_path) == TRUE){
   # Add new column for MAST model (model to apply when using MAST)
   model_df$MAST_model <- model_df$best_model
   model_df$MAST_model[model_df$model_class == "CXX"] <- model_df$estimated_CXX_frequencies[model_df$model_class == "CXX"]
+  # Remove quotation marks
+  model_df$MAST_model <- gsub("'", "", model_df$MAST_model)
+  
+  # Reorder by model class   
+  model_df <- model_df[order(model_df$model_class, model_df$dataset, model_df$matrix_name),]
+  rownames(model_df) <- 1:nrow(model_df)
   
   ## Write the dataframe
   write.csv(model_df, file = mast_parameter_path)
