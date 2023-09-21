@@ -617,7 +617,7 @@ extract.cat.frequencies <- function(iqtree_file){
       table_start <- table(c(grep("No", iq_lines), grep("Component", iq_lines), grep("Rate", iq_lines), grep("Weight", iq_lines), grep("Parameters", iq_lines)))
       table_start_row <- as.numeric(names(which(table_start == 5)))
       empty_rows <- which(iq_lines == "")
-      table_end_row <- empty_rows[table_start_row < empty_rows][1] -1
+      table_end_row <- empty_rows[table_start_row < empty_rows][1] - 1
       # Extract table of CXX parameters
       table_lines <- iq_lines[table_start_row:table_end_row]
       # Translate table into a table
@@ -627,6 +627,32 @@ extract.cat.frequencies <- function(iqtree_file){
       # Turn strings into a dataframe
       cxx_table <- as.data.frame(do.call(rbind, split_lines[2:length(split_lines)]))
       names(cxx_table) <- gsub(" ", "", split_lines[[1]])
+      cxx_table$Rate <- as.numeric(cxx_table$Rate)
+      cxx_table$Weight <- as.numeric(cxx_table$Weight)
+      # Check rates: output sum of weights
+      print(paste0("IQ-Tree file: ", iqtree_file))
+      print(paste0("Weight sum raw: ", sum(cxx_table$Weight)))
+      sum_weights <- sum(as.numeric(cxx_table$Weight))
+      # Ensure sum of weights = 1
+      missing_weights = 1-sum_weights
+      zero_weights = which(cxx_table$Weight == 0)
+      if (length(zero_weights) > 0){
+        # Replace missing weights (i.e. weight = 0) so sum of weights = 1
+        fix_weights = missing_weights/length(zero_weights)
+        cxx_table$Weight[zero_weights] <- fix_weights
+      } else {
+        # Add missing weights to biggest weight
+        # Used to instead replace missing weights (i.e. weight = 0) so sum of weights = 1 (i.e if sum of weights = 0.95 and one component has weight 0, that component would be set to 0.05)
+        # However, 0 weights are allowed in mixture models: see http://www.iqtree.org/release/v1.5.0/
+        # Instead of adding rounding error to 0 weights, add it to the biggest weight (proportionally won't make as much of a difference)
+        biggest_weight_row <- which(cxx_table$Weight == max(cxx_table$Weight))
+        new_biggest_weight <- cxx_table$Weight[biggest_weight_row] + missing_weights
+        cxx_table$Weight[biggest_weight_row] <- new_biggest_weight
+      }
+      # Reformat weights for nice output
+      cxx_table$Weight <- format(as.numeric(cxx_table$Weight), digits = 4, scientific = FALSE)
+      # Check rates: output sum of weights
+      print(paste0("Weight sum post-check: ", sum(as.numeric(cxx_table$Weight))))
       # Paste the CXX parameters together into a single vector (to input into the MAST run)
       cxx_components <- paste0(cxx_table$Component, ":", cxx_table$Rate, ":", cxx_table$Weight)
       cxx_components <- gsub(" ", "", cxx_components)
@@ -634,11 +660,10 @@ extract.cat.frequencies <- function(iqtree_file){
       cxx_model <- paste0("MIX{", paste(cxx_components, collapse = ","), "}")
       # Return the cxx model as the output_vector
       output_vector <- cxx_model
-    }
-    
+    } # end if (cat_model_check == FALSE)
   } else {
     output_vector <- NA
-  }
+  } # end if (file.exists(iqtree_file) == TRUE)
   
   # Return output
   return(output_vector)
