@@ -629,16 +629,15 @@ extract.cat.frequencies <- function(iqtree_file){
       names(cxx_table) <- gsub(" ", "", split_lines[[1]])
       cxx_table$Rate <- as.numeric(cxx_table$Rate)
       cxx_table$Weight <- as.numeric(cxx_table$Weight)
-      # Check rates: output sum of weights
-      print(paste0("IQ-Tree file: ", iqtree_file))
-      print(paste0("Weight sum raw: ", sum(cxx_table$Weight)))
+      # Check sum of weights
       sum_weights <- sum(as.numeric(cxx_table$Weight))
       # Ensure sum of weights = 1
       if (sum_weights != 1){
         # Add missing weights to biggest weight
-        # Used to instead replace missing weights (i.e. weight = 0) so sum of weights = 1 (i.e if sum of weights = 0.95 and one component has weight 0, that component would be set to 0.05)
-        # However, 0 weights are allowed in mixture models: see http://www.iqtree.org/release/v1.5.0/
-        # Instead of adding rounding error to 0 weights, add it to the biggest weight (proportionally won't make as much of a difference)
+        #       I used to instead replace missing weights (i.e. weight = 0) so sum of weights = 1 
+        #       (i.e if sum of weights = 0.95 and one component has weight 0, that component would be set to 0.05)
+        #       However, 0 weights are allowed in mixture models: see http://www.iqtree.org/release/v1.5.0/
+        #       Instead of adding rounding error to 0 weights, add it to the biggest weight (proportionally won't make as much of a difference)
         weight_diff <- 1 - sum_weights
         biggest_weight_row <- which(cxx_table$Weight == max(cxx_table$Weight))
         new_biggest_weight <- as.numeric(cxx_table$Weight[biggest_weight_row]) + weight_diff
@@ -646,8 +645,6 @@ extract.cat.frequencies <- function(iqtree_file){
       }
       # Reformat weights for nice output
       cxx_table$Weight <- format(as.numeric(cxx_table$Weight), digits = 4, scientific = FALSE)
-      # Check rates: output sum of weights
-      print(paste0("Weight sum post-check: ", sum(as.numeric(cxx_table$Weight))))
       # Paste the CXX parameters together into a single vector (to input into the MAST run)
       cxx_components <- paste0(cxx_table$Component, ":", cxx_table$Rate, ":", cxx_table$Weight)
       cxx_components <- gsub(" ", "", cxx_components)
