@@ -187,7 +187,6 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   trimmed_ml_tree_df$estimated_state_frequencies <- unlist(lapply(complete_iqtree_files, extract.state.frequencies))
   # Extract the CXX parameters and format them nicely
   trimmed_ml_tree_df$estimated_CXX_frequencies <- unlist(lapply(complete_iqtree_files, extract.cat.frequencies))
-  trimmed_ml_tree_df$estimated_CXX_frequencies <- gsub("1.0000", "1", trimmed_ml_tree_df$estimated_CXX_frequencies)
   
   # Update data frame to include maximum likelihood trees
   trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_op_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
@@ -195,9 +194,16 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   # Reorder by dataset, then matrix name, then best tree by BIC
   trimmed_ml_tree_df <- trimmed_ml_tree_df[order(trimmed_ml_tree_df$dataset, trimmed_ml_tree_df$matrix_name, trimmed_ml_tree_df$tree_BIC),]
   
+  # Add model class (Other, PMSF, CXX)
+  trimmed_ml_tree_df$model_class <- factor(trimmed_ml_tree_df$model_code,
+                                 levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", "LG_C60", "LG_C20", "C60", "C20", "LG4M", "EX_EHO",
+                                            "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
+                                            "mtZOA", "PMB", "CF4", "Poisson"),
+                                 labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
+  
   # Remove unwanted columns from the trimmed_ml_tree_df
-  trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "matrix_name", "sequence_format", "prefix", 
-                                              "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
+  trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_class", "matrix_name", "sequence_format",
+                                              "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
                                               "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
                                               "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
                                               "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
