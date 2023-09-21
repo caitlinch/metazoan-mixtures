@@ -634,19 +634,14 @@ extract.cat.frequencies <- function(iqtree_file){
       print(paste0("Weight sum raw: ", sum(cxx_table$Weight)))
       sum_weights <- sum(as.numeric(cxx_table$Weight))
       # Ensure sum of weights = 1
-      missing_weights = 1-sum_weights
-      zero_weights = which(cxx_table$Weight == 0)
-      if (length(zero_weights) > 0){
-        # Replace missing weights (i.e. weight = 0) so sum of weights = 1
-        fix_weights = missing_weights/length(zero_weights)
-        cxx_table$Weight[zero_weights] <- fix_weights
-      } else {
+      if (sum_weights != 1){
         # Add missing weights to biggest weight
         # Used to instead replace missing weights (i.e. weight = 0) so sum of weights = 1 (i.e if sum of weights = 0.95 and one component has weight 0, that component would be set to 0.05)
         # However, 0 weights are allowed in mixture models: see http://www.iqtree.org/release/v1.5.0/
         # Instead of adding rounding error to 0 weights, add it to the biggest weight (proportionally won't make as much of a difference)
+        weight_diff <- 1 - sum_weights
         biggest_weight_row <- which(cxx_table$Weight == max(cxx_table$Weight))
-        new_biggest_weight <- cxx_table$Weight[biggest_weight_row] + missing_weights
+        new_biggest_weight <- as.numeric(cxx_table$Weight[biggest_weight_row]) + weight_diff
         cxx_table$Weight[biggest_weight_row] <- new_biggest_weight
       }
       # Reformat weights for nice output
