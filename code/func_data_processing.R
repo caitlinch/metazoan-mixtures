@@ -231,24 +231,24 @@ extract.treefile <- function(tree_file){
 }  
 
 
-extract.branch.length.wrapper <- function(row_id, alignment_df, tree_directory, clade){
+extract.branch.length.wrapper <- function(row_id, alignment_df, tree_directory){
   ## Wrapper function for extract.branch.length
   
   # Extract row information
   row <- alignment_df[row_id,]
   # Call function
-  bl <- extract.branch.length(dataset = row$dataset, matrix_name = row$matrix_name, best_model = row$best_model,
-                              tree_directory = tree_directory, clade = clade)
+  bl <- extract.branch.length(dataset = row$dataset, matrix_name = row$matrix_name, model_code = row$model_code,
+                              tree_directory = tree_directory)
   # Return branch length
   return(bl)
 }
 
 
-extract.branch.length <- function(dataset, matrix_name, best_model, tree_directory, clade){
+extract.branch.length <- function(dataset, matrix_name, model_code, tree_directory){
   ## Function to extract branch length for either Ctenophora or Porifera clade
   # Find and open best tree for this dataset
   all_trees <- list.files(tree_directory)
-  row_tree_file <- grep(best_model, grep(matrix_name, grep(dataset, all_trees, value = T), value = T), value = T)
+  row_tree_file <- grep(paste0("\\.", model_code), grep(matrix_name, grep(dataset, all_trees, value = T), value = T), value = T)
   row_tree_file_path <- paste0(tree_directory, row_tree_file)
   raw_tree <- read.tree(row_tree_file_path)
   # Extract clades from tip labels
@@ -267,7 +267,9 @@ extract.branch.length <- function(dataset, matrix_name, best_model, tree_directo
   } else {
     # If single sponge species 
     ctenophora_branch <- which(tree$edge[,2] == which(tree$tip.label == ctenophora_species))
-    ctenophora_node <- tree$edge[ctenophora_branch, 1]
+    ctenophora_clade_depth <- tree$edge.length[ctenophora_branch]
+    # ctenophora_node_rootwise <- tree$edge[ctenophora_branch, 1] # extract rootwise node for Ctenophora taxa 
+    # ctenophora_node_tipwise <- tree$edge[ctenophora_branch, 2] # extract tipwise node for Ctenophora taxa 
     ctenophora_branch_length <- NA
   }
   # Get node, branch numbers and branch lengths for Porifera clade
@@ -279,15 +281,15 @@ extract.branch.length <- function(dataset, matrix_name, best_model, tree_directo
   } else {
     # If single sponge species 
     porifera_branch <- which(tree$edge[,2] == which(tree$tip.label == porifera_species))
-    porifera_node <- tree$edge[porifera_branch, 1]
+    porifera_clade_depth <- tree$edge.length[porifera_branch]
+    # porifera_node_rootwise <- tree$edge[ctenophora_branch, 1] # extract rootwise node for Porifera taxa 
+    # porifera_node_tipwise <- tree$edge[ctenophora_branch, 2] # extract tipwise node for Porifera taxa 
     porifera_branch_length <- NA
   }
   # Return requested branch lengths
-  if (clade == "Porifera"){
-    return(porifera_branch_length)
-  } else if (clade == "Ctenophora"){
-    return(ctenophora_branch_length)
-  }
+  output_vector <- c(ctenophora_branch_length, ctenophora_clade_depth, porifera_branch_length, porifera_clade_depth)
+  names(output_vector) <- c("ctenophora_clade_branch_length", "ctenophora_clade_depth", "porifera_clade_branch_length", "porifera_clade_depth")
+  return(output_vector)
 }
 
 
