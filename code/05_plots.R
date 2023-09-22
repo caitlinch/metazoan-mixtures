@@ -36,11 +36,13 @@ source(paste0(repo_dir,"code/func_data_processing.R"))
 # Specify colour palettes (some of these are unused)
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
+metazoan_clade_palette <- c(Bilateria = "#CC79A7", Cnidaria = "#009E73", Ctenophora = "#56B4E9", Porifera = "#E69F00", Outgroup = "#999999")
 tree2_palette <- c("#F0F921FF", "#0D0887FF")
 tree5_palette <- c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")
 tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
 tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
 tree2_tonal <- c("#bdd7e7", "#2171b5")
+
 
 # List all files
 all_files <- list.files(results_dir, recursive = TRUE)
@@ -140,12 +142,13 @@ al_df <- al_df[, c("dataset", "dataset_label", "matrix_name", "model_class", "mo
 # Save this exploratory analysis dataframe
 al_df_file_path <- paste0(results_dir, "04_02_exploratory_data_analysis_branch_lengths.csv")
 write.csv(al_df, file = al_df_file_path, row.names = FALSE)
-# Create labeller function
-var_labs <- c("Number of sites", "Proportion of\nconstant sites", "Proportion of\ninvariant sites", "Proportion of\ninformative sites")
-names(var_labs) = c("num_sites", "proportion_constant_sites", "proportion_invariant_sites", "proportion_informative_sites")
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
 ### Plot 1: Percent of trees with Ctenophora sister against number of sites ###
+# Create labeller function
+var_labs <- c("Number of sites", "Proportion of\nconstant sites", "Proportion of\ninvariant sites", "Proportion of\ninformative sites")
+names(var_labs) = c("num_sites", "proportion_constant_sites", "proportion_invariant_sites", "proportion_informative_sites")
+# Create plot
 plot_df <- melt(al_df, 
                 id.vars = c("ID", "best_model", "num_taxa", "num_sites", "percent_CTEN_sister"),
                 measure.vars = c("num_sites", "proportion_invariant_sites", "proportion_informative_sites") )
@@ -203,37 +206,63 @@ p_path <- paste0(plot_dir, "exploratory_NumSites_CtenophoraCnidaria-monophyletic
 ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
 ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
 
-### Plot 4: Percent of trees with Ctenophora sister against length of Ctenophora branch lengths ###
+### Plot 4: Percent of trees with Ctenophora sister against length of branch to Ctenophora or Porifera clades ###
+# Create labeller function
+var_labs <- c("Ctenophora", "Porifera")
+names(var_labs) = c("ctenophora_clade_branch_length", "porifera_clade_branch_length")
+# Create palette
+var_palette <- c(metazoan_clade_palette["Ctenophora"], metazoan_clade_palette["Porifera"])
+names(var_palette) <- c("ctenophora_clade_branch_length", "porifera_clade_branch_length")
+# Create plot
 plot_df <- melt(al_df, 
-                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "ctenophora_branch_length"),
-                measure.vars = c("percent_CTEN_sister") )
-ggplot(data = plot_df, aes(x = ctenophora_branch_length, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
-  scale_x_continuous(name = "Length of branch to Ctenophora clade", breaks = seq(0,0.80,0.1), minor_breaks = seq(0,0.80,0.05)) +
-  theme_bw()
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "percent_CTEN_sister", "percent_PORI_monophyletic", "percent_CTEN_CNID_monophyletic"),
+                measure.vars = c("ctenophora_clade_branch_length", "porifera_clade_branch_length") )
+p <- ggplot(data = plot_df, aes(x = value, y = percent_CTEN_sister, color = variable)) +
+  facet_wrap(variable~., labeller = labeller(variable = var_labs)) +
+  geom_point(size = 3, alpha = 0.6) +
+  labs(title = "Length of branch leading to Metazoan clades") +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
+  scale_x_continuous(name = "Branch length (subs/site)") +
+  scale_colour_manual(values = var_palette, guide = "none") +
+  theme_bw() +
+  theme(plot.title = element_text(size = 25, hjust = 0.5, margin = margin(t = 15, r = 0, b = 20, l = 0)),
+        axis.title.x = element_text(size = 20, margin = margin(t = 15, r = 0, b = 10, l = 0)),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20))
+p_path <- paste0(plot_dir, "exploratory_BranchLength_Ctenophora-sister.")
+ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
+ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
 
-### Plot 5: Percent of trees with Ctenophora sister against length of Porifera branch lengths ###
+### Plot 5: Percent of trees with Ctenophora sister against clade depth for Ctenophora or Porifera clades ###
+# Create labeller function
+var_labs <- c("Ctenophora", "Porifera")
+names(var_labs) = c("ctenophora_clade_depth", "porifera_clade_depth")
+# Create palette
+var_palette <- c(metazoan_clade_palette["Ctenophora"], metazoan_clade_palette["Porifera"])
+names(var_palette) <- c("ctenophora_clade_depth", "porifera_clade_depth")
+# Create plot
 plot_df <- melt(al_df, 
-                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "porifera_branch_length"),
-                measure.vars = c("percent_CTEN_sister") )
-# Number of sites
-ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
-  scale_x_continuous(name = "Length of branch to Porifera clade", breaks = seq(0,0.05,0.01), minor_breaks = seq(0,0.05,0.005)) +
-  theme_bw()
-
-### Plot 5: Percent of trees with Ctenophora sister length of Porifera branch lengths ###
-plot_df <- melt(al_df, 
-                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "porifera_branch_length"),
-                measure.vars = c("percent_CTEN_sister") )
-# Number of sites
-ggplot(data = plot_df, aes(x = porifera_branch_length, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
-  scale_x_continuous(name = "Length of branch to Porifera clade", breaks = seq(0,0.05,0.01), minor_breaks = seq(0,0.05,0.005)) +
-  theme_bw()
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "percent_CTEN_sister", "percent_PORI_monophyletic", "percent_CTEN_CNID_monophyletic"),
+                measure.vars = c("ctenophora_clade_depth", "porifera_clade_depth") )
+p <- ggplot(data = plot_df, aes(x = value, y = percent_CTEN_sister, color = variable)) +
+  facet_wrap(variable~., labeller = labeller(variable = var_labs)) +
+  geom_point(size = 3, alpha = 0.6) +
+  labs(title = "Depth of Metazoan clades") +
+  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,100)) +
+  scale_x_continuous(name = "Clade depth (subs/site)\nCalculated from max. branching.times") +
+  scale_colour_manual(values = var_palette, guide = "none") +
+  theme_bw() +
+  theme(plot.title = element_text(size = 25, hjust = 0.5, margin = margin(t = 15, r = 0, b = 20, l = 0)),
+        axis.title.x = element_text(size = 20, margin = margin(t = 15, r = 0, b = 10, l = 0)),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20))
+p_path <- paste0(plot_dir, "exploratory_CladeDepth_Ctenophora-sister.")
+ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
+ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
 
 
 
