@@ -96,52 +96,56 @@ hyp5_plot <- color.clades.plot(trees[[5]], tip_labels = metazoan_clade_labs, col
 
 #### 4. Exploratory plots ####
 # Open the summary alignment details and the summary topology results
-al_df <- read.csv(paste0(results_dir, grep("summary_alignment_details", all_files, value = T)), stringsAsFactors = FALSE)
-al_df$matrix_name[which(al_df$dataset == "Whelan2015")] <- "Dataset10"
-topo_df <-read.csv(paste0(results_dir, grep("summary_ML_tree_topology", all_files, value = T)), stringsAsFactors = FALSE)
-topo_df$ID <- paste0(topo_df$dataset, ".", topo_df$matrix_name)
-al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name)
-al_df_row_order <- match(topo_df$ID, al_df$ID)[which(!is.na(match(topo_df$ID, al_df$ID)))]
-al_df <- al_df[al_df_row_order, ]
-# Make a df for plotting
-al_df$percent_CTEN_sister <- topo_df$percent_CTEN_sister
-al_df$percent_PORI_sister <- topo_df$percent_PORI_sister
-al_df$percent_CTEN_PORI_sister <- topo_df$`percent_CTEN.PORI_sister`
-al_df$percent_Radiata_sister <- topo_df$percent_Radiata_sister
-al_df$percent_PORI_monophyletic <- topo_df$percent_PORI_monophyletic
-al_df$percent_PORI_paraphyletic <- topo_df$percent_PORI_paraphyletic
-al_df$percent_PORI_one_taxon <- topo_df$percent_PORI_one_taxon
-al_df$percent_CTEN_CNID_monophyletic <- topo_df$percent_CTEN.CNID_monophyletic
-al_df$percent_CTEN_CNID_not_monophyletic <- topo_df$percent_CTEN.CNID_not_monophyletic
-al_df$dataset_label <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011", "Nosenko2013 non-ribo",
-                         "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
-                         "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
-# Replicate each row of the al_df three times
-al_df <- al_df %>% slice(rep(1:n(), each = 3))
-# Open the best_model df to copy the combinations of alignment and model
-best_model_df <- read.csv(paste0(results_dir, grep("MAST_parameters.csv", all_files, value = T)), stringsAsFactors = FALSE)
-best_model_df$matrix_name[which(best_model_df$dataset == "Whelan2015")] <- "Dataset10"
-# Order al_df to match the best_model df
-best_model_df <- best_model_df[order(best_model_df$dataset, best_model_df$matrix_name, best_model_df$model_class), ]
-al_df <- al_df[order(al_df$dataset, al_df$matrix_name), ]
-# Add a column for best model, model code and model class
-al_df$model_class <- best_model_df$model_class
-al_df$model_code <- best_model_df$model_code
-al_df$best_model <- gsub("'", "", best_model_df$best_model)
-al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name, ".", al_df$model_code)
-# Extract branch a and branch b lengths
-bl_df <- as.data.frame(do.call(rbind, (lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir))))
-al_df <- cbind(al_df, bl_df)
-# Reorder al_df 
-al_df <- al_df[, c("dataset", "dataset_label", "matrix_name", "model_class", "model_code", "best_model", "ID", "sequence_format", 
-                   "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", "number_invariant_sites",
-                   "proportion_invariant_sites", "number_informative_sites", "proportion_informative_sites", "percent_CTEN_sister",
-                   "percent_PORI_sister", "percent_CTEN_PORI_sister", "percent_Radiata_sister", "percent_PORI_monophyletic",
-                   "percent_PORI_paraphyletic", "percent_PORI_one_taxon", "percent_CTEN_CNID_monophyletic", "percent_CTEN_CNID_not_monophyletic",
-                   "ctenophora_clade_branch_length", "ctenophora_clade_depth", "porifera_clade_branch_length", "porifera_clade_depth")]
-# Save this exploratory analysis dataframe
 al_df_file_path <- paste0(results_dir, "04_02_exploratory_data_analysis_branch_lengths.csv")
-write.csv(al_df, file = al_df_file_path, row.names = FALSE)
+if (file.exists(al_df_file_path) == TRUE){
+  al_df <- read.csv(al_df_file_path, stringsAsFactors = FALSE)
+} else {
+  al_df <- read.csv(paste0(results_dir, grep("summary_alignment_details", all_files, value = T)), stringsAsFactors = FALSE)
+  al_df$matrix_name[which(al_df$dataset == "Whelan2015")] <- "Dataset10"
+  topo_df <-read.csv(paste0(results_dir, grep("summary_ML_tree_topology", all_files, value = T)), stringsAsFactors = FALSE)
+  topo_df$ID <- paste0(topo_df$dataset, ".", topo_df$matrix_name)
+  al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name)
+  al_df_row_order <- match(topo_df$ID, al_df$ID)[which(!is.na(match(topo_df$ID, al_df$ID)))]
+  al_df <- al_df[al_df_row_order, ]
+  # Make a df for plotting
+  al_df$percent_CTEN_sister <- topo_df$percent_CTEN_sister
+  al_df$percent_PORI_sister <- topo_df$percent_PORI_sister
+  al_df$percent_CTEN_PORI_sister <- topo_df$`percent_CTEN.PORI_sister`
+  al_df$percent_Radiata_sister <- topo_df$percent_Radiata_sister
+  al_df$percent_PORI_monophyletic <- topo_df$percent_PORI_monophyletic
+  al_df$percent_PORI_paraphyletic <- topo_df$percent_PORI_paraphyletic
+  al_df$percent_PORI_one_taxon <- topo_df$percent_PORI_one_taxon
+  al_df$percent_CTEN_CNID_monophyletic <- topo_df$percent_CTEN.CNID_monophyletic
+  al_df$percent_CTEN_CNID_not_monophyletic <- topo_df$percent_CTEN.CNID_not_monophyletic
+  al_df$dataset_label <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011", "Nosenko2013 non-ribo",
+                           "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
+                           "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
+  # Replicate each row of the al_df three times
+  al_df <- al_df %>% slice(rep(1:n(), each = 3))
+  # Open the best_model df to copy the combinations of alignment and model
+  best_model_df <- read.csv(paste0(results_dir, grep("MAST_parameters.csv", all_files, value = T)), stringsAsFactors = FALSE)
+  best_model_df$matrix_name[which(best_model_df$dataset == "Whelan2015")] <- "Dataset10"
+  # Order al_df to match the best_model df
+  best_model_df <- best_model_df[order(best_model_df$dataset, best_model_df$matrix_name, best_model_df$model_class), ]
+  al_df <- al_df[order(al_df$dataset, al_df$matrix_name), ]
+  # Add a column for best model, model code and model class
+  al_df$model_class <- best_model_df$model_class
+  al_df$model_code <- best_model_df$model_code
+  al_df$best_model <- gsub("'", "", best_model_df$best_model)
+  al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name, ".", al_df$model_code)
+  # Extract branch a and branch b lengths
+  bl_df <- as.data.frame(do.call(rbind, (lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir))))
+  al_df <- cbind(al_df, bl_df)
+  # Reorder al_df 
+  al_df <- al_df[, c("dataset", "dataset_label", "matrix_name", "model_class", "model_code", "best_model", "ID", "sequence_format", 
+                     "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", "number_invariant_sites",
+                     "proportion_invariant_sites", "number_informative_sites", "proportion_informative_sites", "percent_CTEN_sister",
+                     "percent_PORI_sister", "percent_CTEN_PORI_sister", "percent_Radiata_sister", "percent_PORI_monophyletic",
+                     "percent_PORI_paraphyletic", "percent_PORI_one_taxon", "percent_CTEN_CNID_monophyletic", "percent_CTEN_CNID_not_monophyletic",
+                     "ctenophora_clade_branch_length", "ctenophora_clade_depth", "porifera_clade_branch_length", "porifera_clade_depth")]
+  # Save this exploratory analysis dataframe
+  write.csv(al_df, file = al_df_file_path, row.names = FALSE)
+}
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
 ### Plot 1: Percent of trees with Ctenophora sister against number of sites ###
@@ -166,7 +170,6 @@ p <- ggplot(data = plot_df, aes(x = value, y = percent_CTEN_sister)) +
 p_path <- paste0(plot_dir, "exploratory_NumSites_Ctenophora-sister.")
 ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
 ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
-
 
 ### Plot 2: Percent of trees with monophyletic Porifer against number of sites ###
 plot_df <- melt(al_df, 
