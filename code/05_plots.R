@@ -27,6 +27,7 @@ library(ggtree)
 library(patchwork)
 library(reshape2)
 library(readxl)
+library(dplyr)
 
 # Open function files
 source(paste0(repo_dir,"code/func_plotting.R"))
@@ -110,16 +111,32 @@ al_df$percent_PORI_paraphyletic <- topo_df$percent_PORI_paraphyletic
 al_df$percent_PORI_one_taxon <- topo_df$percent_PORI_one_taxon
 al_df$percent_CTEN_CNID_monophyletic <- topo_df$percent_CTEN.CNID_monophyletic
 al_df$percent_CTEN_CNID_not_monophyletic <- topo_df$percent_CTEN.CNID_not_monophyletic
-al_df$ID <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011", "Nosenko2013 non-ribo",
-              "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
-              "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
-al_df$best_model <- c("PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60",
-                      "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_LG_C60",
-                      "PMSF_C60", "PMSF_C60", "PMSF_C60", "PMSF_C60")
+al_df$dataset_label <- c("Dunn2008", "Philippe2009", "Pick2010", "Philippe2011", "Nosenko2013 non-ribo",
+                         "Nosenko2013 ribo", "Ryan2013", "Moroz2014", "Borowiec2015", "Chang2015",
+                         "Whelan2015", "Whelan2017", "Laumer2018", "Laumer2019")
+# Replicate each row of the al_df three times
+al_df <- al_df %>% slice(rep(1:n(), each = 3))
+# Open the best_model df to copy the combinations of alignment and model
+best_model_df <- read.csv(paste0(results_dir, grep("MAST_parameters.csv", all_files, value = T)), stringsAsFactors = FALSE)
+best_model_df$matrix_name[which(best_model_df$dataset == "Whelan2015")] <- "Dataset10"
+# Order al_df to match the best_model df
+best_model_df <- best_model_df[order(best_model_df$dataset, best_model_df$matrix_name, best_model_df$model_class), ]
+al_df <- al_df[order(al_df$dataset, al_df$matrix_name), ]
+# Add a column for best model, model code and model class
+al_df$model_class <- best_model_df$model_class
+al_df$model_code <- best_model_df$model_code
+al_df$best_model <- gsub("'", "", best_model_df$best_model)
+al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name, ".", al_df$model_code)
 # Extract branch a and branch b lengths
 al_df$ctenophora_branch_length <- unlist(lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Ctenophora"))
 al_df$porifera_branch_length <- unlist(lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Porifera"))
-
+# Reorder al_df 
+al_df <- al_df[, c("dataset", "dataset_label", "matrix_name", "model_class", "model_code", "best_model", "ID", "sequence_format", 
+                   "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", "number_invariant_sites",
+                   "proportion_invariant_sites", "number_informative_sites", "proportion_informative_sites", "percent_CTEN_sister",
+                   "percent_PORI_sister", "percent_CTEN_PORI_sister", "percent_Radiata_sister", "percent_PORI_monophyletic",
+                   "percent_PORI_paraphyletic", "percent_PORI_one_taxon", "percent_CTEN_CNID_monophyletic", "percent_CTEN_CNID_not_monophyletic",
+                   "ctenophora_branch_length", "porifera_branch_length")]
 
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
@@ -380,14 +397,14 @@ topo_long$dataset_label <- factor(topo_long$matrix_name,
                                              "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                   ordered = TRUE)
 topo_long$dataset_label_singleLine <- factor(topo_long$matrix_name,
-                                  levels = c("Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
-                                             "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
-                                             "REA_EST_includingXenoturbella", "ED3d", "Best108", "Chang_AA",  "Dataset10",
-                                             "Metazoa_Choano_RCFV_strict", "Tplx_phylo_d1", "nonbilateria_MARE_BMGE"),
-                                  labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013 non-ribosomal", 
-                                             "Nosenko 2013 ribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
-                                             "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
-                                  ordered = TRUE)
+                                             levels = c("Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
+                                                        "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
+                                                        "REA_EST_includingXenoturbella", "ED3d", "Best108", "Chang_AA",  "Dataset10",
+                                                        "Metazoa_Choano_RCFV_strict", "Tplx_phylo_d1", "nonbilateria_MARE_BMGE"),
+                                             labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013 non-ribosomal", 
+                                                        "Nosenko 2013 ribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
+                                                        "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
+                                             ordered = TRUE)
 # Plot with barchart for each dataset - plot with legend
 bc <- ggplot(topo_long, aes(x = value, fill = value)) +
   geom_bar() +
