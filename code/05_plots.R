@@ -140,83 +140,68 @@ al_df <- al_df[, c("dataset", "dataset_label", "matrix_name", "model_class", "mo
 # Save this exploratory analysis dataframe
 al_df_file_path <- paste0(results_dir, "04_02_exploratory_data_analysis_branch_lengths.csv")
 write.csv(al_df, file = al_df_file_path, row.names = FALSE)
+# Create labeller function
+var_labs <- c("Number of sites", "Proportion of\nconstant sites", "Proportion of\ninvariant sites", "Proportion of\ninformative sites")
+names(var_labs) = c("num_sites", "proportion_constant_sites", "proportion_invariant_sites", "proportion_informative_sites")
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
 ### Plot 1: Percent of trees with Ctenophora sister against number of sites ###
 plot_df <- melt(al_df, 
-                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
-                            "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
-                            "proportion_informative_sites"),
-                measure.vars = c("percent_CTEN_sister") )
-# Number of sites
-ggplot(data = plot_df, aes(x = num_sites, y = value)) +
-  geom_point() +
-  geom_smooth() +
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "percent_CTEN_sister"),
+                measure.vars = c("num_sites", "proportion_invariant_sites", "proportion_informative_sites") )
+p <- ggplot(data = plot_df, aes(x = value, y = percent_CTEN_sister)) +
+  facet_grid(.~variable, scales = "free_x", labeller = labeller(variable = var_labs)) +
+  geom_point(size = 3, color = "darkblue", alpha = 0.4) +
   scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
-  theme_bw()
-# Number of constant sites
-ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
-  theme_bw()
-# Number of informative sites
-ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
-  theme_bw()
+  scale_x_continuous(name = "Number of sites / Proportion of sites") +
+  theme_bw() +
+  theme(axis.title.x = element_text(size = 20, margin = margin(t = 15, r = 0, b = 10, l = 0)),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20))
+p_path <- paste0(plot_dir, "exploratory_NumSites_Ctenophora-sister.")
+ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
+ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
+
 
 ### Plot 2: Percent of trees with monophyletic Porifer against number of sites ###
 plot_df <- melt(al_df, 
-                id.vars = c("ID", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
-                            "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
-                            "proportion_informative_sites"),
-                measure.vars = c("percent_PORI_monophyletic") )
-# Number of sites
-ggplot(data = plot_df, aes(x = num_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
-  theme_bw()
-# Number of constant sites
-ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
-  theme_bw()
-# Number of informative sites
-ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
-  theme_bw()
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "percent_PORI_sister"),
+                measure.vars = c("num_sites", "proportion_invariant_sites", "proportion_informative_sites") )
+p <- ggplot(data = plot_df, aes(x = value, y = percent_PORI_sister)) +
+  facet_grid(.~variable, scales = "free_x", labeller = labeller(variable = var_labs)) +
+  geom_point(size = 3, color = "darkblue", alpha = 0.4) +
+  scale_y_continuous(name ="Percentage of trees with Porifera-sister", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Number of sites / Proportion of sites") +
+  theme_bw() +
+  theme(axis.title.x = element_text(size = 20, margin = margin(t = 15, r = 0, b = 10, l = 0)),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20))
+p_path <- paste0(plot_dir, "exploratory_NumSites_Porifera-sister.")
+ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
+ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
 
 ### Plot 3: Percent of trees with Cten/Cnid paraphyletic against number of sites ###
 plot_df <- melt(al_df, 
-                id.vars = c("ID", "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", 
-                            "number_invariant_sites", "proportion_invariant_sites", "number_informative_sites",
-                            "proportion_informative_sites"),
-                measure.vars = c("percent_CTEN_CNID_not_monophyletic") )
-# Number of sites
-ggplot(data = plot_df, aes(x = num_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Number of sites", breaks = seq(0,90000,15000), minor_breaks = seq(0,90000,5000)) +
-  theme_bw()
-# Number of constant sites
-ggplot(data = plot_df, aes(x = proportion_constant_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenophora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Proportion of constant sites", breaks = seq(0.1,0.35,0.05), limits = c(0.1,0.35)) +
-  theme_bw()
-# Number of informative sites
-ggplot(data = plot_df, aes(x = proportion_informative_sites, y = value)) +
-  geom_point() +
-  scale_y_continuous(name ="Percentage of trees with Ctenopora-sister", breaks = seq(0,100,10), limits = c(0,110)) +
-  scale_x_continuous(name = "Proportion of informative sites", breaks = seq(0.5,0.8,0.05)) +
-  theme_bw()
+                id.vars = c("ID", "best_model", "num_taxa", "num_sites", "percent_CTEN_CNID_monophyletic"),
+                measure.vars = c("num_sites", "proportion_invariant_sites", "proportion_informative_sites") )
+p <- ggplot(data = plot_df, aes(x = value, y = percent_CTEN_CNID_monophyletic)) +
+  facet_grid(.~variable, scales = "free_x", labeller = labeller(variable = var_labs)) +
+  geom_point(size = 3, color = "darkblue", alpha = 0.4) +
+  scale_y_continuous(name ="Percentage of trees with\nmonophyletic (Ctenophora+Cnidaria)", breaks = seq(0,100,10), limits = c(0,110)) +
+  scale_x_continuous(name = "Number of sites / Proportion of sites") +
+  theme_bw() +
+  theme(axis.title.x = element_text(size = 20, margin = margin(t = 15, r = 0, b = 10, l = 0)),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20))
+p_path <- paste0(plot_dir, "exploratory_NumSites_CtenophoraCnidaria-monophyletic.")
+ggsave(filename = paste0(p_path, "png"), plot = p, device = "png")
+ggsave(filename = paste0(p_path, "pdf"), plot = p, device = "pdf")
 
 ### Plot 4: Percent of trees with Ctenophora sister against length of Ctenophora branch lengths ###
 plot_df <- melt(al_df, 
