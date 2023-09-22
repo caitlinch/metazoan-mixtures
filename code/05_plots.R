@@ -382,22 +382,25 @@ elw_long$dataset_label <- factor(elw_long$matrix,
                                             "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                  ordered = TRUE)
 # Plot with boxplot for each dataset
-bp <- ggplot(elw_long, aes(x = var_label, y = value, fill = var_label)) +
-  geom_boxplot() +
+bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
+  geom_point(size = 3, alpha = 0.6) +
+  geom_line(alpha = 0.6) +
   facet_wrap(~dataset_label) +
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-  scale_fill_manual(name = "Hypothesis tree", labels = c("Ctenophora-sister", "Porifera-sister"), values = tree2_tonal, guide = "none") +
+  scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = c("#d4b9da", "#df65b0", "#980043")) +
   labs(title = "Expected likelihood weight") +
   theme_bw() +
   theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 20, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+        axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
         axis.text.y = element_text(size = 15),
         strip.text = element_text(size = 20),
-        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)) )
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15) )
 bp_file <- paste0(plot_dir, "expected_likelihood_weights_2tree.")
-ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 10, height = 14, units = "in")
-ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 10, height = 14, units = "in")
+ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
+ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
 
 
 
