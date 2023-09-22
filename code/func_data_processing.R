@@ -256,34 +256,35 @@ extract.branch.length <- function(dataset, matrix_name, model_code, tree_directo
   ctenophora_species <- grep("ctenophora", raw_tree$tip.label, value = T, ignore.case = T)
   porifera_species <- grep("porifera", raw_tree$tip.label, value = T, ignore.case = T)
   # Root at outgroup
-  og_tips <- raw_tree$tip.label
   tree <- root(raw_tree, outgroup = outgroup_species, resolve.root = T)
   # Get node, branch numbers and branch lengths for Ctenophora clade
   if (length(ctenophora_species) > 1){
-    # If multiple sponge species
+    # If multiple ctenophore taxa
     ctenophora_node <- getMRCA(tree, ctenophora_species)
+    # ctenophora_node_rootwise <- tree$edge[ctenophora_branch, 1] # extract rootwise node for Ctenophora taxa 
+    # ctenophora_node_tipwise <- tree$edge[ctenophora_branch, 2] # extract tipwise node for Ctenophora taxa 
+    ctenophora_clade_depth <- max(branching.times(extract.clade(tree, ctenophora_node)))
     ctenophora_branch <- which(tree$edge[,2] == ctenophora_node)
     ctenophora_branch_length <- tree$edge.length[ctenophora_branch]
   } else {
-    # If single sponge species 
+    # If single ctenophore taxon 
     ctenophora_branch <- which(tree$edge[,2] == which(tree$tip.label == ctenophora_species))
     ctenophora_clade_depth <- tree$edge.length[ctenophora_branch]
-    # ctenophora_node_rootwise <- tree$edge[ctenophora_branch, 1] # extract rootwise node for Ctenophora taxa 
-    # ctenophora_node_tipwise <- tree$edge[ctenophora_branch, 2] # extract tipwise node for Ctenophora taxa 
     ctenophora_branch_length <- NA
   }
   # Get node, branch numbers and branch lengths for Porifera clade
   if (length(porifera_species) > 1){
-    # If multiple sponge species
+    # If multiple sponge taxa
     porifera_node <- getMRCA(tree, porifera_species)
+    # porifera_node_rootwise <- tree$edge[ctenophora_branch, 1] # extract rootwise node for Porifera taxa 
+    # porifera_node_tipwise <- tree$edge[ctenophora_branch, 2] # extract tipwise node for Porifera taxa 
+    porifera_clade_depth <- max(branching.times(extract.clade(tree, porifera_node)))
     porifera_branch <- which(tree$edge[,2] == porifera_node)
     porifera_branch_length <- tree$edge.length[porifera_branch]
   } else {
-    # If single sponge species 
+    # If single sponge taxon 
     porifera_branch <- which(tree$edge[,2] == which(tree$tip.label == porifera_species))
     porifera_clade_depth <- tree$edge.length[porifera_branch]
-    # porifera_node_rootwise <- tree$edge[ctenophora_branch, 1] # extract rootwise node for Porifera taxa 
-    # porifera_node_tipwise <- tree$edge[ctenophora_branch, 2] # extract tipwise node for Porifera taxa 
     porifera_branch_length <- NA
   }
   # Return requested branch lengths
