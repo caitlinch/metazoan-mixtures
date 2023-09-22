@@ -128,16 +128,18 @@ al_df$model_code <- best_model_df$model_code
 al_df$best_model <- gsub("'", "", best_model_df$best_model)
 al_df$ID <- paste0(al_df$dataset, ".", al_df$matrix_name, ".", al_df$model_code)
 # Extract branch a and branch b lengths
-al_df$ctenophora_branch_length <- unlist(lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Ctenophora"))
-al_df$porifera_branch_length <- unlist(lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir, clade = "Porifera"))
+bl_df <- as.data.frame(do.call(rbind, (lapply(1:nrow(al_df), extract.branch.length.wrapper, alignment_df = al_df, tree_directory = tree_dir))))
+al_df <- cbind(al_df, bl_df)
 # Reorder al_df 
 al_df <- al_df[, c("dataset", "dataset_label", "matrix_name", "model_class", "model_code", "best_model", "ID", "sequence_format", 
                    "num_taxa", "num_sites", "number_constant_sites", "proportion_constant_sites", "number_invariant_sites",
                    "proportion_invariant_sites", "number_informative_sites", "proportion_informative_sites", "percent_CTEN_sister",
                    "percent_PORI_sister", "percent_CTEN_PORI_sister", "percent_Radiata_sister", "percent_PORI_monophyletic",
                    "percent_PORI_paraphyletic", "percent_PORI_one_taxon", "percent_CTEN_CNID_monophyletic", "percent_CTEN_CNID_not_monophyletic",
-                   "ctenophora_branch_length", "porifera_branch_length")]
-
+                   "ctenophora_clade_branch_length", "ctenophora_clade_depth", "porifera_clade_branch_length", "porifera_clade_depth")]
+# Save this exploratory analysis dataframe
+al_df_file_path <- paste0(results_dir, "04_02_exploratory_data_analysis_branch_lengths.csv")
+write.csv(al_df, file = al_df_file_path, row.names = FALSE)
 
 ### Plot number of sites/number of informative sites against proportion of trees with each topology ###
 ### Plot 1: Percent of trees with Ctenophora sister against number of sites ###
