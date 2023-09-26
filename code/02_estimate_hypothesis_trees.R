@@ -198,10 +198,10 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   
   # Add model class (Other, PMSF, CXX)
   trimmed_ml_tree_df$model_class <- factor(trimmed_ml_tree_df$model_code,
-                                 levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", "LG_C60", "LG_C20", "C60", "C20", "LG4M", "EX_EHO",
-                                            "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
-                                            "mtZOA", "PMB", "CF4", "Poisson"),
-                                 labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
+                                           levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", "LG_C60", "LG_C20", "C60", "C20", "LG4M", "EX_EHO",
+                                                      "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
+                                                      "mtZOA", "PMB", "CF4", "Poisson"),
+                                           labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
   
   # Remove unwanted columns from the trimmed_ml_tree_df
   trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_class", "matrix_name", "sequence_format",
@@ -284,33 +284,15 @@ if (control_parameters$prepare.constraint.trees == TRUE){
                                                       "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
                                                       "mtZOA", "PMB", "CF4", "Poisson"),
                                            labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
-  # Rearrange columns
-  selected_models_df <- selected_models_df[,c("dataset", "model_class", "model_code", "matrix_name", "sequence_format",
-                                              "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
-                                              "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
-                                              "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
-                                              "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
-                                              "estimated_CXX_frequencies")]
+  
   # Add the two substitution models to the csv
   # Nosenko 2013 non-ribo C60 has errors - replace with Nosenko 2013 non-ribo LG+C60
   selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Nosenko2013" & 
                                                                              trimmed_ml_tree_df$matrix_name == "nonribosomal_9187_smatrix" & 
-                                                                             trimmed_ml_tree_df$model_code == "LG_C60"), 
-                                                                     c("dataset", "model_class", "model_code", "matrix_name", "sequence_format",
-                                                                       "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
-                                                                       "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
-                                                                       "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
-                                                                       "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
-                                                                       "estimated_CXX_frequencies")])
+                                                                             trimmed_ml_tree_df$model_code == "LG_C60"), ])
   selected_models_df <- rbind(selected_models_df, trimmed_ml_tree_df[which(trimmed_ml_tree_df$dataset == "Laumer2018" & 
                                                                              trimmed_ml_tree_df$matrix_name == "Tplx_phylo_d1" & 
-                                                                             trimmed_ml_tree_df$model_code == "LG_C20"), 
-                                                                     c("dataset", "model_class", "model_code", "matrix_name", "sequence_format",
-                                                                       "prefix", "best_model", "best_model_LogL", "best_model_BIC", "best_model_wBIC",
-                                                                       "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
-                                                                       "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
-                                                                       "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
-                                                                       "estimated_CXX_frequencies")])
+                                                                             trimmed_ml_tree_df$model_code == "LG_C20"), ])
   
   # Save the dataframe of best models
   write.table(selected_models_df, file = output_file_paths[6], row.names = FALSE, sep = "\t")
@@ -359,7 +341,7 @@ if (prepare.hypothesis.trees == TRUE){
   names(pmsf_model) <- c("PMSF_LG_C60", "PMSF_LG_C20", "PMSF_C60", "PMSF_C20")
   pmsf_rows <- which(grepl("PMSF", c_te_df$model_code))
   c_te_df$best_model[pmsf_rows] <- paste0(unlist(lapply(c_te_df$model_code[pmsf_rows], function(x){pmsf_model[x]})), 
-                                            ":", paste0(pmsf_op_dir, c_te_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
+                                          ":", paste0(pmsf_op_dir, c_te_df$prefix[pmsf_rows], ".ssfp.sitefreq"))
   
   # Prepare iqtree commands for each of the hypothesis trees
   c_te_df$iqtree2_call <- unlist(lapply(1:nrow(c_te_df), construct.hypothesis.tree.call, hyp_tree_info_df = c_te_df))

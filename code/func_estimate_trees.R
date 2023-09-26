@@ -191,8 +191,8 @@ determine.best.ML.model.per.class.wrapper <- function(row_id, completed_runs_df,
                                                  dataset_output_df = dataset_output_df))
   # Add a new column with the model class
   dataset_best_model_df$model_class <- names(model_classes)
-  # Reorder columns
-  dataset_best_model_df <- dataset_best_model_df[, c(1,3,2,21,4:20)]
+  # Return all columns
+  dataset_best_model_df <- dataset_best_model_df[,]
   
   # Return the best model(s) for the dataset
   return(dataset_best_model_df)
