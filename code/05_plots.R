@@ -307,7 +307,7 @@ bp <- ggplot(mast_long, aes(x = var_label, y = value, color = model_class, group
         plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
         legend.title = element_text(size = 20),
         legend.text = element_text(size = 15) )
-bp_file <- paste0(plot_dir, "MAST_tree_weights_2tree.")
+bp_file <- paste0(plot_dir, "mainfig_MAST_tree_weights_2tree.")
 ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
 ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
 
@@ -353,7 +353,7 @@ bp <- ggplot(au_long, aes(x = var_label, y = value, color = model_class, group =
         plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
         legend.title = element_text(size = 20),
         legend.text = element_text(size = 15) )
-bp_file <- paste0(plot_dir, "au_test_2tree.")
+bp_file <- paste0(plot_dir, "mainfig_au_test_2tree.")
 ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
 ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
 
@@ -398,13 +398,14 @@ bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group 
         plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
         legend.title = element_text(size = 20),
         legend.text = element_text(size = 15) )
-bp_file <- paste0(plot_dir, "expected_likelihood_weights_2tree.")
+bp_file <- paste0(plot_dir, "mainfig_expected_likelihood_weights_2tree.")
 ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
 ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
 
 
 
-#### 7. Plot bar charts of different tree topologies for each dataset ####
+#### 7. Summarise maximum likelihood topology tree results ####
+## Plot tree topology
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
 topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_files, value = TRUE), value = TRUE)
@@ -412,7 +413,7 @@ topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
 topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
 # Convert topology output to long format
 topo_long <- melt(topo_df,
-                  id.vars = c("dataset", "matrix_name", "model_code"),
+                  id.vars = c("dataset", "matrix_name", "model_code", "PORI_topology"),
                   measure.vars = c("sister_group"))
 topo_long$dataset_label <- factor(topo_long$matrix_name,
                                   levels = c("Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
@@ -432,10 +433,14 @@ topo_long$dataset_label_singleLine <- factor(topo_long$matrix_name,
                                                         "Nosenko 2013 ribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                         "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                              ordered = TRUE)
+topo_long$PORI_topology <- factor(topo_long$PORI_topology,
+                                  levels = c("One taxon", "Monophyletic", "Paraphyletic"),
+                                  labels = c("One taxon", "Monophyletic", "Paraphyletic"),
+                                  ordered = TRUE)
 # Plot with barchart for each dataset - one bar per dataset
 bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
   geom_bar() +
-  labs(title = "Maximum Likelihood Tree Topology") +
+  labs(title = "Maximum likelihood tree topology") +
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
   scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
@@ -452,4 +457,60 @@ bc_file <- paste0(plot_dir, "ML_topology_results_singleBar.")
 ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png")
 ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf")
 
+## Plot Porifera clade topology
+# Convert topology output to long format
+bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)) +
+  geom_bar() +
+  labs(title = "Porifera topology") +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+  scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 15, hjust = 1, vjust = 1, angle = 90),
+        axis.text.y = element_text(size = 15),
+        strip.text = element_text(size = 20),
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15))
+bc2_file <- paste0(plot_dir, "Porifera_topology_results_singleBar.")
+ggsave(filename = paste0(bc2_file, "png"), plot = bc2, device = "png")
+ggsave(filename = paste0(bc2_file, "pdf"), plot = bc2, device = "pdf")
+
+## Combined plots
+# Plot ML tree topology
+bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
+  geom_bar() +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+  scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 16, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        axis.text.x = element_text(size = 12, hjust = 1, vjust = 1, angle = 90),
+        axis.text.y = element_text(size = 12),
+        strip.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 12))
+# Plot Porifera clade topology
+bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)) +
+  geom_bar() +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+  scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 16, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        axis.text.x = element_text(size = 12, hjust = 1, vjust = 1, angle = 90),
+        axis.text.y = element_text(size = 12),
+        strip.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 12))
+# Combine into a quilt
+quilt <- (bc / bc2) + plot_annotation(tag_levels = "a", tag_suffix = ".") & theme(plot.tag = element_text(size = 20))
+# Save and output quilt
+quilt_file <- paste0(plot_dir, "mainfigure_combined_topology_results_singleBar.")
+ggsave(filename = paste0(quilt_file, "png"), plot = quilt, device = "png", units = "in", width = 8, height = 10)
+ggsave(filename = paste0(quilt_file, "pdf"), plot = quilt, device = "pdf", units = "in", width = 8, height = 10)
 
