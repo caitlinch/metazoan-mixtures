@@ -598,7 +598,7 @@ extract.state.frequencies <- function(iqtree_file){
 
 
 
-extract.cat.frequencies <- function(iqtree_file){
+extract.cat.frequencies <- function(iqtree_file, allow.zero.weights = TRUE){
   # Extract and return the CAT frequencies and rates
   
   # Open the iqtree file (if it exists)
@@ -632,19 +632,12 @@ extract.cat.frequencies <- function(iqtree_file){
       names(cxx_table) <- gsub(" ", "", split_lines[[1]])
       cxx_table$Rate <- as.numeric(cxx_table$Rate)
       cxx_table$Weight <- as.numeric(cxx_table$Weight)
-      # Check sum of weights
-      sum_weights <- sum(as.numeric(cxx_table$Weight))
-      # Ensure sum of weights = 1
-      if (sum_weights != 1){
-        # Add missing weights to biggest weight
-        #       I used to instead replace missing weights (i.e. weight = 0) so sum of weights = 1 
-        #       (i.e if sum of weights = 0.95 and one component has weight 0, that component would be set to 0.05)
-        #       However, 0 weights are allowed in mixture models: see http://www.iqtree.org/release/v1.5.0/
-        #       Instead of adding rounding error to 0 weights, add it to the biggest weight (proportionally won't make as much of a difference)
-        weight_diff <- 1 - sum_weights
-        biggest_weight_row <- which(cxx_table$Weight == max(cxx_table$Weight))
-        new_biggest_weight <- as.numeric(cxx_table$Weight[biggest_weight_row]) + weight_diff
-        cxx_table$Weight[biggest_weight_row] <- new_biggest_weight
+      # Replace 0 weights with miniumum weight (0.0001), if desired
+      if (allow.zero.weights == FALSE){
+        # Identify which rows have 0 weights
+        zero_weight_rows <- which(cxx_table$Weight == 0)
+        # Replace rows with 0 weights with minimum weight (0.0001)
+        cxx_table$Weight[zero_weight_rows] <- 0.0001
       }
       # Reformat weights for nice output
       cxx_table$Weight <- format(as.numeric(cxx_table$Weight), digits = 4, scientific = FALSE)

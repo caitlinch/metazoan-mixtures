@@ -186,7 +186,9 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   trimmed_ml_tree_df$estimated_gamma <- unlist(lapply(complete_iqtree_files, extract.gamma.values))
   trimmed_ml_tree_df$estimated_state_frequencies <- unlist(lapply(complete_iqtree_files, extract.state.frequencies))
   # Extract the CXX parameters and format them nicely
-  trimmed_ml_tree_df$estimated_CXX_frequencies <- unlist(lapply(complete_iqtree_files, extract.cat.frequencies))
+  trimmed_ml_tree_df$estimated_CXX_frequencies <- unlist(lapply(complete_iqtree_files, extract.cat.frequencies, allow.zero.weights = TRUE))
+  trimmed_ml_tree_df$estimated_CXX_frequencies_noZeroWeights <- unlist(lapply(complete_iqtree_files, extract.cat.frequencies, allow.zero.weights = FALSE))
+  trimmed_ml_tree_df$estimated_CXX_frequencies_identical <- trimmed_ml_tree_df$estimated_CXX_frequencies == trimmed_ml_tree_df$estimated_CXX_frequencies_noZeroWeights
   
   # Update data frame to include maximum likelihood trees
   trimmed_ml_tree_df$maximum_likelihood_tree <- unlist(lapply(paste0(ml_tree_op_dir, trimmed_ml_tree_df$ml_tree_file), extract.treefile))
@@ -207,7 +209,8 @@ if (control_parameters$extract.ML.tree.information == TRUE){
                                               "tree_LogL", "tree_UnconstrainedLogL", "tree_NumFreeParams", "tree_BIC",
                                               "tree_length", "tree_SumInternalBranch", "tree_PercentInternalBranch",
                                               "estimated_rates", "estimated_gamma", "estimated_state_frequencies", 
-                                              "estimated_CXX_frequencies", "maximum_likelihood_tree")]
+                                              "estimated_CXX_frequencies", "estimated_CXX_frequencies_noZeroWeights",
+                                              "estimated_CXX_frequencies_identical", "maximum_likelihood_tree")]
   # Save dataframe
   write.table(trimmed_ml_tree_df, file = output_file_paths[3], row.names = FALSE, sep = "\t")
   
