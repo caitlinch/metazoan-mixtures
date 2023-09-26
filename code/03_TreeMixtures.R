@@ -46,7 +46,7 @@ if (location == "local"){
   output_dir              <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   iqtree2                 <- "iqtree2"
-  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.5.hmmster-MacOSX/bin/iqtree"
+  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.4.hmmster-MacOSX/bin/iqtree"
   iqtree_num_threads      <- 3
 } else if (location == "rona"){
   ## File paths
@@ -124,7 +124,7 @@ if (file.exists(mast_parameter_path) == TRUE){
                                           unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
                                                         function(x){grep(x, list.files(hypothesis_tree_dir), value = T)})) )
   
-  ## Add the  file paths to the dataframe
+  ## Add the  file paths to the dataframe (without directory names)
   model_df$best_model_sitefreq_path <- basename(model_df$best_model_sitefreq_path)
   model_df$alignment_path <- basename(model_df$alignment_path)
   model_df$hypothesis_tree_path <- basename(model_df$hypothesis_tree_path)
@@ -150,16 +150,12 @@ if (file.exists(mast_parameter_path) == TRUE){
   # Update best model values that start with C60 - needs to have another model added to run properly in IQ-Tree
   #   Specify the Poisson model, as that's what underlies C60/C20 models
   model_df$best_model <- gsub("'C60", "'Poisson+C60", model_df$best_model)
-  
-  # Sort dataframe by model category
-  model_df <- model_df[order(model_df$model_class, model_df$dataset, model_df$matrix_name),]
-  rownames(model_df) <- 1:nrow(model_df)
+  model_df$best_model <- gsub("'C20", "'Poisson+C20", model_df$best_model)
+  model_df$best_model <- gsub("'", "", model_df$best_model) # Remove quotation marks from models
   
   # Add new column for MAST model (model to apply when using MAST)
   model_df$MAST_model <- model_df$best_model
-  model_df$MAST_model[model_df$model_class == "CXX"] <- model_df$estimated_CXX_frequencies[model_df$model_class == "CXX"]
-  # Remove quotation marks
-  model_df$MAST_model <- gsub("'", "", model_df$MAST_model)
+  model_df$MAST_model[model_df$model_class == "CXX"] <- model_df$estimated_CXX_frequencies_noZeroWeights[model_df$model_class == "CXX"]
   
   # Reorder by model class   
   model_df <- model_df[order(model_df$model_class, model_df$dataset, model_df$matrix_name),]
@@ -168,8 +164,9 @@ if (file.exists(mast_parameter_path) == TRUE){
   ## Sort and remove columns
   model_df <- model_df[, c("dataset", "model_class",  "model_code", "matrix_name", "prefix", "best_model", "MAST_model",
                            "sequence_format", "num_sites", "alignment_path",  "best_model_sitefreq_path", "hypothesis_tree_path",
-                           "estimated_rates", "estimated_gamma", "estimated_CXX_frequencies", "estimated_state_frequencies",
-                           "min_MAST_bl_from_alignment", "min_MAST_bl_arbitrary")]
+                           "estimated_rates", "estimated_gamma", "estimated_CXX_frequencies", "estimated_CXX_frequencies_noZeroWeights",
+                           "estimated_CXX_frequencies_identical", "estimated_state_frequencies", "min_MAST_bl_from_alignment", 
+                           "min_MAST_bl_arbitrary")]
   
   ## Write the dataframe
   write.csv(model_df, file = mast_parameter_path, row.names = FALSE)
