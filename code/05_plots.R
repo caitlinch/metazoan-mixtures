@@ -432,50 +432,6 @@ topo_long$dataset_label_singleLine <- factor(topo_long$matrix_name,
                                                         "Nosenko 2013 ribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                         "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                              ordered = TRUE)
-# Plot with barchart for each dataset - plot with legend
-bc <- ggplot(topo_long, aes(x = value, fill = value)) +
-  geom_bar() +
-  geom_hline(yintercept = 26, linetype = "dashed", color = "darkgrey") +
-  facet_wrap(~dataset_label) +
-  labs(title = "Maximum Likelihood Tree Topology") +
-  scale_x_discrete(name = "Tree topology") +
-  scale_y_continuous(name = "Number of trees", limits = c(0,27), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
-  scale_fill_viridis_d(name = "Hypothesis tree", option = "C") +
-  theme_bw() +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 15),
-        axis.ticks.x = element_blank(),
-        strip.text = element_text(size = 20),
-        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-        legend.title = element_text(size = 25),
-        legend.text = element_text(size = 20))
-bc_file <- paste0(plot_dir, "ML_topology_results_legend.")
-ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png")
-ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf")
-
-# Plot with barchart for each dataset - plot with x axis
-bc <- ggplot(topo_long, aes(x = value, fill = value)) +
-  geom_bar() +
-  geom_hline(yintercept = 26, linetype = "dashed", color = "darkgrey") +
-  facet_wrap(~dataset_label) +
-  labs(title = "Maximum Likelihood Tree Topology") +
-  scale_x_discrete(name = "Sister to all other Metazoan clades") +
-  scale_y_continuous(name = "Number of trees", limits = c(0,27), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
-  scale_fill_viridis_d(option = "C", guide = "none") +
-  theme_bw() +
-  theme(axis.title.x = element_text(size = 25, margin = margin(t = 15, r = 0, b = 10, l = 0)),
-        axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 15, hjust = 1, vjust = 1, angle = 90),
-        axis.text.y = element_text(size = 15),
-        strip.text = element_text(size = 20),
-        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)) )
-
-bc_file <- paste0(plot_dir, "ML_topology_results_Xaxis.")
-ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png", width = 10, height = 13, units = "in")
-ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf", width = 10, height = 13, units = "in")
-
 # Plot with barchart for each dataset - one bar per dataset
 bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
   geom_bar() +
