@@ -52,44 +52,51 @@ all_files <- grep("5trees", all_files, value = TRUE, invert = TRUE)
 
 #### 3. Plot figures for introduction and methods sections of manuscript ####
 ### Plotting the alternative phylogenetic hypotheses ###
-# Open the trees
+## Open the trees
 trees_file <- paste0(repo_dir, "trees/alternative_phylogenetic_hypotheses.nex")
 trees <- read.tree(trees_file)
 image_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/99_RSB_HDR_conference_2023/pictures/"
 
-# Create a dataframe for labelling
+## Create a dataframe for labelling
 metazoan_clade_labs <- data.frame("clade" = c("Bilateria", "Cnidaria", "Ctenophora", "Porifera", "Calcarea", "Demospongiae", "Hexactinellida", "Homoscleromorpha", "Outgroup"),
                                   "color" = c("A", "B", "C", rep("D", 5), "E"))
 metazoan_clade_labs$lab <- metazoan_clade_labs$clade
 metazoan_clade_labs$html_lab <- paste0("<b style='color:", metazoan_clade_labs$color, "'>", metazoan_clade_labs$clade, "</b>")
 
-### Black and White plots ###
-# Plot one tree at a time
-hyp1_plot <- bw.monophyletic.clades.plot(trees[[1]])
-hyp2_plot <- bw.monophyletic.clades.plot(trees[[2]])
-hyp3_plot <- bw.monophyletic.clades.plot(trees[[3]])
-hyp4_plot <- bw.paraphyletic.clades.plot(trees[[4]], label_nodes = c(12, 14))
-hyp5_plot <- bw.paraphyletic.clades.plot(trees[[5]], label_nodes = c(11, 13))
-# Combine the four hypothesis trees into one 
-patchwork_hyps <- (hyp1_plot | hyp2_plot | hyp3_plot)/(hyp4_plot | hyp5_plot) + 
+## Plot the hypothesis trees
+## Black and White plots: Combine the five hypothesis trees into one plot
+patchwork_hyps <- (bw.monophyletic.clades.plot(trees[[1]]) | bw.monophyletic.clades.plot(trees[[2]]) | bw.monophyletic.clades.plot(trees[[3]]))/
+  (bw.paraphyletic.clades.plot(trees[[4]], label_nodes = c(12, 14)) | bw.paraphyletic.clades.plot(trees[[5]], label_nodes = c(11, 13))) + 
   plot_annotation(tag_levels = "a", tag_suffix = ".") & theme(plot.tag = element_text(size = 20))
-# Export hypothesis plots 
-hypothesis_plot_file <- paste0(plot_dir, "hypothesis_tree_example_plot.png")
-png(filename = hypothesis_plot_file, width = 1090, height = 723, units = "px", pointsize = 12, bg = "white")
+# Export hypothesis plot as png
+hypothesis_plot_file <- paste0(plot_dir, "hypothesis_tree_example_plot.")
+png(filename = paste0(hypothesis_plot_file, "png"), width = 1090, height = 723, units = "px", pointsize = 12, bg = "white")
+patchwork_hyps
+dev.off()
+# Export hypothesis plot as pdf
+pdf(file = paste0(hypothesis_plot_file, "pdf"), width = 15, height = 8)
 patchwork_hyps
 dev.off()
 
-# Plot one tree at a time
-hyp1_plot <- color.clades.plot(trees[[1]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
-                               save.plot = TRUE, output_directory = plot_dir, output_id = "hypothesis_tree_1_plot_color")
-hyp2_plot <- color.clades.plot(trees[[2]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
-                               save.plot = TRUE, output_directory = plot_dir, output_id = "hypothesis_tree_2_plot_color")
-hyp3_plot <- color.clades.plot(trees[[3]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
-                               save.plot = TRUE, output_directory = plot_dir, output_id = "hypothesis_tree_3_plot_color")
-hyp4_plot <- color.clades.plot(trees[[4]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
-                               save.plot = TRUE, output_directory = plot_dir, output_id = "hypothesis_tree_4_plot_color")
-hyp5_plot <- color.clades.plot(trees[[5]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, 
-                               save.plot = TRUE, output_directory = plot_dir, output_id = "hypothesis_tree_5_plot_color")
+## Colour plots: Combine the five hypothesis trees into one plot 
+# Create individual plots
+p1 = color.clades.plot(trees[[1]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, xlimits = c(0,5.5))
+p2 = color.clades.plot(trees[[2]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, xlimits = c(0,5.5))
+p3 = color.clades.plot(trees[[3]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, xlimits = c(0,4))
+p4 = color.clades.plot(trees[[4]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, xlimits = c(0,9))
+p5 = color.clades.plot(trees[[5]], tip_labels = metazoan_clade_labs, color_palette = metazoan_palette, xlimits = c(0,9))
+# Collate plots using patchwork
+patchwork_hyps_color <- wrap_plots(p1, p2) / wrap_plots(p3, p4) / wrap_plots(p5, plot_spacer()) +
+  plot_annotation(tag_levels = "a", tag_suffix = ".") & theme(plot.tag = element_text(size = 30)) 
+# Export hypothesis plot as png
+hypothesis_plot_file <- paste0(plot_dir, "hypothesis_tree_example_plot_color.")
+png(filename = paste0(hypothesis_plot_file, "png"), width = 1200, height = 900, units = "px", pointsize = 12, bg = "white")
+patchwork_hyps_color
+dev.off()
+# Export hypothesis plot as pdf
+pdf(file = paste0(hypothesis_plot_file, "pdf"), width = 17, height = 12)
+patchwork_hyps_color
+dev.off()
 
 
 
