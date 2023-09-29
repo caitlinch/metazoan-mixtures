@@ -269,6 +269,8 @@ topo_long$PORI_topology <- factor(topo_long$PORI_topology,
                                   levels = c("One taxon", "Monophyletic", "Paraphyletic"),
                                   labels = c("One taxon", "Monophyletic", "Paraphyletic"),
                                   ordered = TRUE)
+
+## Plot number of trees with each topology
 # Plot with barchart for each dataset - one bar per dataset
 bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
   geom_bar() +
@@ -279,7 +281,7 @@ bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 15, hjust = 1, vjust = 1, angle = 90),
+        axis.text.x = element_text(size = 15, hjust = 1, vjust = 0.5, angle = 90),
         axis.text.y = element_text(size = 15),
         strip.text = element_text(size = 20),
         plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
@@ -289,7 +291,7 @@ bc_file <- paste0(plot_dir, "ML_topology_results_singleBar.")
 ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png")
 ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf")
 
-## Plot Porifera clade topology
+## Plot number of each trees with each Porifera clade topology
 # Convert topology output to long format
 bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)) +
   geom_bar() +
@@ -300,7 +302,7 @@ bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-        axis.text.x = element_text(size = 15, hjust = 1, vjust = 1, angle = 90),
+        axis.text.x = element_text(size = 15, hjust = 1, vjust = 0.5, angle = 90),
         axis.text.y = element_text(size = 15),
         strip.text = element_text(size = 20),
         plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
@@ -310,7 +312,7 @@ bc2_file <- paste0(plot_dir, "Porifera_topology_results_singleBar.")
 ggsave(filename = paste0(bc2_file, "png"), plot = bc2, device = "png")
 ggsave(filename = paste0(bc2_file, "pdf"), plot = bc2, device = "pdf")
 
-## Combined plots
+## Combined plots of number of trees and number of Porifera topologies
 # Plot ML tree topology
 bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
   geom_bar() +
@@ -320,7 +322,7 @@ bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_text(size = 16, margin = margin(t = 0, r = 10, b = 0, l = 0)),
-        axis.text.x = element_text(size = 12, hjust = 1, vjust = 1, angle = 90),
+        axis.text.x = element_text(size = 12, hjust = 1, vjust = 0.5, angle = 90),
         axis.text.y = element_text(size = 12),
         strip.text = element_text(size = 16),
         legend.title = element_text(size = 16),
@@ -334,7 +336,7 @@ bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_text(size = 16, margin = margin(t = 0, r = 10, b = 0, l = 0)),
-        axis.text.x = element_text(size = 12, hjust = 1, vjust = 1, angle = 90),
+        axis.text.x = element_text(size = 12, hjust = 1, vjust = 0.5, angle = 90),
         axis.text.y = element_text(size = 12),
         strip.text = element_text(size = 16),
         legend.title = element_text(size = 16),
@@ -345,4 +347,67 @@ quilt <- (bc / bc2) + plot_annotation(tag_levels = "a", tag_suffix = ".") & them
 quilt_file <- paste0(plot_dir, "mainfigure_combined_topology_results_singleBar.")
 ggsave(filename = paste0(quilt_file, "png"), plot = quilt, device = "png", units = "in", width = 8, height = 10)
 ggsave(filename = paste0(quilt_file, "pdf"), plot = quilt, device = "pdf", units = "in", width = 8, height = 10)
+
+
+
+#### 7. Look at model class for maximum likelihood topology tree results ####
+## Plot tree topology
+# Add model class to the topology_df
+#   Matrix is for single matrix amino-acid exchange rate matrices
+#   Mixture model is for protein mixture models from IQ-Tree
+#   ModelFinder is the results from ModelFinder in IQ-Tree - could be single matrix or protein mixture model
+#   CXX are for "empirical profile mixture models" i.e. C20 and C60 models
+#   PMSF are for "posterior site mean frequency" models in IQ-Tree2 i.e. PMSF+C20 and PMSF+C60 models
+topo_long$model_class <- factor(topo_long$model_code,
+                                levels = c("GTR20", "JTT", "JTTDCMut", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG",
+                                           "CF4", "EHO", "EX_EHO", "EX2", "EX3", "LG4M", "UL2", "UL3",
+                                           "ModelFinder",
+                                           "PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60",
+                                           "C20", "C60", "LG_C20", "LG_C60"),
+                                labels = c(rep("Matrix", 9), rep("Mixture model", 8), "ModelFinder", rep("PMSF", 4), rep("CXX", 4)),
+                                ordered = TRUE)
+
+## Plot number of trees with each topology - facet per dataset, one bar per model_class
+# Plot with barchart for each dataset - one bar per dataset
+bc <- ggplot(topo_long, aes(x = model_class, fill = value)) +
+  geom_bar() +
+  facet_wrap(~dataset_label, ncol = 3) +
+  labs(title = "Tree topology") +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Number of trees", limits = c(0,9), breaks = seq(0,9,3), labels = seq(0,9,3), minor_breaks = seq(0,10,1)) +
+  scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 14, hjust = 1, vjust = 0.5, angle = 90),
+        axis.text.y = element_text(size = 14),
+        strip.text = element_text(size = 15),
+        plot.title = element_text(size = 30, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+bc_file <- paste0(plot_dir, "mainfigure_ML_topology_results_singleBar_datasetFacet.")
+ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png", height = 10, width = 8, units = "in")
+ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf", height = 10, width = 8, units = "in")
+
+## Plot number of each trees with each Porifera clade topology - facet per dataset, one bar per model_class
+# Convert topology output to long format
+bc2 <- ggplot(topo_long, aes(x = model_class, fill = PORI_topology)) +
+  geom_bar() +
+  facet_wrap(~dataset_label, ncol = 3) +
+  labs(title = "Porifera clade topology") +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Number of trees", limits = c(0,9), breaks = seq(0,9,3), labels = seq(0,9,3), minor_breaks = seq(0,10,1)) +
+  scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.x = element_text(size = 14, hjust = 1, vjust = 0.5, angle = 90),
+        axis.text.y = element_text(size = 14),
+        strip.text = element_text(size = 15),
+        plot.title = element_text(size = 30, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+bc2_file <- paste0(plot_dir, "mainfigure_Porifera_topology_results_singleBar_datasetFacet.")
+ggsave(filename = paste0(bc2_file, "png"), plot = bc2, device = "png", height = 10, width = 8, units = "in")
+ggsave(filename = paste0(bc2_file, "pdf"), plot = bc2, device = "pdf", height = 10, width = 8, units = "in")
 
