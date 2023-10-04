@@ -44,7 +44,10 @@ source(paste0(repo_dir,"code/func_data_processing.R"))
 
 # Specify colour palettes used within these plots
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
-model3_tonal <- c("#980043", "#df65b0", "#d4b9da")
+model3_qual <- c("#e41a1c", "#377eb8", "#4daf4a")
+# Notes for Viridis color palette usage (function = scale_color_viridis_d):
+#   For ML tree topology (i.e. Sister to all other Metazoans) use option = "C"/"plasma"
+#   For Porifera clade topology (i.e. Monophyletic/Paraphyletic) use option = "D"/"viridis"
 
 # Extra colour palettes (unused)
 if (control_parameters$add.extra.color.palettes == TRUE){
@@ -55,6 +58,7 @@ if (control_parameters$add.extra.color.palettes == TRUE){
   tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
   tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
   tree2_tonal <- c("#bdd7e7", "#2171b5")
+  model3_tonal <- c("#980043", "#df65b0", "#d4b9da")
 }
 
 # List all files
@@ -147,7 +151,7 @@ if (control_parameters$plot.MAST == TRUE){
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Tree weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     labs(title = "MAST tree weights") +
-    scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = model3_tonal) +
+    scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = model3_qual) +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
           axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
@@ -194,7 +198,7 @@ if (control_parameters$plot.AU.test == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = model3_tonal) +
+    scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = model3_qual) +
     labs(title = "AU Test") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
@@ -241,7 +245,7 @@ if (control_parameters$plot.ELW == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = model3_tonal) +
+    scale_color_manual(name = "Model class", labels = c("CXX", "PMSF", "Other"), values = model3_qual) +
     labs(title = "Expected likelihood weight") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
@@ -306,7 +310,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
           axis.text.x = element_text(size = 15, hjust = 1, vjust = 0.5, angle = 90),
           axis.text.y = element_text(size = 15),
           strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+          plot.title = element_text(size = 30, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
           legend.title = element_text(size = 20),
           legend.text = element_text(size = 15))
   bc_file <- paste0(plot_dir, "ML_topology_results_singleBar.")
@@ -327,7 +331,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
           axis.text.x = element_text(size = 15, hjust = 1, vjust = 0.5, angle = 90),
           axis.text.y = element_text(size = 15),
           strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+          plot.title = element_text(size = 30, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
           legend.title = element_text(size = 20),
           legend.text = element_text(size = 15))
   bc2_file <- paste0(plot_dir, "Porifera_topology_results_singleBar.")
