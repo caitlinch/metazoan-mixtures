@@ -378,7 +378,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
 
 
 
-#### 7. Look at model class for maximum likelihood topology tree results ####
+#### 7. Summarise maximum likelihood topology tree results by model class ####
 if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Porifera.topologies == TRUE){
   ## Plot tree topology
   # Open dataframe
