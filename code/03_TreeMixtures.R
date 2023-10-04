@@ -243,11 +243,16 @@ if (control_parameters$extract.MAST == TRUE){
   mast_tws_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][7]})))
   # Add a new column breaking the models up by type of model
   mast_tws_df$model_class <- factor(mast_tws_df$model_code,
-                                    levels = c("LG_C60", "C60", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
-                                    labels = c("CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
+                                    levels = c("LG_C60", "C60", "LG_C20", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
+                                    labels = c("CXX", "CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
                                     ordered = TRUE)
+  # Add a new column specifying the number of trees for each analysis
+  mast_tws_df$hypothesis_tree_analysis <- factor(mast_tws_df$number_hypothesis_trees,
+                                 levels = c("2", "3", "5"),
+                                 labels = c("2_trees", "5_trees", "5_trees"),
+                                 ordered = FALSE)
   # Rearrange columns
-  mast_tws_df <- mast_tws_df[, c("dataset", "matrix_name", "model_code",  "model_class", "mast_branch_type", 
+  mast_tws_df <- mast_tws_df[, c("hypothesis_tree_analysis", "dataset", "matrix_name", "model_code",  "model_class", "mast_branch_type", 
                                  "minimum_branch_length", "number_hypothesis_trees",
                                  "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
                                  "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
@@ -288,8 +293,17 @@ if (control_parameters$extract.tree.topology.tests == TRUE){
   au_test_df$model_class[grep("LG4M|UL3", au_test_df$best_model_code)] <- "Other"
   au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", au_test_df$best_model_code)] <- "CXX"
   au_test_df$model_class[grep("PMSF", au_test_df$best_model_code)] <- "PMSF"
+  # Add new column for hypothesis trees
+  au_test_df$hypothesis_tree_analysis <- au_test_df$tree_topology_iqtree_file
+  au_test_df$hypothesis_tree_analysis[grep("2tree", au_test_df$tree_topology_iqtree_file)] <- "2_trees"
+  au_test_df$hypothesis_tree_analysis[grep("5tree", au_test_df$tree_topology_iqtree_file)] <- "5_trees"
   # Rearrange columns
-  au_test_df <- au_test_df[, c(names(au_test_df)[1:4], "model_class", names(au_test_df)[5:(ncol(au_test_df) - 1)])]
+  au_test_df <- au_test_df[, c("hypothesis_tree_analysis", "dataset", "matrix", "ID", "best_model_code",
+                               "model_class", "analysis", "tree", "evolutionary_hypothesis", "logL",
+                               "deltaL", "bp_RELL", "p_KH", "p_SH", "p_wKH", "p_wSH", "c_ELW", "p_AU",
+                               "AU_test_rejected", "tree_topology_iqtree_file")]
+  # Remove file path from iqtree file name
+  au_test_df$tree_topology_iqtree_file <- basename(au_test_df$tree_topology_iqtree_file)
   # Save tree topology test results to file
   write.csv(au_test_df, file = paste0(output_dir, "04_01_tree_topology_test_results.csv"), row.names = FALSE)
 }
