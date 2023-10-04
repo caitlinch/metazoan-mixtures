@@ -69,12 +69,12 @@ model_order <- c("PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60",
                  "EX2", "EX3", "GTR20", "JTT", "JTTDCMut", "LG", "LG4M",
                  "mtZOA", "PMB", "Poisson", "rtREV", "UL2", "UL3", "WAG",
                  "ModelFinder")
-
-# Order dataframe by dataset/matrix
-ordered_dataset_ids <- paste0(summary_topology_df$dataset, ".", summary_topology_df$matrix_name)
 ## For tree topologies:
 tree_topology_file <- paste0(output_file_dir, "all_models_ML_tree_topology.csv")
 if (file.exists(tree_topology_file) == FALSE){
+  # Read in summary dataframe
+  summary_topology_df <- read.csv(summary_topology_file, stringsAsFactors = FALE)
+  ordered_dataset_ids <- paste0(summary_topology_df$dataset, ".", summary_topology_df$matrix_name)
   # Extract tree topologies from dataframe
   tree_topology_list <- lapply(ordered_dataset_ids, tree.topology.results, topology_check_df, model_order)
   tree_topology_df <- as.data.frame(do.call(cbind, tree_topology_list))
@@ -88,6 +88,9 @@ if (file.exists(tree_topology_file) == FALSE){
 ## For Porifera topologies:
 pori_topology_file <- paste0(output_file_dir, "all_models_ML_Porifera_topology.csv")
 if (file.exists(pori_topology_file) == FALSE){
+  # Read in summary dataframe
+  summary_topology_df <- read.csv(summary_topology_file, stringsAsFactors = FALE)
+  ordered_dataset_ids <- paste0(summary_topology_df$dataset, ".", summary_topology_df$matrix_name)
   # Extract tree topologies from dataframe
   pori_topology_list <- lapply(ordered_dataset_ids, porifera.topology.results, topology_check_df, model_order)
   pori_topology_df <- as.data.frame(do.call(cbind, pori_topology_list))
