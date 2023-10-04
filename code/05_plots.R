@@ -47,7 +47,7 @@ metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00"
 model3_tonal <- c("#980043", "#df65b0", "#d4b9da")
 
 # Extra colour palettes (unused)
-if (add.extra.color.palettes = TRUE){
+if (control_parameters$add.extra.color.palettes == TRUE){
   cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   metazoan_clade_palette <- c(Bilateria = "#CC79A7", Cnidaria = "#009E73", Ctenophora = "#56B4E9", Porifera = "#E69F00", Outgroup = "#999999")
   tree2_palette <- c("#F0F921FF", "#0D0887FF")
