@@ -17,6 +17,15 @@ results_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_outpu
 tree_dir <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/02_maximum_likelihood_trees/02_renamed_trees/"
 repo_dir <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
 
+## Control parameters
+control_parameters <- list(add.extra.color.palettes = FALSE,
+                           plot.hypothesis.trees = FALSE,
+                           plot.MAST = TRUE,
+                           plot.AU.tests = TRUE,
+                           plot.ELW = TRUE,
+                           plot.ML.topologies = TRUE,
+                           plot.Porifera.topologies = TRUE)
+
 
 
 #### 2. Prepare functions, variables and packages ####
