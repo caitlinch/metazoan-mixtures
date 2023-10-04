@@ -32,14 +32,24 @@ library(readxl)
 source(paste0(repo_dir,"code/func_plotting.R"))
 source(paste0(repo_dir,"code/func_data_processing.R"))
 
-# Specify colour palettes (some of these are unused)
-cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+# Specify colour palettes used within these plots
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
-tree2_palette <- c("#F0F921FF", "#0D0887FF")
-tree5_palette <- c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")
-tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
-tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
-tree2_tonal <- c("#bdd7e7", "#2171b5")
+model3_qual <- c("#e41a1c", "#377eb8", "#4daf4a")
+# Notes for Viridis color palette usage (function = scale_color_viridis_d):
+#   For ML tree topology (i.e. Sister to all other Metazoans) use option = "C"/"plasma"
+#   For Porifera clade topology (i.e. Monophyletic/Paraphyletic) use option = "D"/"viridis"
+
+# Extra colour palettes (unused)
+if (control_parameters$add.extra.color.palettes == TRUE){
+  cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  metazoan_clade_palette <- c(Bilateria = "#CC79A7", Cnidaria = "#009E73", Ctenophora = "#56B4E9", Porifera = "#E69F00", Outgroup = "#999999")
+  tree2_palette <- c("#F0F921FF", "#0D0887FF")
+  tree5_palette <- c("#e66101", "#fdb863", "#f7f7f7", "#b2abd2", "#5e3c99")
+  tree5_cividis <- c("#FDE725FF", "#5DC863FF", "#21908CFF", "#3B528BFF", "#440154FF")
+  tree2_cividis <- c(tree5_cividis[1], tree5_cividis[5])
+  tree2_tonal <- c("#bdd7e7", "#2171b5")
+  model3_tonal <- c("#980043", "#df65b0", "#d4b9da")
+}
 
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
