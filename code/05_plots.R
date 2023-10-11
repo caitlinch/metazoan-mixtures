@@ -66,6 +66,9 @@ if (control_parameters$add.extra.color.palettes == TRUE){
 all_files <- list.files(results_dir, recursive = TRUE)
 # Remove any for the 5 tree model
 all_files <- grep("5trees|5_trees", all_files, value = TRUE, invert = TRUE) 
+# Remove any excel files into separate object
+excel_files <- grep("xls|xlsx", all_files, value = TRUE) 
+all_files <- grep("xls|xlsx", all_files, value = TRUE, invert = TRUE) 
 
 
 
@@ -267,9 +270,11 @@ if (control_parameters$plot.ELW == TRUE){
 if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Porifera.topologies == TRUE){
   ## Plot tree topology
   # Open dataframe
-  topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_files, value = TRUE), value = TRUE)
+  topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", excel_files, value = TRUE), value = TRUE)
   topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
   topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
+  # Remove ModelFinder row
+  topo_df <- topo_df[topo_df$model_code != "ModelFinder",]
   # Convert topology output to long format
   topo_long <- melt(topo_df,
                     id.vars = c("dataset", "matrix_name", "model_code", "PORI_topology"),
@@ -297,13 +302,13 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
                                     labels = c("One taxon", "Monophyletic", "Paraphyletic"),
                                     ordered = TRUE)
   
-  ## Plot number of trees with each topology
+  ## Plot number of models with each topology
   # Plot with barchart for each dataset - one bar per dataset
   bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
     geom_bar() +
-    labs(title = "Maximum likelihood tree topology") +
+    labs(title = "ML tree topology") +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,25), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
     scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -318,13 +323,13 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png")
   ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf")
   
-  ## Plot number of each trees with each Porifera clade topology
+  ## Plot number of each models with each Porifera clade topology
   # Convert topology output to long format
   bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)) +
     geom_bar() +
     labs(title = "Porifera topology") +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,25), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
     scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -339,12 +344,12 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   ggsave(filename = paste0(bc2_file, "png"), plot = bc2, device = "png")
   ggsave(filename = paste0(bc2_file, "pdf"), plot = bc2, device = "pdf")
   
-  ## Combined plots of number of trees and number of Porifera topologies
+  ## Combined plots of number of models and number of Porifera topologies
   # Plot ML tree topology
   bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
     geom_bar() +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,25), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
     scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -358,7 +363,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)) +
     geom_bar() +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of trees", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
     scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -382,9 +387,11 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
 if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Porifera.topologies == TRUE){
   ## Plot tree topology
   # Open dataframe
-  topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_files, value = TRUE), value = TRUE)
+  topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", excel_files, value = TRUE), value = TRUE)
   topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
   topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
+  # Remove ModelFinder row
+  topo_df <- topo_df[topo_df$model_code != "ModelFinder",]
   # Convert topology output to long format
   topo_long <- melt(topo_df,
                     id.vars = c("dataset", "matrix_name", "model_code", "PORI_topology"),
@@ -420,20 +427,19 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   topo_long$model_class <- factor(topo_long$model_code,
                                   levels = c("GTR20", "JTT", "JTTDCMut", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG",
                                              "CF4", "EHO", "EX_EHO", "EX2", "EX3", "LG4M", "UL2", "UL3",
-                                             "ModelFinder",
                                              "PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60",
                                              "C20", "C60", "LG_C20", "LG_C60"),
-                                  labels = c(rep("Matrix", 9), rep("Mixture model", 8), "ModelFinder", rep("PMSF", 4), rep("CXX", 4)),
+                                  labels = c(rep("Single matrix", 9), rep("Mixture model", 8), rep("PMSF", 4), rep("CXX", 4)),
                                   ordered = TRUE)
   
-  ## Plot number of trees with each topology - facet per dataset, one bar per model_class
+  ## Plot number of models with each topology - facet per dataset, one bar per model_class
   # Plot with barchart for each dataset - one bar per dataset
   bc <- ggplot(topo_long, aes(x = model_class, fill = value)) +
     geom_bar() +
     facet_wrap(~dataset_label, ncol = 3) +
     labs(title = "Tree topology") +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of trees", limits = c(0,9), breaks = seq(0,9,3), labels = seq(0,9,3), minor_breaks = seq(0,10,1)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,9), breaks = seq(0,9,3), labels = seq(0,9,3), minor_breaks = seq(0,10,1)) +
     scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -448,14 +454,14 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png", height = 10, width = 8, units = "in")
   ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf", height = 10, width = 8, units = "in")
   
-  ## Plot number of each trees with each Porifera clade topology - facet per dataset, one bar per model_class
+  ## Plot number of each models with each Porifera clade topology - facet per dataset, one bar per model_class
   # Convert topology output to long format
   bc2 <- ggplot(topo_long, aes(x = model_class, fill = PORI_topology)) +
     geom_bar() +
     facet_wrap(~dataset_label, ncol = 3) +
     labs(title = "Porifera clade topology") +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of trees", limits = c(0,9), breaks = seq(0,9,3), labels = seq(0,9,3), minor_breaks = seq(0,10,1)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,9), breaks = seq(0,9,3), labels = seq(0,9,3), minor_breaks = seq(0,10,1)) +
     scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
