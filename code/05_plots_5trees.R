@@ -196,9 +196,9 @@ if (control_parameters$plot.ELW == TRUE){
                                               "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                    ordered = TRUE)
   elw_long$model_class <- factor(elw_long$model_class,
-                                levels = c("CXX", "PMSF", "Other"),
-                                labels = c("CXX", "PMSF", "Other"),
-                                ordered = T)
+                                 levels = c("CXX", "PMSF", "Other"),
+                                 labels = c("CXX", "PMSF", "Other"),
+                                 ordered = T)
   # Plot with boxplot for each dataset
   bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
     geom_point(size = 3, alpha = 0.6) + 
