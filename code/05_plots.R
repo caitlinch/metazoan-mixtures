@@ -285,8 +285,6 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", excel_files, value = TRUE), value = TRUE)
   topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
   topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
-  # Remove ModelFinder row
-  topo_df <- topo_df[topo_df$model_code != "ModelFinder",]
   # Convert topology output to long format
   topo_long <- melt(topo_df,
                     id.vars = c("dataset", "matrix_name", "model_code", "PORI_topology"),
@@ -320,7 +318,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
     geom_bar() +
     labs(title = "ML tree topology") +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of models", limits = c(0,25), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,26), breaks = seq(0,30,4), labels = seq(0,30,4), minor_breaks = seq(0,30,2)) +
     scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -341,7 +339,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
     geom_bar() +
     labs(title = "Porifera topology") +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of models", limits = c(0,25), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,26), breaks = seq(0,30,4), labels = seq(0,30,4), minor_breaks = seq(0,30,2)) +
     scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -361,7 +359,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   bc <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = value)) +
     geom_bar() +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of models", limits = c(0,25), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,26), breaks = seq(0,30,4), labels = seq(0,30,4), minor_breaks = seq(0,30,2)) +
     scale_fill_viridis_d(name = "Sister to other\nMetazoan clades", option = "C") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -375,7 +373,7 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   bc2 <- ggplot(topo_long, aes(x = dataset_label_singleLine, fill = PORI_topology)) +
     geom_bar() +
     scale_x_discrete(name = NULL) +
-    scale_y_continuous(name = "Number of models", limits = c(0,26), breaks = seq(0,30,5), labels = seq(0,30,5), minor_breaks = seq(0,30,2.5)) +
+    scale_y_continuous(name = "Number of models", limits = c(0,26), breaks = seq(0,30,4), labels = seq(0,30,4), minor_breaks = seq(0,30,2)) +
     scale_fill_viridis_d(name = "Porifera clade\ntopology", option = "D") +
     theme_bw() +
     theme(axis.title.x = element_blank(),
