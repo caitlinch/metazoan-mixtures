@@ -65,6 +65,7 @@ if (control_parameters$add.extra.color.palettes == TRUE){
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
 all_files <- grep("5trees", all_files, value = T)
+all_files <- grep("xlsx|xls", all_files, value = T, invert = T)
 
 
 
@@ -91,6 +92,10 @@ if (control_parameters$plot.MAST == TRUE){
                                                "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                     ordered = TRUE)
+  mast_long$model_class <- factor(mast_long$model_class,
+                                  levels = c("PMSF", "Other"),
+                                  labels = c("PMSF", "Other"),
+                                  ordered = T)
   # Plot with lines for each dataset/model class
   bp <- ggplot(mast_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
     geom_point(size = 3, alpha = 0.6) +
@@ -138,6 +143,10 @@ if (control_parameters$plot.AU.tests == TRUE){
                                              "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                              "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                   ordered = TRUE)
+  au_long$model_class <- factor(au_long$model_class,
+                                levels = c("CXX", "PMSF", "Other"),
+                                labels = c("CXX", "PMSF", "Other"),
+                                ordered = T)
   # Plot with boxplot for each dataset
   bp <- ggplot(au_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
     geom_hline(yintercept = 0.05, color = "darkgrey", linetype = "dashed") +
@@ -186,6 +195,10 @@ if (control_parameters$plot.ELW == TRUE){
                                               "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                               "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                    ordered = TRUE)
+  elw_long$model_class <- factor(elw_long$model_class,
+                                levels = c("CXX", "PMSF", "Other"),
+                                labels = c("CXX", "PMSF", "Other"),
+                                ordered = T)
   # Plot with boxplot for each dataset
   bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
     geom_point(size = 3, alpha = 0.6) + 
