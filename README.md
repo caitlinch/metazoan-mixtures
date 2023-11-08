@@ -10,9 +10,9 @@ November 2023
 
 This github repository contains scripts used to:
 
-1. Simulate data with different underlying levels of treelikeness and incomplete lineage sorting (ILS)
-2. Benchmark existing metrics for treelikeness against these simulations
-3. Introduce a new metric for treelikeness in phylogenetic datasets, called the tree proportion
+1. Estimate trees from 14 empirical phylogenetic datasets with 26 models of substitution
+2. Estimate constrained trees for 5 alternate topologies of the Metazoan tree
+3. Apply the MAST model and the AU-test to evaluate a multi-tree model for the Metazoan taxa
 
 If you replicate any part of these analyses or use functions from these scripts, please cite this repository.
 
