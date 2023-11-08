@@ -20,33 +20,33 @@ If you replicate any part of these analyses or use functions from these scripts,
 ### Contents
 + Scripts
    + All scripts necessary to completely replicate this analysis are included in the `code/` folder
-  + Each script includes an overview, a list of necessary parameters or file paths,  and a list of software necessary to run that script
+   + Each script includes an overview, a list of necessary parameters or file paths,  and a list of software necessary to run that script
 + Output
-  + Contains output `.csv` files generated throughout the project
- + `Cherryh_MAST_metazoa_taxa_collation.csv`: table of the name and clade of each species in each dataset
- + `alignment_dimensions.csv`: number of sites and taxa in each alignment  
+   + Contains output `.csv` files generated throughout the project
+      + `Cherryh_MAST_metazoa_taxa_collation.csv`: table of the name and clade of each species in each dataset
+      + `alignment_dimensions.csv`: number of sites and taxa in each alignment  
 + Trees
-  + Maximum Likelihood trees
- + Contains all 364 trees generated throughout this process (14 datasets, 26 models of substitution)
-  + Hypothesis trees
- + Constrained maximum likelihood trees
+   + Maximum Likelihood trees
+      + Contains all 364 trees generated throughout this process (14 datasets, 26 models of substitution)
+   + Hypothesis trees
+      + Constrained maximum likelihood trees
 + Taxa reconciliation
-  + Table used to make taxa names consistent across datasets
+   + Table used to make taxa names consistent across datasets
 + Conda enviroment
-  + The `environment.yml` file is included to replicate the conda environment used for this project
+   + The `environment.yml` file is included to replicate the conda environment used for this project
 
 ***
 ### Instructions to reproduce the analyses:
 1. Download and install the software programs necessary to repeat these analyses:
-  + [IQ-Tree2](http://www.iqtree.org/)
+   + [IQ-Tree2](http://www.iqtree.org/)
 2. Estimate trees
-  a. Estimate maximum likelihood trees with standard IQ-Tree protein models and profile mixture (PM) models in IQ-Tree using the script `01_estimate_all_trees_parallel.R`
- b. Estimate trees with the posterior mean site frequency (PMSF) in IQ-Tree using the script `01_estimate_PMSF_trees.R`
- c. To rename tips in all trees to be consistent across datasets, use the script `util_tree_processing.R` 
-4. Estimate constrained trees using the best models of evolution in each class using the script `02_estimate_hypothesis_trees.R`
-5. Apply the mixture of trees model using the script `03_TreeMixtures.R`
-6. Format output csvs using the script `04_reformat_output_dataframes.R`
-7. Plot results using the scripts `05_plots.R` and `05_plots_5trees.R`
+   a. Estimate maximum likelihood trees with standard IQ-Tree protein models and profile mixture (PM) models in IQ-Tree using the script `01_estimate_all_trees_parallel.R`
+   b. Estimate trees with the posterior mean site frequency (PMSF) in IQ-Tree using the script `01_estimate_PMSF_trees.R`
+   c. To rename tips in all trees to be consistent across datasets, use the script `util_tree_processing.R` 
+3. Estimate constrained trees using the best models of evolution in each class using the script `02_estimate_hypothesis_trees.R`
+4. Apply the mixture of trees model using the script `03_TreeMixtures.R`
+5. Format output csvs using the script `04_reformat_output_dataframes.R`
+6. Plot results using the scripts `05_plots.R` and `05_plots_5trees.R`
 
 ***
 ### Datasets
