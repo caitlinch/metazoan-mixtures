@@ -40,9 +40,9 @@ If you replicate any part of these analyses or use functions from these scripts,
 1. Download and install the software programs necessary to repeat these analyses:
    + [IQ-Tree2](http://www.iqtree.org/)
 2. Estimate trees
-   a. Estimate maximum likelihood trees with standard IQ-Tree protein models and profile mixture (PM) models in IQ-Tree using the script `01_estimate_all_trees_parallel.R`
-   b. Estimate trees with the posterior mean site frequency (PMSF) in IQ-Tree using the script `01_estimate_PMSF_trees.R`
-   c. To rename tips in all trees to be consistent across datasets, use the script `util_tree_processing.R` 
+   + Estimate maximum likelihood trees with standard IQ-Tree protein models and profile mixture (PM) models in IQ-Tree using the script `01_estimate_all_trees_parallel.R`
+   + Estimate trees with the posterior mean site frequency (PMSF) in IQ-Tree using the script `01_estimate_PMSF_trees.R`
+   + To rename tips in all trees to be consistent across datasets, use the script `util_tree_processing.R` 
 3. Estimate constrained trees using the best models of evolution in each class using the script `02_estimate_hypothesis_trees.R`
 4. Apply the mixture of trees model using the script `03_TreeMixtures.R`
 5. Format output csvs using the script `04_reformat_output_dataframes.R`
