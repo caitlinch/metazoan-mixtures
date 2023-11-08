@@ -19,30 +19,30 @@ If you replicate any part of these analyses or use functions from these scripts,
 ***
 ### Contents
 + Scripts
-     + All scripts necessary to completely replicate this analysis are included in the `code/` folder
-    + Each script includes an overview, a list of necessary parameters or file paths,  and a list of software necessary to run that script
+   + All scripts necessary to completely replicate this analysis are included in the `code/` folder
+  + Each script includes an overview, a list of necessary parameters or file paths,  and a list of software necessary to run that script
 + Output
-    + Contains output `.csv` files generated throughout the project
-        + `Cherryh_MAST_metazoa_taxa_collation.csv`: table of the name and clade of each species in each dataset
-        + `alignment_dimensions.csv`: number of sites and taxa in each alignment    
+  + Contains output `.csv` files generated throughout the project
+ + `Cherryh_MAST_metazoa_taxa_collation.csv`: table of the name and clade of each species in each dataset
+ + `alignment_dimensions.csv`: number of sites and taxa in each alignment  
 + Trees
-    + Maximum Likelihood trees
-        + Contains all 364 trees generated throughout this process (14 datasets, 26 models of substitution)
-    + Hypothesis trees
-        + Constrained maximum likelihood trees
+  + Maximum Likelihood trees
+ + Contains all 364 trees generated throughout this process (14 datasets, 26 models of substitution)
+  + Hypothesis trees
+ + Constrained maximum likelihood trees
 + Taxa reconciliation
-    + Table used to make taxa names consistent across datasets
+  + Table used to make taxa names consistent across datasets
 + Conda enviroment
-    + The `environment.yml` file is included to replicate the conda environment used for this project
+  + The `environment.yml` file is included to replicate the conda environment used for this project
 
 ***
 ### Instructions to reproduce the analyses:
 1. Download and install the software programs necessary to repeat these analyses:
-    + [IQ-Tree2](http://www.iqtree.org/)
+  + [IQ-Tree2](http://www.iqtree.org/)
 2. Estimate trees
-    a. Estimate maximum likelihood trees with standard IQ-Tree protein models and profile mixture (PM) models in IQ-Tree using the script `01_estimate_all_trees_parallel.R`
-   b. Estimate trees with the posterior mean site frequency (PMSF) in IQ-Tree using the script `01_estimate_PMSF_trees.R`
-   c. To rename tips in all trees to be consistent across datasets, use the script `util_tree_processing.R`   
+  a. Estimate maximum likelihood trees with standard IQ-Tree protein models and profile mixture (PM) models in IQ-Tree using the script `01_estimate_all_trees_parallel.R`
+ b. Estimate trees with the posterior mean site frequency (PMSF) in IQ-Tree using the script `01_estimate_PMSF_trees.R`
+ c. To rename tips in all trees to be consistent across datasets, use the script `util_tree_processing.R` 
 4. Estimate constrained trees using the best models of evolution in each class using the script `02_estimate_hypothesis_trees.R`
 5. Apply the mixture of trees model using the script `03_TreeMixtures.R`
 6. Format output csvs using the script `04_reformat_output_dataframes.R`
@@ -50,9 +50,25 @@ If you replicate any part of these analyses or use functions from these scripts,
 
 ***
 ### Datasets
+| Original Publication | Repository | Matrix |
+| ----------- | ----------- | ----------- |
+| Dunn _et al.__ (2008) | Li _et al._ (2020) | Dunn2008 |
+| Hejnol _et al._ (2009) | Hejnol _et al._ (2009)  | Hejnol_etal_2009 |
+| Philippe _et al._ (2009) | Philippe _et al._ (2009) | Philippe_etal_superalignment |
+| Pick _et al._ (2010)  | Li _et al._ (2020) | Pick2010 |
+| Philippe _et al._ (2011) | Philippe _et al._ (2011) | UPDUNN_MB |
+| Nosenko _et al._ (2013a) | Nosenko _et al._ (2013b) | nonribosomal_9187_smatrix |
+| Nosenko _et al._ (2013a) | Nosenko _et al._ (2013b) | ribosomal_14615_smatrix |
+| Ryan _et al._ (2013)  | Redmond and McLysaght (2021) | REA_alignment_includingXenoturbella |
+| Moroz _et al._ (2014) | Li _et al._ (2020) | ED3d |
+| Borowiec _et al._ (2015) | Borowiec _et al._ (2016) | Best108 |
+| Chang _et al._ (2015) | Feuda _et al._ (2017)  | Chang_AA |
+| Whelan _et al._ (2015) | Whelan _et al._ (2016) | Dataset10 |
+| Whelan _et al._ (2017ba | Whelan _et al._ (2017b) | Metazoa_Choano_RCFV_strict |
+| Laumer _et al._ (2018a) | Laumer _et al._ (2018b) | Tplx_phylo_d1 |
+| Laumer _et al._ (2019a) | Laumer _et al._ (2019b) | nonbilateria_MARE_BMGE |
 
-
-#### Citation
+#### Citations
 * Borowiec, M.L., Lee, E.K., Chiu, J.C., Plachetzki, D.C., 2016. Data from: Extracting phylogenetic signal and accounting for bias in whole-genome data sets supports the Ctenophora as sister to remaining Metazoa. https://doi.org/10.5061/DRYAD.K6TQ2 
 * Borowiec, M.L., Lee, E.K., Chiu, J.C., Plachetzki, D.C., 2015. Extracting phylogenetic signal and accounting for bias in whole-genome data sets supports the Ctenophora as sister to remaining Metazoa. BMC Genomics 16, 987. https://doi.org/10.1186/s12864-015-2146-4 
 * Chang, E.S., Neuhof, M., Rubinstein, N.D., Diamant, A., Philippe, H., Huchon, D., Cartwright, P., 2015. Genomic insights into the evolutionary origin of Myxozoa within Cnidaria. Proceedings of the National Academy of Sciences 112, 14912. https://doi.org/10.1073/pnas.1511468112 
