@@ -52,7 +52,7 @@ If you replicate any part of these analyses or use functions from these scripts,
 ### Datasets
 | Original Publication | Repository | Matrix |
 | ----------- | ----------- | ----------- |
-| Dunn _et al.__ (2008) | Li _et al._ (2020) | Dunn2008 |
+| Dunn _et al._ (2008) | Li _et al._ (2020) | Dunn2008 |
 | Hejnol _et al._ (2009) | Hejnol _et al._ (2009)  | Hejnol_etal_2009 |
 | Philippe _et al._ (2009) | Philippe _et al._ (2009) | Philippe_etal_superalignment |
 | Pick _et al._ (2010)  | Li _et al._ (2020) | Pick2010 |
@@ -89,6 +89,8 @@ If you replicate any part of these analyses or use functions from these scripts,
 * Redmond, A.K., McLysaght, A., 2021. FROM: Evidence for sponges as sister to all other animals from partitioned phylogenomics with mixture models and recoding. https://doi.org/10.6084/m9.figshare.12746972.v2 
 * Ryan, J.F., Pang, K., Schnitzler, C.E., Nguyen, A.-D., Moreland, R.T., Simmons, D.K., Koch, B.J., Francis, W.R., Havlak, P., Smith, S.A., Putnam, N.H., Haddock, S.H.D., Dunn, C.W., Wolfsberg, T.G., Mullikin, J.C., Martindale, M.Q., Baxevanis, A.D., 2013. The genome of the ctenophore Mnemiopsis leidyi and its implications for cell type evolution. Science 342, 1242592. https://doi.org/10.1126/science.1242592 
 * Whelan, N.V., Kocot, K.M., Moroz, L.L., Halanych, K.M., 2016. Error, signal, and the placement of Ctenophora sister to all other animals. v3. https://doi.org/10.6084/m9.figshare.1334306.v3 
-* Whelan, N.V., Kocot, K.M., Moroz, L.L., Halanych, K.M., 2015. Error, signal, and the placement of Ctenophora sister to all other animals. Proceedings of the National Academy of Sciences of the United States of America 112, 5773–5778. https://doi.org/10.1073/pnas.1503453112 
+* Whelan, N.V., Kocot, K.M., Moroz, L.L., Halanych, K.M., 2015. Error, signal, and the placement of Ctenophora sister to all other animals. Proceedings of the National Academy of Sciences of the United States of America 112, 5773–5778. https://doi.org/10.1073/pnas.1503453112
+
+
 * Whelan, N.V., Kocot, K.M., Moroz, T.P., Mukherjee, K., Williams, P., Paulay, G., Moroz, L.L., Halanych, K.M., 2017a. Ctenophore relationships and their placement as the sister group to all other animals. Nature Ecology & Evolution 1, 1737–1746. https://doi.org/10.1038/s41559-017-0331-3
 * Whelan, N.V., Kocot, K.M., Moroz, T.P., Mukherjee, K., Williams, P., Paulay, G., Moroz, L.L., Halanych, K.M., 2017b. Ctenophora Phylogeny Datasets and Core Orthologs. Dataset. https://doi.org/10.6084/m9.figshare.4484138.v1 
