@@ -1822,49 +1822,57 @@ compare.multitree.models <- function(dataset, matrix, model_class, ml_results, m
   filtered_output <- mast_output[ which(mast_output$dataset == dataset & 
                                           mast_output$matrix_name == matrix &
                                           mast_output$model_class == model_class), ]
-  # Select best model from MAST tree run
-  best_model <- filtered_output$model_code[[1]]
-  # Filter maximum likelihood results to just that model
-  filtered_ml <- ml_results[which(ml_results$dataset == dataset &
-                                    ml_results$matrix_name == matrix &
-                                    ml_results$model_code == best_model), ]
-  # Identify BIC for 1-tree model
-  ml_1_BIC <- filtered_ml$tree_BIC[[1]]
-  # Check whether 2-tree and 5-tree MAST runs both exist
-  num_runs <- nrow(filtered_output)
-  # Identify BIC for 2-tree and 5-tree models
-  if (num_runs == 1){
-    if (filtered_output$number_hypothesis_trees == 2){
-      # Only 2-tree run
-      mast_2_BIC <- filtered_output[which(filtered_output$number_hypothesis_trees == 2), ]$BIC
-      mast_5_BIC <- NA
-    } else if (filtered_output$number_hypothesis_trees == 5){
-      # Only 5-tree run
-      mast_2_BIC <- NA
-      mast_5_BIC <- filtered_output[which(filtered_output$number_hypothesis_trees == 5), ]$BIC
+  if (nrow(filtered_output) > 0){
+    # Select best model from MAST tree run
+    best_model <- filtered_output$model_code[[1]]
+    # Filter maximum likelihood results to just that model
+    filtered_ml <- ml_results[which(ml_results$dataset == dataset &
+                                      ml_results$matrix_name == matrix &
+                                      ml_results$model_code == best_model), ]
+    # Identify BIC for 1-tree model
+    ml_1_BIC <- as.numeric(filtered_ml$tree_BIC[[1]])
+    # Check whether 2-tree and 5-tree MAST runs both exist
+    num_runs <- nrow(filtered_output)
+    # Identify BIC for 2-tree and 5-tree models
+    if (num_runs == 1){
+      if (filtered_output$number_hypothesis_trees == 2){
+        # Only 2-tree run
+        mast_2_BIC <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$BIC)
+        mast_5_BIC <- NA
+      } else if (filtered_output$number_hypothesis_trees == 5 | filtered_output$number_hypothesis_trees == 3){
+        # Only 5-tree run
+        mast_2_BIC <- NA
+        mast_5_BIC <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$BIC)
+      }
+    } else if (num_runs == 2){
+      mast_2_BIC <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$BIC)
+      mast_5_BIC <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$BIC)
     }
-  } else if (num_runs == 2){
-    mast_2_BIC <- filtered_output[which(filtered_output$number_hypothesis_trees == 2), ]$BIC
-    mast_5_BIC <- filtered_output[which(filtered_output$number_hypothesis_trees == 5), ]$BIC
+    # Collate results
+    all_BIC <- c(ml_1_BIC, mast_2_BIC, mast_5_BIC)
+    names(all_BIC) <- c("1", "2", "5")
+    # Determine best BIC (by lowest)
+    complete_runs_BIC <- all_BIC[which(is.na(all_BIC) == FALSE)]
+    # Sort completed BIC from highest to lowest
+    sorted_BIC <- sort(complete_runs_BIC, decreasing = FALSE)
+    names_sorted_BIC <- names(sorted_BIC)
+    # Fill out sorted names to vector of length 3
+    BIC_order <- c(names_sorted_BIC, rep(NA, (3-length(names_sorted_BIC))) )
+    # Add any missing runs
+    missing_BIC <- names(all_BIC[which(is.na(all_BIC) == TRUE)])
+    missing_format <- paste(missing_BIC, collapse = ",")
+    # Collate results
+    output <- c(dataset, matrix, model_class, best_model, ml_1_BIC, mast_2_BIC, mast_5_BIC, BIC_order, missing_format)
+    output_names <- c("dataset", "matrix", "model_class", "best_model_code", "ML_BIC", "MAST_2_BIC", "MAST_5_BIC", 
+                      "BIC_lowest", "BIC_middle", "BIC_highest", "missing_runs")
+    names(output) <- output_names
+  } else {
+    # Collate results
+    output <- c(dataset, matrix, model_class, NA, NA, NA, NA, NA, NA, NA, NA)
+    output_names <- c("dataset", "matrix", "model_class", "best_model_code", "ML_BIC", "MAST_2_BIC", "MAST_5_BIC", 
+                      "BIC_lowest", "BIC_middle", "BIC_highest", "missing_runs")
+    names(output) <- output_names
   }
-  # Collate results
-  all_BIC <- c(ml_1_BIC, mast_2_BIC, mast_5_BIC)
-  names(all_BIC) <- c("1", "2", "5")
-  # Determine best BIC (by lowest)
-  complete_runs_BIC <- all_BIC[which(is.na(all_BIC) == FALSE)]
-  # Sort completed BIC from highest to lowest
-  sorted_BIC <- sort(complete_runs_BIC, decreasing = FALSE)
-  names_sorted_BIC <- names(sorted_BIC)
-  # Fill out sorted names to vector of length 3
-  BIC_order <- c(names_sorted_BIC, rep(NA, (3-length(names_sorted_BIC))) )
-  # Add any missing runs
-  missing_BIC <- names(all_BIC[which(is.na(all_BIC) == TRUE)])
-  missing_format <- paste(missing_BIC, collapse = ",")
-  # Collate results
-  output <- c(dataset, matrix, model_class, best_model, ml_1_BIC, mast_2_BIC, mast_5_BIC, BIC_order, missing_format)
-  output_names <- c("dataset", "matrix", "model_class", "best_model_code", "ML_BIC", "MAST_2_BIC", "MAST_5_BIC", 
-                    "BIC_lowest", "BIC_middle", "BIC_highest", "missing_runs")
-  names(output) <- output_names
   # Return results
   return(output)
 }
