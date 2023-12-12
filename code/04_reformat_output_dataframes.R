@@ -190,7 +190,24 @@ for (a in analyses){
 
 
 
-#### 6. Check and compare manually extracted BIC/tree BIC results with the automatically extracted values ####
+#### 6. Combine BIC from MAST and single tree ####
+# Open MAST parameter and MAST output paths
+mast_output_path <- grep("MAST_model_output", all_output_files, value = T)
+mast_output <- read.csv(mast_output_path, stringsAsFactors = F)
+ml_results_file <- grep("maximum_likelihood_results", all_output_files, value = T)
+ml_results <- read.table(ml_results_file, header = TRUE, sep = "\t")
+# Create parameters dataframe
+datasets_df <- unique(mast_output[, c("dataset", "matrix_name")])
+datasets_df <- rbind(datasets_df, datasets_df, datasets_df)
+datasets_df$model_class <- c(rep("CXX", nrow(datasets_df)/3), rep("PMSF", nrow(datasets_df)/3), rep("Other", nrow(datasets_df)/3))
+# For each row in the datasets_df:
+dataset <- datasets_df$dataset[1]
+matrix <- datasets_df$matrix_name[1]
+model_class <- datasets_df$model_class[1]
+
+
+
+#### 7. Check and compare manually extracted BIC/tree BIC results with the automatically extracted values ####
 compare_BIC_file = paste0(output_file_dir, "qualityCheck_ML_BIC_comparisons_error.csv")
 # Create the compare_BIC_df if it doesn't exist
 if (file.exists(compare_BIC_df) == FALSE){

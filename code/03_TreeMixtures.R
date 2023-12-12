@@ -79,7 +79,7 @@ control_parameters <- list(prepare.MAST = FALSE,
                            extract.MAST = TRUE,
                            prepare.tree.topology.tests = FALSE,
                            run.tree.topology.tests = FALSE,
-                           extract.tree.topology.tests = TRUE)
+                           extract.tree.topology.tests = FALSE)
 
 
 
@@ -253,7 +253,7 @@ if (control_parameters$extract.MAST == TRUE){
                                  ordered = FALSE)
   # Rearrange columns
   mast_tws_df <- mast_tws_df[, c("hypothesis_tree_analysis", "dataset", "matrix_name", "model_code",  "model_class", "mast_branch_type", 
-                                 "minimum_branch_length", "number_hypothesis_trees",
+                                 "BIC", "minimum_branch_length", "number_hypothesis_trees",
                                  "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight",
                                  "tree_5_tree_weight", "tree_1_total_tree_length", "tree_2_total_tree_length",
                                  "tree_3_total_tree_length", "tree_4_total_tree_length", "tree_5_total_tree_length",
