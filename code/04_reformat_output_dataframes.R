@@ -202,6 +202,25 @@ datasets_df <- rbind(datasets_df, datasets_df, datasets_df)
 datasets_df$model_class <- c(rep("CXX", nrow(datasets_df)/3), rep("PMSF", nrow(datasets_df)/3), rep("Other", nrow(datasets_df)/3))
 rownames(datasets_df) <- 1:nrow(datasets_df)
 # For each row in the datasets_df:
+bic_list <- lapply(1:nrow(datasets_df), compare.multitree.BIC.wrapper, datasets_df = datasets_df, ml_results = ml_results, mast_output = mast_output)
+bic_df <- as.data.frame(do.call(rbind, bic_list))
+# Save BIC results
+write.csv(bic_df, file = paste0(output_file_dir, "summary_BIC_values.csv"), row.names = FALSE)
+
+
+
+#### 7. Combine log likelihood from MAST and single tree ####
+# Open MAST parameter and MAST output paths
+mast_output_path <- grep("MAST_model_output", all_output_files, value = T)
+mast_output <- read.csv(mast_output_path, stringsAsFactors = F)
+ml_results_file <- grep("maximum_likelihood_results", all_output_files, value = T)
+ml_results <- read.table(ml_results_file, header = TRUE, sep = "\t")
+# Create parameters dataframe
+datasets_df <- unique(mast_output[, c("dataset", "matrix_name")])
+datasets_df <- rbind(datasets_df, datasets_df, datasets_df)
+datasets_df$model_class <- c(rep("CXX", nrow(datasets_df)/3), rep("PMSF", nrow(datasets_df)/3), rep("Other", nrow(datasets_df)/3))
+rownames(datasets_df) <- 1:nrow(datasets_df)
+# For each row in the datasets_df:
 bic_list <- lapply(1:nrow(datasets_df), compare.multitree.models.wrapper, datasets_df = datasets_df, ml_results = ml_results, mast_output = mast_output)
 bic_df <- as.data.frame(do.call(rbind, bic_list))
 # Save BIC results
@@ -209,7 +228,7 @@ write.csv(bic_df, file = paste0(output_file_dir, "summary_BIC_values.csv"), row.
 
 
 
-#### 7. Check and compare manually extracted BIC/tree BIC results with the automatically extracted values ####
+#### 8. Check and compare manually extracted BIC/tree BIC results with the automatically extracted values ####
 compare_BIC_file = paste0(output_file_dir, "qualityCheck_ML_BIC_comparisons_error.csv")
 # Create the compare_BIC_df if it doesn't exist
 if (file.exists(compare_BIC_df) == FALSE){

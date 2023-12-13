@@ -1820,7 +1820,7 @@ duplicate.constraint.rows <- function(df){
 }
 
 
-compare.multitree.models.wrapper <- function(i, datasets_df, ml_results, mast_output){
+compare.multitree.BIC.wrapper <- function(i, datasets_df, ml_results, mast_output){
   ## Wrapper for compare.multitree.models, to run through a dataset and apply that function for all rows
   
   # Identify row
@@ -1830,8 +1830,8 @@ compare.multitree.models.wrapper <- function(i, datasets_df, ml_results, mast_ou
   i_matrix <- i_row$matrix_name[1]
   i_model_class <- i_row$model_class[1]
   # Apply function
-  i_output <- compare.multitree.models(dataset = i_dataset, matrix = i_matrix, model_class = i_model_class, 
-                                       ml_results = ml_results, mast_output = mast_output)
+  i_output <- compare.multitree.BIC(dataset = i_dataset, matrix = i_matrix, model_class = i_model_class, 
+                                    ml_results = ml_results, mast_output = mast_output)
   # Return output
   return(i_output)
 }
@@ -1839,7 +1839,7 @@ compare.multitree.models.wrapper <- function(i, datasets_df, ml_results, mast_ou
 
 
 
-compare.multitree.models <- function(dataset, matrix, model_class, ml_results, mast_output){
+compare.multitree.BIC <- function(dataset, matrix, model_class, ml_results, mast_output){
   ## Function to extract BIC for 1, 2 and 5 tree models
   
   # Trim input dataframes to this dataset and matrix
