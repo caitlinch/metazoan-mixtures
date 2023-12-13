@@ -1350,8 +1350,9 @@ extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
                             "num_free_params", "AIC", "AICc", "BIC", paste0("tree_", 1:5, "_tree_weight"),
                             paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
   } else if (trim.output.columns == TRUE){
-    mast_output <- c(basename(iq_file), num_trees, bic_value, tws, ttls, sibl)
-    names(mast_output) <- c("iq_file", "number_hypothesis_trees", "BIC", paste0("tree_", 1:num_trees, "_tree_weight"),
+    mast_output <- c(basename(iq_file), num_trees, ll_value, ull_value, nfp_value, aic_value, aicc_value, bic_value, tws, ttls, sibl)
+    names(mast_output) <- c("iq_file", "number_hypothesis_trees", "log_likelihood_tree", "unconstrained_log_likelihood",
+                            "num_free_params", "AIC", "AICc", "BIC", paste0("tree_", 1:num_trees, "_tree_weight"),
                             paste0("tree_", 1:num_trees, "_total_tree_length"), paste0("tree_", 1:num_trees, "_sum_internal_branch_lengths"))
   }
   # Return output
