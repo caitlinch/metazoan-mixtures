@@ -1821,7 +1821,7 @@ duplicate.constraint.rows <- function(df){
 
 
 compare.multitree.BIC.wrapper <- function(i, datasets_df, ml_results, mast_output){
-  ## Wrapper for compare.multitree.models, to run through a dataset and apply that function for all rows
+  ## Wrapper for compare.multitree.BIC, to run through a dataset and apply that function for all rows
   
   # Identify row
   i_row <- datasets_df[i, ]
@@ -1859,11 +1859,11 @@ compare.multitree.BIC <- function(dataset, matrix, model_class, ml_results, mast
     num_runs <- nrow(filtered_output)
     # Identify BIC for 2-tree and 5-tree models
     if (num_runs == 1){
-      if (filtered_output$number_hypothesis_trees == 2){
+      if (filtered_output$hypothesis_tree_analysis == "2_trees"){
         # Only 2-tree run
         mast_2_BIC <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$BIC)
         mast_5_BIC <- NA
-      } else if (filtered_output$number_hypothesis_trees == 5 | filtered_output$number_hypothesis_trees == 3){
+      } else if (filtered_output$hypothesis_tree_analysis == "5_trees"){
         # Only 5-tree run
         mast_2_BIC <- NA
         mast_5_BIC <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$BIC)
@@ -1895,6 +1895,102 @@ compare.multitree.BIC <- function(dataset, matrix, model_class, ml_results, mast
     output <- c(dataset, matrix, model_class, NA, NA, NA, NA, NA, NA, NA, NA)
     output_names <- c("dataset", "matrix", "model_class", "best_model_code", "ML_BIC", "MAST_2_BIC", "MAST_5_BIC", 
                       "BIC_lowest", "BIC_middle", "BIC_highest", "missing_runs")
+    names(output) <- output_names
+  }
+  # Return results
+  return(output)
+}
+
+
+
+
+compare.multitree.log.likelihood.wrapper <- function(i, datasets_df, ml_results, mast_output){
+  ## Wrapper for compare.multitree.log.likelihood, to run through a dataset and apply that function for all rows
+  
+  # Identify row
+  i_row <- datasets_df[i, ]
+  # Identify variables in row
+  i_dataset <- i_row$dataset[1]
+  i_matrix <- i_row$matrix_name[1]
+  i_model_class <- i_row$model_class[1]
+  # Apply function
+  i_output <- compare.multitree.log.likelihood(dataset = i_dataset, matrix = i_matrix, model_class = i_model_class, 
+                                               ml_results = ml_results, mast_output = mast_output)
+  # Return output
+  return(i_output)
+}
+
+
+
+
+compare.multitree.log.likelihood <- function(dataset, matrix, model_class, ml_results, mast_output){
+  ## Function to extract log likelihood for 1, 2 and 5 tree models
+  
+  # Trim input dataframes to this dataset and matrix
+  filtered_output <- mast_output[ which(mast_output$dataset == dataset & 
+                                          mast_output$matrix_name == matrix &
+                                          mast_output$model_class == model_class), ]
+  if (nrow(filtered_output) > 0){
+    # Select best model from MAST tree run
+    best_model <- filtered_output$model_code[[1]]
+    # Filter maximum likelihood results to just that model
+    filtered_ml <- ml_results[which(ml_results$dataset == dataset &
+                                      ml_results$matrix_name == matrix &
+                                      ml_results$model_code == best_model), ]
+    # Identify log likelihood for 1-tree model
+    ml_1_logl <- as.numeric(filtered_ml$tree_LogL[[1]])
+    ml_1_nfp  <- as.numeric(filtered_ml$tree_NumFreeParams[[1]])
+    # Check whether 2-tree and 5-tree MAST runs both exist
+    num_runs <- nrow(filtered_output)
+    # Identify log likelihood for 2-tree and 5-tree models
+    if (num_runs == 1){
+      if (filtered_output$hypothesis_tree_analysis == "2_trees"){
+        # Only 2-tree run
+        mast_2_logl <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$log_likelihood_tree)
+        mast_2_nfp  <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$num_free_params)
+        mast_5_logl <- NA
+        mast_5_nfp  <- NA
+      } else if (filtered_output$hypothesis_tree_analysis == "5_trees"){
+        # Only 5-tree run
+        mast_2_logl <- NA
+        mast_2_nfp  <- NA
+        mast_5_logl <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$log_likelihood_tree)
+        mast_5_nfp  <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$num_free_params)
+      }
+    } else if (num_runs == 2){
+      mast_2_logl <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$log_likelihood_tree)
+      mast_2_nfp  <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "2_trees"), ]$num_free_params)
+      mast_5_logl <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$log_likelihood_tree)
+      mast_5_nfp  <- as.numeric(filtered_output[which(filtered_output$hypothesis_tree_analysis == "5_trees"), ]$num_free_params)
+    }
+    # Collate results
+    all_logl <- c(ml_1_logl, mast_2_logl, mast_5_logl)
+    names(all_logl) <- c("1", "2", "5")
+    # Determine best log likelihood (by lowest)
+    complete_runs_logl <- all_logl[which(is.na(all_logl) == FALSE)]
+    # Sort completed log likelihood from highest to lowest
+    sorted_logl <- sort(complete_runs_logl, decreasing = TRUE)
+    names_sorted_logl <- names(sorted_logl)
+    # Fill out sorted names to vector of length 3
+    logl_order <- c(names_sorted_logl, rep(NA, (3-length(names_sorted_logl))) )
+    # Add any missing runs
+    missing_logl <- names(all_logl[which(is.na(all_logl) == TRUE)])
+    missing_format <- paste(missing_logl, collapse = ",")
+    # Collate results
+    output <- c(dataset, matrix, model_class, best_model, ml_1_logl, mast_2_logl, mast_5_logl, logl_order, missing_format,
+                ml_1_nfp, mast_2_nfp, mast_5_nfp)
+    output_names <- c("dataset", "matrix", "model_class", "best_model_code", 
+                      "ML_LogL", "MAST_2_LogL", "MAST_5_LogL", 
+                      "LogL_highest", "LogL_middle", "LogL_lowest", "missing_runs", 
+                      "ML_numFreeParams", "MAST_2_numFreeParams", "MAST_5_numFreeParams")
+    names(output) <- output_names
+  } else {
+    # Collate results
+    output_names <- c("dataset", "matrix", "model_class", "best_model_code", 
+                      "ML_LogL", "MAST_2_LogL", "MAST_5_LogL", 
+                      "LogL_highest", "LogL_middle", "LogL_lowest", "missing_runs", 
+                      "ML_numFreeParams", "MAST_2_numFreeParams", "MAST_5_numFreeParams")
+    output <- c(dataset, matrix, model_class, rep(NA, length(output_names)-3))
     names(output) <- output_names
   }
   # Return results

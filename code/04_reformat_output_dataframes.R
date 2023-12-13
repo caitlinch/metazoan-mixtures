@@ -221,10 +221,10 @@ datasets_df <- rbind(datasets_df, datasets_df, datasets_df)
 datasets_df$model_class <- c(rep("CXX", nrow(datasets_df)/3), rep("PMSF", nrow(datasets_df)/3), rep("Other", nrow(datasets_df)/3))
 rownames(datasets_df) <- 1:nrow(datasets_df)
 # For each row in the datasets_df:
-bic_list <- lapply(1:nrow(datasets_df), compare.multitree.models.wrapper, datasets_df = datasets_df, ml_results = ml_results, mast_output = mast_output)
-bic_df <- as.data.frame(do.call(rbind, bic_list))
+logl_list <- lapply(1:nrow(datasets_df), compare.multitree.log.likelihood.wrapper, datasets_df = datasets_df, ml_results = ml_results, mast_output = mast_output)
+logl_df <- as.data.frame(do.call(rbind, logl_list))
 # Save BIC results
-write.csv(bic_df, file = paste0(output_file_dir, "summary_BIC_values.csv"), row.names = FALSE)
+write.csv(logl_df, file = paste0(output_file_dir, "summary_LogLikelihood_values.csv"), row.names = FALSE)
 
 
 
