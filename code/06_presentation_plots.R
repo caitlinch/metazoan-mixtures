@@ -95,8 +95,8 @@ p_2t <- ggplot(tw2_df, aes(x = variable, y = value, fill = variable)) +
         panel.border = element_rect(linewidth = 2, fill = NA, color = "grey70"))
 # Save plot
 p_2t_path <- paste0(plot_dir, "MAST_2_tree_weights_violin")
-ggsave(filename = paste0(p_2t_path, ".png"), plot = p_2t, device = "png")
-ggsave(filename = paste0(p_2t_path, ".pdf"), plot = p_2t, device = "pdf")
+ggsave(filename = paste0(p_2t_path, ".png"), plot = p_2t, device = "png", width = 8, height = 9.67)
+ggsave(filename = paste0(p_2t_path, ".pdf"), plot = p_2t, device = "pdf", width = 8, height = 9.67)
 
 
 
