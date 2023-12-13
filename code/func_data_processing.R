@@ -1324,7 +1324,7 @@ extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
   nfp_value <- gsub(" ", "", nfp_split[[1]][2])
   # Extract AIC
   aic_lines <- grep("Akaike information criterion", iq_lines, value = T)
-  aic_line <- grep("corrected", aic_line, ignore.case = T, invert = T, value = T)
+  aic_line <- grep("corrected", aic_lines, ignore.case = T, invert = T, value = T)
   aic_split <- strsplit(aic_line, ":")
   aic_value <- gsub(" ", "", aic_split[[1]][2])
   # Extract AICc
