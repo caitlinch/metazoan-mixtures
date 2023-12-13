@@ -74,10 +74,8 @@ tw2_df <- melt(mast_2,
                id.vars = c("dataset", "matrix_name", "model_code", "model_class", "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees"),
                measure.vars = c("tree_1_tree_weight", "tree_2_tree_weight"))
 # Plot as a violin plot
-p_2t <- ""
-ggplot(tw2_df, aes(x = variable, y = value, fill = variable)) + 
+p_2t <- ggplot(tw2_df, aes(x = variable, y = value, fill = variable)) + 
   geom_violin() +
-  geom_point(position = position_jitter(seed = 1, width = 0.2), alpha = 0.6, color = "#fcffa4") + 
   scale_y_continuous(name = "Tree weight", breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1), limits = c(0,1)) + 
   scale_x_discrete(name = "Evolutionary hypothesis", labels = c("CTEN", "PORI")) +
   scale_fill_manual(name = "Evolutionary hypothesis", values = plasma_palette[1:2]) +
@@ -96,7 +94,7 @@ ggplot(tw2_df, aes(x = variable, y = value, fill = variable)) +
         panel.grid.minor = element_line(linewidth = 0.8),
         panel.border = element_rect(linewidth = 2, fill = NA, color = "grey70"))
 # Save plot
-p_2t_path <- paste0(plot_dir, "MAST_5_tree_weights_violin")
+p_2t_path <- paste0(plot_dir, "MAST_2_tree_weights_violin")
 ggsave(filename = paste0(p_2t_path, ".png"), plot = p_2t, device = "png")
 ggsave(filename = paste0(p_2t_path, ".pdf"), plot = p_2t, device = "pdf")
 
