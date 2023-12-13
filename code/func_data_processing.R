@@ -1309,6 +1309,28 @@ extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
   sibl_line <- iq_lines[ (sibl_ind) ]
   sibl_raw <- unlist(strsplit(strsplit(strsplit(sibl_line, ":")[[1]][2], "\\(")[[1]],  "\\)"))
   sibl <- gsub(" ", "", grep("\\%", sibl_raw, value = TRUE, invert = TRUE))
+  # Extract log likelihood
+  ll_line <- grep("Log-likelihood of the tree", iq_lines, value = T)
+  ll_split <- strsplit(ll_line, ":")
+  ll_split2 <- strsplit(ll_split[[1]][2], "\\(")
+  ll_value <- gsub(" ", "", ll_split2[[1]][1])
+  # Extract unconstrained log likelihood
+  ull_line <- grep("Unconstrained log-likelihood", iq_lines, value = T)
+  ull_split <- strsplit(ull_line, ":")
+  ull_value <- gsub(" ", "", ull_split[[1]][2])
+  # Extract number of free parameters
+  nfp_line <- grep("Number of free parameters", iq_lines, value = T)
+  nfp_split <- strsplit(nfp_line, ":")
+  nfp_value <- gsub(" ", "", nfp_split[[1]][2])
+  # Extract AIC
+  aic_lines <- grep("Akaike information criterion", iq_lines, value = T)
+  aic_line <- grep("corrected", aic_line, ignore.case = T, invert = T, value = T)
+  aic_split <- strsplit(aic_line, ":")
+  aic_value <- gsub(" ", "", aic_split[[1]][2])
+  # Extract AICc
+  aicc_line <- grep("Corrected Akaike information criterion", iq_lines, value = T)
+  aicc_split <- strsplit(aicc_line, ":")
+  aicc_value <- gsub(" ", "", aicc_split[[1]][2])
   # Extract BIC score
   bic_line <- grep("Bayesian information criterion", iq_lines, value = T)
   bic_split <- strsplit(bic_line, ":")
@@ -1323,8 +1345,9 @@ extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
     ttls <- c(ttls,rep(NA, (5 - num_trees )) )
     sibl <- c(sibl, rep(NA, (5 - num_trees )) )
     # Collect the output to return it
-    mast_output <- c(basename(iq_file), num_trees, bic_value, tws, ttls, sibl)
-    names(mast_output) <- c("iq_file", "number_hypothesis_trees", "BIC", paste0("tree_", 1:5, "_tree_weight"),
+    mast_output <- c(basename(iq_file), num_trees, ll_value, ull_value, nfp_value, aic_value, aicc_value, bic_value, tws, ttls, sibl)
+    names(mast_output) <- c("iq_file", "number_hypothesis_trees", "log_likelihood_tree", "unconstrained_log_likelihood",
+                            "num_free_params", "AIC", "AICc", "BIC", paste0("tree_", 1:5, "_tree_weight"),
                             paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_branch_lengths"))
   } else if (trim.output.columns == TRUE){
     mast_output <- c(basename(iq_file), num_trees, bic_value, tws, ttls, sibl)
