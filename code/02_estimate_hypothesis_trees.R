@@ -196,7 +196,7 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   # Reorder by dataset, then matrix name, then best tree by BIC
   trimmed_ml_tree_df <- trimmed_ml_tree_df[order(trimmed_ml_tree_df$dataset, trimmed_ml_tree_df$matrix_name, trimmed_ml_tree_df$tree_BIC),]
   
-  # Add model class (Other, PMSF, CXX)
+  # Add model class (Single, Other, PMSF, CXX)
   trimmed_ml_tree_df$model_class <- factor(trimmed_ml_tree_df$model_code,
                                            levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", 
                                                       "LG_C60", "LG_C20", "C60", "C20", 
@@ -279,12 +279,7 @@ if (control_parameters$prepare.constraint.trees == TRUE){
                                               determine.best.ML.model.per.class.wrapper, 
                                               completed_runs_df = completed_runs_df, 
                                               ML_output_df = trimmed_ml_tree_df))
-  # Add model class (Other, PMSF, CXX)
-  selected_models_df$model_class <- factor(selected_models_df$model_code,
-                                           levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", "LG_C60", "LG_C20", "C60", "C20", "LG4M", "EX_EHO",
-                                                      "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
-                                                      "mtZOA", "PMB", "CF4", "Poisson"),
-                                           labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
+
   
   # Add the two substitution models to the csv
   # Nosenko 2013 non-ribo C60 has errors - replace with Nosenko 2013 non-ribo LG+C60

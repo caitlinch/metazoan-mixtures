@@ -175,11 +175,10 @@ determine.best.ML.model.per.class.wrapper <- function(row_id, completed_runs_df,
   #     maximum likelihood runs, and feed that information into another function to pick the best ML models
   
   # Set classes for models list
-  model_classes = list("profile" = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20"),
-                       "site_heterogeneous" = c("LG_C60", "LG_C20", "C60", "C20"),
-                       "other" = c("LG4M", "EX_EHO", "UL3", "UL2", "EX3", "EX2", "EHO", "GTR20",      
-                                   "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT", 
-                                   "mtZOA", "PMB", "CF4", "Poisson"))
+  model_classes = list("PMSF" = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20"),
+                       "CXX" = c("LG_C60", "LG_C20", "C60", "C20"),
+                       "Other" = c("CF4", "EHO", "EX2", "EX3", "EX_EHO", "LG4M", "UL2", "UL3", "ModelFinder"),
+                       "Single" = c("GTR20",  "JTTDCMut", "JTT", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG"))
   # Find the row of interest
   row <- completed_runs_df[row_id, ]
   # Reduce the output dataframe to just the dataset/matrix in that row
