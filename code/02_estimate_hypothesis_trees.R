@@ -198,10 +198,11 @@ if (control_parameters$extract.ML.tree.information == TRUE){
   
   # Add model class (Other, PMSF, CXX)
   trimmed_ml_tree_df$model_class <- factor(trimmed_ml_tree_df$model_code,
-                                           levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", "LG_C60", "LG_C20", "C60", "C20", "LG4M", "EX_EHO",
-                                                      "UL3", "UL2", "EX3", "EX2",  "EHO", "GTR20", "ModelFinder", "LG", "rtREV", "WAG", "JTTDCMut", "JTT",
-                                                      "mtZOA", "PMB", "CF4", "Poisson"),
-                                           labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 18)))
+                                           levels = c("PMSF_C60", "PMSF_LG_C60", "PMSF_C20", "PMSF_LG_C20", 
+                                                      "LG_C60", "LG_C20", "C60", "C20", 
+                                                      "CF4", "EHO", "EX2", "EX3", "EX_EHO", "LG4M", "UL2", "UL3", "ModelFinder",
+                                                      "GTR20",  "JTTDCMut", "JTT", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG"),
+                                           labels = c(rep("PMSF", 4), rep("CXX", 4), rep("Other", 9), rep("Single", 9) ))
   
   # Remove unwanted columns from the trimmed_ml_tree_df
   trimmed_ml_tree_df <- trimmed_ml_tree_df[,c("dataset", "model_code", "model_class", "matrix_name", "sequence_format",
