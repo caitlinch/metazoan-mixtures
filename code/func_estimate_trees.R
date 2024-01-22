@@ -1506,7 +1506,7 @@ tree.topology.test.wrapper <- function(row_id, df, output_dir = NA, iqtree2, iqt
   if (is.na(df_row$best_model_sitefreq_path) == FALSE){
     # This iqtree run uses a PMSF model
     tree_top_pmsf_file <- df_row$best_model_sitefreq_path
-  } else if (is.na(sitefreq_file) == TRUE){
+  } else if (is.na(df_row$best_model_sitefreq_path) == TRUE){
     # No sitefreq variable is present - do not use a PMSF model
     tree_top_pmsf_file <- NA
   }

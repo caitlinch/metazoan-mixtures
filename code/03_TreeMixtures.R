@@ -100,7 +100,7 @@ if (file.exists(mast_parameter_path) == TRUE){
   model_df <- read.csv(mast_parameter_path, header = T)
 } else if (file.exists(mast_parameter_path) == FALSE){
   ## Prepare the dataframe 
-  model_df <- read.table(paste0(output_dir, "01_03_best_models_per_alignment.tsv"), header = T)
+  model_df <- read.table(paste0(output_dir, "01_03_collated_best_models_per_alignment.tsv"), header = T)
   # Remove the two rows for MAST runs that don't work - replaced with better models
   remove_rows <- c(which(model_df$dataset == "Nosenko2013" & model_df$matrix_name == "nonribosomal_9187_smatrix" & model_df$model_code == "C60"),
                    which(model_df$dataset == "Laumer2018" & model_df$matrix_name == "Tplx_phylo_d1" & model_df$model_code == "LG_C60"))
@@ -120,9 +120,9 @@ if (file.exists(mast_parameter_path) == TRUE){
   model_df$best_model_sitefreq_path   <- unlist(lapply(1:nrow(model_df), function(x){split_best_model_str[[x]][2]}))
   
   ## Prepare the hypothesis tree files
-  model_df$hypothesis_tree_path <- paste0(hypothesis_tree_dir, 
-                                          unlist(lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code), 
-                                                        function(x){grep(x, list.files(hypothesis_tree_dir), value = T)})) )
+  hyp_tree_file_paths <- lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code, ".hypothesis"), 
+                                              function(x){grep(x, list.files(hypothesis_tree_dir), value = T)}) 
+  model_df$hypothesis_tree_path <- hyp_tree_file_paths
   
   ## Add the  file paths to the dataframe (without directory names)
   model_df$best_model_sitefreq_path <- basename(model_df$best_model_sitefreq_path)
