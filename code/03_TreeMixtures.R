@@ -289,6 +289,7 @@ if (control_parameters$extract.tree.topology.tests == TRUE){
   au_test_df <- as.data.frame(do.call(rbind, au_test_list))
   # Add new column for model class
   au_test_df$model_class <- au_test_df$best_model_code
+  au_test_df$model_class[grep("LG", au_test_df$best_model_code)] <- "Single"
   au_test_df$model_class[grep("LG4M|UL3", au_test_df$best_model_code)] <- "Other"
   au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", au_test_df$best_model_code)] <- "CXX"
   au_test_df$model_class[grep("PMSF", au_test_df$best_model_code)] <- "PMSF"
@@ -301,6 +302,8 @@ if (control_parameters$extract.tree.topology.tests == TRUE){
                                "model_class", "analysis", "tree", "evolutionary_hypothesis", "logL",
                                "deltaL", "bp_RELL", "p_KH", "p_SH", "p_wKH", "p_wSH", "c_ELW", "p_AU",
                                "AU_test_rejected", "tree_topology_iqtree_file")]
+  # Reorder rows
+  au_test_df <- au_test_df[ order(au_test_df$hypothesis_tree_analysis, au_test_df$dataset, au_test_df$matrix, au_test_df$model_class, au_test_df$tree) , ]
   # Remove file path from iqtree file name
   au_test_df$tree_topology_iqtree_file <- basename(au_test_df$tree_topology_iqtree_file)
   # Save tree topology test results to file
