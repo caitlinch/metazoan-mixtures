@@ -108,9 +108,8 @@ output_file_paths <- paste0(output_dir, c("01_01_maximum_likelihood_tree_estimat
                                           "01_02_dataset_completion_frequency.tsv",
                                           "01_03_best_models_per_alignment.tsv",
                                           "01_03_check_ModelFinder_best_models.tsv",
-                                          "01_04_constraint_tree_estimation_parameters.tsv",
-                                          "01_04_constraint_tree_iqtree2_command_paths.txt",
-                                          "01_05_collated_hypothesis_tree_runs.tsv"))
+                                          "01_04_collated_constraint_tree_estimation_parameters.tsv",
+                                          "01_04_constraint_tree_iqtree2_command_paths.txt"))
 
 
 
@@ -371,6 +370,6 @@ ml_h_files <- grep("ML_H1", iq_files, value = T) # get only files for hypothesis
 # Separate out the unique IDs for each combination of model and dataset
 run_ids <- sort(unique(unlist(lapply(strsplit(ml_h_files, "\\."), function(x){paste0(x[[1]], ".", x[[2]], ".", x[[3]])}))))
 # Collate hypothesis trees by id
-collated_h_trees <- lapply(run_ids, combine.hypothesis.trees, tree_directory = h_tree_dir, output_id = "hypothesis_trees.2trees", num_trees = 2)
+collated_h_trees <- lapply(run_ids, combine.hypothesis.trees, tree_directory = h_tree_dir, output_id = "hypothesis_trees.5trees", num_trees = 5)
 
 
