@@ -46,7 +46,7 @@ if (location == "local"){
   output_dir              <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
   repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
   iqtree2                 <- "iqtree2"
-  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.4.hmmster-MacOSX/bin/iqtree"
+  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.6.hmmster-MacOSX/bin/iqtree"
   iqtree_num_threads      <- 3
 } else if (location == "rona"){
   ## File paths
