@@ -69,7 +69,7 @@ if (location == "local"){
   output_dir              <- "/home/caitlin/metazoan_mixtures/output/output_csvs/"
   repo_dir                <- "/home/caitlin/metazoan_mixtures/"
   iqtree2                 <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.2-Linux/bin/iqtree2"
-  iqtree_MAST             <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.4.hmmster-Linux/bin/iqtree2"
+  iqtree_MAST             <- "/home/caitlin/metazoan_mixtures/iqtree2/iqtree-2.2.6.hmmster-Linux/bin/iqtree2"
   iqtree_num_threads        <- 120
 }
 
