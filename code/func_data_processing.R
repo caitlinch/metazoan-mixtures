@@ -55,6 +55,8 @@ create.model.dataframe <- function(model_vector, output.counts = FALSE, output.m
 }
 
 
+
+
 extract.partition.models <- function(partition_file){
   # Function to read in a partition file and return the list of models applied to the charsets
   
@@ -78,6 +80,8 @@ extract.partition.models <- function(partition_file){
 }
 
 
+
+
 get.model.chunk <- function(model, number){
   # Small function to break up a model into chunks and return the chunk at number position (e.g. first position, third position)
   
@@ -98,6 +102,8 @@ get.model.chunk <- function(model, number){
   # Return the chunk at position number for this model
   return(chunk)
 }
+
+
 
 
 remove.extra.plusses <- function(m){
@@ -123,6 +129,8 @@ remove.extra.plusses <- function(m){
     } # end if (new_m != "" | new_m != "+")
   } # end if (length(m_split) > 0)
 } # end remove.extra.plusses <- function(m)
+
+
 
 
 sort.model.chunks <- function(m){
@@ -214,6 +222,8 @@ extract.best.model <- function(iqtree_file){
 }
 
 
+
+
 extract.treefile <- function(tree_file){
   # Small function to extract a tree using a file path
   
@@ -231,6 +241,8 @@ extract.treefile <- function(tree_file){
 }  
 
 
+
+
 extract.branch.length.wrapper <- function(row_id, alignment_df, tree_directory){
   ## Wrapper function for extract.branch.length
   
@@ -242,6 +254,8 @@ extract.branch.length.wrapper <- function(row_id, alignment_df, tree_directory){
   # Return branch length
   return(bl)
 }
+
+
 
 
 extract.branch.length <- function(dataset, matrix_name, model_code, tree_directory){
@@ -292,6 +306,8 @@ extract.branch.length <- function(dataset, matrix_name, model_code, tree_directo
   names(output_vector) <- c("ctenophora_clade_branch_length", "ctenophora_clade_depth", "porifera_clade_branch_length", "porifera_clade_depth")
   return(output_vector)
 }
+
+
 
 
 extract.model.log.likelihood <- function(iqtree_file, var = "LogL"){
@@ -374,6 +390,8 @@ extract.model.log.likelihood <- function(iqtree_file, var = "LogL"){
 }
 
 
+
+
 extract.tree.log.likelihood <- function(iqtree_file, var = "LogL"){
   # Function to extract the log likelihood of a model from in IQ-Tree
   # Can extract either the log likelihood (var = "LogL), the unconstrained log likelihood (without tree) (var = "ULL"),
@@ -424,6 +442,8 @@ extract.tree.log.likelihood <- function(iqtree_file, var = "LogL"){
 }
 
 
+
+
 extract.rates <- function(iqtree_file){
   # Function to extract the rate parameters of a model from in IQ-Tree
   
@@ -464,6 +484,8 @@ extract.rates <- function(iqtree_file){
   # Return the output
   return(rates_op)
 }
+
+
 
 
 extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
@@ -535,6 +557,8 @@ extract.gamma.values <- function(iqtree_file, gamma.parameter = "List"){
 }
 
 
+
+
 extract.state.frequencies <- function(iqtree_file){
   # Given an iqtree file, this function will extract the state frequencies for the alignment
   
@@ -595,6 +619,7 @@ extract.state.frequencies <- function(iqtree_file){
   ## Output the frequencies
   return(f_op)
 }
+
 
 
 
@@ -659,6 +684,7 @@ extract.cat.frequencies <- function(iqtree_file, allow.zero.weights = TRUE){
 
 
 
+
 extract.alisim.model <- function(log_file){
   # Given a .log file (output from IQ-Tree), this function will extract the model specification from the Alisim instructions
   
@@ -692,6 +718,8 @@ extract.alisim.model <- function(log_file){
   # Return the output
   return(alisim_model)
 }
+
+
 
 
 extract.model.details <- function(iqtree_file){
@@ -1088,6 +1116,8 @@ extract.model.details <- function(iqtree_file){
 }
 
 
+
+
 check.ModelFinder.models <- function(best_model, iqtree_file){
   # Function to take the best model by BIC for an alignment and check whether that model was tested by ModelFinder in IQ-Tree
   
@@ -1149,6 +1179,8 @@ check.ModelFinder.models <- function(best_model, iqtree_file){
 }
 
 
+
+
 extract.iqtree.file <- function(unique_id, IQTree_output_dir){
   # Small function to extract the relevant iqtree_file for a given alignment
   
@@ -1163,6 +1195,8 @@ extract.iqtree.file <- function(unique_id, IQTree_output_dir){
   # Return the ModelFinder .iqtree file for this alignment
   return(mfp_iqtree_file)
 }
+
+
 
 
 extract.best.model.from.dataframe <- function(unique_id, best_models_df){
@@ -1198,6 +1232,8 @@ extract.best.model.from.dataframe <- function(unique_id, best_models_df){
   # Return the output values
   return(op_vec)
 }
+
+
 
 
 check.ModelFinder.models.wrapper <- function(best_models_df, IQTree_output_dir){
@@ -1288,6 +1324,8 @@ extract.HMM.output <- function(hmm_file){
   # Return output
   return(hmm_output)
 }
+
+
 
 
 extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
@@ -1383,6 +1421,8 @@ check.tree.taxa <- function(tree_file){
 }
 
 
+
+
 dataset.check.tree.taxa <- function(tree_files){
   # Function to take a list of tree files, check what taxa are in each tree, and determine whether the trees have the same taxa
   
@@ -1442,6 +1482,8 @@ dataset.check.tree.taxa <- function(tree_files){
   # Return the output (either a list of the taxa in all the trees, or an error message)
   return(ds_check_op)
 }
+
+
 
 
 dataset.check.tree.taxa.wrapper <- function(unique_ids, tree_folder){
@@ -1617,6 +1659,9 @@ summarise.HMM.results <- function(row_index, hmm_df){
   
 }
 
+
+
+
 summarise.tree.weights <- function(row_index, tw_df){
   ## Function to take one dataset and summarise the HMMster (MAST) results in one row
   # Get the relevant row from the dataset
@@ -1641,6 +1686,9 @@ summarise.tree.weights <- function(row_index, tw_df){
   
 }
 
+
+
+
 summarise.AU.test.results <- function(dataset_id, au_test_df){
   ## Function to take one dataset and summarise the AU test results in one row
   # Get rows of dataframe that have matching ID
@@ -1660,6 +1708,9 @@ summarise.AU.test.results <- function(dataset_id, au_test_df){
   return(new_row)
 }
 
+
+
+
 summarise.eLW <- function(dataset_id, au_test_df){
   ## Function to take one dataset and summarise the AU test results in one row
   # Get rows of dataframe that have matching ID
@@ -1678,6 +1729,8 @@ summarise.eLW <- function(dataset_id, au_test_df){
   # Return the output
   return(new_row)
 }
+
+
 
 
 summarise.topology.results <- function(dataset_id, topology_check_df, 
@@ -1733,6 +1786,8 @@ summarise.topology.results <- function(dataset_id, topology_check_df,
 }
 
 
+
+
 tree.topology.results <- function(dataset_id, topology_check_df, model_order){
   ## Function to order the topologies consistently by model and return the results
   # Get rows of dataframe that have matching ID
@@ -1753,6 +1808,8 @@ tree.topology.results <- function(dataset_id, topology_check_df, model_order){
   # Return output
   return(output_vector)
 }
+
+
 
 
 porifera.topology.results <- function(dataset_id, topology_check_df, model_order){
@@ -1776,6 +1833,8 @@ porifera.topology.results <- function(dataset_id, topology_check_df, model_order
 }
 
 
+
+
 return.MAST.branch.type <- function(file_path){
   # Quick function to return the branch type option from the MAST run
   
@@ -1788,6 +1847,7 @@ return.MAST.branch.type <- function(file_path){
   }
   return(branch_type)
 }
+
 
 
 
@@ -1818,6 +1878,8 @@ duplicate.constraint.rows <- function(df){
   # Return the duplicated dataframe
   return(new_df)
 }
+
+
 
 
 compare.multitree.BIC.wrapper <- function(i, datasets_df, ml_results, mast_output){
