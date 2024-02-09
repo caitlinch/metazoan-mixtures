@@ -58,7 +58,7 @@ if (location == "local"){
   output_dir              <- "/home/caitlin/metazoan-mixtures/output_csvs/"
   repo_dir                <- "/home/caitlin/metazoan-mixtures/"
   iqtree2                 <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
-  iqtree_MAST             <- "/home/caitlin/metazoan-mixtures/iqtree/iqtree-2.2.4.hmmster-Linux/bin/iqtree2"
+  iqtree_MAST             <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/03_Software_IQ-Tree/iqtree-2.2.6.hmmster-MacOSX/bin/iqtree2"
   iqtree_num_threads      <- 250
 } else if (location == "rosa"){
   alignment_dir           <- "/home/caitlin/metazoan_mixtures/data_all/"
