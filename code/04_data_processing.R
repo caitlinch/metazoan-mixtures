@@ -7,10 +7,12 @@
 ## File paths
 # output_file_dir         <- Directory for output csvs
 # repo_dir                <- Location of caitlinch/metazoan-mixtures github repository
+# hypothesis_tree_dir     <- Directory containing all constrained ML trees (i.e., the hypothesis trees)
 
 ## File paths
 output_file_dir         <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/01_output_files/"
 repo_dir                <- "/Users/caitlincherryh/Documents/Repositories/metazoan-mixtures/"
+hypothesis_tree_dir     <- "/Users/caitlincherryh/Documents/C3_TreeMixtures_Sponges/04_output/04_hypothesis_trees/"
 
 
 
@@ -292,17 +294,41 @@ if (file.exists(compare_BIC_df) == FALSE){
 
 #### 9. Collate MAST analyses and constrained tree analyses to calculate BIC ####
 # Read in tsv file
-mast_df <- read.csv(file = grep("04_01_MAST_model_output_SubstitutionModels.csv", all_output_files, value = TRUE), header = TRUE)
-mast_df$tree_topology <- NA
-# Reorder columns
-mast_df <- mast_df[, c("dataset", "matrix_name", "model_class", "model_code", "number_hypothesis_trees", "tree_topology",
-                       "mast_branch_type", "log_likelihood_tree", "unconstrained_log_likelihood", "best_model_MAST",
-                       "num_free_params_MAST", "AIC", "AICc", "BIC")]
+mast_df                   <- read.csv(file = grep("04_01_MAST_model_output_SubstitutionModels.csv", all_output_files, value = TRUE), header = TRUE)
+# Update mast df
+mast_df$tree_topology     <- NA
+mast_df2                  <- mast_df[ , c("dataset", "matrix_name", "number_hypothesis_trees", "tree_topology", "model_class", "model_code", "subs_model",
+                                          "subs_model_num_params", "mixture_component", "mixture_component_num_params", "rate_num_params",
+                                          "state_freq", "state_freq_num_params", "mast_branch_type", "log_likelihood_tree",
+                                          "unconstrained_log_likelihood", "num_free_params", "AIC", "AICc", "BIC")]
+names(mast_df2)           <-  c("dataset", "matrix_name", "num_trees", "tree_topology", "model_class", "model_code", "model",
+                                "subs_model_num_params", "mixture_component", "mixture_component_num_params", "rate_num_params",
+                                "state_freq", "state_freq_num_params", "mast_branch_type", "tree_LogL", 
+                                "unconstrained_LogL", "num_free_params", "AIC", "AICc", "BIC")
+mast_df2$mast_branch_type <- "TR"
+# Extract list of constrained tree hypotheses
+all_h_trees         <- grep("00_", list.files(hypothesis_tree_dir, recursive = TRUE), value = TRUE, invert = TRUE)
+h_tree_iqtree_files <- grep("\\.iqtree", all_h_trees, value = T)
+extract_h_trees     <- paste0(hypothesis_tree_dir, grep("ML_H1|ML_H2", h_tree_iqtree_files, value = TRUE))
+htree_df            <- as.data.frame(do.call(rbind, lapply(extract_h_trees, extract.hypothesis.tree.parameters)))
+htree_df                  <- htree_df[ , c("dataset", "matrix_name", "num_trees", "tree_topology", "model_class", "model_code", 
+                                           "subs_model", "subs_model_num_params", "mixture_component", "mixture_component_num_params", "rate_num_params",
+                                           "state_freq", "state_freq_num_params", "mast_branch_type", "LogL",
+                                           "Unconstrained_LogL", "NumFreeParams", "AIC", "AICc", "BIC")]
+names(htree_df)           <-  c("dataset", "matrix_name", "num_trees", "tree_topology", "model_class", "model_code", "model",
+                                "subs_model_num_params", "mixture_component", "mixture_component_num_params", "rate_num_params",
+                                "state_freq", "state_freq_num_params", "mast_branch_type", "tree_LogL", 
+                                "unconstrained_LogL", "num_free_params", "AIC", "AICc", "BIC")
+# Concatenate dataframes
+check_BIC_df <- rbind(mast_df2, htree_df)
 # Order dataframe by dataset and model
-mast_df <- mast_df[order(mast_df$dataset, mast_df$matrix_name, mast_df$model_class, 
-                         mast_df$number_hypothesis_trees, mast_df$tree_topology, decreasing = FALSE), ]
-# Process for 2trees and 5trees analysis
-analyses <- c("2_trees", "5_trees")
+check_BIC_df <- check_BIC_df[order(check_BIC_df$dataset, check_BIC_df$matrix_name, check_BIC_df$model_class, 
+                                   check_BIC_df$num_trees, check_BIC_df$tree_topology, decreasing = FALSE), ]
+# Save dataframe
+collated_file <- paste0(output_file_dir, "05_collated_trees_and_MAST.csv")
+check_BIC_file <- paste0(output_file_dir, "05_recalculate_BIC.csv")
+write.csv(check_BIC_df, file = collated_file)
+write.csv(check_BIC_df, file = check_BIC_file)
 
 
 

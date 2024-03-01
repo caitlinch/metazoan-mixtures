@@ -396,7 +396,8 @@ extract.tree.log.likelihood <- function(iqtree_file, var = "LogL"){
   # Function to extract the log likelihood of a model from in IQ-Tree
   # Can extract either the log likelihood (var = "LogL), the unconstrained log likelihood (without tree) (var = "ULL"),
   #   the number of free parameters (var = "NFP), the BIC (var = "BIC"), the total tree length (var = "TrLen"), 
-  #   the sum of internal branch lengths (var = "SIBL"),  or all of the above (var = "All")
+  #   the sum of internal branch lengths (var = "SIBL"), all of the above (var = "All")
+  # New flag: "AIC" - calculates "All" + AIC +AICc
   
   # Check if the iqtree file exists
   if (file.exists(iqtree_file) == TRUE){
@@ -433,6 +434,19 @@ extract.tree.log.likelihood <- function(iqtree_file, var = "LogL"){
       sibl <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Sum of internal branch lengths\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
       # Assemble all variables into a vector (for outputting all informating at once)
       output <- c("LogL" = logl, "Unconstrained_LogL" = ull, "NumFreeParams" = nfp, 
+                  "BIC" = bic, "TreeLength" = treelen, "SumInternalBranchLengths" = sibl)
+    } else if (var == "AIC"){
+      # Extract all values
+      logl <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Log-likelihood of the tree\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
+      ull <- gsub(" ", "", strsplit(iq_lines[grep("Unconstrained log-likelihood \\(without tree\\)\\:", iq_lines)], "\\:")[[1]][2])
+      nfp <- gsub(" ", "", strsplit(iq_lines[grep("Number of free parameters \\(\\#branches \\+ \\#model parameters\\)\\:", iq_lines)], "\\:")[[1]][2])
+      aic <- gsub(" ", "", strsplit(iq_lines[grep("Akaike information criterion \\(AIC\\) score\\:", iq_lines)], "\\:")[[1]][2])
+      aicc <- gsub(" ", "", strsplit(iq_lines[grep("Corrected Akaike information criterion \\(AICc\\) score\\:", iq_lines)], "\\:")[[1]][2])
+      bic <- gsub(" ", "", strsplit(iq_lines[grep("Bayesian information criterion \\(BIC\\) score\\:", iq_lines)], "\\:")[[1]][2])
+      treelen <- gsub(" ", "", strsplit(iq_lines[grep("Total tree length \\(sum of branch lengths\\)\\:", iq_lines)], "\\:")[[1]][2])
+      sibl <- gsub(" ", "", strsplit(strsplit(iq_lines[grep("Sum of internal branch lengths\\:", iq_lines)], "\\:")[[1]][2], "\\(")[[1]][1])
+      # Assemble all variables into a vector (for outputting all informating at once)
+      output <- c("LogL" = logl, "Unconstrained_LogL" = ull, "NumFreeParams" = nfp, "AIC" = aic, "AICc" = aicc,
                   "BIC" = bic, "TreeLength" = treelen, "SumInternalBranchLengths" = sibl)
     } # end if (var == "LogL")
   } # end if (file.exists(iqtree_file) == TRUE)
@@ -1410,16 +1424,16 @@ extract.best.model.MAST <- function(iq_file){
   
   ## Extract the best model
   # Extract model
-  lmos_ind  <- grep("Linked Model of substitution|Linked Mixture model of substitution", iq_lines)
+  lmos_ind  <- grep("Linked Model of substitution|Linked Mixture model of substitution|Mixture model of substitution|Model of substitution", iq_lines)
   lmos_line <- iq_lines[lmos_ind]
   lmos      <- gsub(" ", "", strsplit(lmos_line, ":")[[1]][[2]])
   # Count number of parameters
   warning_check <- intersect(grep("This model has", iq_lines), grep("parameters", iq_lines))
   if (identical(grep("Component", iq_lines), integer(0)) == FALSE) {
     # This file contains a table of parameter values
-  lmos_table_start    <- grep("Component", iq_lines)[which(grep("Component", iq_lines) > lmos_ind)] +1
-  lmos_table_end      <- empty_lines[which(empty_lines > lmos_table_start)][1] - 1
-  lmos_num_parameters <- length(lmos_table_start:lmos_table_end)
+    lmos_table_start    <- grep("Component", iq_lines)[which(grep("Component", iq_lines) > lmos_ind)] +1
+    lmos_table_end      <- empty_lines[which(empty_lines > lmos_table_start)][1] - 1
+    lmos_num_parameters <- length(lmos_table_start:lmos_table_end)
   } else if (identical(warning_check, integer(0)) == FALSE) {
     # This file explicitly lists the number of parameters
     warning_line        <- iq_lines[warning_check]
@@ -1486,6 +1500,41 @@ extract.best.model.MAST <- function(iq_file){
   return(model_vector)
 }
 
+
+
+extract.hypothesis.tree.parameters <- function(iq_file){
+  # Extract parameters from hypothesis tree .iqtree files
+  
+  ## Extract details about the tree
+  split_file    <- strsplit(basename(iq_file), "\\.")[[1]]
+  dataset       <- split_file[[1]]
+  matrix_name   <- split_file[[2]]
+  model_class   <- strsplit(basename(dirname(iq_file)), "/")[[1]]
+  model_code    <- split_file[[3]]
+  
+  ## Identify tree topology
+  tree_id <- split_file[[4]]
+  if (tree_id == "ML_H1"){
+    tree_topology <- "CTEN"
+  } else if (tree_id == "ML_H2"){
+    tree_topology <- "PORI"
+  } else if (tree_id == "ML_H3"){
+    tree_topology <- "CTEN+PORI"
+  }
+  
+  ## Extract model parameters
+  ht_model <- extract.best.model.MAST(iq_file)
+  
+  ## Extract likelihood values
+  ht_ll <- extract.tree.log.likelihood(iq_file, var = "AIC")
+  
+  ## Collate and assemble output
+  output_vector <- c(1, dataset, matrix_name, tree_topology, model_class, model_code,
+                     ht_model, NA, ht_ll )
+  names(output_vector) <- c("num_trees", "dataset", "matrix_name", "tree_topology", "model_class", "model_code", 
+                             names(ht_model), "mast_branch_type", names(ht_ll))
+  return(output_vector)
+}
 
 
 
