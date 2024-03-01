@@ -26,8 +26,8 @@ source(paste0(repo_dir, "code/func_data_processing.R"))
 
 # List all files in output directory
 all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
-# Remove any files with all 5 trees - only want to look at the output for the 2 tree model
-all_output_files <- grep("5trees", all_output_files, value = TRUE, invert = TRUE)
+# # Remove any files with all 5 trees - only want to look at the output for the 2 tree model
+# all_output_files <- grep("5trees", all_output_files, value = TRUE, invert = TRUE)
 
 
 
@@ -287,5 +287,22 @@ if (file.exists(compare_BIC_df) == FALSE){
   write.csv(different_df, file = compare_BIC_file, row.names = FALSE)
   # Note: must manually check and correct any rows with differing BIC values (for best model or for trees)
 }
+
+
+
+#### 9. Collate MAST analyses and constrained tree analyses to calculate BIC ####
+# Read in tsv file
+mast_df <- read.csv(file = grep("04_01_MAST_model_output_SubstitutionModels.csv", all_output_files, value = TRUE), header = TRUE)
+mast_df$tree_topology <- NA
+# Reorder columns
+mast_df <- mast_df[, c("dataset", "matrix_name", "model_class", "model_code", "number_hypothesis_trees", "tree_topology",
+                       "mast_branch_type", "log_likelihood_tree", "unconstrained_log_likelihood", "best_model_MAST",
+                       "num_free_params_MAST", "AIC", "AICc", "BIC")]
+# Order dataframe by dataset and model
+mast_df <- mast_df[order(mast_df$dataset, mast_df$matrix_name, mast_df$model_class, 
+                         mast_df$number_hypothesis_trees, mast_df$tree_topology, decreasing = FALSE), ]
+# Process for 2trees and 5trees analysis
+analyses <- c("2_trees", "5_trees")
+
 
 

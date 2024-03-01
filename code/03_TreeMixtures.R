@@ -229,7 +229,6 @@ if (control_parameters$extract.MAST == TRUE){
   # Extract list of MAST files
   all_files <- list.files(mast_dir, recursive = TRUE)
   mast_files <- paste0(mast_dir, grep("\\.iqtree", grep("MAST", all_files, value = T), value = T))
-  
   ## Tree Weights
   # To extract information from the tree weights:
   mast_tws_df <- as.data.frame(do.call(rbind, lapply(mast_files, extract.tree.weights)))
@@ -253,6 +252,7 @@ if (control_parameters$extract.MAST == TRUE){
                                                  ordered = FALSE)
   # Rearrange columns
   mast_tws_df2 <- mast_tws_df[, c("hypothesis_tree_analysis", "dataset", "matrix_name", "model_code",  "model_class", 
+                                  "subs_model", "subs_model_num_params", "mixture_component", "mixture_component_num_params", "rate_num_params", "state_freq", "state_freq_num_params",
                                   "mast_branch_type", "minimum_branch_length", "number_hypothesis_trees",
                                   "log_likelihood_tree", "unconstrained_log_likelihood", "num_free_params", "AIC", "AICc", "BIC",
                                   "tree_1_tree_weight", "tree_2_tree_weight", "tree_3_tree_weight", "tree_4_tree_weight", "tree_5_tree_weight", 
@@ -260,7 +260,7 @@ if (control_parameters$extract.MAST == TRUE){
                                   "tree_1_sum_internal_bl", "tree_2_sum_internal_bl", "tree_3_sum_internal_bl", "tree_4_sum_internal_bl", "tree_5_sum_internal_bl",
                                   "iq_file")]
   ## Save output dataframe
-  write.csv(mast_tws_df, paste0(output_dir, "04_01_MAST_model_output.csv"), row.names = FALSE)
+  write.csv(mast_tws_df2, paste0(output_dir, "04_01_MAST_model_output_SubstitutionModels.csv"), row.names = FALSE)
 }
 
 

@@ -1373,6 +1373,8 @@ extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
   bic_line <- grep("Bayesian information criterion", iq_lines, value = T)
   bic_split <- strsplit(bic_line, ":")
   bic_value <- gsub(" ", "", bic_split[[1]][2])
+  # Extract model details
+  mast_model <- extract.best.model.MAST(iq_file)
   # Determine the number of trees
   num_trees <- length(tws)
   # EITHER keep all 5 columns (for the maximum number of 5 trees) OR 
@@ -1383,18 +1385,105 @@ extract.tree.weights <- function(iq_file, trim.output.columns = FALSE){
     ttls <- c(ttls,rep(NA, (5 - num_trees )) )
     sibl <- c(sibl, rep(NA, (5 - num_trees )) )
     # Collect the output to return it
-    mast_output <- c(basename(iq_file), num_trees, ll_value, ull_value, nfp_value, aic_value, aicc_value, bic_value, tws, ttls, sibl)
+    mast_output <- c(basename(iq_file), num_trees, ll_value, ull_value, nfp_value, aic_value, aicc_value, bic_value, mast_model, tws, ttls, sibl)
     names(mast_output) <- c("iq_file", "number_hypothesis_trees", "log_likelihood_tree", "unconstrained_log_likelihood",
-                            "num_free_params", "AIC", "AICc", "BIC", paste0("tree_", 1:5, "_tree_weight"),
+                            "num_free_params", "AIC", "AICc", "BIC", names(mast_model), paste0("tree_", 1:5, "_tree_weight"),
                             paste0("tree_", 1:5, "_total_tree_length"), paste0("tree_", 1:5, "_sum_internal_bl"))
   } else if (trim.output.columns == TRUE){
-    mast_output <- c(basename(iq_file), num_trees, ll_value, ull_value, nfp_value, aic_value, aicc_value, bic_value, tws, ttls, sibl)
+    mast_output <- c(basename(iq_file), num_trees, ll_value, ull_value, nfp_value, aic_value, aicc_value, bic_value, mast_model, tws, ttls, sibl)
     names(mast_output) <- c("iq_file", "number_hypothesis_trees", "log_likelihood_tree", "unconstrained_log_likelihood",
-                            "num_free_params", "AIC", "AICc", "BIC", paste0("tree_", 1:num_trees, "_tree_weight"),
+                            "num_free_params", "AIC", "AICc", "BIC", names(mast_model), paste0("tree_", 1:num_trees, "_tree_weight"),
                             paste0("tree_", 1:num_trees, "_total_tree_length"), paste0("tree_", 1:num_trees, "_sum_internal_bl"))
   }
   # Return output
   return(mast_output)
+}
+
+
+extract.best.model.MAST <- function(iq_file){
+  # Function that will extract the best model of sequence evolution or the model of sequence evolution used,
+  #   given a .iqtree file
+  
+  ## Open the .iqtree file:
+  iq_lines    <- readLines(iq_file)
+  empty_lines <- which(iq_lines == "")
+  
+  ## Extract the best model
+  # Extract model
+  lmos_ind  <- grep("Linked Model of substitution|Linked Mixture model of substitution", iq_lines)
+  lmos_line <- iq_lines[lmos_ind]
+  lmos      <- gsub(" ", "", strsplit(lmos_line, ":")[[1]][[2]])
+  # Count number of parameters
+  warning_check <- intersect(grep("This model has", iq_lines), grep("parameters", iq_lines))
+  if (identical(grep("Component", iq_lines), integer(0)) == FALSE) {
+    # This file contains a table of parameter values
+  lmos_table_start    <- grep("Component", iq_lines)[which(grep("Component", iq_lines) > lmos_ind)] +1
+  lmos_table_end      <- empty_lines[which(empty_lines > lmos_table_start)][1] - 1
+  lmos_num_parameters <- length(lmos_table_start:lmos_table_end)
+  } else if (identical(warning_check, integer(0)) == FALSE) {
+    # This file explicitly lists the number of parameters
+    warning_line        <- iq_lines[warning_check]
+    warning_split       <- strsplit(strsplit(warning_line, "has")[[1]][2], "parameters")[[1]][1]
+    lmos_num_parameters <- gsub(" ", "", warning_split)
+  } else if (identical(grep("Component", iq_lines), integer(0)) == TRUE & 
+             identical(warning_check, integer(0)) == TRUE) {
+    # This file does not list the number of parameters AND does not have a table of parameters
+    lmos_num_parameters <- NA
+  }
+  
+  ## Extract model for mixture component
+  mmc_ind <- grep("Model for mixture component", iq_lines)
+  if (identical(mmc_ind, integer(0)) == TRUE){
+    # There IS NOT a "Model for mixture component" line
+    mmc       <- NA
+    mmc_num   <- NA
+  } else if (identical(mmc_ind, integer(0)) == FALSE){
+    # There IS a "Model for mixture component" line
+    mmc_line  <- iq_lines[mmc_ind]
+    mmc_raw   <- unlist(lapply(strsplit(mmc_line, ":"), function(x){x[[2]]}))
+    if (length(mmc_raw) > 1){
+      mmc     <- paste(gsub(" ", "", mmc_raw), collapse = ",")
+    } else {
+      mmc     <- gsub(" ", "", mmc_raw)
+    }
+    mmc_num   <- length(mmc_raw)
+  }
+  
+  ## Extract rate parameters
+  r_ind         <- grep("Model of rate heterogeneity", iq_lines)
+  r_table_start <-  grep("Relative_rate", iq_lines)[which(grep("Relative_rate", iq_lines) > r_ind)] + 1
+  r_table_end   <- empty_lines[which(empty_lines > r_table_start)][1] - 1
+  r             <- length(r_table_start:r_table_end)
+  
+  ## Extract state frequencies
+  # NOT PMSF model: Check for state frequencies
+  sf_ind <- grep("State frequencies", iq_lines)
+  if (identical(sf_ind, integer(0)) == FALSE){
+    # If there IS a state frequency line
+    sf_line <- iq_lines[sf_ind]
+    if (grepl("empirical counts from alignment", sf_line) == TRUE){
+      # SF = empirical counts from alignment
+      sf      <- "Empirical counts from alignment"
+      sf_num  <- length(grep("pi\\(", iq_lines))
+    } else if (grepl("site specific frequencies", sf_line) == TRUE){
+      # SF = site specific frequencies
+      sf      <- "Site specific frequencies"
+      sf_num  <- NA
+    }
+  } else if (identical(sf_ind, integer(0)) == TRUE){
+    # If there IS NOT a state frequency line
+    sf      <- NA
+    sf_num  <- NA
+  }
+  
+  ## Collate model parameters
+  # Assemble results of regex
+  model_vector <- c(lmos, lmos_num_parameters, mmc, mmc_num, 
+                    r, sf, sf_num)
+  names(model_vector) <- c("subs_model", "subs_model_num_params", "mixture_component", "mixture_component_num_params",
+                           "rate_num_params", "state_freq", "state_freq_num_params")
+  # Return the best model from the iqtree_file (if the file exists)
+  return(model_vector)
 }
 
 
