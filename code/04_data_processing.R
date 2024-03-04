@@ -324,6 +324,7 @@ check_BIC_df <- rbind(mast_df2, htree_df)
 # Order dataframe by dataset and model
 check_BIC_df <- check_BIC_df[order(check_BIC_df$dataset, check_BIC_df$matrix_name, check_BIC_df$model_class, 
                                    check_BIC_df$num_trees, check_BIC_df$tree_topology, decreasing = FALSE), ]
+rownames(check_BIC_df) <- 1:nrow(check_BIC_df)
 # Save dataframe
 collated_file <- paste0(output_file_dir, "05_collated_trees_and_MAST.csv")
 check_BIC_file <- paste0(output_file_dir, "05_recalculate_BIC.csv")
