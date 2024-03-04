@@ -250,6 +250,8 @@ if (control_parameters$extract.MAST == TRUE){
                                                  levels = c("2", "3", "5"),
                                                  labels = c("2_trees", "5_trees", "5_trees"),
                                                  ordered = FALSE)
+  ## Save output dataframe
+  write.csv(mast_tws_df, paste0(output_dir, "04_01_MAST_model_output.csv"), row.names = FALSE)
   # Rearrange columns
   mast_tws_df2 <- mast_tws_df[, c("hypothesis_tree_analysis", "dataset", "matrix_name", "model_code",  "model_class", 
                                   "subs_model", "subs_model_num_params", "mixture_component", "mixture_component_num_params", "rate_num_params", "state_freq", "state_freq_num_params",
@@ -259,7 +261,7 @@ if (control_parameters$extract.MAST == TRUE){
                                   "tree_1_total_tree_length", "tree_2_total_tree_length", "tree_3_total_tree_length", "tree_4_total_tree_length", "tree_5_total_tree_length",
                                   "tree_1_sum_internal_bl", "tree_2_sum_internal_bl", "tree_3_sum_internal_bl", "tree_4_sum_internal_bl", "tree_5_sum_internal_bl",
                                   "iq_file")]
-  ## Save output dataframe
+  ## Save updated output dataframe
   write.csv(mast_tws_df2, paste0(output_dir, "04_01_MAST_model_output_SubstitutionModels.csv"), row.names = FALSE)
 }
 
