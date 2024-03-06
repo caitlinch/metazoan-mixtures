@@ -25,94 +25,67 @@ library(ape)
 library(phangorn)
 
 # Source files containing functions
-source(paste0(repo_dir, "code/func_data_processing.R"))
+source(paste0(repo_dir, "code/func_BIC.R"))
 
 # List all files in output directory
 all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 
 # List all hypothesis trees
 all_hypothesis_tree_paths <- paste0(hypothesis_tree_dir, list.files(hypothesis_tree_dir, recursive = T))
+all_hypothesis_tree_paths <- grep("00_", all_hypothesis_tree_paths, value = T, invert = T)
 
 
 
 #### 1. Open csv files ####
 # Open the BIC df
-bic_df <- read.csv(grep("06_rank_BIC", all_output_files, value = T), stringsAsFactors = FALSE)
+in_df <- read.csv(grep("05_recalculate_BIC.csv", all_output_files, value = T), stringsAsFactors = FALSE)
+new_col_order <- grep("row_num|mast_nbranches|new_nfp|diff_nfp|new_BIC", names(in_df), value = T, invert = T)
+in_df <- in_df[, new_col_order]
 # Separate into tree and MAST rows
-tree_bic_df <- bic_df[which(bic_df$num_trees == 1), ]
+tree_bic_df <- in_df[which(in_df$num_trees == 1), ]
 rownames(tree_bic_df) <- 1:nrow(tree_bic_df)
-mast_bic_df <- bic_df[which(bic_df$num_trees > 1), ]
+mast_bic_df <- in_df[which(in_df$num_trees > 1), ]
 rownames(mast_bic_df) <- 1:nrow(mast_bic_df)
 
 
 
 #### 2. Calculate the number of different branches for each MAST analysis ####
-# check rows 185, 186
-row_id <- 185
-# Extract row
-temp_row <- mast_bic_df[row_id, ]
-# Extract hypothesis trees for this dataset/matrix/model class combination
-temp_all_h_trees <- grep("\\.treefile", grep(temp_row$model_class, grep(temp_row$matrix, grep(temp_row$dataset, all_hypothesis_tree_paths, value = T), value = T), value = T), value = T)
-# Extract tree files for this MAST run
-if (temp_row$num_trees == 2){
-  temp_h_trees <- c(grep("ML_H1", temp_all_h_trees, value = T), grep("ML_H2", temp_all_h_trees, value = T))
-} else if (temp_row$num_trees == 3){
-  temp_h_trees <- c(grep("ML_H1", temp_all_h_trees, value = T), grep("ML_H2", temp_all_h_trees, value = T), grep("ML_H3", temp_all_h_trees, value = T))
-} else if (temp_row$num_trees == 5){
-  temp_h_trees <- c(grep("ML_H1", temp_all_h_trees, value = T), grep("ML_H2", temp_all_h_trees, value = T), 
-                    grep("ML_H3", temp_all_h_trees, value = T), grep("ML_H4", temp_all_h_trees, value = T), 
-                    grep("ML_H5", temp_all_h_trees, value = T))
-  # Compare splits in trees
-}
+# Calculate number of +TR branches to consider per MAST analysis
+tree_bic_df$MAST_TR_num_branches <- 0
+mast_bic_df$MAST_TR_num_branches <- unlist(lapply(1:nrow(mast_bic_df), calculate.MAST.TR.branches, MAST_output_df = mast_bic_df))
 
-trees_path <- temp_h_trees 
-
-compare.splits.2.trees <- function(trees_path){
-  ## Take 2 trees and calculate the number of different splits
-  # Calculate the number of different splits using the RF distance
-  t1 <- read.tree(trees_path[1])
-  t2 <- read.tree(trees_path[2])
-  num_different_splits <- RF.dist(t1, t2)
-  return(num_different_splits)
-}
-
-compare.splits.3.trees <- function(trees_path){
-  ## Take 3 trees and calculate the number of different splits
-  # Open trees
-  t1 <- read.tree(trees_path[1])
-  t2 <- read.tree(trees_path[2])
-  t3 <- read.tree(trees_path[2])
-  # Calculate splits from trees and change into a matrix
-  m1 <- as.data.frame(as.matrix(as.splits(t1)))
-  m2 <- as.data.frame(as.matrix(as.splits(t2)))
-  m3 <- as.data.frame(as.matrix(as.splits(t3)))
-  # Rearrange columns to be in the same order
-  col_order <- sort(colnames(m1))
-  m1 <- m1[, col_order]
-  m2 <- m2[, col_order]
-  m3 <- m3[, col_order]
-  # Combine all splits into a single dataframe
-  m_all <- rbind(m1, m2, m3)
-  # Identify splits that occur in all 3 trees
-  duplicated_splits <- m_all |>
-    group_by_all() |>
-    filter(n() > 1) |>
-    ungroup()
-  unique_splits <- m_all |>
-    group_by_all() |>
-    filter(n() < 3) |>
-    ungroup()
-  # Check whether any splits in the unique_splits are replicates
-  
-  
-  # Remove any splits in duplicated_splits that occur in unique_splits
-  #   (first instance of a particular value not counted in duplicated)
-  
-  return(num_different_splits)
-}
+# Rearrange and rename columns
+tree_bic_df <- tree_bic_df[ , c(1:17, 25, 18, 19:24)]
+colnames(tree_bic_df) <- c(colnames(tree_bic_df)[1:19], paste0("iqtree_", colnames(tree_bic_df)[c(20:25)]))
+mast_bic_df <- mast_bic_df[ , c(1:17, 25, 18, 19:24)]
+colnames(mast_bic_df) <- c(colnames(mast_bic_df)[1:19], paste0("iqtree_", colnames(mast_bic_df)[c(20:25)]))
+# Collate dataframes
+bic_df <- rbind(tree_bic_df, mast_bic_df)
+# Reorder dataframes
+bic_df <- bic_df[order(bic_df$dataset, bic_df$matrix, bic_df$model_class, bic_df$num_trees), ]
 
 
 
 #### 3. Calculate BIC ####
+# Calculate new number of free parameters
+bic_df$new_num_free_params <- bic_df$model_np + bic_df$mixture_component_np + bic_df$rhas_np + bic_df$state_freq_num_params + bic_df$MAST_TR_num_branches + bic_df$num_branches
+# Compare number of free params 
+# Note: Some MAST models were run using an old version of IQ-Tree where the number of free parameters were calculated using the +T model not the +TR model
+#       therefore in some cases: diff_num_free_params>0
+bic_df$diff_num_free_params <- abs(bic_df$new_num_free_params - bic_df$iqtree_num_free_params)
+# Calculate BIC
+bic_df$new_BIC <- (-2*bic_df$iqtree_tree_LogL) + (bic_df$new_num_free_params * log(bic_df$nsites))
+# Write file to csv
+new_BIC_path <- paste0(output_file_dir, "06_complete_BIC.csv")
+write.csv(bic_df, file = new_BIC_path, row.names = FALSE)
+
+
+
+#### 3. Create reduced table for results ####
+# Add year column
+
+# Factor model_class column for correct ordering (simple -> complex)
+
+# Order by: year, dataset, matrix, model_class, num_trees
 
 
