@@ -32,7 +32,7 @@ all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 
 # List all hypothesis trees
 all_hypothesis_tree_paths <- paste0(hypothesis_tree_dir, list.files(hypothesis_tree_dir, recursive = T))
-all_hypothesis_tree_paths <- grep("00_", all_hypothesis_tree_paths, value = T, invert = T)
+all_hypothesis_tree_paths <- grep("00_|2trees|5trees", all_hypothesis_tree_paths, value = T, invert = T)
 
 
 
@@ -51,29 +51,29 @@ rownames(mast_bic_df) <- 1:nrow(mast_bic_df)
 
 #### 2. Calculate the number of different branches for each MAST analysis ####
 # Calculate number of +TR branches to consider per MAST analysis
-tree_bic_df$MAST_TR_num_branches <- 0
-tree_bic_df$shared_splits <- tree_bic_df$num_branches
-split_output <- unlist(lapply(1:nrow(mast_bic_df), calculate.MAST.TR.branches, 
-                              MAST_output_df = mast_bic_df, 
-                              all_hypothesis_tree_paths = all_hypothesis_tree_paths))
-mast_bic_df$MAST_TR_num_branches <- ""
-mast_bic_df$shared_splits <- ""
+tree_bic_df$num_unique_splits <- 0
+tree_bic_df$num_shared_splits <- tree_bic_df$num_branches
+split_output <- lapply(1:nrow(mast_bic_df), calculate.MAST.TR.branches, 
+                       MAST_output_df = mast_bic_df, 
+                       all_hypothesis_tree_paths = all_hypothesis_tree_paths)
+mast_bic_df$num_unique_splits <- unlist(lapply(split_output, function(x){x[["num_unique_splits"]]}))
+mast_bic_df$num_shared_splits <- unlist(lapply(split_output, function(x){x[["num_shared_splits"]]}))
 
-# Rearrange and rename columns
-tree_bic_df <- tree_bic_df[ , c(1:17, 25, 18, 19:24)]
-colnames(tree_bic_df) <- c(colnames(tree_bic_df)[1:19], paste0("iqtree_", colnames(tree_bic_df)[c(20:25)]))
-mast_bic_df <- mast_bic_df[ , c(1:17, 25, 18, 19:24)]
-colnames(mast_bic_df) <- c(colnames(mast_bic_df)[1:19], paste0("iqtree_", colnames(mast_bic_df)[c(20:25)]))
 # Collate dataframes
 bic_df <- rbind(tree_bic_df, mast_bic_df)
-# Reorder dataframes
+# Reorder dataframe
 bic_df <- bic_df[order(bic_df$dataset, bic_df$matrix, bic_df$model_class, bic_df$num_trees), ]
+# Rearrange dataframe
+bic_df <- bic_df[ , c(1:19, 26:27, 20:25)]
+names(bic_df) <- c(names(bic_df)[1:21], paste0("iqtree_", names(bic_df)[22:27]))
 
 
 
 #### 3. Calculate BIC ####
 # Calculate new number of free parameters
-bic_df$new_num_free_params <- bic_df$model_np + bic_df$mixture_component_np + bic_df$rhas_np + bic_df$state_freq_num_params + bic_df$MAST_TR_num_branches + bic_df$num_branches
+bic_df$new_num_free_params <- bic_df$model_np + bic_df$mixture_component_np + 
+  bic_df$rhas_np + bic_df$state_freq_num_params + bic_df$num_MAST_weights + 
+  bic_df$num_unique_splits + bic_df$num_shared_splits
 # Compare number of free params 
 # Note: Some MAST models were run using an old version of IQ-Tree where the number of free parameters were calculated using the +T model not the +TR model
 #       therefore in some cases: diff_num_free_params>0
