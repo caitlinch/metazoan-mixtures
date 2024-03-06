@@ -10,7 +10,7 @@ library(dplyr) # manipulating dataframes
 
 
 #### Calculating number of different splits ####
-calculate.MAST.TR.branches <- function(row_id, MAST_output_df){
+calculate.MAST.TR.branches <- function(row_id, MAST_output_df, all_hypothesis_tree_paths){
   ## Calculate the number of splits for the MAST +TR model
   ##      i.e., the number of splits that occur in one or more tree that are NOT present in all trees
   
