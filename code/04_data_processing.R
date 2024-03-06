@@ -333,3 +333,14 @@ write.csv(check_BIC_df, file = check_BIC_file)
 
 
 
+
+#### 10. Determine best BIC for each analysis ####
+
+
+
+
+
+
+
+
+
