@@ -52,9 +52,12 @@ rownames(mast_bic_df) <- 1:nrow(mast_bic_df)
 #### 2. Calculate the number of different branches for each MAST analysis ####
 # Calculate number of +TR branches to consider per MAST analysis
 tree_bic_df$MAST_TR_num_branches <- 0
-mast_bic_df$MAST_TR_num_branches <- unlist(lapply(1:nrow(mast_bic_df), calculate.MAST.TR.branches, 
-                                                  MAST_output_df = mast_bic_df, 
-                                                  all_hypothesis_tree_paths = all_hypothesis_tree_paths))
+tree_bic_df$shared_splits <- tree_bic_df$num_branches
+split_output <- unlist(lapply(1:nrow(mast_bic_df), calculate.MAST.TR.branches, 
+                              MAST_output_df = mast_bic_df, 
+                              all_hypothesis_tree_paths = all_hypothesis_tree_paths))
+mast_bic_df$MAST_TR_num_branches <- ""
+mast_bic_df$shared_splits <- ""
 
 # Rearrange and rename columns
 tree_bic_df <- tree_bic_df[ , c(1:17, 25, 18, 19:24)]
