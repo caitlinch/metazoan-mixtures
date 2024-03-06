@@ -9,24 +9,37 @@ library(phangorn) # as.splits
 library(dplyr) # manipulating dataframes
 
 
+
 #### Calculating number of different splits ####
 calculate.MAST.TR.branches <- function(row_id, MAST_output_df, all_hypothesis_tree_paths){
   ## Calculate the number of splits for the MAST +TR model
   ##      i.e., the number of splits that occur in one or more tree that are NOT present in all trees
   
   # Extract row
-  temp_row <- mast_bic_df[row_id, ]
+  temp_row <- MAST_output_df[row_id, ]
   # Extract hypothesis trees for this dataset/matrix/model class combination
   temp_all_h_trees <- grep("\\.treefile", grep(temp_row$model_class, grep(temp_row$matrix, grep(temp_row$dataset, all_hypothesis_tree_paths, value = T), value = T), value = T), value = T)
-  # Extract tree files for this MAST run and compare splits in trees
+  # Extract correct number of trees for this analysis
+  if (temp_row$num_trees == 2){
+    temp_h_trees <- c(grep("ML_H1", temp_all_h_trees, value = T), grep("ML_H2", temp_all_h_trees, value = T))
+  } else if (temp_row$num_trees == 3){
+    temp_h_trees <- c(grep("ML_H1", temp_all_h_trees, value = T), grep("ML_H2", temp_all_h_trees, value = T),
+                      grep("ML_H3", temp_all_h_trees, value = T))
+  } else if (temp_row$num_trees == 5){
+    temp_h_trees <- c(grep("ML_H1", temp_all_h_trees, value = T), grep("ML_H2", temp_all_h_trees, value = T),
+                      grep("ML_H3", temp_all_h_trees, value = T), grep("ML_H4", temp_all_h_trees, value = T),
+                      grep("ML_H5", temp_all_h_trees, value = T))
+  }
+  # Compare splits in trees
   num_splits <- compare.splits.n.trees(trees_path = temp_h_trees)
   # Return output
   return(num_splits)
 }
 
 
+
 compare.splits.n.trees <- function(trees_path){
-  ## Take 2 trees and calculate the number of different splits
+  ## Take n trees and calculate the number of shared/different splits
   
   ## Identify shared and unique splits
   # Find number of trees
@@ -72,7 +85,6 @@ compare.splits.n.trees <- function(trees_path){
   # Return the number of different splits
   return(op)
 }
-
 
 
 
