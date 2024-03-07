@@ -23,6 +23,7 @@ options(digits = 12)
 # Open packages
 library(ape)
 library(phangorn)
+library(stringr)
 
 # Source files containing functions
 source(paste0(repo_dir, "code/func_BIC.R"))
@@ -50,25 +51,33 @@ rownames(mast_bic_df) <- 1:nrow(mast_bic_df)
 
 
 #### 2. Calculate the number of different branches for each MAST analysis ####
-# Calculate number of +TR branches to consider per MAST analysis
+# Each tree has 0 "unique" splits and number of "shared" splits equal to the number of branches in the unrooted tree
+#     Here, "shared" means present in all 1 tree
 tree_bic_df$num_unique_splits <- 0
 tree_bic_df$num_shared_splits <- tree_bic_df$num_branches
+# Calculate number of +TR branches to consider per MAST analysis
 split_output                  <- lapply(1:nrow(mast_bic_df), calculate.MAST.TR.branches, 
                                         MAST_output_df = mast_bic_df, 
                                         all_hypothesis_tree_paths = all_hypothesis_tree_paths)
+# Add number of distinct branches in each MAST analysis as a column
 mast_bic_df$num_unique_splits <- unlist(lapply(split_output, function(x){x[["num_unique_splits"]]}))
-mast_bic_df$num_shared_splits <- unlist(lapply(split_output, function(x){x[["num_shared_splits"]]}))
 # Subtract 1 from the number of shared splits in mast_bic_df
 #     We need the number of splits in UNROOTED tree, whereas we calculated the number of splits in the ROOTED tree
-mast_bic_df$num_shared_splits <- mast_bic_df$num_shared_splits - 1
+mast_bic_df$num_shared_splits <- unlist(lapply(split_output, function(x){x[["num_shared_splits"]]})) - 1
 
 # Collate dataframes
-bic_df        <- rbind(tree_bic_df, mast_bic_df)
+bic_df  <- rbind(tree_bic_df, mast_bic_df)
 # Reorder dataframe
-bic_df        <- bic_df[order(bic_df$dataset, bic_df$matrix, bic_df$model_class, bic_df$num_trees), ]
+bic_df  <- bic_df[order(bic_df$dataset, bic_df$matrix, bic_df$model_class, bic_df$num_trees), ]
 # Rearrange dataframe
-bic_df        <- bic_df[ , c(1:19, 26:27, 20:25)]
-names(bic_df) <- c(names(bic_df)[1:21], paste0("iqtree_", names(bic_df)[22:27]))
+bic_df            <- bic_df[ , c(1:19, 26:27, 20:25)]
+names(bic_df)     <- c(names(bic_df)[1:21], paste0("iqtree_", names(bic_df)[22:27]))
+rownames(bic_df)  <- 1:nrow(bic_df)
+
+# Create a new dataframe with the unique parameters for each analysis: dataset, matrix, and model
+params_df           <- bic_df[ c("dataset", "matrix_name", "model_class")]
+params_df           <- params_df[which(duplicated(params_df) == FALSE), ]
+rownames(params_df) <- 1:nrow(params_df)
 
 
 
@@ -82,18 +91,43 @@ bic_df$new_num_free_params <- bic_df$model_np + bic_df$mixture_component_np +
 #       therefore in some cases: diff_num_free_params>0
 bic_df$diff_num_free_params <- abs(bic_df$new_num_free_params - bic_df$iqtree_num_free_params)
 # Calculate BIC
-bic_df$new_BIC              <- (-2*bic_df$iqtree_tree_LogL) + (bic_df$new_num_free_params * log(bic_df$nsites))
+bic_df$new_BIC  <- (-2*bic_df$iqtree_tree_LogL) + (bic_df$new_num_free_params * log(bic_df$nsites))
+# Find minimum BIC for each analysis
+bic_df$best_BIC <- unlist(lapply(1:nrow(params_df), find.best.bic, 
+                                 params_df = params_df, 
+                                 bic_df = bic_df))
+# Calculate delta BIC for each analysis
+bic_df$delta_BIC <- bic_df$new_BIC - bic_df$best_BIC
+
+## Format and save dataframe
+# Round newly calculated columns to 3 dp
+bic_df$new_BIC    <- round(bic_df$new_BIC, digits = 3)
+bic_df$best_BIC   <- round(bic_df$best_BIC, digits = 3)
+bic_df$delta_BIC  <- round(bic_df$delta_BIC, digits = 3)
+# Add year column
+bic_df$year <- as.numeric(str_extract(bic_df$dataset, "(\\d)+"))
 # Write file to csv
-new_BIC_path                <- paste0(output_file_dir, "06_complete_BIC.csv")
-write.csv(bic_df, file = new_BIC_path, row.names = FALSE)
+new_BIC_path    <- paste0(output_file_dir, "06_complete_BIC.csv")
+write.csv(bic_df, file = new_BIC_path)
 
 
 
 #### 3. Create reduced table for results ####
-# Add year column
-
+# Create new df for formatted results
+pretty_bic_df <- bic_df[ , c("year", "dataset", "matrix_name", "model_class", "model", 
+                             "num_trees", "tree_topology", "iqtree_tree_LogL", 
+                             "new_num_free_params", "new_BIC", "best_BIC", "delta_BIC")]
 # Factor model_class column for correct ordering (simple -> complex)
-
+# Levels: Single (Single), Mixture (Other), Posterior Mean Site Frequency (PMSF), Empirical Profile Mixture Model (CXX)
+pretty_bic_df$model_class <- factor(pretty_bic_df$model_class,
+                                    levels = c("Single", "Other", "PMSF", "CXX"),
+                                    labels = c("Single", "Mixture", "PMSF", "EPMM"),
+                                    ordered = TRUE)
 # Order by: year, dataset, matrix, model_class, num_trees
+pretty_bic_df <- pretty_bic_df[order(pretty_bic_df$year, pretty_bic_df$dataset, pretty_bic_df$matrix_name,
+                                     pretty_bic_df$model_class, pretty_bic_df$num_trees) , ]
+# Save as output
+pretty_BIC_path    <- paste0(output_file_dir, "summary_all_BIC.csv")
+write.csv(pretty_bic_df, file = pretty_BIC_path)
 
 
