@@ -75,7 +75,7 @@ names(bic_df)     <- c(names(bic_df)[1:21], paste0("iqtree_", names(bic_df)[22:2
 rownames(bic_df)  <- 1:nrow(bic_df)
 
 # Create a new dataframe with the unique parameters for each analysis: dataset, matrix, and model
-params_df           <- bic_df[ c("dataset", "matrix_name", "model_class")]
+params_df           <- bic_df[ c("dataset", "matrix", "model_class")]
 params_df           <- params_df[which(duplicated(params_df) == FALSE), ]
 rownames(params_df) <- 1:nrow(params_df)
 
@@ -90,6 +90,8 @@ bic_df$new_num_free_params <- bic_df$model_np + bic_df$mixture_component_np +
 # Note: Some MAST models were run using an old version of IQ-Tree where the number of free parameters were calculated using the +T model not the +TR model
 #       therefore in some cases: diff_num_free_params>0
 bic_df$diff_num_free_params <- abs(bic_df$new_num_free_params - bic_df$iqtree_num_free_params)
+# Calculate missing branches
+bic_df$excluded_duplicate_branches <- (bic_df$num_trees * bic_df$num_branches) - (bic_df$num_unique_splits + bic_df$num_shared_splits)
 # Calculate BIC
 bic_df$new_BIC  <- (-2*bic_df$iqtree_tree_LogL) + (bic_df$new_num_free_params * log(bic_df$nsites))
 # Find minimum BIC for each analysis
@@ -101,22 +103,22 @@ bic_df$delta_BIC <- bic_df$new_BIC - bic_df$best_BIC
 
 ## Format and save dataframe
 # Round newly calculated columns to 3 dp
-bic_df$new_BIC    <- round(bic_df$new_BIC, digits = 3)
-bic_df$best_BIC   <- round(bic_df$best_BIC, digits = 3)
-bic_df$delta_BIC  <- round(bic_df$delta_BIC, digits = 3)
+bic_df$new_BIC    <- round(bic_df$new_BIC, digits = 2)
+bic_df$best_BIC   <- round(bic_df$best_BIC, digits = 2)
+bic_df$delta_BIC  <- round(bic_df$delta_BIC, digits = 2)
 # Add year column
 bic_df$year <- as.numeric(str_extract(bic_df$dataset, "(\\d)+"))
 # Write file to csv
 new_BIC_path    <- paste0(output_file_dir, "06_complete_BIC.csv")
-write.csv(bic_df, file = new_BIC_path)
+write.csv(bic_df, file = new_BIC_path, row.names = FALSE)
 
 
 
 #### 3. Create reduced table for results ####
 # Create new df for formatted results
-pretty_bic_df <- bic_df[ , c("year", "dataset", "matrix_name", "model_class", "model", 
+pretty_bic_df <- bic_df[ , c("year", "dataset", "matrix", "model_class", "model", 
                              "num_trees", "tree_topology", "iqtree_tree_LogL", 
-                             "new_num_free_params", "new_BIC", "best_BIC", "delta_BIC")]
+                             "new_num_free_params", "new_BIC", "delta_BIC")]
 # Factor model_class column for correct ordering (simple -> complex)
 # Levels: Single (Single), Mixture (Other), Posterior Mean Site Frequency (PMSF), Empirical Profile Mixture Model (CXX)
 pretty_bic_df$model_class <- factor(pretty_bic_df$model_class,
@@ -124,10 +126,30 @@ pretty_bic_df$model_class <- factor(pretty_bic_df$model_class,
                                     labels = c("Single", "Mixture", "PMSF", "EPMM"),
                                     ordered = TRUE)
 # Order by: year, dataset, matrix, model_class, num_trees
-pretty_bic_df <- pretty_bic_df[order(pretty_bic_df$year, pretty_bic_df$dataset, pretty_bic_df$matrix_name,
+pretty_bic_df <- pretty_bic_df[order(pretty_bic_df$year, pretty_bic_df$dataset, pretty_bic_df$matrix,
                                      pretty_bic_df$model_class, pretty_bic_df$num_trees) , ]
+pretty_bic_df <- pretty_bic_df[ , 2:ncol(pretty_bic_df)]
 # Save as output
 pretty_BIC_path    <- paste0(output_file_dir, "summary_all_BIC.csv")
-write.csv(pretty_bic_df, file = pretty_BIC_path)
+write.csv(pretty_bic_df, file = pretty_BIC_path, row.names = FALSE)
+
+
+
+#### 4. Output only best BIC for each analysis ####
+# Create new df for formatted results
+best_bic_df <- pretty_bic_df[which(pretty_bic_df$delta_BIC == 0), ]
+# Add year column
+best_bic_df$year <- as.numeric(str_extract(best_bic_df$dataset, "(\\d)+"))
+# Order by: year, dataset, matrix, model_class, num_trees
+best_bic_df <- best_bic_df[order(best_bic_df$year, best_bic_df$dataset, best_bic_df$matrix,
+                                 best_bic_df$model_class, best_bic_df$num_trees) , ]
+# Remove columns
+best_bic_df <- best_bic_df[ , c(1:(ncol(best_bic_df) - 2))]
+# Save as output
+best_BIC_path    <- paste0(output_file_dir, "summary_best_BIC.csv")
+write.csv(best_bic_df, file = best_BIC_path, row.names = FALSE)
+
+
+
 
 

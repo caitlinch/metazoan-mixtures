@@ -201,7 +201,7 @@ find.best.bic <- function(row_id, params_df, bic_df){
   temp_row <- params_df[row_id, ]
   # Extract rows from bic_df with these parameters
   temp_bic_df <- bic_df[which(bic_df$dataset == temp_row$dataset &
-                                bic_df$matrix_name == temp_row$matrix_name &
+                                bic_df$matrix == temp_row$matrix &
                                 bic_df$model_class == temp_row$model_class), ]
   # Find minimum BIC score
   min_BIC <- min(temp_bic_df$new_BIC)
