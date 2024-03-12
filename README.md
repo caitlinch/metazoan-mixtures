@@ -1,9 +1,9 @@
 # metazoan-mixtures 
-#### Applying the MAST model to the Animal tree of life
+#### A single tree is insufficient to describe evolutionary relationships between early animals
 
 Caitlin Cherryh
 
-November 2023
+March 2024
 
 ***
 ### Summary
@@ -12,7 +12,7 @@ This github repository contains scripts used to:
 
 1. Estimate trees from 14 empirical phylogenetic datasets with 26 models of substitution
 2. Estimate constrained trees for 5 alternate topologies of the Metazoan tree
-3. Apply the [MAST model](https://www.biorxiv.org/content/10.1101/2022.10.06.511210v1) and the AU-test to evaluate a multi-tree model for the Metazoan taxa
+3. Apply the [MAST model]([https://www.biorxiv.org/content/10.1101/2022.10.06.511210v1](https://academic.oup.com/sysbio/advance-article/doi/10.1093/sysbio/syae008/7616281)) to evaluate a multi-tree model for the Metazoan taxa
 
 If you replicate any part of these analyses or use functions from these scripts, please cite this repository.
 
@@ -53,7 +53,6 @@ If you replicate any part of these analyses or use functions from these scripts,
 | Original Publication | Repository | Matrix |
 | ----------- | ----------- | ----------- |
 | Dunn _et al._ (2008) | Li _et al._ (2020) | Dunn2008 |
-| Hejnol _et al._ (2009) | Hejnol _et al._ (2009)  | Hejnol_etal_2009 |
 | Philippe _et al._ (2009) | Philippe _et al._ (2009) | Philippe_etal_superalignment |
 | Pick _et al._ (2010)  | Li _et al._ (2020) | Pick2010 |
 | Philippe _et al._ (2011) | Philippe _et al._ (2011) | UPDUNN_MB |
@@ -74,7 +73,6 @@ If you replicate any part of these analyses or use functions from these scripts,
 * Chang, E.S., Neuhof, M., Rubinstein, N.D., Diamant, A., Philippe, H., Huchon, D., Cartwright, P., 2015. Genomic insights into the evolutionary origin of Myxozoa within Cnidaria. Proceedings of the National Academy of Sciences 112, 14912. https://doi.org/10.1073/pnas.1511468112 
 * Dunn, C.W., Hejnol, A., Matus, D.Q., Pang, K., Browne, W.E., Smith, S.A., Seaver, E., Rouse, G.W., Obst, M., Edgecombe, G.D., Sørensen, M.V., Haddock, S.H.D., Schmidt-Rhaesa, A., Okusu, A., Kristensen, R.M., Wheeler, W.C., Martindale, M.Q., Giribet, G., 2008. Broad phylogenomic sampling improves resolution of the animal tree of life. Nature 452, 745–749. https://doi.org/10.1038/nature06614 
 * Feuda, R., Dohrmann, M., Pett, W., Philippe, H., Rota-Stabelli, O., Lartillot, N., Wörheide, G., Pisani, D., 2017. Data repository for “Improved Modeling of Compositional Heterogeneity Supports Sponges as Sister to All Other Animals.” https://doi.org/10.1016/j.cub.2017.11.008 
-* Hejnol, A., Obst, M., Stamatakis, A., Ott, M., Rouse, G.W., Edgecombe, G.D., Martinez, P., Baguñà, J., Bailly, X., Jondelius, U., Wiens, M., Müller, W.E.G., Seaver, E., Wheeler, W.C., Martindale, M.Q., Giribet, G., Dunn, C.W., 2009. Assessing the root of bilaterian animals with scalable phylogenomic methods. Proceedings of the Royal Society B: Biological Sciences 276, 4261–4270. https://doi.org/10.1098/rspb.2009.0896 
 * Laumer, C.E., Fernández, R., Lemer, S., Combosch, D., Kocot, K.M., Riesgo, A., Andrade, S.C.S., Sterrer, W., Sørensen, M.V., Giribet, G., 2019a. Revisiting metazoan phylogeny with genomic sampling of all phyla. Proceedings of the Royal Society B: Biological Sciences 286, 20190831. https://doi.org/10.1098/rspb.2019.0831 
 * Laumer, C.E., Fernández, R., Lemer, S., Combosch, D., Kocot, K.M., Riesgo, A., Andrade, S.C.S., Sterrer, W., Sørensen, M.V., Giribet, G., 2019b. Data from: Revisiting metazoan phylogeny with genomic sampling of all phyla. https://doi.org/10.5061/DRYAD.293KP3D 
 * Laumer, C.E., Gruber-Vodicka, H., Hadfield, M.G., Pearse, V.B., Riesgo, A., Marioni, J.C., Giribet, G., 2018a. Support for a clade of Placozoa and Cnidaria in genes with minimal compositional bias. eLife 7, e36278. https://doi.org/10.7554/eLife.36278 
