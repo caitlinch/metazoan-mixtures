@@ -121,7 +121,7 @@ if (file.exists(mast_parameter_path) == TRUE){
   
   ## Prepare the hypothesis tree files
   hyp_tree_file_paths <- lapply(paste0(model_df$dataset, ".", model_df$matrix_name, ".", model_df$model_code, ".hypothesis"), 
-                                              function(x){grep(x, list.files(hypothesis_tree_dir), value = T)}) 
+                                function(x){grep(x, list.files(hypothesis_tree_dir), value = T)}) 
   model_df$hypothesis_tree_path <- hyp_tree_file_paths
   
   ## Add the  file paths to the dataframe (without directory names)
@@ -229,6 +229,9 @@ if (control_parameters$extract.MAST == TRUE){
   # Extract list of MAST files
   all_files <- list.files(mast_dir, recursive = TRUE)
   mast_files <- paste0(mast_dir, grep("\\.iqtree", grep("MAST", all_files, value = T), value = T))
+  # Remove unused files
+  mast_files <- grep("00_|\\.LG\\.", mast_files, value = T, invert = T)
+  
   ## Tree Weights
   # To extract information from the tree weights:
   mast_tws_df <- as.data.frame(do.call(rbind, lapply(mast_files, extract.tree.weights)))
@@ -242,8 +245,14 @@ if (control_parameters$extract.MAST == TRUE){
   mast_tws_df$minimum_branch_length <- paste0("0.", unlist(lapply(1:nrow(mast_tws_df), function(i){strsplit(mast_tws_df$iq_file[i], "\\.")[[1]][7]})))
   # Add a new column breaking the models up by type of model
   mast_tws_df$model_class <- factor(mast_tws_df$model_code,
-                                    levels = c("LG_C60", "C60", "LG_C20", "PMSF_C60", "PMSF_LG_C60", "LG4M", "UL3"),
-                                    labels = c("CXX", "CXX", "CXX", "PMSF", "PMSF", "Other", "Other"),
+                                    levels = c("LG_C60", "LG_C20", "C60", "C20",
+                                               "PMSF_C60", "PMSF_LG_C60", 
+                                               "LG4M", "UL3", 
+                                               "GTR20_no_I"),
+                                    labels = c("CXX", "CXX", "CXX", "CXX",
+                                               "PMSF", "PMSF", 
+                                               "Other", "Other", 
+                                               "Single"),
                                     ordered = TRUE)
   # Add a new column specifying the number of trees for each analysis
   mast_tws_df$hypothesis_tree_analysis <- factor(mast_tws_df$number_hypothesis_trees,
@@ -285,16 +294,22 @@ if (control_parameters$prepare.tree.topology.tests == TRUE | control_parameters$
 if (control_parameters$extract.tree.topology.tests == TRUE){
   # Extract the tree topology test results
   all_op_files <- list.files(au_test_dir, recursive = TRUE)
-  au_test_iqtree_files <- paste0(au_test_dir, grep("AU_test", grep("\\.iqtree", all_op_files, value = TRUE), value = TRUE))
+  au_test_iqtree_files_raw <- paste0(au_test_dir, grep("AU_test", grep("\\.iqtree", all_op_files, value = TRUE), value = TRUE))
+  au_test_iqtree_files <- grep("00_LG_single|00_single_LG", au_test_iqtree_files_raw, value = T, invert = T)
   au_test_list <- lapply(au_test_iqtree_files, extract.tree.topology.test.results)
   # Transform list to data frame
   au_test_df <- as.data.frame(do.call(rbind, au_test_list))
   # Add new column for model class
-  au_test_df$model_class <- au_test_df$best_model_code
-  au_test_df$model_class[grep("LG", au_test_df$best_model_code)] <- "Single"
-  au_test_df$model_class[grep("LG4M|UL3", au_test_df$best_model_code)] <- "Other"
-  au_test_df$model_class[grep("C20|C60|LG_C20|LG_C60", au_test_df$best_model_code)] <- "CXX"
-  au_test_df$model_class[grep("PMSF", au_test_df$best_model_code)] <- "PMSF"
+  au_test_df$model_class <- factor(au_test_df$best_model_code,
+                                   levels = c("LG_C60", "LG_C20", "C60", "C20",
+                                              "PMSF_C60", "PMSF_LG_C60", 
+                                              "LG4M", "UL3", 
+                                              "GTR20_no_I"),
+                                   labels = c("CXX", "CXX", "CXX", "CXX",
+                                              "PMSF", "PMSF", 
+                                              "Other", "Other", 
+                                              "Single"),
+                                   ordered = TRUE)
   # Add new column for hypothesis trees
   au_test_df$hypothesis_tree_analysis <- au_test_df$tree_topology_iqtree_file
   au_test_df$hypothesis_tree_analysis[grep("2tree", au_test_df$tree_topology_iqtree_file)] <- "2_trees"
