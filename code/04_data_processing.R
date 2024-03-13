@@ -168,7 +168,7 @@ for (a in analyses){
 #### 5. Prepare summary of the MAST tsv file ####
 ### Output site ratios from HMM weights
 # Read in tsv file
-mast_df <- read.csv(file = grep("MAST_model_output", all_output_files, value = TRUE), header = TRUE)
+mast_df <- read.csv(file = grep("MAST_model_output.csv", all_output_files, value = TRUE), header = TRUE)
 # Process for 2trees and 5trees analysis
 analyses <- c("2_trees", "5_trees")
 for (a in analyses){
@@ -194,9 +194,9 @@ for (a in analyses){
 
 #### 6. Combine BIC from MAST and single tree ####
 # Open MAST parameter and MAST output paths
-mast_output_path <- grep("MAST_model_output", all_output_files, value = T)
+mast_output_path <- grep("MAST_model_output.csv", all_output_files, value = T)
 mast_output <- read.csv(mast_output_path, stringsAsFactors = F)
-ml_results_file <- grep("maximum_likelihood_results", all_output_files, value = T)
+ml_results_file <- grep("maximum_likelihood_results.tsv", all_output_files, value = T)
 ml_results <- read.table(ml_results_file, header = TRUE, sep = "\t")
 # Create parameters dataframe
 datasets_df <- unique(mast_output[, c("dataset", "matrix_name")])
@@ -330,17 +330,5 @@ collated_file <- paste0(output_file_dir, "05_collated_trees_and_MAST.csv")
 check_BIC_file <- paste0(output_file_dir, "05_recalculate_BIC.csv")
 write.csv(check_BIC_df, file = collated_file)
 write.csv(check_BIC_df, file = check_BIC_file)
-
-
-
-
-#### 10. Determine best BIC for each analysis ####
-
-
-
-
-
-
-
 
 
