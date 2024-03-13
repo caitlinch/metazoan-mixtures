@@ -22,9 +22,9 @@ control_parameters <- list(add.extra.color.palettes = FALSE,
                            plot.hypothesis.trees = FALSE,
                            plot.MAST = TRUE,
                            plot.AU.tests = TRUE,
-                           plot.ELW = TRUE,
+                           plot.ELW = FALSE,
                            plot.ML.topologies = TRUE,
-                           plot.Porifera.topologies = TRUE)
+                           plot.Porifera.topologies = FALSE)
 
 
 
@@ -44,8 +44,8 @@ source(paste0(repo_dir,"code/func_data_processing.R"))
 
 # Specify colour palettes used within these plots
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
-model3_qual <- c("#e41a1c", "#377eb8", "#4daf4a")
-names(model3_qual) <- c("CXX", "PMSF", "Other")
+model_class_qual <- c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")
+names(model_class_qual) <- c("PM", "PMSF", "Mixture", "Q")
 # Notes for Viridis color palette usage (function = scale_color_viridis_d):
 #   For ML tree topology (i.e. Sister to all other Metazoans) use option = "C"/"plasma"
 #   For Porifera clade topology (i.e. Monophyletic/Paraphyletic) use option = "D"/"viridis"
@@ -148,8 +148,8 @@ if (control_parameters$plot.MAST == TRUE){
                                                "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                     ordered = TRUE)
   mast_long$model_class <- factor(mast_long$model_class,
-                                  levels = c("CXX", "PMSF", "Other"),
-                                  labels = c("CXX", "PMSF", "Other"),
+                                  levels = c("CXX", "PMSF", "Other", "Single"),
+                                  labels = c("PM", "PMSF", "Mixture", "Q"),
                                   ordered = T)
   # Plot with lines for each dataset/model class
   bp <- ggplot(mast_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
@@ -159,7 +159,7 @@ if (control_parameters$plot.MAST == TRUE){
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Tree weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     labs(title = "MAST tree weights") +
-    scale_color_manual(name = "Model class", values = model3_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual) +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
           axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
@@ -198,9 +198,15 @@ if (control_parameters$plot.AU.test == TRUE){
                                              "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                              "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                   ordered = TRUE)
-  au_long$model_class <- factor(au_long$model_class,
-                                levels = c("CXX", "PMSF", "Other"),
-                                labels = c("CXX", "PMSF", "Other"),
+  au_long$model_class <- factor(au_long$best_model_code,
+                                levels = c("LG_C60", "LG_C20", "C60", "C20",
+                                           "PMSF_C60", "PMSF_LG_C60",
+                                           "UL3", "LG4M",
+                                           "GTR20_no_I"),
+                                labels = c("PM", "PM", "PM", "PM",
+                                           "PMSF", "PMSF",
+                                           "Mixture", "Mixture", 
+                                           "Q"),
                                 ordered = T)
   # Plot with lines for each dataset/model class
   bp <- ggplot(au_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
@@ -210,7 +216,7 @@ if (control_parameters$plot.AU.test == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model3_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual) +
     labs(title = "AU Test") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
@@ -251,8 +257,14 @@ if (control_parameters$plot.ELW == TRUE){
                                               "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                    ordered = TRUE)
   elw_long$model_class <- factor(elw_long$model_class,
-                                 levels = c("CXX", "PMSF", "Other"),
-                                 labels = c("CXX", "PMSF", "Other"),
+                                 levels = c("LG_C60", "LG_C20", "C60", "C20",
+                                            "PMSF_C60", "PMSF_LG_C60",
+                                            "UL3", "LG4M",
+                                            "GTR20_no_I"),
+                                 labels = c("PM", "PM", "PM", "PM",
+                                            "PMSF", "PMSF",
+                                            "Mixture", "Mixture", 
+                                            "Q"),
                                  ordered = T)
   # Plot with lines for each dataset/model class
   bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
@@ -261,7 +273,7 @@ if (control_parameters$plot.ELW == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model3_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual) +
     labs(title = "Expected likelihood weight") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
@@ -429,17 +441,17 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
                                     labels = c("One taxon", "Monophyletic", "Paraphyletic"),
                                     ordered = TRUE)
   # Add model class to the topology_df
-  #   Matrix is for single matrix amino-acid exchange rate matrices
-  #   Mixture model is for protein mixture models from IQ-Tree
+  #   Q is for single matrix amino-acid exchange rate matrices
+  #   Mixture is is for protein mixture models from IQ-Tree
   #   ModelFinder is the results from ModelFinder in IQ-Tree - could be single matrix or protein mixture model
-  #   CXX are for "empirical profile mixture models" i.e. C20 and C60 models
-  #   PMSF are for "posterior site mean frequency" models in IQ-Tree2 i.e. PMSF+C20 and PMSF+C60 models
+  #   PM is for "empirical profile mixture models" i.e. C20 and C60 models
+  #   PMSF is for "posterior site mean frequency" models in IQ-Tree2 i.e. PMSF+C20 and PMSF+C60 models
   topo_long$model_class <- factor(topo_long$model_code,
                                   levels = c("GTR20", "JTT", "JTTDCMut", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG",
                                              "CF4", "EHO", "EX_EHO", "EX2", "EX3", "LG4M", "UL2", "UL3",
                                              "PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60",
                                              "C20", "C60", "LG_C20", "LG_C60"),
-                                  labels = c(rep("Single matrix", 9), rep("Mixture model", 8), rep("PMSF", 4), rep("CXX", 4)),
+                                  labels = c(rep("Q", 9), rep("Mixture", 8), rep("PMSF", 4), rep("PM", 4)),
                                   ordered = TRUE)
   
   ## Plot number of models with each topology - facet per dataset, one bar per model_class
