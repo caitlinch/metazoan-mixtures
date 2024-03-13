@@ -44,8 +44,9 @@ labels_5tree_short <- c("CTEN", "PORI", "CTEN+PORI", "CTEN, para. PORI", "PORI, 
 
 # Specify colour palettes used within these plots
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
-model3_qual <- c("#e41a1c", "#377eb8", "#4daf4a")
-names(model3_qual) <- c("CXX", "PMSF", "Other")
+model_class_qual <- c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")
+names(model_class_qual) <- c("PM", "PMSF", "Mixture", "Q")
+
 # Notes for Viridis color palette usage (function = scale_color_viridis_d):
 #   For ML tree topology (i.e. Sister to all other Metazoans) use option = "C"/"plasma"
 #   For Porifera clade topology (i.e. Monophyletic/Paraphyletic) use option = "D"/"viridis"
@@ -93,8 +94,8 @@ if (control_parameters$plot.MAST == TRUE){
                                                "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                     ordered = TRUE)
   mast_long$model_class <- factor(mast_long$model_class,
-                                  levels = c("PMSF", "Other"),
-                                  labels = c("PMSF", "Other"),
+                                  levels = c("CXX", "PMSF", "Other", "Single"),
+                                  labels = c("PM", "PMSF", "Mixture", "Q"),
                                   ordered = T)
   # Plot with lines for each dataset/model class
   bp <- ggplot(mast_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
@@ -104,15 +105,15 @@ if (control_parameters$plot.MAST == TRUE){
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Tree weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     labs(title = "MAST tree weights") +
-    scale_color_manual(name = "Model class", values = model3_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual) +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
           axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
           axis.text.y = element_text(size = 15),
           strip.text = element_text(size = 20),
           plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 20),
-          legend.text = element_text(size = 15) )
+          legend.title = element_text(size = 25),
+          legend.text = element_text(size = 20) )
   bp_file <- paste0(plot_dir, "MAST_tree_weights_5tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
@@ -143,9 +144,15 @@ if (control_parameters$plot.AU.tests == TRUE){
                                              "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                              "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                   ordered = TRUE)
-  au_long$model_class <- factor(au_long$model_class,
-                                levels = c("CXX", "PMSF", "Other"),
-                                labels = c("CXX", "PMSF", "Other"),
+  au_long$model_class <- factor(au_long$best_model_code,
+                                levels = c("C20", "C60", "LG_C20", "LG_C60", 
+                                           "PMSF_C60", "PMSF_LG_C60",
+                                           "LG4M", "UL3",
+                                           "GTR20_no_I"),
+                                labels = c("PM", "PM", "PM", "PM",
+                                           "PMSF", "PMSF",
+                                           "Mixture", "Mixture",
+                                           "Q"),
                                 ordered = T)
   # Plot with boxplot for each dataset
   bp <- ggplot(au_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
@@ -155,7 +162,7 @@ if (control_parameters$plot.AU.tests == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model3_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual) +
     labs(title = "AU Test") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
@@ -163,8 +170,8 @@ if (control_parameters$plot.AU.tests == TRUE){
           axis.text.y = element_text(size = 15),
           strip.text = element_text(size = 20),
           plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 20),
-          legend.text = element_text(size = 15) )
+          legend.title = element_text(size = 25),
+          legend.text = element_text(size = 20) )
   bp_file <- paste0(plot_dir, "au_test_5tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
@@ -206,7 +213,7 @@ if (control_parameters$plot.ELW == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model3_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual) +
     labs(title = "Expected likelihood weight") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
