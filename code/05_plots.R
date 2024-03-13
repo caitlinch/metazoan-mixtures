@@ -162,16 +162,16 @@ if (control_parameters$plot.MAST == TRUE){
     scale_color_manual(name = "Model class", values = model_class_qual) +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 15),
+          axis.text.x = element_text(size = 17, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+          axis.text.y = element_text(size = 17),
           strip.text = element_text(size = 20),
           plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 20),
-          legend.text = element_text(size = 15) )
+          legend.title = element_text(size = 28),
+          legend.text = element_text(size = 25) )
   bp_file <- paste0(plot_dir, "mainfigure_MAST_tree_weights_2tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
-}
+ }
 
 
 
@@ -220,16 +220,16 @@ if (control_parameters$plot.AU.test == TRUE){
     labs(title = "AU Test") +
     theme_bw() +
     theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 15),
+          axis.text.x = element_text(size = 17, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+          axis.text.y = element_text(size = 17),
           strip.text = element_text(size = 20),
           plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 20),
-          legend.text = element_text(size = 15) )
+          legend.title = element_text(size =  28),
+          legend.text = element_text(size = 25) )
   bp_file <- paste0(plot_dir, "mainfigure_au_test_2tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
-}
+ }
 
 
 
