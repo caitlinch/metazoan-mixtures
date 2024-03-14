@@ -249,10 +249,10 @@ if (control_parameters$extract.MAST == TRUE){
                                                "PMSF_C60", "PMSF_LG_C60", 
                                                "LG4M", "UL3", 
                                                "GTR20_no_I"),
-                                    labels = c("CXX", "CXX", "CXX", "CXX",
+                                    labels = c("PM", "PM", "PM", "PM",
                                                "PMSF", "PMSF", 
-                                               "Other", "Other", 
-                                               "Single"),
+                                               "Mixture", "Mixture", 
+                                               "Q"),
                                     ordered = TRUE)
   # Add a new column specifying the number of trees for each analysis
   mast_tws_df$hypothesis_tree_analysis <- factor(mast_tws_df$number_hypothesis_trees,
