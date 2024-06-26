@@ -305,10 +305,10 @@ if (control_parameters$extract.tree.topology.tests == TRUE){
                                               "PMSF_C60", "PMSF_LG_C60", 
                                               "LG4M", "UL3", 
                                               "GTR20_no_I"),
-                                   labels = c("CXX", "CXX", "CXX", "CXX",
+                                   labels = c("PM", "PM", "PM", "PM",
                                               "PMSF", "PMSF", 
-                                              "Other", "Other", 
-                                              "Single"),
+                                              "Mixture", "Mixture", 
+                                              "Q"),
                                    ordered = TRUE)
   # Add new column for hypothesis trees
   au_test_df$hypothesis_tree_analysis <- au_test_df$tree_topology_iqtree_file
