@@ -103,13 +103,13 @@ bic_df$delta_BIC <- bic_df$new_BIC - bic_df$best_BIC
 
 ## Format and save dataframe
 # Round newly calculated columns to 3 dp
-bic_df$new_BIC    <- round(bic_df$new_BIC, digits = 2)
-bic_df$best_BIC   <- round(bic_df$best_BIC, digits = 2)
-bic_df$delta_BIC  <- round(bic_df$delta_BIC, digits = 2)
+bic_df$new_BIC    <- round(bic_df$new_BIC, digits = 3)
+bic_df$best_BIC   <- round(bic_df$best_BIC, digits = 3)
+bic_df$delta_BIC  <- round(bic_df$delta_BIC, digits = 3)
 # Add year column
 bic_df$year <- as.numeric(str_extract(bic_df$dataset, "(\\d)+"))
 # Write file to csv
-new_BIC_path    <- paste0(output_file_dir, "06_complete_BIC.csv")
+new_BIC_path    <- paste0(output_file_dir, "MS_complete_BIC.csv")
 write.csv(bic_df, file = new_BIC_path, row.names = FALSE)
 
 
@@ -120,10 +120,10 @@ pretty_bic_df <- bic_df[ , c("year", "dataset", "matrix", "model_class", "model"
                              "num_trees", "tree_topology", "iqtree_tree_LogL", 
                              "new_num_free_params", "new_BIC", "delta_BIC")]
 # Factor model_class column for correct ordering (simple -> complex)
-# Levels: Single (Single), Mixture (Other), Posterior Mean Site Frequency (PMSF), Empirical Profile Mixture Model (CXX)
+# Levels: Single (Q), Mixture (Mixture), Posterior Mean Site Frequency (PMSF), Empirical Profile Mixture Model (PM)
 pretty_bic_df$model_class <- factor(pretty_bic_df$model_class,
                                     levels = c("Single", "Other", "PMSF", "CXX"),
-                                    labels = c("Single", "Mixture", "PMSF", "EPMM"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
                                     ordered = TRUE)
 # Order by: year, dataset, matrix, model_class, num_trees
 pretty_bic_df <- pretty_bic_df[order(pretty_bic_df$year, pretty_bic_df$dataset, pretty_bic_df$matrix,
