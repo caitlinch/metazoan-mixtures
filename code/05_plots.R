@@ -45,7 +45,9 @@ source(paste0(repo_dir,"code/func_data_processing.R"))
 # Specify colour palettes used within these plots
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
 model_class_qual <- c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")
+model_class_qual2 <- c("#e41a1c", "#377eb8", "#4daf4a", "#999999")
 names(model_class_qual) <- c("PM", "PMSF", "Mixture", "Q")
+names(model_class_qual2) <- c("PM", "PMSF", "Mixture", "Q")
 # Notes for Viridis color palette usage (function = scale_color_viridis_d):
 #   For ML tree topology (i.e. Sister to all other Metazoans) use option = "C"/"plasma"
 #   For Porifera clade topology (i.e. Monophyletic/Paraphyletic) use option = "D"/"viridis"
@@ -66,9 +68,26 @@ if (control_parameters$add.extra.color.palettes == TRUE){
 all_files <- list.files(results_dir, recursive = TRUE)
 # Remove any for the 5 tree model
 all_files <- grep("5trees|5_trees", all_files, value = TRUE, invert = TRUE) 
+# Remove any files in the ignore folders
+all_files <- grep("00_", all_files, value = TRUE, invert = TRUE) 
 # Remove any excel files into separate object
 excel_files <- grep("xls|xlsx", all_files, value = TRUE) 
 all_files <- grep("xls|xlsx", all_files, value = TRUE, invert = TRUE) 
+
+# Create standard theme parameters
+standard_theme <- theme_bw() +
+  theme(axis.text.x = element_text(size = 25, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+        axis.title.y = element_text(size = 30, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.y = element_text(size = 20),
+        strip.text = element_text(size = 20),
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 28),
+        legend.text = element_text(size = 25),
+        panel.border = element_rect(linewidth = 1.5),
+        strip.background = element_rect(linewidth = 1.5),
+        axis.ticks = element_line(linewidth = 1),
+        axis.ticks.length.x = unit(8, units = "pt"),
+        axis.ticks.length.y = unit(5, units = "pt"))
 
 
 
@@ -137,6 +156,10 @@ if (control_parameters$plot.MAST == TRUE){
                                 levels = c("tree_1_tree_weight", "tree_2_tree_weight"),
                                 labels = c("Ctenophora-sister", "Porifera-sister"),
                                 ordered = TRUE)
+  mast_long$var_label_short <- factor(mast_long$variable,
+                                      levels = c("tree_1_tree_weight", "tree_2_tree_weight"),
+                                      labels = c("CTEN", "PORI"),
+                                      ordered = TRUE)
   mast_long$dataset_label <- factor(mast_long$matrix_name,
                                     levels = c( "Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
                                                 "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
@@ -147,31 +170,33 @@ if (control_parameters$plot.MAST == TRUE){
                                                "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                     ordered = TRUE)
-  mast_long$model_class <- factor(mast_long$model_class,
-                                  levels = c("CXX", "PMSF", "Other", "Single"),
-                                  labels = c("PM", "PMSF", "Mixture", "Q"),
-                                  ordered = T)
+  # Correct model class names if required
+  if (length(grep("CXX|Single|Other", mast_long$model_class)) > 0){
+    mast_long$model_class <- factor(mast_long$model_class,
+                                    levels = c("Single", "Other", "PMSF", "CXX"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    ordered = T)
+  } else {
+    mast_long$model_class <- factor(mast_long$model_class,
+                                    levels = c("Q", "Mixture", "PMSF", "PM"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    ordered = T)
+  }
   # Plot with lines for each dataset/model class
-  bp <- ggplot(mast_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
-    geom_point(size = 3, alpha = 0.6) +
-    geom_line(alpha = 0.6) +
-    facet_wrap(~dataset_label) +
+  bp <- ggplot(mast_long, aes(x = var_label_short, y = value, color = model_class, group = model_class)) +
+    geom_point(size = 5, alpha = 0.5) +
+    geom_line(alpha = 0.5, linewidth = 1) +
+    facet_wrap(.~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Tree weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     labs(title = "MAST tree weights") +
-    scale_color_manual(name = "Model class", values = model_class_qual) +
-    theme_bw() +
-    theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 17, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 17),
-          strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 28),
-          legend.text = element_text(size = 25) )
+    scale_color_manual(name = "Model class", values = model_class_qual2) +
+    guides(colour = guide_legend(override.aes = list(size=6))) +
+    standard_theme
   bp_file <- paste0(plot_dir, "mainfigure_MAST_tree_weights_2tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
- }
+}
 
 
 
@@ -188,6 +213,10 @@ if (control_parameters$plot.AU.test == TRUE){
                               levels = c("tree_1", "tree_2"),
                               labels = c("Ctenophora-sister", "Porifera-sister"),
                               ordered = TRUE)
+  au_long$var_label_short <- factor(au_long$variable,
+                                    levels = c("tree_1", "tree_2"),
+                                    labels = c("CTEN", "PORI"),
+                                    ordered = TRUE)
   au_long$dataset_label <- factor(au_long$matrix,
                                   levels = c( "Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
                                               "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
@@ -199,37 +228,31 @@ if (control_parameters$plot.AU.test == TRUE){
                                              "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                   ordered = TRUE)
   au_long$model_class <- factor(au_long$best_model_code,
-                                levels = c("LG_C60", "LG_C20", "C60", "C20",
-                                           "PMSF_C60", "PMSF_LG_C60",
+                                levels = c("GTR20_no_I", "GTR_no_I", "GTR20",
                                            "UL3", "LG4M",
-                                           "GTR20_no_I"),
-                                labels = c("PM", "PM", "PM", "PM",
-                                           "PMSF", "PMSF",
+                                           "PMSF_C60", "PMSF_LG_C60",
+                                           "LG_C60", "LG_C20", "C60", "C20"),
+                                labels = c("Q", "Q", "Q",
                                            "Mixture", "Mixture", 
-                                           "Q"),
+                                           "PMSF", "PMSF",
+                                           "PM", "PM", "PM", "PM"),
                                 ordered = T)
   # Plot with lines for each dataset/model class
-  bp <- ggplot(au_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
+  bp <- ggplot(au_long, aes(x = var_label_short, y = value, color = model_class, group = model_class)) +
     geom_hline(yintercept = 0.05, color = "darkgrey", linetype = "dashed") +
-    geom_point(size = 3, alpha = 0.6) +
-    geom_line(alpha = 0.6) +
+    geom_point(size = 5, alpha = 0.5) +
+    geom_line(linewidth = 1, alpha = 0.5) +
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model_class_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual2) +
     labs(title = "AU Test") +
-    theme_bw() +
-    theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 17, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 17),
-          strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size =  28),
-          legend.text = element_text(size = 25) )
+    guides(colour = guide_legend(override.aes = list(size=6))) +
+    standard_theme
   bp_file <- paste0(plot_dir, "mainfigure_au_test_2tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
- }
+}
 
 
 
@@ -246,6 +269,10 @@ if (control_parameters$plot.ELW == TRUE){
                                levels = c("tree_1", "tree_2"),
                                labels = c("Ctenophora-sister", "Porifera-sister"),
                                ordered = TRUE)
+  elw_long$var_label_short <- factor(elw_long$variable,
+                                     levels = c("tree_1", "tree_2"),
+                                     labels = c("CTEN", "PORI"),
+                                     ordered = TRUE)
   elw_long$dataset_label <- factor(elw_long$matrix,
                                    levels = c( "Dunn2008_FixedNames", "Philippe_etal_superalignment_FixedNames", "Pick2010",
                                                "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
@@ -256,33 +283,30 @@ if (control_parameters$plot.ELW == TRUE){
                                               "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                               "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                    ordered = TRUE)
-  elw_long$model_class <- factor(elw_long$model_class,
-                                 levels = c("LG_C60", "LG_C20", "C60", "C20",
-                                            "PMSF_C60", "PMSF_LG_C60",
-                                            "UL3", "LG4M",
-                                            "GTR20_no_I"),
-                                 labels = c("PM", "PM", "PM", "PM",
-                                            "PMSF", "PMSF",
-                                            "Mixture", "Mixture", 
-                                            "Q"),
-                                 ordered = T)
+  # Correct model class names if required
+  elw_long$model_class[is.na(elw_long$model_class)] <- "Single"
+  if (length(grep("CXX|Single|Other", elw_long$model_class)) > 0){
+    elw_long$model_class <- factor(elw_long$model_class,
+                                   levels = c("Single", "Other", "PMSF", "CXX"),
+                                   labels = c("Q", "Mixture", "PMSF", "PM"),
+                                   ordered = T)
+  } else {
+    elw_long$model_class <- factor(elw_long$model_class,
+                                   levels = c("Q", "Mixture", "PMSF", "PM"),
+                                   labels = c("Q", "Mixture", "PMSF", "PM"),
+                                   ordered = T)
+  }
   # Plot with lines for each dataset/model class
-  bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
-    geom_point(size = 3, alpha = 0.6) + 
-    geom_line(alpha = 0.6) +
+  bp <- ggplot(elw_long, aes(x = var_label_short, y = value, color = model_class, group = model_class)) +
+    geom_point(size = 5, alpha = 0.5) + 
+    geom_line(linewidth = 1, alpha = 0.5) +
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model_class_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual2) +
     labs(title = "Expected likelihood weight") +
-    theme_bw() +
-    theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 15),
-          strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 20),
-          legend.text = element_text(size = 15) )
+    guides(colour = guide_legend(override.aes = list(size=6))) +
+    standard_theme
   bp_file <- paste0(plot_dir, "mainfigure_expected_likelihood_weights_2tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
@@ -297,8 +321,10 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", excel_files, value = TRUE), value = TRUE)
   topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
   topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
+  # Remove GTR20
+  plot_topo_df <- topo_df[which(topo_df$model_code != "GTR20"), ]
   # Convert topology output to long format
-  topo_long <- melt(topo_df,
+  topo_long <- melt(plot_topo_df,
                     id.vars = c("dataset", "matrix_name", "model_code", "PORI_topology"),
                     measure.vars = c("sister_group"))
   topo_long$dataset_label <- factor(topo_long$matrix_name,
@@ -315,8 +341,8 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
                                                           "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
                                                           "REA_EST_includingXenoturbella", "ED3d", "Best108", "Chang_AA",  "Dataset10",
                                                           "Metazoa_Choano_RCFV_strict", "Tplx_phylo_d1", "nonbilateria_MARE_BMGE"),
-                                               labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013 non-ribosomal", 
-                                                          "Nosenko 2013 ribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
+                                               labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013 non-ribo.", 
+                                                          "Nosenko 2013 ribo.", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                           "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                                ordered = TRUE)
   topo_long$PORI_topology <- factor(topo_long$PORI_topology,
@@ -412,8 +438,9 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   topo_df_file <- grep("xls", grep("ML_tree_topology_ManualCheck", excel_files, value = TRUE), value = TRUE)
   topo_df_file <- grep("Summary", topo_df_file, value = TRUE, invert = TRUE)
   topo_df <- as.data.frame(read_excel(path = paste0(results_dir, "/", topo_df_file), sheet = "Topology"))
-  # Remove ModelFinder row
+  # Remove ModelFinder and GTR20 rows
   topo_df <- topo_df[topo_df$model_code != "ModelFinder",]
+  topo_df <- topo_df[topo_df$model_code != "GTR20",]
   # Convert topology output to long format
   topo_long <- melt(topo_df,
                     id.vars = c("dataset", "matrix_name", "model_code", "PORI_topology"),
@@ -432,8 +459,8 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
                                                           "UPDUNN_MB_FixedNames", "nonribosomal_9187_smatrix", "ribosomal_14615_smatrix",
                                                           "REA_EST_includingXenoturbella", "ED3d", "Best108", "Chang_AA",  "Dataset10",
                                                           "Metazoa_Choano_RCFV_strict", "Tplx_phylo_d1", "nonbilateria_MARE_BMGE"),
-                                               labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013 non-ribosomal", 
-                                                          "Nosenko 2013 ribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
+                                               labels = c("Dunn 2008", "Philippe 2009", "Pick 2010", "Philippe 2011", "Nosenko 2013 non-ribo.", 
+                                                          "Nosenko 2013 ribo.", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                           "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                                ordered = TRUE)
   topo_long$PORI_topology <- factor(topo_long$PORI_topology,
@@ -447,11 +474,11 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
   #   PM is for "empirical profile mixture models" i.e. C20 and C60 models
   #   PMSF is for "posterior site mean frequency" models in IQ-Tree2 i.e. PMSF+C20 and PMSF+C60 models
   topo_long$model_class <- factor(topo_long$model_code,
-                                  levels = c("GTR20", "JTT", "JTTDCMut", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG",
+                                  levels = c("GTR20", "GTR_no_I", "GTR20_no_I", "JTT", "JTTDCMut", "LG", "mtZOA", "PMB", "Poisson", "rtREV", "WAG",
                                              "CF4", "EHO", "EX_EHO", "EX2", "EX3", "LG4M", "UL2", "UL3",
                                              "PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60",
                                              "C20", "C60", "LG_C20", "LG_C60"),
-                                  labels = c(rep("Q", 9), rep("Mixture", 8), rep("PMSF", 4), rep("PM", 4)),
+                                  labels = c(rep("Q", 11), rep("Mixture", 8), rep("PMSF", 4), rep("PM", 4)),
                                   ordered = TRUE)
   
   ## Plot number of models with each topology - facet per dataset, one bar per model_class
@@ -471,7 +498,8 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
           strip.text = element_text(size = 15),
           plot.title = element_text(size = 30, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
           legend.title = element_text(size = 18),
-          legend.text = element_text(size = 14))
+          legend.text = element_text(size = 14)) +
+    guides(fill = guide_legend(override.aes = list(size=7)))
   bc_file <- paste0(plot_dir, "mainfigure_ML_topology_results_singleBar_datasetFacet.")
   ggsave(filename = paste0(bc_file, "png"), plot = bc, device = "png", height = 10, width = 8, units = "in")
   ggsave(filename = paste0(bc_file, "pdf"), plot = bc, device = "pdf", height = 10, width = 8, units = "in")
@@ -493,7 +521,8 @@ if (control_parameters$plot.ML.topologies == TRUE | control_parameters$plot.Pori
           strip.text = element_text(size = 15),
           plot.title = element_text(size = 30, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
           legend.title = element_text(size = 18),
-          legend.text = element_text(size = 14))
+          legend.text = element_text(size = 14)) +
+    guides(fill = guide_legend(override.aes = list(size=7)))
   bc2_file <- paste0(plot_dir, "mainfigure_Porifera_topology_results_singleBar_datasetFacet.")
   ggsave(filename = paste0(bc2_file, "png"), plot = bc2, device = "png", height = 10, width = 8, units = "in")
   ggsave(filename = paste0(bc2_file, "pdf"), plot = bc2, device = "pdf", height = 10, width = 8, units = "in")
