@@ -1532,7 +1532,7 @@ extract.hypothesis.tree.parameters <- function(iq_file){
   output_vector <- c(1, dataset, matrix_name, tree_topology, model_class, model_code,
                      ht_model, NA, ht_ll )
   names(output_vector) <- c("num_trees", "dataset", "matrix_name", "tree_topology", "model_class", "model_code", 
-                             names(ht_model), "mast_branch_type", names(ht_ll))
+                            names(ht_model), "mast_branch_type", names(ht_ll))
   return(output_vector)
 }
 
@@ -2091,8 +2091,17 @@ compare.multitree.BIC <- function(dataset, matrix, model_class, ml_results, mast
                       "BIC_lowest", "BIC_middle", "BIC_highest", "missing_runs")
     names(output) <- output_names
   } else {
+    # Get ML results
+    if (dataset == "Pick2010" & matrix == "Pick2010" & model_class == "PM"){
+      best_model = "LG_C60"
+    }
+    # Filter maximum likelihood results to just that model
+    filtered_ml <- ml_results[which(ml_results$dataset == dataset &
+                                      ml_results$matrix_name == matrix &
+                                      ml_results$model_code == best_model), ]
     # Collate results
-    output <- c(dataset, matrix, model_class, NA, NA, NA, NA, NA, NA, NA, NA)
+    output <- c(dataset, matrix, model_class, best_model, filtered_ml$best_model_BIC, NA, NA,
+                filtered_ml$best_model_BIC, NA, NA, "2, 5")
     output_names <- c("dataset", "matrix", "model_class", "best_model_code", "ML_BIC", "MAST_2_BIC", "MAST_5_BIC", 
                       "BIC_lowest", "BIC_middle", "BIC_highest", "missing_runs")
     names(output) <- output_names
@@ -2185,12 +2194,23 @@ compare.multitree.log.likelihood <- function(dataset, matrix, model_class, ml_re
                       "ML_numFreeParams", "MAST_2_numFreeParams", "MAST_5_numFreeParams")
     names(output) <- output_names
   } else {
+    # Get ML results
+    if (dataset == "Pick2010" & matrix == "Pick2010" & model_class == "PM"){
+      best_model = "LG_C60"
+    }
+    # Filter maximum likelihood results to just that model
+    filtered_ml <- ml_results[which(ml_results$dataset == dataset &
+                                      ml_results$matrix_name == matrix &
+                                      ml_results$model_code == best_model), ]
     # Collate results
     output_names <- c("dataset", "matrix", "model_class", "best_model_code", 
                       "ML_LogL", "MAST_2_LogL", "MAST_5_LogL", 
                       "LogL_highest", "LogL_middle", "LogL_lowest", "missing_runs", 
                       "ML_numFreeParams", "MAST_2_numFreeParams", "MAST_5_numFreeParams")
-    output <- c(dataset, matrix, model_class, rep(NA, length(output_names)-3))
+    output <- c(dataset, matrix, model_class, best_model,
+                filtered_ml$best_model_LogL, NA, NA,
+                filtered_ml$best_model_LogL, NA, NA, "2, 5",
+                filtered_ml$tree_NumFreeParams , NA, NA)
     names(output) <- output_names
   }
   # Return results

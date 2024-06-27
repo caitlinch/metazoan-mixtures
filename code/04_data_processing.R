@@ -38,7 +38,7 @@ all_output_files <- paste0(output_file_dir, list.files(output_file_dir))
 summary_topology_file <- paste0(output_file_dir, "summary_ML_tree_topology.csv")
 if (file.exists(summary_topology_file) == FALSE){
   # Read in .xlsx file with manual topology check results
-  topology_check_x_file <- grep("xls", grep("ML_tree_topology_ManualCheck", all_output_files, value = TRUE), value = TRUE)
+  topology_check_x_file <- grep("results_02_ML_tree_topology_ManualCheck", all_output_files, value = TRUE)
   topology_check_x_file <- grep("Summary", topology_check_x_file, value = TRUE, invert = TRUE)
   topology_check_df <- as.data.frame(read_excel(path = topology_check_x_file, sheet = "Topology"))
   # Remove Simion and Hejnol datasets - too computationally intensive to run full ML models
@@ -54,9 +54,11 @@ if (file.exists(summary_topology_file) == FALSE){
   # Convert necessary columns to numeric
   topology_check_df$model_BIC <- as.numeric(topology_check_df$model_BIC)
   topology_check_df$tree_BIC <- as.numeric(topology_check_df$tree_BIC) 
+  # Remove GTR20 model (had to use GTR_no_I for MAST, as GTR+I didn't run properly)
+  topology_noGTR20_df <- topology_check_df[which(topology_check_df$model_code != "GTR20"), ]
   # Summarise results for each dataset as a percentage
   dataset_ids <- unique(paste0(topology_check_df$dataset, ".", topology_check_df$matrix_name))
-  summary_topology_list <- lapply(dataset_ids, summarise.topology.results, topology_check_df, 
+  summary_topology_list <- lapply(dataset_ids, summarise.topology.results, topology_noGTR20_df, 
                                   excluded_models = c("C10", "C30", "C40", "C50"))
   summary_topology_df <-  as.data.frame(do.call(rbind, summary_topology_list))
   # Sort output by year
@@ -68,14 +70,14 @@ if (file.exists(summary_topology_file) == FALSE){
 ### Nicely format output data frames of tree topologies and of sponge topologies
 model_order <- c("PMSF_C20", "PMSF_C60", "PMSF_LG_C20", "PMSF_LG_C60", 
                  "C20", "C60", "LG_C20", "LG_C60", "CF4", "EHO", "EX_EHO",
-                 "EX2", "EX3", "GTR20", "JTT", "JTTDCMut", "LG", "LG4M",
+                 "EX2", "EX3", "GTR20", "GTR_no_I", "JTT", "JTTDCMut", "LG", "LG4M",
                  "mtZOA", "PMB", "Poisson", "rtREV", "UL2", "UL3", "WAG",
                  "ModelFinder")
 ## For tree topologies:
 tree_topology_file <- paste0(output_file_dir, "all_models_ML_tree_topology.csv")
 if (file.exists(tree_topology_file) == FALSE){
   # Read in summary dataframe
-  summary_topology_df <- read.csv(summary_topology_file, stringsAsFactors = FALE)
+  summary_topology_df <- read.csv(summary_topology_file, stringsAsFactors = FALSE)
   ordered_dataset_ids <- paste0(summary_topology_df$dataset, ".", summary_topology_df$matrix_name)
   # Extract tree topologies from dataframe
   tree_topology_list <- lapply(ordered_dataset_ids, tree.topology.results, topology_check_df, model_order)
@@ -91,7 +93,7 @@ if (file.exists(tree_topology_file) == FALSE){
 pori_topology_file <- paste0(output_file_dir, "all_models_ML_Porifera_topology.csv")
 if (file.exists(pori_topology_file) == FALSE){
   # Read in summary dataframe
-  summary_topology_df <- read.csv(summary_topology_file, stringsAsFactors = FALE)
+  summary_topology_df <- read.csv(summary_topology_file, stringsAsFactors = FALSE)
   ordered_dataset_ids <- paste0(summary_topology_df$dataset, ".", summary_topology_df$matrix_name)
   # Extract tree topologies from dataframe
   pori_topology_list <- lapply(ordered_dataset_ids, porifera.topology.results, topology_check_df, model_order)
@@ -194,14 +196,21 @@ for (a in analyses){
 
 #### 6. Combine BIC from MAST and single tree ####
 # Open MAST parameter and MAST output paths
-mast_output_path <- grep("MAST_model_output.csv", all_output_files, value = T)
+mast_output_path <- grep("results_06_MAST_output", all_output_files, value = T)
 mast_output <- read.csv(mast_output_path, stringsAsFactors = F)
-ml_results_file <- grep("maximum_likelihood_results.tsv", all_output_files, value = T)
-ml_results <- read.table(ml_results_file, header = TRUE, sep = "\t")
+ml_results_file <- grep("results_01_maximum_likelihood_iqtreeOutput", all_output_files, value = T)
+ml_results <- read.csv(ml_results_file, stringsAsFactors = F)
+ml_results$model_class <- factor(ml_results$model_class,
+                                 levels = c("Single", "Other", "PMSF", "CXX"),
+                                 labels = c("Q", "Mixture", "PMSF", "PM"),
+                                 ordered = T)
+# # To fix minbl lengths for MAST (if required_)
+# mast_output$minimum_branch_length <- as.numeric(paste0("0.", unlist(lapply(strsplit(basename(mast_output$iq_file), "\\."), function(x){x[[grep("minbl", x)+1]]}))))
 # Create parameters dataframe
 datasets_df <- unique(mast_output[, c("dataset", "matrix_name")])
-datasets_df <- rbind(datasets_df, datasets_df, datasets_df)
-datasets_df$model_class <- c(rep("CXX", nrow(datasets_df)/3), rep("PMSF", nrow(datasets_df)/3), rep("Other", nrow(datasets_df)/3))
+num_datasets = nrow(datasets_df)
+datasets_df <- rbind(datasets_df, datasets_df, datasets_df, datasets_df)
+datasets_df$model_class <- c(rep("Q", num_datasets), rep("Mixture", num_datasets), rep("PMSF", num_datasets), rep("PM", num_datasets))
 rownames(datasets_df) <- 1:nrow(datasets_df)
 # For each row in the datasets_df:
 bic_list <- lapply(1:nrow(datasets_df), compare.multitree.BIC.wrapper, datasets_df = datasets_df, ml_results = ml_results, mast_output = mast_output)
@@ -213,14 +222,21 @@ write.csv(bic_df, file = paste0(output_file_dir, "summary_BIC_values.csv"), row.
 
 #### 7. Combine log likelihood from MAST and single tree ####
 # Open MAST parameter and MAST output paths
-mast_output_path <- grep("MAST_model_output", all_output_files, value = T)
+mast_output_path <- grep("results_06_MAST_output", all_output_files, value = T)
 mast_output <- read.csv(mast_output_path, stringsAsFactors = F)
-ml_results_file <- grep("maximum_likelihood_results", all_output_files, value = T)
-ml_results <- read.table(ml_results_file, header = TRUE, sep = "\t")
+ml_results_file <- grep("results_01_maximum_likelihood_iqtreeOutput", all_output_files, value = T)
+ml_results <- read.csv(ml_results_file, stringsAsFactors = F)
+ml_results$model_class <- factor(ml_results$model_class,
+                                 levels = c("Single", "Other", "PMSF", "CXX"),
+                                 labels = c("Q", "Mixture", "PMSF", "PM"),
+                                 ordered = T)
+# # To fix minbl lengths for MAST (if required_)
+# mast_output$minimum_branch_length <- as.numeric(paste0("0.", unlist(lapply(strsplit(basename(mast_output$iq_file), "\\."), function(x){x[[grep("minbl", x)+1]]}))))
 # Create parameters dataframe
 datasets_df <- unique(mast_output[, c("dataset", "matrix_name")])
-datasets_df <- rbind(datasets_df, datasets_df, datasets_df)
-datasets_df$model_class <- c(rep("CXX", nrow(datasets_df)/3), rep("PMSF", nrow(datasets_df)/3), rep("Other", nrow(datasets_df)/3))
+num_datasets = nrow(datasets_df)
+datasets_df <- rbind(datasets_df, datasets_df, datasets_df, datasets_df)
+datasets_df$model_class <- c(rep("Q", num_datasets), rep("Mixture", num_datasets), rep("PMSF", num_datasets), rep("PM", num_datasets))
 rownames(datasets_df) <- 1:nrow(datasets_df)
 # For each row in the datasets_df:
 logl_list <- lapply(1:nrow(datasets_df), compare.multitree.log.likelihood.wrapper, datasets_df = datasets_df, ml_results = ml_results, mast_output = mast_output)
