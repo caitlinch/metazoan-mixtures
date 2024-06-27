@@ -45,7 +45,9 @@ labels_5tree_short <- c("CTEN", "PORI", "CTEN+PORI", "CTEN, para. PORI", "PORI, 
 # Specify colour palettes used within these plots
 metazoan_palette <- c(A = "#CC79A7", B = "#009E73", C = "#56B4E9", D = "#E69F00", E = "#999999")
 model_class_qual <- c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3")
+model_class_qual2 <- c("#e41a1c", "#377eb8", "#4daf4a", "#999999")
 names(model_class_qual) <- c("PM", "PMSF", "Mixture", "Q")
+names(model_class_qual2) <- c("PM", "PMSF", "Mixture", "Q")
 
 # Notes for Viridis color palette usage (function = scale_color_viridis_d):
 #   For ML tree topology (i.e. Sister to all other Metazoans) use option = "C"/"plasma"
@@ -66,7 +68,22 @@ if (control_parameters$add.extra.color.palettes == TRUE){
 # List all output files
 all_files <- list.files(results_dir, recursive = TRUE)
 all_files <- grep("5trees", all_files, value = T)
-all_files <- grep("xlsx|xls", all_files, value = T, invert = T)
+all_files <- grep("xlsx|xls|00_", all_files, value = T, invert = T)
+
+# Create standard theme parameters
+standard_theme <- theme_bw() +
+  theme(axis.text.x = element_text(size = 20, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
+        axis.title.y = element_text(size = 30, margin = margin(t = 0, r = 15, b = 0, l = 10)),
+        axis.text.y = element_text(size = 20),
+        strip.text = element_text(size = 20),
+        plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
+        legend.title = element_text(size = 28),
+        legend.text = element_text(size = 25),
+        panel.border = element_rect(linewidth = 1.5),
+        strip.background = element_rect(linewidth = 1.5),
+        axis.ticks = element_line(linewidth = 1),
+        axis.ticks.length.x = unit(8, units = "pt"),
+        axis.ticks.length.y = unit(5, units = "pt"))
 
 
 
@@ -93,10 +110,18 @@ if (control_parameters$plot.MAST == TRUE){
                                                "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                                "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                     ordered = TRUE)
-  mast_long$model_class <- factor(mast_long$model_class,
-                                  levels = c("PM", "PMSF", "Mixture", "Q"),
-                                  labels = c("PM", "PMSF", "Mixture", "Q"),
-                                  ordered = T)
+  # Correct model class names if required
+  if (length(grep("CXX|Single|Other", mast_long$model_class)) > 0){
+    mast_long$model_class <- factor(mast_long$model_class,
+                                    levels = c("Single", "Other", "PMSF", "CXX"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    ordered = T)
+  } else {
+    mast_long$model_class <- factor(mast_long$model_class,
+                                    levels = c("Q", "Mixture", "PMSF", "PM"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    ordered = T)
+  }
   # Plot with lines for each dataset/model class
   bp <- ggplot(mast_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
     geom_point(size = 3, alpha = 0.6) +
@@ -105,15 +130,9 @@ if (control_parameters$plot.MAST == TRUE){
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Tree weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     labs(title = "MAST tree weights") +
-    scale_color_manual(name = "Model class", values = model_class_qual) +
-    theme_bw() +
-    theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 17, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 17),
-          strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 25),
-          legend.text = element_text(size = 20) )
+    scale_color_manual(name = "Model class", values = model_class_qual2) +
+    guides(colour = guide_legend(override.aes = list(size=6))) +
+    standard_theme
   bp_file <- paste0(plot_dir, "MAST_tree_weights_5tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
@@ -145,14 +164,14 @@ if (control_parameters$plot.AU.tests == TRUE){
                                              "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                   ordered = TRUE)
   au_long$model_class <- factor(au_long$best_model_code,
-                                levels = c("C20", "C60", "LG_C20", "LG_C60", 
+                                levels = c("GTR20_no_I", "GTR_no_I", "GTR20",
+                                           "UL3", "LG4M",
                                            "PMSF_C60", "PMSF_LG_C60",
-                                           "LG4M", "UL3",
-                                           "GTR20_no_I"),
-                                labels = c("PM", "PM", "PM", "PM",
+                                           "LG_C60", "LG_C20", "C60", "C20"),
+                                labels = c("Q", "Q", "Q",
+                                           "Mixture", "Mixture", 
                                            "PMSF", "PMSF",
-                                           "Mixture", "Mixture",
-                                           "Q"),
+                                           "PM", "PM", "PM", "PM"),
                                 ordered = T)
   # Plot with boxplot for each dataset
   bp <- ggplot(au_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
@@ -164,14 +183,8 @@ if (control_parameters$plot.AU.tests == TRUE){
     scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     scale_color_manual(name = "Model class", values = model_class_qual) +
     labs(title = "AU Test") +
-    theme_bw() +
-    theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 17, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 17),
-          strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 25),
-          legend.text = element_text(size = 20) )
+    guides(colour = guide_legend(override.aes = list(size=6))) +
+    standard_theme
   bp_file <- paste0(plot_dir, "au_test_5tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
@@ -202,10 +215,18 @@ if (control_parameters$plot.ELW == TRUE){
                                               "Nosenko 2013\nribosomal", "Ryan 2013", "Moroz 2014", "Borowiec 2015", "Chang 2015", 
                                               "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                    ordered = TRUE)
-  elw_long$model_class <- factor(elw_long$model_class,
-                                 levels = c("CXX", "PMSF", "Other"),
-                                 labels = c("CXX", "PMSF", "Other"),
-                                 ordered = T)
+  # Correct model class names if required
+  if (length(grep("CXX|Single|Other", elw_long$model_class)) > 0){
+    elw_long$model_class <- factor(elw_long$model_class,
+                                    levels = c("Single", "Other", "PMSF", "CXX"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    ordered = T)
+  } else {
+    elw_long$model_class <- factor(elw_long$model_class,
+                                    levels = c("Q", "Mixture", "PMSF", "PM"),
+                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    ordered = T)
+  }
   # Plot with boxplot for each dataset
   bp <- ggplot(elw_long, aes(x = var_label, y = value, color = model_class, group = model_class)) +
     geom_point(size = 3, alpha = 0.6) + 
@@ -215,14 +236,8 @@ if (control_parameters$plot.ELW == TRUE){
     scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
     scale_color_manual(name = "Model class", values = model_class_qual) +
     labs(title = "Expected likelihood weight") +
-    theme_bw() +
-    theme(axis.title.y = element_text(size = 25, margin = margin(t = 0, r = 15, b = 0, l = 10)),
-          axis.text.x = element_text(size = 15, vjust = 0.5, hjust = 1, angle = 90, margin = margin(t = 10, r = 0, b = 10, l = 0)),  
-          axis.text.y = element_text(size = 15),
-          strip.text = element_text(size = 20),
-          plot.title = element_text(size = 40, hjust = 0.5, margin = margin(t = 10, r = 0, b = 15, l = 0)),
-          legend.title = element_text(size = 20),
-          legend.text = element_text(size = 15) )
+    guides(colour = guide_legend(override.aes = list(size=6))) +
+    standard_theme
   bp_file <- paste0(plot_dir, "expected_likelihood_weights_5tree.")
   ggsave(filename = paste0(bp_file, "png"), plot = bp, device = "png", width = 12, height = 14, units = "in")
   ggsave(filename = paste0(bp_file, "pdf"), plot = bp, device = "pdf", width = 12, height = 14, units = "in")
