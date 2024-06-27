@@ -181,7 +181,7 @@ if (control_parameters$plot.AU.tests == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "p-value", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model_class_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual2) +
     labs(title = "AU Test") +
     guides(colour = guide_legend(override.aes = list(size=6))) +
     standard_theme
@@ -216,10 +216,11 @@ if (control_parameters$plot.ELW == TRUE){
                                               "Whelan 2015", "Whelan 2017", "Laumer 2018", "Laumer 2019" ),
                                    ordered = TRUE)
   # Correct model class names if required
+  elw_long$model_class[which(is.na(elw_long$model_class))] <- "Single"
   if (length(grep("CXX|Single|Other", elw_long$model_class)) > 0){
     elw_long$model_class <- factor(elw_long$model_class,
-                                    levels = c("Single", "Other", "PMSF", "CXX"),
-                                    labels = c("Q", "Mixture", "PMSF", "PM"),
+                                    levels = c("Single", "Q", "Other", "Mixture", "PMSF", "PMSF", "CXX", "PM"),
+                                    labels = c("Q", "Q", "Mixture", "Mixture", "PMSF", "PMSF", "PM", "PM"),
                                     ordered = T)
   } else {
     elw_long$model_class <- factor(elw_long$model_class,
@@ -234,7 +235,7 @@ if (control_parameters$plot.ELW == TRUE){
     facet_wrap(~dataset_label) +
     scale_x_discrete(name = NULL) +
     scale_y_continuous(name = "Weight", limits = c(0,1), breaks = seq(0,1,0.2), labels = seq(0,1,0.2), minor_breaks = seq(0,1,0.1)) +
-    scale_color_manual(name = "Model class", values = model_class_qual) +
+    scale_color_manual(name = "Model class", values = model_class_qual2) +
     labs(title = "Expected likelihood weight") +
     guides(colour = guide_legend(override.aes = list(size=6))) +
     standard_theme
