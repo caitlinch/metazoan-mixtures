@@ -1,0 +1,24 @@
+---
+environment: "local"
+
+local:
+    iqtree: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/iqtree/iqtree-2.4.0-macOS-arm/bin/iqtree2"
+    iqtree_threads: "32"
+    iqtree_MAST: ""
+    iqtree_MAST_threads: "50"
+    phylobayes: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/phylobayes-4.1e/data/"
+    phylobayes_threads: "32"
+    alignments: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/alignments/"
+    output: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/output/"
+    constraint_trees: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/constraint_trees/"
+
+server:
+    iqtree: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
+    iqtree_threads: "32"
+    iqtree_MAST: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.3.hmmster-Linux/bin/iqtree2"
+    iqtree_MAST_threads: "50"
+    phylobayes: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/phylobayes/phylobayes-4.1e/data/"
+    phylobayes_threads: "32"
+    alignments: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
+    output: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/CAT_PMSF/"
+    constraint_trees: "/home/u5348329/metazoan-mixtures/output/constraint_trees/"
