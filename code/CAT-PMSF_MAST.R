@@ -41,13 +41,22 @@ params$output_AU_test <- paste0(params$output, "04_AU_test/")
 ## Alignment details
 # Open the data frame with the alignment details
 alignment_df <- read.csv("output/alignment_dimensions.csv")
-alignment_df$full_path <- paste0(params$alignments, list.files(params$alignments))
+alignment_df$full_path <- paste0(params$alignments, alignment_df$alignment_path)
 
 ## Constraint trees
-# Assemble constraint tree list
-constraint_trees <- paste0(params$constraint_trees, list.files(params$constraint_trees))
 # Filter constraint tree list to include only desired topologies
-profile_topologies <- grep("constraint_tree_1|constraint_tree_2", constraint_trees, value = T)
+#   Models included in constraint trees are: LG4M, UL3, PMSF LG+C60, PMSF C60, LG+C20, LG+C60, C60
+# Want only constrained LG+C20, LG+C60 or C60 models for CTEN-sister (ML_H1) and PORI-sister (ML_H2)
+profile_topologies <-
+  grep("LG_C20|LG_C60|C60",
+       grep("ML_H1|ML_H2",
+            grep("\\.treefile",
+                 grep("PMSF",
+                      list.files(params$constrained_CXX_trees),
+                      invert = T, value = T),
+                 value = T),
+            value = T),
+       value = T)
 
 
 
@@ -76,8 +85,8 @@ commands_df <- as.data.frame(
   )
 )
 
-## Convert to IQ-Tree file format: convert-site-dists.py sister_to_lobopodia_chain1.siteprofiles
-commands_df_2 <- as.data.frame(
+## Create command lines to convert site profiles to IQ-Tree file format (.sitefreq)
+commands_df <- as.data.frame(
   do.call(rbind,
           lapply(
             1:nrow(commands_df),
@@ -86,7 +95,11 @@ commands_df_2 <- as.data.frame(
   )
 )
 
-
+## Write csv file
+write.csv(
+  commands_df,
+  file = paste0(params$output, "CAT-PMSF_phylobayes_command_lines.csv")
+)
 
 #### 04. Unconstrained tree estimation ####
 
