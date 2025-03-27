@@ -27,12 +27,23 @@ source("code/func_CAT-PMSF.R")
 
 
 #### 02. Input parameters ####
+## Set file paths
 # Open config file to get file paths
-config <- read_yaml("code/CAT-PMSF_config.yaml")
-params <- config[[which(names(config) == config$environment)]]
-# Open the dataframe with the alignment details
+params <- read_yaml("code/CAT-PMSF_config.yaml")
+params <- params[[which(names(params) == params$environment)]]
+# Add output paths for specific analyses
+params$output_profiles <- paste0(params$output, "01_CAT-PMSF_profiles/")
+params$output_trees <- paste0(params$output, "02_unconstrained_trees/")
+params$output_constrained_trees <- paste0(params$output, "03_constrained_trees/")
+params$output_MAST <- paste0(params$output, "04_MAST/")
+params$output_AU_test <- paste0(params$output, "04_AU_test/")
+
+## Alignment details
+# Open the data frame with the alignment details
 alignment_df <- read.csv("output/alignment_dimensions.csv")
 alignment_df$full_path <- paste0(params$alignments, list.files(params$alignments))
+
+## Constraint trees
 # Assemble constraint tree list
 constraint_trees <- paste0(params$constraint_trees, list.files(params$constraint_trees))
 # Filter constraint tree list to include only desired topologies
@@ -56,11 +67,26 @@ profile_topologies <- grep("constraint_tree_1|constraint_tree_2", constraint_tre
 #         GitHub repo (https://github.com/drenal/cat-pmsf-paper)
 
 ## Create command lines to infer PhyloBayes command lines
-# pb_mpi -s matrix_40sp.fasta -T sister_to_lobopodia.tree -cat -poisson sister_to_lobopodia_chain1 (and chain_2)
-# tracecomp -x 500 sister_to_lobopodia_chain1 sister_to_lobopodia_chain2
-# readpb_mpi -ss -x 500 10 sister_to_lobopodia_chain1
+# Remember: these commands should be run in the params$output_profiles directory
+commands_df <- as.data.frame(
+  do.call(rbind,
+          lapply(1:nrow(alignment_df),
+                 infer.phylobayes.profile.wrapper,
+                 alignment_df, params, profile_topologies)
+  )
+)
 
-# Convert to IQ-Tree file format: convert-site-dists.py sister_to_lobopodia_chain1.siteprofiles
+## Convert to IQ-Tree file format: convert-site-dists.py sister_to_lobopodia_chain1.siteprofiles
+commands_df_2 <- as.data.frame(
+  do.call(rbind,
+          lapply(
+            1:nrow(commands_df),
+            convert.profile.for.iqtree,
+            commands_df, params)
+  )
+)
+
+
 
 #### 04. Unconstrained tree estimation ####
 

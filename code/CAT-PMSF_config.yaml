@@ -11,6 +11,7 @@ local:
     alignments: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/alignments/"
     output: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/output/"
     constraint_trees: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/constraint_trees/"
+    convert_site_dists: "/Users/caitlin/Documents/PhD/Ch03_CATPMSF/drenal_cat-pmsf-paper/scripts/convert-site-dists.py"
 
 server:
     iqtree: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/iqtree/iqtree-2.2.0-Linux/bin/iqtree2"
@@ -21,4 +22,6 @@ server:
     phylobayes_threads: "32"
     alignments: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/data_all/"
     output: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/CAT_PMSF/"
-    constraint_trees: "/home/u5348329/metazoan-mixtures/output/constraint_trees/"
+    constraint_trees: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/output/constraint_trees/"
+    convert_site_dists: "/mnt/data/dayhoff/home/u5348329/metazoan-mixtures/drenal_cat-pmsf-paper/scripts/convert-site-dists.py"
+
