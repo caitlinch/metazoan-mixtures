@@ -86,7 +86,7 @@ commands_df <- as.data.frame(
 )
 
 ## Create command lines to convert site profiles to IQ-Tree file format (.sitefreq)
-commands_df <- as.data.frame(
+commands_df_2 <- as.data.frame(
   do.call(rbind,
           lapply(
             1:nrow(commands_df),
@@ -98,8 +98,10 @@ commands_df <- as.data.frame(
 ## Write csv file
 write.csv(
   commands_df,
-  file = paste0(params$output, "CAT-PMSF_phylobayes_command_lines.csv")
+  file = paste0("output/CAT-PMSF_phylobayes_command_lines.csv")
 )
+
+
 
 #### 04. Unconstrained tree estimation ####
 
