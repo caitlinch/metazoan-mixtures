@@ -4,10 +4,20 @@
 
 # This script is designed to be used in conjunction with the Rproject for this repository
 
-## TODO
+## Methodology notes:
+# - Input topology for PhyloBayes (bifurcating tree, branch lengths ignored):
+#     - Used constrained topologies estimated with CXX model.
+#     - For each dataset, I took the constrained trees estimated with the best
+#       CXX model (either LG+C20, LG+C60 or C60)
+#     - Input topology can bias model inference, so for each dataset I infer
+#       two CAT-PMSF models: one each under CTEN-sister and PORI-sister
+
+## Potential issues:
 # - Fixed topology used to infer site-specific amino acid frequency profiles -
-#   should this be a bifucating tree topology with branch lengths? If so, I will
-#   need to estimate constrained trees for each dataset under the CAT-POISSON model.
+#   should this be a bifurcating tree topology with branch lengths that is
+#   inferred under the CAT model?
+#       - If so, I will need to estimate constrained trees for each dataset
+#         under the CAT-POISSON model.
 # - Need to repeat process for each topology under consideration - i.e.,
 #   CAT-POISSON-PORI, CAT-POISSON-CTEN. This doubles the number of necessary
 #   analyses and for each dataset (at minimum) I would need to run:
@@ -15,7 +25,12 @@
 #           - MAST 2-tree CAT-POISSON-PORI
 #           - MAST 5-tree CAT-POISSON-CTEN
 #           - MAST 5-tree CAT-POISSON-PORI
-# - I wasn't able to install phylobayes-mpi on Dayhoff (issue with MPI compilers)
+# - For a 5-tree MAST analysis, need to infer 5 constrained ML trees under the
+#   CAT-PMSF model
+#           - For each CAT-PMSF model, need to infer 5 constrained ML trees
+#           - E.g., using both CAT-POISSON-CTEN and CAT-POISSON-PORI needs
+#             10 ML trees per dataset
+# - Wasn't able to install phylobayes-mpi on Dayhoff (issue with MPI compilers)
 
 
 
@@ -86,7 +101,7 @@ commands_df <- as.data.frame(
 )
 
 ## Create command lines to convert site profiles to IQ-Tree file format (.sitefreq)
-commands_df_2 <- as.data.frame(
+commands_df <- as.data.frame(
   do.call(rbind,
           lapply(
             1:nrow(commands_df),
@@ -99,6 +114,23 @@ commands_df_2 <- as.data.frame(
 write.csv(
   commands_df,
   file = paste0("output/CAT-PMSF_phylobayes_command_lines.csv")
+)
+
+## Create SLURM files
+phylobayes_jobscripts <-
+  unlist(
+    lapply(
+      1:nrow(commands_df),
+      createPhyloBayesSlurmFile,
+      commands_df,
+      jobscript_output_dir = "jobscripts/",
+      jobscript_template = "resources/slurm_template.sh"
+    )
+  )
+python_jobscript <- createPythonConversionSlurmFile(
+  commands_df = commands_df,
+  jobscript_output_dir = "jobscripts/",
+  jobscript_template = "resources/slurm_template.sh"
 )
 
 
